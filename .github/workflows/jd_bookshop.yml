@@ -11,6 +11,7 @@ on:
     types: started
   repository_dispatch:
     types: bookshop
+jobs:
   build:
 
     runs-on: ubuntu-latest
