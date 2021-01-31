@@ -113,6 +113,7 @@ async function jdFive() {
     await getShopList()
     console.log(`去帮助好友`)
     await helpFriends()
+    await myRank();//领取往期排名奖励
     await getActInfo()
     await showMsg()
   } catch (e) {
@@ -202,7 +203,7 @@ function getActInfo() {
             message += `用户当前积分：${data.data.integralNum}\n`
             console.log(`用户当前积分：${data.data.integralNum}`)
           } else {
-            console.log(data)
+            console.log(JSON.stringify(data))
           }
         }
       } catch (e) {
@@ -228,7 +229,7 @@ function getMeetingList() {
               await getMeetingPrize(vo['id'])
             }
           } else {
-            console.log(data)
+            console.log(JSON.stringify(data))
           }
         }
       } catch (e) {
@@ -251,7 +252,7 @@ function browseMeeting(id) {
           if (data && data['code'] === 200) {
             console.log(data.msg)
           } else {
-            console.log(data)
+            console.log(JSON.stringify(data))
           }
         }
       } catch (e) {
@@ -276,7 +277,7 @@ function getMeetingPrize(id) {
             $.score += parseInt(data.data.integralNum)
             console.log(`获得${data.data.jdNum}京豆，${data.data.integralNum}积分`)
           } else {
-            console.log(data)
+            console.log(JSON.stringify(data))
           }
         }
       } catch (e) {
@@ -302,7 +303,7 @@ function getGoodList() {
               await getGoodPrize(vo['id'])
             }
           } else {
-            console.log(data)
+            console.log(JSON.stringify(data))
           }
         }
       } catch (e) {
@@ -325,7 +326,7 @@ function browseGood(id) {
           if (data && data['code'] === 200) {
             console.log(data.msg)
           } else {
-            console.log(data)
+            console.log(JSON.stringify(data))
           }
         }
       } catch (e) {
@@ -350,7 +351,7 @@ function getGoodPrize(id) {
             $.score += parseInt(data.data.integralNum)
             console.log(`获得${data.data.jdNum}京豆，${data.data.integralNum}积分`)
           } else {
-            console.log(data)
+            console.log(JSON.stringify(data))
           }
         }
       } catch (e) {
@@ -376,7 +377,7 @@ function getShopList() {
               await getShopPrize(vo['shopId'])
             }
           } else {
-            console.log(data)
+            console.log(JSON.stringify(data))
           }
         }
       } catch (e) {
@@ -399,7 +400,7 @@ function browseShop(id) {
           if (data && data['code'] === 200) {
             console.log(data.msg)
           } else {
-            console.log(data)
+            console.log(JSON.stringify(data))
           }
         }
       } catch (e) {
@@ -424,7 +425,7 @@ function getShopPrize(id) {
             $.score += parseInt(data.data.integralNum)
             console.log(`获得${data.data.jdNum}京豆，${data.data.integralNum}积分`)
           } else {
-            console.log(data)
+            console.log(JSON.stringify(data))
           }
         }
       } catch (e) {
@@ -445,9 +446,9 @@ function getHelp() {
         } else {
           data = JSON.parse(data);
           if (data && data['code'] === 200) {
-            console.log(`您的好友助力码为：${data.data.shareId}`);
+            console.log(`您的好友助力码为：${data.data.shareId} \n注：此邀请码每天都变！`);
           } else {
-            console.log(data)
+            console.log(JSON.stringify(data))
           }
         }
       } catch (e) {
@@ -458,11 +459,106 @@ function getHelp() {
     })
   })
 }
+function myRank() {
+  return new Promise(resolve => {
+    const options = {
+      "url": `${JD_API_HOST}task/myRank?t=${Date.now()}`,
+      "headers": {
+        "Host": "rdcseason.m.jd.com",
+        "Accept": "application/json, text/plain, */*",
+        "Connection": "keep-alive",
+        "Cookie": cookie,
+        "User-Agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 14_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.0.2 Mobile/15E148 Safari/604.1",
+        "Accept-Language": "zh-cn",
+        "Referer": "https://rdcseason.m.jd.com/",
+        "Accept-Encoding": "gzip, deflate, br"
+      }
+    }
+    $.jbeanNum = '';
+    $.get(options, async (err, resp, data) => {
+      try {
+        // console.log('查询获奖列表data', data);
+        if (err) {
+          console.log(`${JSON.stringify(err)}`)
+          console.log(`${$.name} API请求失败，请检查网路重试`)
+        } else {
+          data = JSON.parse(data);
+          if (data.code === 200 && data.data.myHis) {
+            for (let i = 0; i < data.data.myHis.length; i++) {
+              $.date = data.data.myHis[0].date;
+              if (data.data.myHis[i].status === '21') {
+                await $.wait(1000);
+                console.log('开始领奖')
+                let res = await saveJbean(data.data.myHis[i].id);
+                // console.log('领奖结果', res)
+                if (res.code === 200 && res.data.rsCode === 200) {
+                  // $.jbeanNum += Number(res.data.jbeanNum);
+                  console.log(`${data.data.myHis[i].date}日奖励领取成功${JSON.stringify(res.data.jbeanNum)}`)
+                }
+              }
+              if (i === 0 && data.data.myHis[i].status === '22') {
+                $.jbeanNum = data.data.myHis[i].prize;
+              }
+            }
+            // for (let item of data.data.myHis){
+            //   if (item.status === '21') {
+            //     await $.wait(1000);
+            //     console.log('开始领奖')
+            //     let res = await saveJbean(item.id);
+            //     // console.log('领奖结果', res)
+            //     if (res.code === 200 && res.data.rsCode === 200) {
+            //       $.jbeanNum += Number(res.data.jbeanNum);
+            //     }
+            //   }
+            // }
+          }
+        }
+      } catch (e) {
+        $.logErr(e, resp)
+      } finally {
+        resolve(data);
+      }
+    })
+  })
+}
+function saveJbean(id) {
+  return new Promise(resolve => {
+    const options = {
+      "url": `${JD_API_HOST}task/saveJbean`,
+      "body": `prizeId=${id}`,
+      "headers": {
+        "Host": "rdcseason.m.jd.com",
+        "Accept": "application/json, text/plain, */*",
+        "Connection": "keep-alive",
+        "Cookie": cookie,
+        "User-Agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 14_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.0.2 Mobile/15E148 Safari/604.1",
+        "Accept-Language": "zh-cn",
+        "Referer": "https://rdcseason.m.jd.com/",
+        "Accept-Encoding": "gzip, deflate, br"
+      }
+    }
+    $.post(options, (err, resp, data) => {
+      try {
+        // console.log('领取京豆结果', data);
+        if (err) {
+          console.log(`${JSON.stringify(err)}`)
+          console.log(`${$.name} API请求失败，请检查网路重试`)
+        } else {
+          data = JSON.parse(data);
+        }
+      } catch (e) {
+        $.logErr(e, resp)
+      } finally {
+        resolve(data);
+      }
+    })
+  })
+}
 function readShareCode() {
   console.log(`开始`)
   return new Promise(async resolve => {
     $.get({
-       url: `http://jd.turinglabs.net/api/v2/jd/5g/read/${randomCount}/`,
+      url: `http://jd.turinglabs.net/api/v2/jd/5g/read/${randomCount}/`,
       'timeout': 10000
     }, (err, resp, data) => {
       try {
@@ -548,7 +644,7 @@ function taskUrl(function_id,body) {
       "origin": "https://rdcseason.m.jd.com",
       "referer": "https://rdcseason.m.jd.com/",
       'Content-Type': 'application/x-www-form-urlencoded',
-      "User-Agent": $.isNode() ? (process.env.JD_USER_AGENT ? process.env.JD_USER_AGENT : (require('./USER_AGENTS').USER_AGENT)) : ($.getdata('JDUA') ? $.getdata('JDUA') : "jdapp;iPhone;9.2.2;14.2;%E4%BA%AC%E4%B8%9C/9.2.2 CFNetwork/1206 Darwin/20.1.0")
+      "User-Agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 14_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.0.2 Mobile/15E148 Safari/604.1"
     }
   }
 }
@@ -563,7 +659,7 @@ function taskPostUrl(function_id, body = "") {
       "origin": "https://rdcseason.m.jd.com",
       "referer": "https://rdcseason.m.jd.com/",
       'Content-Type': 'application/x-www-form-urlencoded',
-      "User-Agent": $.isNode() ? (process.env.JD_USER_AGENT ? process.env.JD_USER_AGENT : (require('./USER_AGENTS').USER_AGENT)) : ($.getdata('JDUA') ? $.getdata('JDUA') : "jdapp;iPhone;9.2.2;14.2;%E4%BA%AC%E4%B8%9C/9.2.2 CFNetwork/1206 Darwin/20.1.0")
+      "User-Agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 14_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.0.2 Mobile/15E148 Safari/604.1"
     }
   }
 }
@@ -581,7 +677,7 @@ function taskPostUrl2(function_id, body = {}, function_id2) {
       "origin": "https://h5.m.jd.com",
       "referer": "https://h5.m.jd.com/",
       'Content-Type': 'application/x-www-form-urlencoded',
-      "User-Agent": $.isNode() ? (process.env.JD_USER_AGENT ? process.env.JD_USER_AGENT : (require('./USER_AGENTS').USER_AGENT)) : ($.getdata('JDUA') ? $.getdata('JDUA') : "jdapp;iPhone;9.2.2;14.2;%E4%BA%AC%E4%B8%9C/9.2.2 CFNetwork/1206 Darwin/20.1.0")
+      "User-Agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 14_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.0.2 Mobile/15E148 Safari/604.1"
     }
   }
 }
