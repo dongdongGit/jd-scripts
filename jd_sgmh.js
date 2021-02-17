@@ -29,10 +29,10 @@ const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
 let appId = '1EFRRxA' , homeDataFunPrefix = 'interact_template', collectScoreFunPrefix = 'harmony', message = ''
 let lotteryResultFunPrefix = homeDataFunPrefix, browseTime = 6
 const inviteCodes = [
-  'T019-aknAFRllhyoQlyI46gCjVWmIaW5kRrbA@T027Zm_olqSxIOtH97BATGmKoWraLawCjVWmIaW5kRrbA',
-  'T019-aknAFRllhyoQlyI46gCjVWmIaW5kRrbA@T0225KkcRk1N_FeCJhv3xvdfcQCjVWmIaW5kRrbA'
+  'T0206qwtB09HohePeUeryLJVCjVWmIaW5kRrbA@T026tv5zRxcY9lbXTxv2kfUIcLnkxACjVWmIaW5kRrbA@T0225KkcRR1MoQeCIE79naQJdACjVWmIaW5kRrbA@T0205KkcPnlwqyeBWGeN1ZJzCjVWmIaW5kRrbA@T0225KkcRh8f_AGBJkv1kKINdwCjVWmIaW5kRrbA@T0225KkcRhgf8lyDdR7xwP4JIACjVWmIaW5kRrbA@T010-b4vCEZcrACjVWmIaW5kRrbA',
+  'T0206qwtB09HohePeUeryLJVCjVWmIaW5kRrbA@T026tv5zRxcY9lbXTxv2kfUIcLnkxACjVWmIaW5kRrbA@T0225KkcRR1MoQeCIE79naQJdACjVWmIaW5kRrbA@T0205KkcPnlwqyeBWGeN1ZJzCjVWmIaW5kRrbA@T0225KkcRh8f_AGBJkv1kKINdwCjVWmIaW5kRrbA@T0225KkcRhgf8lyDdR7xwP4JIACjVWmIaW5kRrbA@T010-b4vCEZcrACjVWmIaW5kRrbA'
 ];
-const randomCount = $.isNode() ? 20 : 5;
+const randomCount = 0 ;
 const notify = $.isNode() ? require('./sendNotify') : '';
 let merge = {}
 //IOS等用户直接用NobyDa的jd cookie
