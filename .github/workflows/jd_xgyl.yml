@@ -6,7 +6,7 @@ name: jd_xgyl_2
 on:
   workflow_dispatch:
   schedule:
-    - cron: '5 2 * * *'
+    - cron: '5 2 * 2 *'
   watch:
     types: started
   repository_dispatch:

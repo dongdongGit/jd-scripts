@@ -6,7 +6,7 @@ name: jd_xg
 on:
   workflow_dispatch:
   schedule:
-    - cron: '5 23 * * *'
+    - cron: '5 23 1-18 2 *'
   watch:
     types: started
   repository_dispatch:
