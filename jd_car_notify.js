@@ -241,7 +241,7 @@ function getPoint() {
                 console.log(`当前赛点：${data.data.remainPoint}/${data.data.oncePoint}，可以兑换京豆，请打开APP兑换`)
                 message += `当前赛点：${data.data.remainPoint}/${data.data.oncePoint}，可以兑换京豆，请打开APP兑换\n`
 				if ($.isNode()){
-					await notify.sendNotify(`${$.name}可以兑换京豆 - ${$.nickName}`, `京东账号${$.index} ${$.nickName}\n可以兑换京豆`);
+					await notify.sendNotify(`${$.name} - ${$.nickName}`, `京东账号${$.index} ${$.nickName} - ${$.UserName}\n当前赛点：${data.data.remainPoint}`);
 					$.wait(2000)
 					process.exit(0)
 				}
