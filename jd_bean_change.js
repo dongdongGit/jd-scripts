@@ -289,9 +289,10 @@ function redPacket() {
             data = JSON.parse(data).data
             $.balance = data.balance
             $.expiredBalance = data.expiredBalance || 0;
-			if($.balance >= 5.00)
+			if($.expiredBalance >= 3.00){
             $.message += `\n当前红包：${$.balance}元🧧`;
-            if ($.expiredBalance > 0) $.message += `\n今日将过期：${$.expiredBalance}元红包🧧`;
+            $.message += `\n今日将过期：${$.expiredBalance}元红包🧧`;
+			}
           } else {
             console.log(`京东服务器返回空数据`)
           }
