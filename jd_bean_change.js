@@ -285,7 +285,7 @@ function redPacket() {
           console.log(`${JSON.stringify(err)}`)
           console.log(`${$.name} API请求失败，请检查网路重试`)
         } else {
-          if (data) {s
+          if (data) {
             data = JSON.parse(data).data
             $.balance = data.balance
             $.expiredBalance = data.expiredBalance || 0;
