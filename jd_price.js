@@ -472,7 +472,6 @@ function taskUrl(functionid, body) {
 
 function showMsg() {
   console.log(`🧮 本次价格保护金额：${$.refundtotalamount}💰`);
-  notify.sendNotify(`${$.name} - 账号${$.index} - ${$.nickName}`, `京东账号${$.index} ${$.nickName || $.UserName}\n🎉 本次价格保护金额：${$.refundtotalamount}💰`, { url: `https://msitepp-fm.jd.com/rest/priceprophone/priceProPhoneMenu` })
   if ($.refundtotalamount) {
     $.msg(
       $.name,
