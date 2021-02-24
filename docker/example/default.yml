@@ -19,7 +19,7 @@ jd_scripts:
     - "raw.githubusercontent.com:151.101.228.133"
   environment:
     #脚本更新仓库地址，配置了会切换到对应的地址
-    - REPO_URL=https://gitee.com/lxk0301/jd_scripts.git
+    - REPO_URL=git@gitee.com:lxk0301/jd_scripts.git
     # 注意环境变量填写值的时候一律不需要引号（""或者''）下面这些只是事例，根据自己的需求增加删除
     #jd cookies
     # 例: JD_COOKIE=pt_key=XXX;pt_pin=XXX
@@ -46,7 +46,7 @@ jd_scripts:
     - PETSHARECODES=
     # 宠汪汪的喂食数量
     - JOY_FEED_COUNT=
-    #京小超
+    #东东超市
     # - SUPERMARKET_SHARECODES=
     #兑换多少数量的京豆（20，或者1000京豆,或者其他奖品的文字）
     # 例: MARKET_COIN_TO_BEANS=1000
