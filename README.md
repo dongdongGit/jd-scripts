@@ -23,13 +23,14 @@
 
 #### 说明
 
-1. 其中 [jd_bean_sign.js](https://gitee.com/lxk0301/jd_scripts/raw/master/jd_bean_sign.js) 可N个京东账号，Node.js专用，核心脚本是JD_DailyBonus.js， IOS软件用户请使用NobyDa的 [JD_DailyBonus.js](https://raw.githubusercontent.com/NobyDa/Script/master/JD-DailyBonus/JD_DailyBonus.js)
+1. 其中 [jd_bean_sign.js](./jd_bean_sign.js) 可N个京东账号，Node.js专用，核心脚本是JD_DailyBonus.js， IOS软件用户请使用NobyDa的 [JD_DailyBonus.js](https://raw.githubusercontent.com/NobyDa/Script/master/JD-DailyBonus/JD_DailyBonus.js)
 
 2. 以字母排序。
 
 <!-- 这是隐藏信息，用来给 update_list.sh 脚本提供标记信息的，用于自动生成下面的脚本清单，请勿删除这里的标记信息。 -->
 <!-- 此表格由 update_list.sh 脚本自动生成，请不要人工修改。 -->
 <!-- 清单标记开始 -->
+
 | 序号 | 文件 | 名称 | 活动入口 |
 | :-: | - | - | - |
 |1|[jd_bean_change.js](https://gitee.com/lxk0301/jd_scripts/raw/master/jd_bean_change.js)|京豆变动通知||
@@ -88,15 +89,15 @@
 
 #### 搬运脚本
 
-1.  【 [@yangtingxiao](https://github.com/yangtingxiao) 】 京东抽奖机([jd_lotteryMachine.js](https://gitee.com/lxk0301/jd_scripts/raw/master/jd_lotteryMachine.js))
+1.  【 [@yangtingxiao](https://github.com/yangtingxiao) 】 京东抽奖机([jd_lotteryMachine.js](./jd_lotteryMachine.js))
 
-2.  【 [@yangtingxiao](https://github.com/yangtingxiao) 】 京东排行榜([jd_rankingList.js](https://gitee.com/lxk0301/jd_scripts/raw/master/jd_rankingList.js))
+2.  【 [@yangtingxiao](https://github.com/yangtingxiao) 】 京东排行榜([jd_rankingList.js](./jd_rankingList.js))
 
 **脚本兼容: [QuantumultX](https://apps.apple.com/us/app/quantumult-x/id1443988620), [Surge](https://apps.apple.com/us/app/surge-4/id1442620678), [Loon](https://apps.apple.com/us/app/loon/id1373567447), 小火箭, JSBox, Node.js**
 
 ## 邀请码互助
 
-- [获取各类活动互助码脚本 jd_get_share_code.js](https://gitee.com/lxk0301/jd_scripts/raw/master/jd_get_share_code.js)
+- [获取各类活动互助码脚本 jd_get_share_code.js](./jd_get_share_code.js)
 
 - [邀请码使用规范](githubAction.md#互助码类环境变量)(仅限云端)
 
@@ -118,17 +119,17 @@
 
 ### 2. iOS代理软件（QuantumultX, Surge, Loon, 小火箭）
 
-##### BoxJs订阅地址：[lxk0301.boxjs.json](https://gitee.com/lxk0301/jd_scripts/raw/master/lxk0301.boxjs.json)
+##### BoxJs订阅地址：[lxk0301.boxjs.json](./lxk0301.boxjs.json)
 
-##### 获取京东cookie [JD_extra_cookie.js](https://gitee.com/lxk0301/jd_scripts/raw/master/JD_extra_cookie.js)
+##### 获取京东cookie [JD_extra_cookie.js](./JD_extra_cookie.js)
 
 ##### 订阅链接：
 
-- Surge：Task&Cookies脚本模块地址: [lxk0301_Task.sgmodule.sgmodule](https://gitee.com/lxk0301/jd_scripts/raw/master/Surge/lxk0301_Task.sgmodule.sgmodule)
+- Surge：Task&Cookies脚本模块地址: [lxk0301_Task.sgmodule.sgmodule](./Surge/lxk0301_Task.sgmodule.sgmodule)
 
-- Loon：Task&Cookies脚本订阅链接: [lxk0301_LoonTask.conf](https://gitee.com/lxk0301/jd_scripts/raw/master/Loon/lxk0301_LoonTask.conf)
+- Loon：Task&Cookies脚本订阅链接: [lxk0301_LoonTask.conf](./Loon/lxk0301_LoonTask.conf)
 
-- QuantumultX Task脚本订阅链接: [lxk0301_gallery.json](https://gitee.com/lxk0301/jd_scripts/raw/master/QuantumultX/lxk0301_gallery.json)，cookie(重写)订阅链接: [lxk0301_cookies.conf](https://gitee.com/lxk0301/jd_scripts/raw/master/QuantumultX/lxk0301_cookies.conf)
+- QuantumultX Task脚本订阅链接: [lxk0301_gallery.json](./QuantumultX/lxk0301_gallery.json)，cookie(重写)订阅链接: [lxk0301_cookies.conf](./QuantumultX/lxk0301_cookies.conf)
 
 ## 赞赏码(开发维护不易,请赏杯茶水费)
 
