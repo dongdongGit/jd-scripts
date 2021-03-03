@@ -471,6 +471,7 @@ function taskUrl(functionid, body) {
 }
 
 function showMsg() {
+  notify.sendNotify(`测试请忽略 ${$.name} - 账号${$.index} - ${$.nickName}`, `京东账号${$.index} ${$.nickName || $.UserName}\n🎉 本次价格保护金额：${$.refundtotalamount}💰\n价保记录：https://msitepp-fm.jd.com/rest/priceprophone/priceProPhoneMenu` )
   console.log(`🧮 本次价格保护金额：${$.refundtotalamount}💰`);
   if ($.refundtotalamount) {
     $.msg(
@@ -484,7 +485,7 @@ function showMsg() {
           'https://msitepp-fm.jd.com/rest/priceprophone/priceProPhoneMenu',
       }
     );
-    notify.sendNotify(`${$.name} - 账号${$.index} - ${$.nickName}`, `京东账号${$.index} ${$.nickName || $.UserName}\n🎉 本次价格保护金额：${$.refundtotalamount}💰`, { url: `https://msitepp-fm.jd.com/rest/priceprophone/priceProPhoneMenu` })
+    notify.sendNotify(`${$.name} - 账号${$.index} - ${$.nickName}`, `京东账号${$.index} ${$.nickName || $.UserName}\n🎉 本次价格保护金额：${$.refundtotalamount}💰\n价保记录：https://msitepp-fm.jd.com/rest/priceprophone/priceProPhoneMenu` )
   }
 }
 
