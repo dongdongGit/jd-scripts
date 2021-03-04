@@ -88,7 +88,7 @@ function showMsg() {
       for (let item of $.prize) {
         if (notifyBean <= item.beansPerNum) { // 符合预定的京豆档位
           if ($.total >= item.prizerank) { // 当前鞭炮满足兑换
-            message += `【京豆】请手动兑换 ${item.beansPerNum} 个京豆，需消耗花费🧨 ${item.prizerank}`
+            message += `【京豆】请手动兑换 ${item.beansPerNum} 个京豆，需消耗花费🧨 ${item.prizerank}\n活动地址：https://linggame.jd.com/babelDiy/Zeus/3Y7JfoyA2Nwoa4FRqgDY4WpVjfgP/index.html`
             $.msg($.name, subTitle, message);
             if ($.isNode()) {
               await notify.sendNotify(`${$.name} - 账号${$.index} - ${$.nickName}`, `${subTitle}\n${message}`);
