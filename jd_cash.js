@@ -72,7 +72,7 @@ let allMessage = '';
     }
   }
   if (allMessage) {
-    if ($.isNode()) await notify.sendNotify($.name, allMessage);
+   // if ($.isNode()) await notify.sendNotify($.name, allMessage);
     $.msg($.name, '', allMessage);
   }
 })()
