@@ -36,11 +36,12 @@ cron "0 0-16/8 * * *" script-path=https://gitee.com/lxk0301/jd_scripts/raw/maste
 });
 
 const $ = new Env('宠汪汪积分兑换奖品');
-let joyRewardName = 20;//是否兑换京豆，默认开启兑换功能，其中20为兑换20京豆,500为兑换500京豆，0为不兑换京豆.数量有限先到先得
+let allMessage = '';
+let joyRewardName = 20;//是否兑换京豆，默认0不兑换京豆，其中20为兑换20京豆,500为兑换500京豆，0为不兑换京豆.数量有限先到先得
 //Node.js用户请在jdCookie.js处填写京东ck;
 const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
 const notify = $.isNode() ? require('./sendNotify') : '';
-let jdNotify = false;//是否开启静默运行，默认false关闭(即:奖品兑换成功后会发出通知提示)
+let jdNotify = true;//是否开启静默运行，默认false关闭(即:奖品兑换成功后会发出通知提示)
 //IOS等用户直接用NobyDa的jd cookie
 let cookiesArr = [], cookie = '';
 if ($.isNode()) {
@@ -112,18 +113,18 @@ async function joyReward() {
       }
       let giftSaleInfos = 'beanConfigs0';
       let time = new Date($.getExchangeRewardsRes['currentTime']).getHours();
-      if (time >= 23 && time < 7) {
+      if (time >= 0 && time < 8) {
         giftSaleInfos = 'beanConfigs0';
       }
-      if (time >= 7 && time < 15) {
+      if (time >= 8 && time < 16) {
         giftSaleInfos = 'beanConfigs8';
       }
-      if (time >= 15 && time < 23) {
+      if (time >= 16 && time < 24) {
         giftSaleInfos = 'beanConfigs16';
       }
       console.log(`\ndebug场次:${giftSaleInfos}\n`)
       for (let item of data[giftSaleInfos]) {
-        console.log(`${item['giftName']}当前库存:${item['leftStock']}`)
+        console.log(`${item['giftName']}当前库存:${item['leftStock']}，id：${item.id}`)
         if (item.giftType === 'jd_bean' && item['giftValue'] === rewardNum) {
           saleInfoId = item.id;
           leftStock = item.leftStock;
@@ -184,7 +185,7 @@ async function joyReward() {
           //$.msg($.name, `兑换${giftName}失败`, `【京东账号${$.index}】${$.nickName}\n目前只有${data.coin}积分\n已不足兑换${giftName}所需的${salePrice}积分\n`)
         }
       } else {
-        console.log('您设置了不兑换京豆,如需兑换京豆，请去BoxJs重新设置或修改第20行代码')
+        console.log(`\n您设置了不兑换京豆,如需兑换京豆，请去BoxJs处设置或修改joyRewardName代码或设置环境变量 JD_JOY_REWARD_NAME`)
       }
     } else {
       console.log(`${$.name}getExchangeRewards异常,${JSON.stringify($.getExchangeRewardsRes)}`)
