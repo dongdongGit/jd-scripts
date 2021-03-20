@@ -59,9 +59,9 @@ const jdCookieNode = $.isNode() ? require('./jdCookie.js') : {};
 //下面给出好友邀请助力的示例填写规则
 let invite_pins = ["danwangshimoluo","danwangshimoluo","830791320_125224661","830791320_125224661","jd_NWYnCfHMIqUI","jd_53edce0d99c30","jd_NWYnCfHMIqUI","caojiaxin3","wslxhui","jd_6169ef6a14e73","jd_66678de45d93d","jd_5d15ada4ea0bb","caojiaxin3","s1353128160719000","jd_6e7ddc5a3b6f1","jd_4f9a40e29eb17","jd_5e5f4069466ad","jd_reFOMZYNsGzp","jd_658295d82d7fe"];
 //下面给出好友赛跑助力的示例填写规则
-let run_pins =    ["danwangshimoluo","danwangshimoluo","830791320_125224661","830791320_125224661","jd_NWYnCfHMIqUI","jd_53edce0d99c30","jd_NWYnCfHMIqUI","caojiaxin3","wslxhui","jd_6169ef6a14e73","jd_66678de45d93d","jd_5d15ada4ea0bb","caojiaxin3","s1353128160719000","jd_6e7ddc5a3b6f1","jd_4f9a40e29eb17","jd_5e5f4069466ad","jd_reFOMZYNsGzp","jd_658295d82d7fe"];
+let run_pins =    ["jd_53edce0d99c30","jd_53edce0d99c30","830791320_125224661","830791320_125224661","jd_NWYnCfHMIqUI","jd_53edce0d99c30","jd_NWYnCfHMIqUI","caojiaxin3","wslxhui","jd_6169ef6a14e73","jd_66678de45d93d","jd_5d15ada4ea0bb","caojiaxin3","s1353128160719000","jd_6e7ddc5a3b6f1","jd_4f9a40e29eb17","jd_5e5f4069466ad","jd_reFOMZYNsGzp","jd_658295d82d7fe"];
 //friendsArr内置太多会导致IOS端部分软件重启,可PR过来(此处目的:帮别人助力可得30g狗粮)
-let friendsArr =  ["danwangshimoluo", "830791320_125224661", "jd_NWYnCfHMIqUI", "jd_53edce0d99c30", "jd_6169ef6a14e73", "jd_66678de45d93d"]
+let friendsArr =  ["jd_53edce0d99c30", "830791320_125224661", "jd_NWYnCfHMIqUI", "danwangshimoluo", "jd_6169ef6a14e73", "jd_66678de45d93d"]
 
 //IOS等用户直接用NobyDa的jd cookie
 let cookiesArr = [], cookie = '';
@@ -147,8 +147,8 @@ async function main() {
           run_pins = run_pins[0].split(',')
           Object.values(jdCookieNode).filter(item => item.match(/pt_pin=(.+?);/)).map(item => run_pins.push(decodeURIComponent(item.match(/pt_pin=(.+?);/)[1])))
           run_pins = [...new Set(run_pins)];
-          let fixPins = run_pins.splice(run_pins.indexOf('danwangshimoluo'), 1);
-          fixPins.push(...run_pins.splice(run_pins.indexOf('danwangshimoluo'), 1));
+          let fixPins = run_pins.splice(run_pins.indexOf('jd_53edce0d99c30'), 1);
+          fixPins.push(...run_pins.splice(run_pins.indexOf('830791320_125224661'), 1));
           const randomPins = getRandomArrayElements(run_pins, run_pins.length);
           run_pins = [[...fixPins, ...randomPins].join(',')];
           invite_pins = run_pins;
