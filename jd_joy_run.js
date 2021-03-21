@@ -57,11 +57,11 @@ const JD_BASE_API = `https://draw.jdfcloud.com//pet`;
 //Node.js用户请在jdCookie.js处填写京东ck;
 const jdCookieNode = $.isNode() ? require('./jdCookie.js') : {};
 //下面给出好友邀请助力的示例填写规则
-let invite_pins = ["danwangshimoluo","danwangshimoluo","830791320_125224661","830791320_125224661","jd_NWYnCfHMIqUI","jd_53edce0d99c30","jd_NWYnCfHMIqUI","caojiaxin3","wslxhui","jd_6169ef6a14e73","jd_66678de45d93d","jd_5d15ada4ea0bb","caojiaxin3","s1353128160719000","jd_6e7ddc5a3b6f1","jd_4f9a40e29eb17","jd_5e5f4069466ad","jd_reFOMZYNsGzp","jd_658295d82d7fe"];
+let invite_pins = ["danwangshimoluo","danwangshimoluo","830791320_125224661","830791320_125224661","jd_NWYnCfHMIqUI","jd_53edce0d99c30","jd_NWYnCfHMIqUI","caojiaxin3","wslxhui","jd_6169ef6a14e73","jd_66678de45d93d","jd_5d15ada4ea0bb","caojiaxin3","s1353128160719000","jd_6e7ddc5a3b6f1","jd_4f9a40e29eb17","jd_5e5f4069466ad","jd_reFOMZYNsGzp","jd_658295d82d7fe","cl9301"];
 //下面给出好友赛跑助力的示例填写规则
-let run_pins =    ["jd_53edce0d99c30","jd_53edce0d99c30","830791320_125224661","830791320_125224661","jd_NWYnCfHMIqUI","jd_53edce0d99c30","jd_NWYnCfHMIqUI","caojiaxin3","wslxhui","jd_6169ef6a14e73","jd_66678de45d93d","jd_5d15ada4ea0bb","caojiaxin3","s1353128160719000","jd_6e7ddc5a3b6f1","jd_4f9a40e29eb17","jd_5e5f4069466ad","jd_reFOMZYNsGzp","jd_658295d82d7fe"];
+let run_pins =    ["jd_53edce0d99c30","jd_53edce0d99c30","830791320_125224661","830791320_125224661","jd_NWYnCfHMIqUI","jd_53edce0d99c30","jd_NWYnCfHMIqUI","caojiaxin3","wslxhui","jd_6169ef6a14e73","jd_66678de45d93d","jd_5d15ada4ea0bb","caojiaxin3","s1353128160719000","jd_6e7ddc5a3b6f1","jd_4f9a40e29eb17","jd_5e5f4069466ad","jd_reFOMZYNsGzp","jd_658295d82d7fe","cl9301"];
 //friendsArr内置太多会导致IOS端部分软件重启,可PR过来(此处目的:帮别人助力可得30g狗粮)
-let friendsArr =  ["jd_53edce0d99c30", "830791320_125224661", "jd_NWYnCfHMIqUI", "danwangshimoluo", "jd_6169ef6a14e73", "jd_66678de45d93d"]
+let friendsArr =  ["jd_53edce0d99c30", "830791320_125224661", "jd_NWYnCfHMIqUI", "danwangshimoluo", "jd_6169ef6a14e73", "jd_66678de45d93d","cl9301"]
 
 //IOS等用户直接用NobyDa的jd cookie
 let cookiesArr = [], cookie = '';

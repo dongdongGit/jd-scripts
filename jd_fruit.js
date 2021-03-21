@@ -30,9 +30,9 @@ let cookiesArr = [], cookie = '', jdFruitShareArr = [], isBox = false, notify, n
 let shareCodes =
  [ // 这个列表填入你要助力的好友的shareCode
    //账号一的好友shareCode,不同好友的shareCode中间用@符号隔开
-  '5d419f12f9ae473083c76e1f3a34c3e1@567fd3bbeeb6456591bd691f8da17e18@001d7fff22ab412abfa13cbb31a85783@8c7859f6aa5b4460979b0783e7352df5@995aa81002144b1a8a26148f32547b0c@6eea3748f6534d47862e78706c87e6dc@e55d5fbd66f942d9adeafd632f6d0d3b@a8e17c0aa6b54144adb2e5ea6ec8fbbe@fdcfaa2e1f824eb68581095132038ee8@8ad506fff12a455982fcc9c6d319e5dd@4af26ed40f5a4a2585eefaf7ae8b1713@df44013087fc427baa1926433e9dece1@4e1e3ec2cb884c339ad0bc9d5bc272ed',
+  '5d419f12f9ae473083c76e1f3a34c3e1@567fd3bbeeb6456591bd691f8da17e18@001d7fff22ab412abfa13cbb31a85783@8c7859f6aa5b4460979b0783e7352df5@995aa81002144b1a8a26148f32547b0c@6eea3748f6534d47862e78706c87e6dc@e55d5fbd66f942d9adeafd632f6d0d3b@a8e17c0aa6b54144adb2e5ea6ec8fbbe@fdcfaa2e1f824eb68581095132038ee8@8ad506fff12a455982fcc9c6d319e5dd@4af26ed40f5a4a2585eefaf7ae8b1713@df44013087fc427baa1926433e9dece1@4e1e3ec2cb884c339ad0bc9d5bc272ed@247f4412ae474e01aad68206c28b8751',
   //账号二的好友shareCode,不同好友的shareCode中间用@符号隔开
-  '5d419f12f9ae473083c76e1f3a34c3e1@567fd3bbeeb6456591bd691f8da17e18@001d7fff22ab412abfa13cbb31a85783@8c7859f6aa5b4460979b0783e7352df5@995aa81002144b1a8a26148f32547b0c@6eea3748f6534d47862e78706c87e6dc@e55d5fbd66f942d9adeafd632f6d0d3b@a8e17c0aa6b54144adb2e5ea6ec8fbbe@fdcfaa2e1f824eb68581095132038ee8@8ad506fff12a455982fcc9c6d319e5dd@4af26ed40f5a4a2585eefaf7ae8b1713@df44013087fc427baa1926433e9dece1@4e1e3ec2cb884c339ad0bc9d5bc272ed',
+  '5d419f12f9ae473083c76e1f3a34c3e1@567fd3bbeeb6456591bd691f8da17e18@001d7fff22ab412abfa13cbb31a85783@8c7859f6aa5b4460979b0783e7352df5@995aa81002144b1a8a26148f32547b0c@6eea3748f6534d47862e78706c87e6dc@e55d5fbd66f942d9adeafd632f6d0d3b@a8e17c0aa6b54144adb2e5ea6ec8fbbe@fdcfaa2e1f824eb68581095132038ee8@8ad506fff12a455982fcc9c6d319e5dd@4af26ed40f5a4a2585eefaf7ae8b1713@df44013087fc427baa1926433e9dece1@4e1e3ec2cb884c339ad0bc9d5bc272ed@247f4412ae474e01aad68206c28b8751',
 ]
 let message = '', subTitle = '', option = {}, isFruitFinished = false;
 const retainWater = 100;//保留水滴大于多少g,默认100g;
@@ -114,7 +114,7 @@ async function jdFruit() {
       await getWaterFriendGotAward();//领取为2好友浇水奖励
       await duck();
       await doTenWaterAgain();//再次浇水
-      await predictionFruit();//预测水果成熟时间
+    //  await predictionFruit();//预测水果成熟时间
     } else {
       console.log(`初始化农场数据异常, 请登录京东 app查看农场0元水果功能是否正常,农场初始化数据: ${JSON.stringify($.farmInfo)}`);
       message = `【京东账号${$.index}】 ${$.nickName || $.UserName}\n【数据异常】请手动登录京东app查看此账号${$.name}是否正常`;
