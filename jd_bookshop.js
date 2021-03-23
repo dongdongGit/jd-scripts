@@ -24,14 +24,14 @@ const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
 //Node.js用户请在jdCookie.js处填写京东ck;
 //IOS等用户直接用NobyDa的jd cookie
 let cookiesArr = [], cookie = '', message;
-const ACT_ID = 'dz2010100034444201', shareUuid = '28a699ac78d74aa3b31f7103597f8927'
+const ACT_ID = 'dz2010100034444201', shareUuid = '7c9c696bdd2140e0959fd83d6fbae69e'
 let ADD_CART = false
 ADD_CART = $.isNode() ? (process.env.PURCHASE_SHOPS ? process.env.PURCHASE_SHOPS : ADD_CART) : ($.getdata("ADD_CART") ? $.getdata("ADD_CART") : ADD_CART);
 // 加入购物车开关，与东东小窝共享
 
 let inviteCodes = [
-  'f5e7d8ca8664449ab0828fae8a481d6d@6522e60f38de45fb83c982acd866dcf6@ad1810abcced49faaf6f98c5b1898fb9@94514ed63c1546afb68e4798c6925e3e@591f04167afb4c95ad7e97c82bd3f3a6@6329bfc583ef47cc8138ea042a82265f@c1528406464947a2a1c98936bcfd7152',
-  'f5e7d8ca8664449ab0828fae8a481d6d@6522e60f38de45fb83c982acd866dcf6@ad1810abcced49faaf6f98c5b1898fb9@94514ed63c1546afb68e4798c6925e3e@591f04167afb4c95ad7e97c82bd3f3a6@6329bfc583ef47cc8138ea042a82265f@c1528406464947a2a1c98936bcfd7152',
+ 'f5e7d8ca8664449ab0828fae8a481d6d@7c9c696bdd2140e0959fd83d6fbae69e@6522e60f38de45fb83c982acd866dcf6@ad1810abcced49faaf6f98c5b1898fb9@94514ed63c1546afb68e4798c6925e3e@591f04167afb4c95ad7e97c82bd3f3a6@6329bfc583ef47cc8138ea042a82265f@c1528406464947a2a1c98936bcfd7152',
+ 'f5e7d8ca8664449ab0828fae8a481d6d@7c9c696bdd2140e0959fd83d6fbae69e@6522e60f38de45fb83c982acd866dcf6@ad1810abcced49faaf6f98c5b1898fb9@94514ed63c1546afb68e4798c6925e3e@591f04167afb4c95ad7e97c82bd3f3a6@6329bfc583ef47cc8138ea042a82265f@c1528406464947a2a1c98936bcfd7152',
 ]
 
 if ($.isNode()) {
@@ -284,7 +284,7 @@ function getActContent(info = false, shareUuid = '') {
               }
               $.actorUuid = $.userInfo.actorUuid
               // if(!info) console.log(`您的好友助力码为${$.actorUuid}`)
-              if(!info) console.log(`\n【京东账号${$.index}（${$.nickName || $.UserName}）的${$.name}好友互助码】${$.actorUuid}\n`);
+              if(!info) console.log(`\n【京东账号${$.index}（${$.UserName}）的${$.name}好友互助码】${$.actorUuid}\n`);
               $.gold = $.userInfo.bookStore.hasStoreGold
               if (!info) {
                 const tasks = data.data.settingVo
