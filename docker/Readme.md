@@ -1,8 +1,27 @@
 ![Docker Pulls](https://img.shields.io/docker/pulls/lxk0301/jd_scripts?style=for-the-badge)
 ### Usage
 ```diff
++ 2021-03-21更新 增加bot交互，spnode指令，功能是否开启自动根据你的配置判断，详见 https://gitee.com/lxk0301/jd_docker/pulls/18
+ **bot交互启动前置条件为 配置telegram通知，并且未使用自己代理的 TG_API_HOST** 
+ **spnode使用前置条件未启动bot交互**   _（后续可能去掉该限制_ 
+ 使用bot交互+spnode后 后续用户的cookie维护更新只需要更新logs/cookies.conf即可
+ 使用bot交互+spnode后 后续执行脚本命令请使用spnode否者无法使用logs/cookies.conf的cookies执行脚本，定时任务也将自动替换为spnode命令执行
+ 发送/spnode给bot获取可执行脚本的列表，选择对应的按钮执行。(拓展使用：运行指定路径脚本，例：/spnode /scripts/jd_818.js)
+ spnode功能概述示例
+ spnode conc /scripts/jd_bean_change.js 为每个cookie单独执行jd_bean_change脚本（伪并发
+ spnode 1 /scripts/jd_bean_change.js 为logs/cookies.conf文件里面第一行cookie账户单独执行jd_bean_change脚本
+ spnode jd_XXXX /scripts/jd_bean_change.js 为logs/cookies.conf文件里面pt_pin=jd_XXXX的cookie账户单独执行jd_bean_change脚本
+ spnode /scripts/jd_bean_change.js 为logs/cookies.conf所有cookies账户一起执行jd_bean_change脚本
+
+**请仔细阅读并理解上面的内容，使用bot交互默认开启spnode指令功能功能。** 
++ 2021-03-9更新 新版docker单容器多账号自动互助
++开启方式：docker-compose.yml 中添加环境变量 - ENABLE_AUTO_HELP=true 
++助力原则：不考虑需要被助力次数与提供助力次数  假设有3个账号，则生成： ”助力码1@助力码2@助力码3&助力码1@助力码2@助力码3&助力码1@助力码2@助力码3“
++原理说明：1、定时调用 /scripts/docker/auto_help.sh collect 收集各个活动的助力码，整理、去重、排序、保存到 /scripts/logs/sharecodeCollection.log;
+        2、（由于linux进程限制，父进程无法获取子进程环境变量）在每次脚本运行前，在当前进程先调用 /scripts/docker/auto_help.sh export 把助力码注入到环境变量
+
 + 2021-02-21更新 https://gitee.com/lxk0301/jd_scripts仓库被迫私有，老用户重新更新一下镜像：https://hub.docker.com/r/lxk0301/jd_scripts)(docker-compose.yml的REPO_URL记得修改)后续可同步更新jd_script仓库最新脚本
-+ 2021-02-10更新 docker-compose里面,填写环境变量 SHARE_CODE_FILE=/scripts/logs/sharecode.log, 多账号可实现自己互助(只限sharecode.log日志里面几个活动)
++ 2021-02-10更新 docker-compose里面,填写环境变量 SHARE_CODE_FILE=/scripts/logs/sharecode.log, 多账号可实现自己互助(只限sharecode.log日志里面几个活动),注:已停用,请使用2021-03-9更新
 + 2021-01-22更新 CUSTOM_LIST_FILE 参数支持远程定时任务列表 (⚠️务必确认列表中的任务在仓库里存在)
 + 例1:配置远程crontab_list.sh, 此处借用 shylocks 大佬的定时任务列表, 本仓库不包含列表中的任务代码, 仅作示范
 + CUSTOM_LIST_FILE=https://raw.githubusercontent.com/shylocks/Loon/main/docker/crontab_list.sh
@@ -58,7 +77,7 @@ pip install docker-compose
 国内一键安装 `sudo curl -sSL https://get.daocloud.io/docker | sh`
 国外一键安装 `sudo curl -sSL get.docker.com | sh`
 
-### 如果需要使用 docker 多个账户独立并发执行定时任务，[参考这里](./example/docker多账户使用独立容器使用说明.md)  
+### 如果需要使用 docker 多个账户独立并发执行定时任务，[参考这里](https://github.com/iouAkira/scripts/blob/patch-1/docker/docker%E5%A4%9A%E8%B4%A6%E6%88%B7%E4%BD%BF%E7%94%A8%E7%8B%AC%E7%AB%8B%E5%AE%B9%E5%99%A8%E4%BD%BF%E7%94%A8%E8%AF%B4%E6%98%8E.md#%E4%BD%BF%E7%94%A8%E6%AD%A4%E6%96%B9%E5%BC%8F%E8%AF%B7%E5%85%88%E7%90%86%E8%A7%A3%E5%AD%A6%E4%BC%9A%E4%BD%BF%E7%94%A8docker%E5%8A%9E%E6%B3%95%E4%B8%80%E7%9A%84%E4%BD%BF%E7%94%A8%E6%96%B9%E5%BC%8F)  
 
 > 注⚠️：前提先理解学会使用这下面的教程
 ### 创建一个目录`jd_scripts`用于存放备份配置等数据，迁移重装的时候只需要备份整个jd_scripts目录即可
@@ -199,7 +218,7 @@ jd_scripts
  `docker-compose down` 停止并删除容器；  
 
 - 你可能会用到的命令
-  
+   
    `docker exec -it jd_scripts /bin/sh -c 'git -C /scripts pull && node /scripts/jd_bean_change.js'`  手动运行一脚本
    
    `docker exec -it jd_scripts /bin/sh -c 'env'`  查看设置的环境变量
@@ -209,19 +228,20 @@ jd_scripts
    `docker exec -it jd_scripts /bin/sh` 仅进入容器命令
    
    `rm -rf  logs/*.log` 删除logs文件夹里面所有的日志文件
-
+ 
 - 如果是群晖用户，在docker注册表搜jd_scripts，双击下载映像。
 不需要docker-compose.yml，只需建个logs/目录，调整`jd_scripts.syno.json`里面对应的配置值，然后导入json配置新建容器。
 若要自定义my_crontab_list.sh，再建个my_crontab_list.sh文件，配置参考`jd_scripts.my_crontab_list.syno.json`。
-![image](https://user-images.githubusercontent.com/6993269/99024743-32ac1480-25a2-11eb-8c0f-3cb3be90d54c.png)
+![image](../icon/qh1.png)
 
-![image](https://user-images.githubusercontent.com/6993269/99024803-4ce5f280-25a2-11eb-9693-60e8910c182c.png)
+![image](../icon/qh2.png)
 
-![image](https://user-images.githubusercontent.com/6993269/99024832-6424e000-25a2-11eb-8e31-287771f42ad2.png)
+![image](../icon/qh3.png)
 
-### 环境变量
+### DOCKER专属环境变量
 
 |        Name       |      归属      |  属性  | 说明                                                         |
 | :---------------: | :------------: | :----: | ------------------------------------------------------------ |
-| `SHARE_CODE_FILE` | 互助码日志文件 | 非必须 | docker-compose下请填写`/scripts/logs/sharecode.log`，其他填写对应的互助码日志文路径 |
-| `CRZAY_JOY_COIN_ENABLE` | 是否jd_crazy_joy_coin挂机 | 非必须 | `CRZAY_JOY_COIN_ENABLE=Y`表示挂机,`CRZAY_JOY_COIN_ENABLE=N`表不挂机 |
+| `CRZAY_JOY_COIN_ENABLE` | 是否jd_crazy_joy_coin挂机 | 非必须 | docker-compose.yml文件下填写`CRZAY_JOY_COIN_ENABLE=Y`表示挂机,`CRZAY_JOY_COIN_ENABLE=N`表不挂机 |
+| `DO_NOT_RUN_SCRIPTS` | 不执行的脚本 | 非必须 | 例:docker-compose.yml文件里面填写`DO_NOT_RUN_SCRIPTS=jd_family.js&jd_dreamFactory.js&jd_jxnc.js`, 建议填写完整脚本名,不完整的文件名可能导致其他脚本被禁用 |
+| `ENABLE_AUTO_HELP` | 单容器多账号自动互助 | 非必须 | 例:docker-compose.yml文件里面填写`ENABLE_AUTO_HELP=true` |
