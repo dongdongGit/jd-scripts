@@ -14,7 +14,7 @@ Modified from https://github.com/Zero-S1/JD_tools/blob/master/JD_vvipclub.py
 [task_local]
 #摇京豆
 [Script]
-cron "5 0 * * *" script-path=https://gitee.com/lxk0301/jd_scripts/raw/master/jd_club_lottery.js,tag=摇京豆
+cron "0 17 * * *" script-path=https://gitee.com/lxk0301/jd_scripts/raw/master/jd_club_lottery.js,tag=摇京豆
 =================Surge==============
 [Script]
 摇京豆 = type=cron,cronexp="5 0 * * *",wake-system=1,timeout=3600,script-path=https://gitee.com/lxk0301/jd_scripts/raw/master/jd_club_lottery.js
