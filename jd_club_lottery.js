@@ -2,7 +2,7 @@
 * @Author: LXK9301
 * @Date: 2020-11-03 20:35:07
 * @Last Modified by: LXK9301
-* @Last Modified time: 2021-4-2 12:27:09
+* @Last Modified time: 2021-4-3 9:27:09
 */
 /*
 活动入口：京东APP首页-领京豆-摇京豆/京东APP首页-我的-京东会员-摇京豆
@@ -14,7 +14,7 @@ Modified from https://github.com/Zero-S1/JD_tools/blob/master/JD_vvipclub.py
 [task_local]
 #摇京豆
 [Script]
-cron "0 17 * * *" script-path=https://gitee.com/lxk0301/jd_scripts/raw/master/jd_club_lottery.js,tag=摇京豆
+cron "5 0 * * *" script-path=https://gitee.com/lxk0301/jd_scripts/raw/master/jd_club_lottery.js,tag=摇京豆
 =================Surge==============
 [Script]
 摇京豆 = type=cron,cronexp="5 0 * * *",wake-system=1,timeout=3600,script-path=https://gitee.com/lxk0301/jd_scripts/raw/master/jd_club_lottery.js
@@ -85,7 +85,6 @@ const JD_API_HOST = 'https://api.m.jd.com/client.action';
         continue
       }
       await clubLottery();
-      // await shakeSign();
       await showMsg();
     }
   }
@@ -113,6 +112,7 @@ async function clubLottery() {
     await vvipclub_receive_lottery_times();//京东会员：领取一次免费的机会
     await vvipclub_shaking_info();//京东会员：查询多少次摇奖次数
     await shaking();//开始摇奖
+    await shakeSign();
     await superShakeBean();//京东APP首页超级摇一摇
   } catch (e) {
     $.logErr(e)
@@ -435,10 +435,13 @@ function welcomeHome() {
           if (data) {
             data = JSON.parse(data);
             if (data['floorList'] && data['floorList'].length) {
-              const jump = data['floorList'].filter(vo => !!vo && vo.type === 'shakeFloorNew')[0]['jump'];
-              if (jump && jump.params && jump['params']['url']) {
-                superShakeBeanConfig['superShakeUlr'] = jump.params.url;
-                console.log(`【超级摇一摇】活动链接：${superShakeBeanConfig['superShakeUlr']}`);
+              const shakeFloorNew = data['floorList'].filter(vo => !!vo && vo.type === 'shakeFloorNew')[0];
+              if (shakeFloorNew) {
+                const jump = shakeFloorNew['jump'];
+                if (jump && jump.params && jump['params']['url']) {
+                  superShakeBeanConfig['superShakeUlr'] = jump.params.url;
+                  console.log(`【超级摇一摇】活动链接：${superShakeBeanConfig['superShakeUlr']}`);
+                }
               }
             }
           }
@@ -642,38 +645,82 @@ function fc_getLottery(appId) {
 }
 //京东会员签到
 async function shakeSign() {
-  let body = {"floorToken": "df6e1996-0f6f-4c29-92b9-22416fc1f68a", "dataSourceCode": "popUpInfo", "argMap": {}};
-  const res = await pg_interact_interface_invoke(body);
-  if (res.success && res.data) {
-    body = {"floorToken":"f1d574ec-b1e9-43ba-aa84-b7a757f27f0e","dataSourceCode":"signIn","argMap":{"currSignCursor": res['data']['dayBeanAmount']}}
+  await pg_channel_page_data();
+  if ($.token && $.currSignCursor && $.signStatus === -1) {
+    const body = {"floorToken": $.token, "dataSourceCode": "signIn", "argMap": { "currSignCursor": $.currSignCursor }};
     const signRes = await pg_interact_interface_invoke(body);
-    console.log(`京东会员第${res['data']['dayBeanAmount']}天签到结果；${JSON.stringify(signRes)}`)
+    console.log(`京东会员第${$.currSignCursor}天签到结果；${JSON.stringify(signRes)}`)
+    let beanNum = 0;
     if (signRes.success && signRes['data']) {
-      console.log(`京东会员第${res['data']['dayBeanAmount']}天签到成功。获得${signRes['data']['rewardVos'] && signRes['data']['rewardVos'][0]['jingBeanVo'] && signRes['data']['rewardVos'][0]['jingBeanVo']['beanNum']}京豆\n`)
+      console.log(`京东会员第${$.currSignCursor}天签到成功。获得${signRes['data']['rewardVos'] && signRes['data']['rewardVos'][0]['jingBeanVo'] && signRes['data']['rewardVos'][0]['jingBeanVo']['beanNum']}京豆\n`)
+      beanNum = signRes['data']['rewardVos'] && signRes['data']['rewardVos'][0]['jingBeanVo'] && signRes['data']['rewardVos'][0]['jingBeanVo']['beanNum']
     }
-    // if (res['data']['popUpRemainTimes'] > 0) {
-    //   //可签到
-    //   body = {"floorToken":"f1d574ec-b1e9-43ba-aa84-b7a757f27f0e","dataSourceCode":"signIn","argMap":{"currSignCursor": res['data']['dayBeanAmount']}}
-    //   const signRes = await pg_interact_interface_invoke(body);
-    //   console.log(`京东会员第${res['data']['dayBeanAmount']}天签到结果；${JSON.stringify(signRes)}`)
-    //   if (signRes.success && signRes['data']) {
-    //     console.log(`京东会员第${res['data']['dayBeanAmount']}天签到成功。获得${signRes['data']['rewardVos'] && signRes['data']['rewardVos'][0]['jingBeanVo'] && signRes['data']['rewardVos'][0]['jingBeanVo']['beanNum']}京豆\n`)
-    //   }
-    // } else {
-    //   console.log(`京东会员第${res['data']['dayBeanAmount'] - 1}天已经签到了`)
-    // }
+    if (beanNum) {
+      message += `京东会员签到：${beanNum}获得京豆\n`;
+    }
+  } else {
+    console.log(`京东会员第${$.currSignCursor}已签到`)
   }
+}
+function pg_channel_page_data() {
+  const body = {
+    "paramData":{"token":"dd2fb032-9fa3-493b-8cd0-0d57cd51812d"}
+  }
+  return new Promise(resolve => {
+    const options = {
+      url: `https://api.m.jd.com/?t=${Date.now()}&appid=sharkBean&functionId=pg_channel_page_data&body=${escape(JSON.stringify(body))}`,
+      headers: {
+        "Accept": "application/json",
+        "Accept-Encoding": "gzip, deflate, br",
+        "Accept-Language": "zh-cn",
+        "Connection": "keep-alive",
+        "Host": "api.m.jd.com",
+        "Cookie": cookie,
+        "Origin": "https://spa.jd.com",
+        "Referer": "https://spa.jd.com/home",
+        "User-Agent": $.isNode() ? (process.env.JD_USER_AGENT ? process.env.JD_USER_AGENT : (require('./USER_AGENTS').USER_AGENT)) : ($.getdata('JDUA') ? $.getdata('JDUA') : "jdapp;iPhone;9.4.4;14.3;network/4g;Mozilla/5.0 (iPhone; CPU iPhone OS 14_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148;supportJDSHWK/1")
+      }
+    }
+    $.get(options, (err, resp, data) => {
+      try {
+        if (err) {
+          console.log(`\n${$.name}: API查询请求失败 ‼️‼️`)
+          $.logErr(err);
+        } else {
+          data = JSON.parse(data);
+          if (data.success) {
+            const SIGN_ACT_INFO = data['data']['floorInfoList'].filter(vo => !!vo && vo['code'] === 'SIGN_ACT_INFO')[0]
+            $.token = SIGN_ACT_INFO['token'];
+            if (SIGN_ACT_INFO['floorData']) {
+              $.currSignCursor = SIGN_ACT_INFO['floorData']['signActInfo']['currSignCursor'];
+              $.signStatus = SIGN_ACT_INFO['floorData']['signActInfo']['signActCycles'].filter(item => !!item && item['signCursor'] === $.currSignCursor)[0]['signStatus'];
+            }
+            console.log($.token, $.currSignCursor, $.signStatus)
+          }
+        }
+      } catch (e) {
+        $.logErr(e, resp);
+      } finally {
+        resolve(data || {});
+      }
+    })
+  })
 }
 function pg_interact_interface_invoke(body) {
   return new Promise(resolve => {
     const options = {
       url: `https://api.m.jd.com/?appid=sharkBean&functionId=pg_interact_interface_invoke&body=${escape(JSON.stringify(body))}`,
       headers: {
-        'Cookie': cookie,
-        'Host': 'api.m.jd.com',
         'User-Agent': $.isNode() ? (process.env.JD_USER_AGENT ? process.env.JD_USER_AGENT : (require('./USER_AGENTS').USER_AGENT)) : ($.getdata('JDUA') ? $.getdata('JDUA') : "jdapp;iPhone;9.4.4;14.3;network/4g;Mozilla/5.0 (iPhone; CPU iPhone OS 14_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148;supportJDSHWK/1"),
-        'Referer': 'https://spa.jd.com',
-        'origin': 'https://spa.jd.com'
+        "Cookie": cookie,
+        "Accept": "application/json",
+        "Accept-Encoding": "gzip, deflate, br",
+        "Accept-Language": "zh-cn",
+        "Connection": "keep-alive",
+        "Content-Length": "0",
+        "Host": "api.m.jd.com",
+        "Origin": "https://spa.jd.com",
+        "Referer": "https://spa.jd.com/home"
       }
     }
     $.post(options, (err, resp, data) => {
