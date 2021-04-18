@@ -29,8 +29,8 @@ let cookiesArr = [], cookie = '', message;
 let helpAuthor = true;
 const randomCount = 0 ;
 const inviteCodes = [
- 'd15oML3rO6VJ8WzVww@eU9Yar6xYKpyp2jVyXcSgg@eU9Yae_gM6gg8zuDzXcV1w@eU9YGaTyGZVfmCadrCt0@eU9YM5DDO6BctA6CrQhA@eU9YJaroGIF0iRyyogFV@eU9YJLLlEZ1XhjyplBVE@ZF5rNa_qP7V3r27d@eU9YaO6wb_wuoj_WzXQQhA@eU9YK63UA7xytyS3iyFK@eU9YLY7NGbtdoCuzng1m@eU9YJLLlEZ1XhjyplBVE@eU9YKpHTI49YpjeQvABS@eU9YE5fXDJpnjT-uqSJ5@eU9YPZvXM61cjAqfnARR@a0JmM7brOKtuqAHVyXMb', 
- 'd15oML3rO6VJ8WzVww@eU9Yar6xYKpyp2jVyXcSgg@eU9Yae_gM6gg8zuDzXcV1w@eU9YGaTyGZVfmCadrCt0@eU9YM5DDO6BctA6CrQhA@eU9YJaroGIF0iRyyogFV@eU9YJLLlEZ1XhjyplBVE@ZF5rNa_qP7V3r27d@eU9YaO6wb_wuoj_WzXQQhA@eU9YK63UA7xytyS3iyFK@eU9YLY7NGbtdoCuzng1m@eU9YJLLlEZ1XhjyplBVE@eU9YKpHTI49YpjeQvABS@eU9YE5fXDJpnjT-uqSJ5@eU9YPZvXM61cjAqfnARR@a0JmM7brOKtuqAHVyXMb',
+ 'eU9Yae_gM6gg8zuDzXcV1w@eU9YGaTyGZVfmCadrCt0@eU9YM5DDO6BctA6CrQhA@eU9YJaroGIF0iRyyogFV@eU9YJLLlEZ1XhjyplBVE@ZF5rNa_qP7V3r27d@eU9YaO6wb_wuoj_WzXQQhA@eU9YK63UA7xytyS3iyFK@eU9YLY7NGbtdoCuzng1m@eU9YJLLlEZ1XhjyplBVE@eU9YKpHTI49YpjeQvABS@eU9YE5fXDJpnjT-uqSJ5@eU9YPZvXM61cjAqfnARR@a0JmM7brOKtuqAHVyXMb@d15oML3rO6VJ8WzVww@eU9Yar6xYKpyp2jVyXcSgg', 
+ 'eU9Yae_gM6gg8zuDzXcV1w@eU9YGaTyGZVfmCadrCt0@eU9YM5DDO6BctA6CrQhA@eU9YJaroGIF0iRyyogFV@eU9YJLLlEZ1XhjyplBVE@ZF5rNa_qP7V3r27d@eU9YaO6wb_wuoj_WzXQQhA@eU9YK63UA7xytyS3iyFK@eU9YLY7NGbtdoCuzng1m@eU9YJLLlEZ1XhjyplBVE@eU9YKpHTI49YpjeQvABS@eU9YE5fXDJpnjT-uqSJ5@eU9YPZvXM61cjAqfnARR@a0JmM7brOKtuqAHVyXMb@d15oML3rO6VJ8WzVww@eU9Yar6xYKpyp2jVyXcSgg', 
 ]
 if ($.isNode()) {
   Object.keys(jdCookieNode).forEach((item) => {
