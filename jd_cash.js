@@ -74,7 +74,7 @@ let allMessage = '';
     }
   }
   if (allMessage) {
-    if ($.isNode() && jdNotify && (process.env.CASH_NOTIFY_CONTROL ? process.env.CASH_NOTIFY_CONTROL === 'false' : !!1)) await notify.sendNotify($.name, allMessage);
+    if ($.isNode() && (jdNotify === false) && (process.env.CASH_NOTIFY_CONTROL ? process.env.CASH_NOTIFY_CONTROL === 'false' : !!1)) await notify.sendNotify($.name, allMessage);
     $.msg($.name, '', allMessage);
   }
 })()
