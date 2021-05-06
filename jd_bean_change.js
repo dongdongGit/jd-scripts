@@ -290,7 +290,7 @@ function redPacket() {
             $.balance = data.balance
             $.expiredBalance = data.expiredBalance || 0;
 			if($.expiredBalance >= 3.00){
-           // $.message += `\n当前红包：${$.balance}元🧧`;
+            $.message += `\n当前红包：${$.balance}元🧧`;
             $.message += `\n今日将过期：${$.expiredBalance}元红包🧧`;
 			}
           } else {
