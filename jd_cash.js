@@ -28,8 +28,8 @@ let jdNotify = true;//是否关闭通知，false打开通知推送，true关闭�
 //IOS等用户直接用NobyDa的jd cookie
 let cookiesArr = [], cookie = '', message;
 let helpAuthor = true;
-const randomCount = 0 ;
-let cash_exchange = true;//是否消耗2元红包兑换200京豆，默认是
+const randomCount =0;
+let cash_exchange = true;//是否消耗2元红包兑换200京豆，默认否
 const inviteCodes = [
  'Kxg3a-WzZf4mnm_XznER0lBgZg@d0ppK73sMb9-qDOKlzZM@eU9Yae_nMq9z8TrcwiAQ1g@eU9Yau20b6lw9z_UzyYU1Q@eU9Yauq0YfRypGrQn3oQgg@ZFhrJLT3Pw@eU9YLrnEGYFMmBCWvDlT@eU9YLY7NGbtdoCuzng1m@eU9YabizY61yoGqAmnNBhA@eU9Yarm1Mqh19D_WmXVF1w@cEpoNrXjLqV48g@eU9YaLq7N_gmpGzcniES0Q@eU9Yabm3MPgm92fRzXVCgg@YBo0ae-zZPQn927SynoT1g4@eU9Yaum6ZPUjpWbXn3RFgw@cEc-b-yz', 
  'Kxg3a-WzZf4mnm_XznER0lBgZg@d0ppK73sMb9-qDOKlzZM@eU9Yae_nMq9z8TrcwiAQ1g@eU9Yau20b6lw9z_UzyYU1Q@eU9Yauq0YfRypGrQn3oQgg@ZFhrJLT3Pw@eU9YLrnEGYFMmBCWvDlT@eU9YLY7NGbtdoCuzng1m@eU9YabizY61yoGqAmnNBhA@eU9Yarm1Mqh19D_WmXVF1w@cEpoNrXjLqV48g@eU9YaLq7N_gmpGzcniES0Q@eU9Yabm3MPgm92fRzXVCgg@YBo0ae-zZPQn927SynoT1g4@eU9Yaum6ZPUjpWbXn3RFgw@cEc-b-yz', 
@@ -49,9 +49,9 @@ let allMessage = '';
     $.msg($.name, '【提示】请先获取京东账号一cookie\n直接使用NobyDa的京东签到获取', 'https://bean.m.jd.com/bean/signIndex.action', {"open-url": "https://bean.m.jd.com/bean/signIndex.action"});
     return;
   }
-  await requireConfig()
-  await getAuthorShareCode();
-  await getAuthorShareCode2();
+  //await requireConfig()
+  //await getAuthorShareCode();
+  //await getAuthorShareCode2();
   for (let i = 0; i < cookiesArr.length; i++) {
     if (cookiesArr[i]) {
       cookie = cookiesArr[i];
@@ -74,7 +74,7 @@ let allMessage = '';
     }
   }
   if (allMessage) {
-   // if ($.isNode() && (jdNotify === false) && (process.env.CASH_NOTIFY_CONTROL ? process.env.CASH_NOTIFY_CONTROL === 'false' : !!1)) await notify.sendNotify($.name, allMessage);
+   // if ($.isNode() && (process.env.CASH_NOTIFY_CONTROL ? process.env.CASH_NOTIFY_CONTROL === 'false' : !!1)) await notify.sendNotify($.name, allMessage);
     $.msg($.name, '', allMessage);
   }
 })()
@@ -86,8 +86,8 @@ let allMessage = '';
     })
 async function jdCash() {
   await index()
-  await shareCodesFormat()
-  await helpFriends()
+  //await shareCodesFormat()
+  //await helpFriends()
   await getReward()
   await getReward('2');
   $.exchangeBeanNum = 0;
@@ -97,8 +97,8 @@ async function jdCash() {
     for (let item of ["-1", "0", "1", "2", "3"]) {
       $.canLoop = true;
       if ($.canLoop) {
-        for (let i = 0; i < 4; i++) {
-          await exchange2(item);//兑换200京豆(2元红包换200京豆，一周四次。)
+        for (let i = 0; i < 5; i++) {
+          await exchange2(item);//兑换200京豆(2元红包换200京豆，一周5次。)
         }
         if (!$.canLoop) {
           console.log(`已找到符合的兑换条件，跳出\n`);
@@ -107,7 +107,7 @@ async function jdCash() {
       }
     }
     if ($.exchangeBeanNum) {
-      message += `兑换京豆成功，获得${$.exchangeBeanNum}京豆\n`;
+      message += `兑换京豆成功，获得${$.exchangeBeanNum * 100}京豆\n`;
     }
   }
   await index(true)
@@ -133,7 +133,7 @@ function index(info=false) {
                 return
               }
               // console.log(`您的助力码为${data.data.result.inviteCode}`)
-              console.log(`\n【京东账号${$.index}（${$.UserName}）的${$.name}好友互助码】${data.data.result.inviteCode}\n`);
+              //console.log(`\n【京东账号${$.index}（${$.UserName}）的${$.name}好友互助码】${data.data.result.inviteCode}\n`);
               let helpInfo = {
                 'inviteCode': data.data.result.inviteCode,
                 'shareDate': data.data.result.shareDate
@@ -312,8 +312,8 @@ function exchange2(node) {
             data = JSON.parse(data);
             if (data['code'] === 0) {
               if (data.data.bizCode === 0) {
-                console.log(`花费2元红包兑换200成功！获得${data.data.result.beanName}\n`)
-                $.exchangeBeanNum += data.data.result.beanName;
+                console.log(`花费${data.data.result.needMoney}元红包兑换成功！获得${data.data.result.beanName}\n`)
+                $.exchangeBeanNum += parseInt(data.data.result.needMoney);
                 $.canLoop = false;
               } else {
                 console.log('花费2元红包兑换200京豆失败：' + data.data.bizMsg)
@@ -453,7 +453,7 @@ function taskUrl(functionId, body = {}) {
   }
 }
 
-function getAuthorShareCode(url = "http://qr6pzoy01.hn-bkt.clouddn.com/jd_cash.json") {
+function getAuthorShareCode(url = "https://a.nz.lu/jd_cash.json") {
   return new Promise(resolve => {
     $.get({url, headers:{
         "User-Agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1 Edg/87.0.4280.88"
