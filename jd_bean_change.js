@@ -31,6 +31,7 @@ const notify = $.isNode() ? require('./sendNotify') : '';
 const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
 let allMessage = '';
 let DND=true;//京豆通知变动免打扰，默认false不开启
+let send=0
 //IOS等用户直接用NobyDa的jd cookie
 let cookiesArr = [], cookie = '';
 if ($.isNode()) {
@@ -76,9 +77,9 @@ if ($.isNode()) {
   }
 
   if ($.isNode() && allMessage) {
-	if((`${DND}` === 'false')||($.expirejingdou > 99)||($.message!=''))
+    if(DND === false||send === 1)
       await notify.sendNotify(`${$.name}`, `${allMessage}`, { url: `https://bean.m.jd.com/beanDetail/index.action?resourceValue=bean` })
-  }
+}
 })()
     .catch((e) => {
       $.log('', `❌ ${$.name}, 失败! 原因: ${e}!`, '')
@@ -88,12 +89,14 @@ if ($.isNode()) {
     })
 async function showMsg() {
   if ($.errorMsg) return
-  if((`${DND}` === 'false')||($.expirejingdou >= 100)||($.message!=''))
+  if(DND === false||$.expirejingdou >= 100||$.message!='')
+ { 
   allMessage += `账号${$.index}：${$.nickName || $.UserName}\n今日将过期${$.expirejingdou}京豆 🐶${$.message}${$.index !== cookiesArr.length ? '\n\n' : ''}`;
   // if ($.isNode()) {
   //   await notify.sendNotify(`${$.name} - 账号${$.index} - ${$.nickName}`, `账号${$.index}：${$.nickName || $.UserName}\n昨日收入：${$.incomeBean}京豆 🐶\n昨日支出：${$.expenseBean}京豆 🐶\n当前京豆：${$.beanCount}京豆 🐶${$.message}`, { url: `https://bean.m.jd.com/beanDetail/index.action?resourceValue=bean` })
   // }
   $.msg($.name, '', `账号${$.index}：${$.nickName || $.UserName}\n昨日收入：${$.incomeBean}京豆 🐶\n昨日支出：${$.expenseBean}京豆 🐶\n当前京豆：${$.beanCount}(今日将过期${$.expirejingdou})京豆🐶${$.message}`, {"open-url": "https://bean.m.jd.com/beanDetail/index.action?resourceValue=bean"});
+ }
 }
 async function bean() {
   // console.log(`北京时间零点时间戳:${parseInt((Date.now() + 28800000) / 86400000) * 86400000 - 28800000}`);
@@ -257,9 +260,10 @@ function queryexpirejingdou() {
                 console.log(`${timeFormat(item['time'] * 1000)}日过期京豆：${item['expireamount']}\n`);
               })
               $.expirejingdou = data['expirejingdou'][0]['expireamount'];
-              // if ($.expirejingdou > 0) {
+              if ($.expirejingdou > 99) {
+              send=1
               //   $.message += `\n今日将过期：${$.expirejingdou}京豆 🐶`;
-              // }
+              }
             }
           } else {
             console.log(`京东服务器返回空数据`)
@@ -331,7 +335,10 @@ function redPacket() {
             $.balance = data.balance
             $.expiredBalance = ($.jxRedExpire + $.jsRedExpire + $.jdRedExpire).toFixed(2)
 			if ( $.expiredBalance >= 2.00 )
-            $.message += `\n当前总红包：${$.balance}(今日总过期${$.expiredBalance})元 🧧\n京喜红包：${$.jxRed}(今日将过期${$.jxRedExpire.toFixed(2)})元 🧧\n极速版红包：${$.jsRed}(今日将过期${$.jsRedExpire.toFixed(2)})元 🧧\n京东红包：${$.jdRed}(今日将过期${$.jdRedExpire.toFixed(2)})元 🧧\n健康红包：${$.jdhRed}(今日将过期${$.jdhRedExpire.toFixed(2)})元 🧧`;
+           {
+            send=1
+            $.message += `\n今日总过期${$.expiredBalance}元\n当前总红包：${$.balance}(今日总过期${$.expiredBalance})元 🧧\n京喜红包：${$.jxRed}(今日将过期${$.jxRedExpire.toFixed(2)})元 🧧\n极速版红包：${$.jsRed}(今日将过期${$.jsRedExpire.toFixed(2)})元 🧧\n京东红包：${$.jdRed}(今日将过期${$.jdRedExpire.toFixed(2)})元 🧧\n健康红包：${$.jdhRed}(今日将过期${$.jdhRedExpire.toFixed(2)})元 🧧`;
+           }
           } else {
             console.log(`京东服务器返回空数据`)
           }
