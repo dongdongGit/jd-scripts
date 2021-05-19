@@ -92,7 +92,9 @@ if ($.isNode()) {
       $.done();
     })
 async function showMsg() {
-  //if ($.errorMsg) return
+	console.log('00000000000000000000000000000')
+  if ($.errorMsg) return
+  console.log('nnnnnnnnnnnnnnnnnnnnnnnnnnnnn')
   if(DND != true||$.expirejingdou >= 100||$.message != '')
  { 
    console.log('111111111111111111111111111111111111111111')
