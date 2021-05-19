@@ -92,7 +92,7 @@ if ($.isNode()) {
       $.done();
     })
 async function showMsg() {
-	
+	console.log('可以')
   if ($.errorMsg) return
   console.log('${DND}   $.expirejingdou  $.message')
   if(DND != true || $.expirejingdou >= 100 || $.message != '')
