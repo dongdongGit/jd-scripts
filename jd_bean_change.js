@@ -77,8 +77,12 @@ if ($.isNode()) {
   }
 
   if ($.isNode() && allMessage) {
+	     console.log('2222222222222222222222222222')
     if(DND != true||send != false)
-      await notify.sendNotify(`${$.name}`, `${allMessage}`, { url: `https://bean.m.jd.com/beanDetail/index.action?resourceValue=bean` })
+	{
+     console.log('33333333333333333333333333')		
+   await notify.sendNotify(`${$.name}`, `${allMessage}`, { url: `https://bean.m.jd.com/beanDetail/index.action?resourceValue=bean` })
+  }
 }
 })()
     .catch((e) => {
@@ -91,6 +95,7 @@ async function showMsg() {
   if ($.errorMsg) return
   if(DND != true||$.expirejingdou >= 100||$.message != '')
  { 
+   console.log('111111111111111111111111111111111111111111')
   allMessage += `账号${$.index}：${$.nickName || $.UserName}\n今日将过期${$.expirejingdou}京豆 🐶${$.message}${$.index !== cookiesArr.length ? '\n\n' : ''}`;
   // if ($.isNode()) {
   //   await notify.sendNotify(`${$.name} - 账号${$.index} - ${$.nickName}`, `账号${$.index}：${$.nickName || $.UserName}\n昨日收入：${$.incomeBean}京豆 🐶\n昨日支出：${$.expenseBean}京豆 🐶\n当前京豆：${$.beanCount}京豆 🐶${$.message}`, { url: `https://bean.m.jd.com/beanDetail/index.action?resourceValue=bean` })
