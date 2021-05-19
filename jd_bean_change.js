@@ -92,10 +92,10 @@ if ($.isNode()) {
       $.done();
     })
 async function showMsg() {
-	console.log('00000000000000000000000000000')
+	
   if ($.errorMsg) return
-  console.log('nnnnnnnnnnnnnnnnnnnnnnnnnnnnn')
-  if(DND != true||$.expirejingdou >= 100||$.message != '')
+  console.log('${DND}   $.expirejingdou  $.message')
+  if(DND != true || $.expirejingdou >= 100 || $.message != '')
  { 
    console.log('111111111111111111111111111111111111111111')
   allMessage += `账号${$.index}：${$.nickName || $.UserName}\n今日将过期${$.expirejingdou}京豆 🐶${$.message}${$.index !== cookiesArr.length ? '\n\n' : ''}`;
