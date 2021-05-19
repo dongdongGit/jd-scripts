@@ -30,7 +30,7 @@ const notify = $.isNode() ? require('./sendNotify') : '';
 //Node.js用户请在jdCookie.js处填写京东ck;
 const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
 let allMessage = '';
-let DND=true;//京豆通知变动免打扰，默认false不开启
+let DND=false;//京豆通知变动免打扰，默认false不开启
 let send=0
 //IOS等用户直接用NobyDa的jd cookie
 let cookiesArr = [], cookie = '';
