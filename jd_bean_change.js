@@ -30,8 +30,8 @@ const notify = $.isNode() ? require('./sendNotify') : '';
 //Node.js用户请在jdCookie.js处填写京东ck;
 const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
 let allMessage = '';
-let DND=false;//京豆通知变动免打扰，默认false不开启
-let send=0
+let DND=true;//京豆通知变动免打扰，默认false不开启
+let send=false
 //IOS等用户直接用NobyDa的jd cookie
 let cookiesArr = [], cookie = '';
 if ($.isNode()) {
@@ -77,7 +77,7 @@ if ($.isNode()) {
   }
 
   if ($.isNode() && allMessage) {
-    if(DND === false||send === 1)
+    if(DND === false||send === true)
       await notify.sendNotify(`${$.name}`, `${allMessage}`, { url: `https://bean.m.jd.com/beanDetail/index.action?resourceValue=bean` })
 }
 })()
@@ -261,7 +261,7 @@ function queryexpirejingdou() {
               })
               $.expirejingdou = data['expirejingdou'][0]['expireamount'];
               if ($.expirejingdou > 99) {
-              send=1
+              send=true
               //   $.message += `\n今日将过期：${$.expirejingdou}京豆 🐶`;
               }
             }
@@ -334,9 +334,9 @@ function redPacket() {
             $.jdhRed = $.jdhRed.toFixed(2)
             $.balance = data.balance
             $.expiredBalance = ($.jxRedExpire + $.jsRedExpire + $.jdRedExpire).toFixed(2)
-			if ( $.expiredBalance >= 2.00 )
+			if ( $.expiredBalance >= 2 )
            {
-            send=1
+            send=true
             $.message += `\n今日总过期${$.expiredBalance}元\n当前总红包：${$.balance}(今日总过期${$.expiredBalance})元 🧧\n京喜红包：${$.jxRed}(今日将过期${$.jxRedExpire.toFixed(2)})元 🧧\n极速版红包：${$.jsRed}(今日将过期${$.jsRedExpire.toFixed(2)})元 🧧\n京东红包：${$.jdRed}(今日将过期${$.jdRedExpire.toFixed(2)})元 🧧\n健康红包：${$.jdhRed}(今日将过期${$.jdhRedExpire.toFixed(2)})元 🧧`;
            }
           } else {
