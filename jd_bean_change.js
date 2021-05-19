@@ -77,7 +77,7 @@ if ($.isNode()) {
   }
 
   if ($.isNode() && allMessage) {
-    if(DND === false||send === true)
+    if(DND != true||send != false)
       await notify.sendNotify(`${$.name}`, `${allMessage}`, { url: `https://bean.m.jd.com/beanDetail/index.action?resourceValue=bean` })
 }
 })()
@@ -89,7 +89,7 @@ if ($.isNode()) {
     })
 async function showMsg() {
   if ($.errorMsg) return
-  if(DND === false||$.expirejingdou >= 100||$.message!='')
+  if(DND != true||$.expirejingdou >= 100||$.message != '')
  { 
   allMessage += `账号${$.index}：${$.nickName || $.UserName}\n今日将过期${$.expirejingdou}京豆 🐶${$.message}${$.index !== cookiesArr.length ? '\n\n' : ''}`;
   // if ($.isNode()) {
