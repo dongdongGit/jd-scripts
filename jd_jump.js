@@ -40,7 +40,7 @@ if ($.isNode()) {
     $.msg($.name, '【提示】请先获取京东账号一cookie\n直接使用NobyDa的京东签到获取', 'https://bean.m.jd.com/bean/signIndex.action', {"open-url": "https://bean.m.jd.com/bean/signIndex.action"});
     return;
   }
- // console.log(`注：脚本默认不做添加物品至购物车任务，守护京东APP最后一片净土。\n`);
+  console.log(`注：脚本默认不做添加物品至购物车任务，守护京东APP最后一片净土。\n`);
   for (let i = 0; i < cookiesArr.length; i++) {
     if (cookiesArr[i]) {
       cookie = cookiesArr[i];
@@ -137,6 +137,7 @@ async function jump() {
     while ($.oneJumpInfo.userInfo.diceLeft > 0 && flag) {
       //丢骰子
       await throwDice();
+      if ($.gridType && ($.gridType === 'boom' || $.gridType === 'road_block')) break;
       await $.wait(3000);
       switch ($.gridType) {
         case 'give_dice':
@@ -158,6 +159,7 @@ async function jump() {
         case 'follow_channel':
         case 'scan_good':
         case 'add_cart':
+          break;
         case 'join_member':
         case 'boom':
         case 'road_block':
@@ -249,7 +251,7 @@ async function throwDice() {
       } catch (e) {
         $.logErr(e, resp)
       } finally {
-        resolve();
+        resolve($.gridType);
       }
     })
   })
@@ -283,10 +285,10 @@ async function doTask() {
       continue;
     }
     if (oneTask.gridTask === 'add_cart' && oneTask.state === 'unfinish' && addFlag) {
-      //if (oneTask.gridTask === 'add_cart') {
-      //console.log(`不做：【${oneTask.content}】 任务`)
-      //continue
-      //}
+      if (oneTask.gridTask === 'add_cart') {
+        console.log(`不做：【${oneTask.content}】 任务`)
+        continue
+      }
       console.log(`开始执行任务：${oneTask.content}`);
       let skuList = [];
       for (let j = 0; j < oneTask.goodsInfo.length; j++) {
