@@ -1,5 +1,7 @@
 ## 别fork了，封号才高兴？封号都玩不了次！！请直接下载整个仓库然后再本地上传到你自己新建的仓库，具体见[仓库同步](https://github.com/danwangshimoluo/JdScripts/issues/2#issuecomment-762612160) [获取GitHub Personal Access Token](https://www.jianshu.com/p/bb82b3ad1d11) 滥用github资源会封我仓库以及账号
 
+### 个别活动默认不自动运行，如有需要请自行开启
+
 ## 特别声明: 
 
 **本仓库原作者为[@lxk0301](https://gitee.com/lxk0301/)，由于各种原因原作者已经删除不再提供GitAction的维护更新，之所以仍保留此仓库是为了给小白多提供一个低学习成本的选择，还请遵守声明。原作者[docker版本地址](https://gitee.com/lxk0301/jd_docker) ,如果有能力部署docker版本或者本地运行，请优先考虑使用docker部署或者本地运行。**
