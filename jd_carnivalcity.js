@@ -5,7 +5,7 @@
 脚本收集自i-chenzhe大佬
 
 活动入口: https://carnivalcity.m.jd.com
-活动时间： 5月14日-6月20日
+活动时间： 5月24日-6月20日
 
 已支持IOS双京东账号,Node.js支持N个京东账号
 脚本兼容: QuantumultX, Surge, Loon, JSBox, Node.js
