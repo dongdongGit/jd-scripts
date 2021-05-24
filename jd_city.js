@@ -78,10 +78,11 @@ let inviteCodes = [
         if (res && res['data'] && res['data']['bizCode'] === 0) {
           if (res['data']['result']['toasts'] && res['data']['result']['toasts'][0] && res['data']['result']['toasts'][0]['status'] === '3') {
             console.log(`助力次数已耗尽，跳出`)
+            break
+          }
             
           if (res['data']['result']['toasts'] && res['data']['result']['toasts'][0]) {
             console.log(`助力 【${$.newShareCodes[i]}】:${res.data.result.toasts[0].msg}`)
-              break
           }
         }
         if ((res && res['status'] && res['status'] === '3') || (res && res.data && res.data.bizCode === -11)) {
