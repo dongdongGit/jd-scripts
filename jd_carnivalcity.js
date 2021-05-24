@@ -47,19 +47,26 @@ if ($.isNode()) {
     cookiesArr.push(jdCookieNode[item])
   })
   if (process.env.JD_DEBUG && process.env.JD_DEBUG === 'false') console.log = () => {};
-  //if (JSON.stringify(process.env).indexOf('GITHUB') > -1) process.exit(0)
+ // if (JSON.stringify(process.env).indexOf('GITHUB') > -1) process.exit(0)
 } else {
   cookiesArr = [$.getdata('CookieJD'), $.getdata('CookieJD2'), ...jsonParse($.getdata('CookiesJD') || "[]").map(item => item.cookie)].filter(item => !!item);
 }
 let inviteCodes = [];
 const JD_API_HOST = 'https://carnivalcity.m.jd.com';
-const activeEndTime = '2021/06/20 00:00:00+08:00';
+const activeEndTime = '2021/06/21 00:00:00+08:00';//活动结束时间
+let nowTime = new Date().getTime() + new Date().getTimezoneOffset()*60*1000 + 8*60*60*1000;
 !(async () => {
   if (!cookiesArr[0]) {
     $.msg($.name, '【提示】请先获取京东账号一cookie\n直接使用NobyDa的京东签到获取', 'https://bean.m.jd.com/bean/signIndex.action', {"open-url": "https://bean.m.jd.com/bean/signIndex.action"});
     return;
   }
   $.temp = [];
+  if (nowTime > new Date(activeEndTime).getTime()) {
+    //活动结束后弹窗提醒
+    $.msg($.name, '活动已结束', `该活动累计获得京豆：${$.jingBeanNum}个\n请删除此脚本\n咱江湖再见`);
+    if ($.isNode()) await notify.sendNotify($.name + '活动已结束', `请删除此脚本\n咱江湖再见`);
+    return
+  }
   await updateShareCodesCDN();
   await requireConfig();
   for (let i = 0; i < cookiesArr.length; i++) {
@@ -133,6 +140,7 @@ const activeEndTime = '2021/06/20 00:00:00+08:00';
 async function JD818() {
   try {
     await indexInfo();//获取任务
+    await supportList();//助力情况
     await getHelp();//获取邀请码
     if ($.blockAccount) return
     await indexInfo(true);//获取任务
@@ -338,8 +346,8 @@ function indexInfo(flag = false) {
             $.brandList = data['data']['brandList'];
             $.browseshopList = data['data']['browseshopList'];
             if (flag) {
-              console.log(`助力情况：${data['data']['supportedNums']}/${data['data']['supportNeedNums']}`);
-              message += `邀请好友助力：${data['data']['supportedNums']}/${data['data']['supportNeedNums']}\n`
+              // console.log(`助力情况：${data['data']['supportedNums']}/${data['data']['supportNeedNums']}`);
+              // message += `邀请好友助力：${data['data']['supportedNums']}/${data['data']['supportNeedNums']}\n`
             }
           } else {
             console.log(`异常：${JSON.stringify(data)}`)
@@ -353,7 +361,58 @@ function indexInfo(flag = false) {
     })
   });
 }
-
+//获取助力信息
+function supportList() {
+  const options = taskUrl('/khc/index/supportList', { t: Date.now() })
+  return new Promise( (resolve) => {
+    $.get(options, async (err, resp, data) => {
+      try {
+        if (err) {
+          console.log(`${JSON.stringify(err)}`)
+          console.log(`${$.name} API请求失败，请检查网路重试`)
+        } else {
+          data = JSON.parse(data);
+          if (data.code === 200) {
+            console.log(`助力情况：${data['data']['supportedNums']}/${data['data']['supportNeedNums']}`);
+            message += `邀请好友助力：${data['data']['supportedNums']}/${data['data']['supportNeedNums']}\n`
+          }
+        }
+      } catch (e) {
+        $.logErr(e, resp);
+      } finally {
+        resolve();
+      }
+    })
+  });
+}
+//积分抽奖
+function lottery() {
+  const options = taskUrl('/khc/record/lottery', { t: Date.now() })
+  return new Promise( (resolve) => {
+    $.get(options, async (err, resp, data) => {
+      try {
+        if (err) {
+          console.log(`${JSON.stringify(err)}`)
+          console.log(`${$.name} API请求失败，请检查网路重试`)
+        } else {
+          data = JSON.parse(data);
+          if (data.code === 200) {
+            if (data.data.prizeId !== 8) {
+              console.log(`积分抽奖获得:${data.data.prizeName}`);
+              message += `积分抽奖获得：${data.data.prizeName}\n`
+            } else {
+              console.log(`积分抽奖结果:${data['data']['prizeName']}}`);
+            }
+          }
+        }
+      } catch (e) {
+        $.logErr(e, resp);
+      } finally {
+        resolve();
+      }
+    })
+  });
+}
 function myRank() {
   return new Promise(resolve => {
     const body = {
@@ -535,8 +594,11 @@ function getListIntegral() {
         } else {
           data = JSON.parse(data);
           if (data.code === 200) {
-            $.integralCount = data.data.integralNum;//累计活动积分
+            $.integralCount = data.data.integralNum || 0;//累计活动积分
             message += `累计获得积分：${$.integralCount}\n`;
+            for (let i = 0; i < parseInt($.integralCount / 50); i ++) {
+              await lottery();
+            }
           } else {
             console.log(`integralRecord失败：${JSON.stringify(data)}`);
           }
@@ -812,16 +874,10 @@ function TotalBean() {
 }
 
 async function showMsg() {
-  let nowTime = new Date().getTime() + new Date().getTimezoneOffset()*60*1000 + 8*60*60*1000;
-  if (nowTime > new Date(activeEndTime).getTime()) {
-    $.msg($.name, '活动已结束', `该活动累计获得京豆：${$.jingBeanNum}个\n请删除此脚本\n咱江湖再见`);
-    if ($.isNode()) await notify.sendNotify($.name + '活动已结束', `请删除此脚本\n咱江湖再见`)
-  } else {
-    if ($.beans) {
-      allMessage += `京东账号${$.index} ${$.nickName || $.UserName}\n本次运行获得：${$.beans}京豆\n${message}活动地址：${JD_API_HOST}${$.index !== cookiesArr.length ? '\n\n' : ''}`
-    }
-    $.msg($.name, `京东账号${$.index} ${$.nickName || $.UserName}`, `${message}具体详情点击弹窗跳转后即可查看`, {"open-url": JD_API_HOST});
+  if ($.beans) {
+    allMessage += `京东账号${$.index} ${$.nickName || $.UserName}\n本次运行获得：${$.beans}京豆\n${message}活动地址：${JD_API_HOST}${$.index !== cookiesArr.length ? '\n\n' : ''}`
   }
+  $.msg($.name, `京东账号${$.index} ${$.nickName || $.UserName}`, `${message}具体详情点击弹窗跳转后即可查看`, {"open-url": JD_API_HOST});
 }
 
 function jsonParse(str) {
