@@ -17,10 +17,10 @@
 cron "0 7 * * *" script-path=https://gitee.com/lxk0301/jd_scripts/raw/master/jd_speed_sign.js,tag=京东极速版
 
 ===============Surge=================
-京东极速版 = type=cron,cronexp="0 7 * * *",wake-system=1,timeout=3600,script-path=https://gitee.com/lxk0301/jd_scripts/raw/master/jd_speed_sign.js
+京东极速版 = type=cron,cronexp="0 7 * * *",wake-system=1,timeout=33600,script-path=https://gitee.com/lxk0301/jd_scripts/raw/master/jd_speed_sign.js
 
 ============小火箭=========
-京东极速版 = type=cron,script-path=https://gitee.com/lxk0301/jd_scripts/raw/master/jd_speed_sign.js, cronexpr="0 7 * * *", timeout=3600, enable=true
+京东极速版 = type=cron,script-path=https://gitee.com/lxk0301/jd_scripts/raw/master/jd_speed_sign.js, cronexpr="0 7 * * *", timeout=33600, enable=true
 */
 
 const $ = new Env('京东极速版');
@@ -108,10 +108,6 @@ function showMsg() {
   return new Promise(resolve => {
     message += `本次运行获得${$.score}金币，共计${$.total}金币\n可兑换 ${($.total/10000).toFixed(2)} 元京东红包\n兑换入口：京东极速版->我的->金币`
     $.msg($.name, '', `京东账号${$.index}${$.nickName}\n${message}`);
-	if ($.isNode()) {
-      if ($.total/10000 > 50)
-        notify.sendNotify(`${$.name}金币可兑换`, `京东账号${$.index} ${$.nickName}\n可兑换 ${($.total/10000).toFixed(2)} 元京东红包\n,请及时使用,忌积攒\n兑换入口：京东极速版->我的->>金币`);
-      }
     resolve()
   })
 }
