@@ -71,7 +71,8 @@ let inviteCodes = [
       }
       await shareCodesFormat()
       await getInfo('',true);
-      for (let i = 0; i < $.newShareCodes.length; ++i) {
+	  //for (let i = 0; i < $.newShareCodes.length; ++i) {
+      for (let i = 0; i < 7; ++i) {
         console.log(`\n开始助力 【${$.newShareCodes[i]}】`)
         let res = await getInfo($.newShareCodes[i])
         if (res && res['data'] && res['data']['bizCode'] === 0) {
