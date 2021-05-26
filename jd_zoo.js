@@ -5,10 +5,11 @@ author:star
 活动入口：京东APP-》搜索 玩一玩-》瓜分20亿
 邀请好友助力：内部账号自行互助(排名靠前账号得到的机会多)
 PK互助：内部账号自行互助(排名靠前账号得到的机会多)
+小程序任务：已完成
 地图任务：未完成，后期添加
 金融APP任务：未完成，后期添加
 活动时间：2021-05-24至2021-06-20
-脚本更新时间：2021-05-25 22:50
+脚本更新时间：2021-05-26 9:23
 脚本兼容: QuantumultX, Surge, Loon, JSBox, Node.js
 ===================quantumultx================
 [task_local]
@@ -29,12 +30,16 @@ const $ = new Env('618动物联萌');
 const notify = $.isNode() ? require('./sendNotify') : '';
 const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
 const pKHelpFlag = true;//是否PK助力  true 助力，false 不助力
+const pKHelpAuthorFlag = true;//是否助力作者PK  true 助力，false 不助力
 //IOS等用户直接用NobyDa的jd cookie
 let cookiesArr = [];
 $.cookie = '';
 $.inviteList = [];
 $.pkInviteList = [];
 $.secretpInfo = {};
+$.innerPkInviteList = [
+  'sSKNX-MpqKPS7Le4m5rbBpODDLhoZ9ruJViTqJpv4c2Lm2-TfJwzRBS82zBEzkE'
+];
 $.allshopIdList = [1000004064,1000332823,1000081945,1000009821,1000000182,1000096602,1000100813,1000003263,58463,1000014803,1000001521,59809, 1000310642,1000004065,39348,24299,1000115184,1000002662, 1000014988,34239,874707,10370169,1000000706,712065, 58366,1000001782,1000000488,1000001927,1000094142,182588];
 if ($.isNode()) {
   Object.keys(jdCookieNode).forEach((item) => {
@@ -54,11 +59,12 @@ if ($.isNode()) {
   }
   console.log('活动入口：京东APP-》搜索 玩一玩-》瓜分20亿\n' +
       '邀请好友助力：内部账号自行互助(排名靠前账号得到的机会多)\n' +
-      'PK互助：内部账号自行互助(排名靠前账号得到的机会多)\n' +
+      'PK互助：内部账号自行互助(排名靠前账号得到的机会多),多余的助力次数会默认助力内置助力码\n' +
+      '小程序任务：已完成\n' +
       '地图任务：未完成，后期添加\n' +
       '金融APP任务：未完成，后期添加\n' +
       '活动时间：2021-05-24至2021-06-20\n' +
-      '脚本更新时间：2021-05-25 22:50');
+      '脚本更新时间：2021-05-26 9:55');
   for (let i = 0; i < cookiesArr.length; i++) {
     if (cookiesArr[i]) {
       $.cookie = cookiesArr[i];
@@ -69,9 +75,9 @@ if ($.isNode()) {
       await zoo()
     }
   }
-
-  if ($.inviteList.length === 0 || cookiesArr.length < 2) {
-    return;
+  if(pKHelpAuthorFlag){
+    $.innerPkInviteList = $.innerPkInviteList.sort(()=>Math.random() - 0.5);
+    $.pkInviteList.push(...$.innerPkInviteList);
   }
   for (let i = 0; i < cookiesArr.length; i++) {
     $.cookie = cookiesArr[i];
@@ -84,13 +90,15 @@ if ($.isNode()) {
     $.index = i + 1;
     //console.log($.inviteList);
     //pk助力
-    console.log(`\n******开始pk助力*********\n`);
-    for (let i = 0; i < $.pkInviteList.length && pKHelpFlag; i++) {
-      console.log(`${$.UserName} 去助力PK码 ${$.pkInviteList[i]}`);
-      $.pkInviteId = $.pkInviteList[i];
-      await takePostRequest('pkHelp');
+    if (new Date().getUTCHours() + 8 >= 9) {
+      console.log(`\n******开始内部京东账号【怪兽大作战pk】助力*********\n`);
+      for (let i = 0; i < $.pkInviteList.length && pKHelpFlag; i++) {
+        console.log(`${$.UserName} 去助力PK码 ${$.pkInviteList[i]}`);
+        $.pkInviteId = $.pkInviteList[i];
+        await takePostRequest('pkHelp');
+      }
     }
-    console.log(`\n******开始邀请好友助力*********\n`);
+    console.log(`\n******开始内部京东账号【邀请好友助力】*********\n`);
     for (let j = 0; j < $.inviteList.length && $.canHelp; j++) {
       $.oneInviteInfo = $.inviteList[j];
       if ($.oneInviteInfo.ues === $.UserName || $.oneInviteInfo.max) {
@@ -463,18 +471,27 @@ async function dealReturn(type, data) {
     case 'help':
     case 'pkHelp':
       //console.log(data);
-      if (data.data.bizCode === 0) console.log(`助力成功`);
-      if (data.data.bizCode === -201) {
-        console.log(`助力已满`);
-        $.oneInviteInfo.max = true;
+      switch (data.data.bizCode) {
+        case 0:
+          console.log(`助力成功`);
+          break;
+        case -201:
+          console.log(`助力已满`);
+          $.oneInviteInfo.max = true;
+          break;
+        case -202:
+          console.log(`已助力`);
+          break;
+        case -8:
+          console.log(`已经助力过该队伍`);
+          break;
+        case 108:
+          console.log(`助力次数已用光`);
+          $.canHelp = false;
+          break;
+        default:
+          console.log(`怪兽大作战助力失败：${JSON.stringify(data)}`);
       }
-      if (data.data.bizCode === -202) console.log(`已助力`);
-      if (data.data.bizCode === -8) console.log(`已经助力过该队伍`);
-      if (data.data.bizCode === 108) {
-        console.log(`助力次数已用光`);
-        $.canHelp = false;
-      }
-      //console.log(JSON.stringify(data));
       break;
     case 'zoo_pk_getHomeData':
       if (data.code === 0) {
