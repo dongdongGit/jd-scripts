@@ -28,7 +28,7 @@ let jdNotify = true;//是否关闭通知，false打开通知推送，true关闭�
 //IOS等用户直接用NobyDa的jd cookie
 let cookiesArr = [], cookie = '', message;
 let helpAuthor = true;
-const randomCount =0;
+const randomCount = 0;
 let cash_exchange = true;//是否消耗2元红包兑换200京豆，默认否
 const inviteCodes = [
  'Kxg3a-WzZf4mnm_XznER0lBgZg@d0ppK73sMb9-qDOKlzZM@eU9Yae_nMq9z8TrcwiAQ1g@eU9Yau20b6lw9z_UzyYU1Q@eU9Yauq0YfRypGrQn3oQgg@ZFhrJLT3Pw@eU9YLrnEGYFMmBCWvDlT@eU9YLY7NGbtdoCuzng1m@eU9YabizY61yoGqAmnNBhA@eU9Yarm1Mqh19D_WmXVF1w@cEpoNrXjLqV48g@eU9YaLq7N_gmpGzcniES0Q@eU9Yabm3MPgm92fRzXVCgg@YBo0ae-zZPQn927SynoT1g4@eU9Yaum6ZPUjpWbXn3RFgw@cEc-b-yz', 
@@ -49,9 +49,9 @@ let allMessage = '';
     $.msg($.name, '【提示】请先获取京东账号一cookie\n直接使用NobyDa的京东签到获取', 'https://bean.m.jd.com/bean/signIndex.action', {"open-url": "https://bean.m.jd.com/bean/signIndex.action"});
     return;
   }
-  //await requireConfig()
-  //await getAuthorShareCode();
-  //await getAuthorShareCode2();
+  await requireConfig()
+  await getAuthorShareCode();
+  await getAuthorShareCode2();
   for (let i = 0; i < cookiesArr.length; i++) {
     if (cookiesArr[i]) {
       cookie = cookiesArr[i];
@@ -74,7 +74,7 @@ let allMessage = '';
     }
   }
   if (allMessage) {
-   // if ($.isNode() && (process.env.CASH_NOTIFY_CONTROL ? process.env.CASH_NOTIFY_CONTROL === 'false' : !!1)) await notify.sendNotify($.name, allMessage);
+    //if ($.isNode() && (process.env.CASH_NOTIFY_CONTROL ? process.env.CASH_NOTIFY_CONTROL === 'false' : !!1)) await notify.sendNotify($.name, allMessage);
     $.msg($.name, '', allMessage);
   }
 })()
@@ -86,8 +86,8 @@ let allMessage = '';
     })
 async function jdCash() {
   await index()
-  //await shareCodesFormat()
-  //await helpFriends()
+  await shareCodesFormat()
+  await helpFriends()
   await getReward()
   await getReward('2');
   $.exchangeBeanNum = 0;
