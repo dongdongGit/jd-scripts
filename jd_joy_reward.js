@@ -1,10 +1,5 @@
 /*
- * @Author: lxk0301 https://github.com/lxk0301
- * @Date: 2020-08-16 18:54:16
- * @Last Modified by: lxk0301
- * @Last Modified time: 2021-03-09 21:22:37
- */
-/*
+Last Modified time: 2021-03-09 21:22:37
 宠汪汪积分兑换奖品脚本, 目前脚本只兑换京豆，兑换京豆成功，才会发出通知提示，其他情况不通知。
 活动入口：京东APP我的-更多工具-宠汪汪
 兑换规则：一个账号一天只能兑换一次京豆。
@@ -37,7 +32,7 @@ cron "0 0-16/8 * * *" script-path=https://gitee.com/lxk0301/jd_scripts/raw/maste
 
 const $ = new Env('宠汪汪积分兑换奖品');
 let allMessage = '';
-let joyRewardName = 20 ;//是否兑换京豆，默认0不兑换京豆，其中20为兑换20京豆,500为兑换500京豆，0为不兑换京豆.数量有限先到先得
+let joyRewardName = 0;//是否兑换京豆，默认0不兑换京豆，其中20为兑换20京豆,500为兑换500京豆，0为不兑换京豆.数量有限先到先得
 //Node.js用户请在jdCookie.js处填写京东ck;
 const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
 const notify = $.isNode() ? require('./sendNotify') : '';
