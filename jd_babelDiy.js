@@ -21,6 +21,7 @@ cron "0 20,21,22,23 31 5 *" script-path=https://g/jd_scripts/raw/ tag=总裁送�
 ============小火箭=========
 总裁送好礼 = type=cron,script-path=https://cdn.jsdelivr.net/gh/Wenmoux/scripts/js/babelDiy.js, cronexpr="20 8 * * *", timeout=3600, enable=true
 
+//默认不自动翻牌，如需自动翻牌子请取消脚本中137和138行的注释
  */
 const $ = new Env('总裁送好礼');
 //Node.js用户请在jdCookie.js处填写京东ck;
@@ -62,6 +63,10 @@ const JD_API_HOST = `https://api.m.jd.com/client.action`;
             message = ''
 
             //   await shareCodesFormat();
+			 console.log(`默认不自动翻牌，如需自动翻牌子请取消脚本中137和138行的注释\n`);
+			 console.log(`默认不自动翻牌，如需自动翻牌子请取消脚本中137和138行的注释\n`);
+			 console.log(`默认不自动翻牌，如需自动翻牌子请取消脚本中137和138行的注释\n`);
+									 
             console.log(`\n******开始【京东账号${$.index}】${$.nickName || $.UserName}*********\n`);
             if (!$.isLogin) {
                 $.msg($.name, `【提示】cookie已失效`, `京东账号${$.index} ${$.nickName || $.UserName}\n请重新登录获取\nhttps://bean.m.jd.com/bean/signIndex.action`, {
