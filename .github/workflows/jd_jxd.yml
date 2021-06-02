@@ -53,3 +53,11 @@ jobs:
           DD_BOT_SECRET: ${{ secrets.DD_BOT_SECRET }}
           IGOT_PUSH_KEY: ${{ secrets.IGOT_PUSH_KEY }}
           QYWX_AM: ${{ secrets.QYWX_AM }}
+          PUSH_PLUS_TOKEN: ${{ secrets.PUSH_PLUS_TOKEN }}
+          PUSH_PLUS_USER: ${{ secrets.PUSH_PLUS_USER }}
+          QYWX_KEY: ${{ secrets.QYWX_KEY }}
+          TG_API_HOST: ${{ secrets.TG_API_HOST }}
+          TG_PROXY_AUTH: ${{ secrets.TG_PROXY_AUTH }}
+          TG_PROXY_HOST: ${{ secrets.TG_PROXY_HOST }}
+          TG_PROXY_PORT: ${{ secrets.TG_PROXY_PORT }}
+
