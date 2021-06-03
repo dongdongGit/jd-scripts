@@ -1,9 +1,3 @@
-     var d = new Date();
-  if ( d.getHours() >= 20 ){
-    if ($.isNode()) {
-          await notify.sendNotify('今日星店长已瓜分，请手动领取红包\n路径：APP搜索  星店长 开启红包\n');
-        }
- }
 /*
 * author:star
 * */
@@ -34,9 +28,8 @@ const notify = $.isNode() ? require('./sendNotify') : '';
 const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
 $.inviteCodeList = [];
 $.authorCodeList = [
-  'rQI0TkBIzVwHI4fxBQnt6v0doiabNQfNdJglrUVhOP0',
-  'r3yIDGE86HSsdtyFlrPHJHu_0mNpX_AnBREYO-c3BFY',
-  'Mve7TKmP8UKnC9IULuBrQHzgY54j_0U5BLm5Ox6aigY',
+  'rQI0TkBIzVwHI4fxBQnt6v0doiabNQfNdJglrUVhOP0','Rcl-dpjMZKyZUzie7lg4ow','lqU3wfq2eBw8N6pRbRBGHg','xsK-EVpDVVszF0j95pGD6g',
+  'r3yIDGE86HSsdtyFlrPHJHu_0mNpX_AnBREYO-c3BFY', 'Mve7TKmP8UKnC9IULuBrQHzgY54j_0U5BLm5Ox6aigY',
 ];
 let cookiesArr = [];
 let uniqueIdList = [
@@ -92,13 +85,12 @@ if ($.isNode()) {
       await $.wait(2000);
     }
   }
-  var d = new Date();
+   var d = new Date();
   if ( d.getHours() >= 20 ){
     if ($.isNode()) {
           await notify.sendNotify('今日星店长已瓜分，请手动领取红包\n路径：APP搜索  星店长 开启红包\n');
         }
  }
-
 })()
     .catch((e) => {
       $.log('', `❌ ${$.name}, 失败! 原因: ${e}!`, '')
