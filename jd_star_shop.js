@@ -86,7 +86,7 @@ if ($.isNode()) {
     }
   }
    var d = new Date();
-  if ( d.getHours() >= 20 ){
+  if ( d.getHours() >= 12 ){
     if ($.isNode()) {
           await notify.sendNotify('今日星店长已瓜分，请手动领取红包\n路径：APP搜索  星店长 开启红包\n');
         }
