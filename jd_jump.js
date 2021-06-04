@@ -1,21 +1,22 @@
 /*
 author:star
 跳跳乐瓜分京豆脚本
+更新时间：2021-05-21
 活动入口：来客有礼(微信小程序)=>跳跳乐或京东APP=》首页=》母婴馆=》底部中间
 注：默认不做添加物品至购物车任务，守护京东APP最后一片净土。
 脚本兼容: QuantumultX, Surge, Loon, JSBox, Node.js
 ================QuantumultX==================
 [task_local]
 #跳跳乐瓜分京豆
-1 0-23/2 * * * https://gitee.com/lxk0301/jd_scripts/raw/master/jd_jump.js, tag=跳跳乐瓜分京豆, img-url=https://raw.githubusercontent.com/Orz-3/mini/master/Color/jd.png, enabled=true
+1 0,11,21 * * * https://gitee.com/lxk0301/jd_scripts/raw/master/jd_jump.js, tag=跳跳乐瓜分京豆, img-url=https://raw.githubusercontent.com/Orz-3/mini/master/Color/jd.png, enabled=true
 ===================Loon==============
 [Script]
-cron "1 0-23/2 * * *" script-path=https://gitee.com/lxk0301/jd_scripts/raw/master/jd_jump.js, tag=跳跳乐瓜分京豆
+cron "1 0,11,21 * * *" script-path=https://gitee.com/lxk0301/jd_scripts/raw/master/jd_jump.js, tag=跳跳乐瓜分京豆
 ===============Surge===============
 [Script]
-跳跳乐瓜分京豆 = type=cron,cronexp="1 0-23/2 * * *",wake-system=1,timeout=3600,script-path=https://gitee.com/lxk0301/jd_scripts/raw/master/jd_jump.js
+跳跳乐瓜分京豆 = type=cron,cronexp="1 0,11,21 * * *",wake-system=1,timeout=3600,script-path=https://gitee.com/lxk0301/jd_scripts/raw/master/jd_jump.js
 ====================================小火箭=============================
-跳跳乐瓜分京豆 = type=cron,script-path=https://gitee.com/lxk0301/jd_scripts/raw/master/jd_jump.js, cronexpr="1 0-23/2 * * *", timeout=3600, enable=true
+跳跳乐瓜分京豆 = type=cron,script-path=https://gitee.com/lxk0301/jd_scripts/raw/master/jd_jump.js, cronexpr="1 0,11,21 * * *", timeout=3600, enable=true
 */
 const $ = new Env('跳跳乐瓜分京豆');
 const notify = $.isNode() ? require('./sendNotify') : '';
@@ -74,7 +75,7 @@ async function jump() {
   $.jumpList = [];
   await getGameList();
   if ($.jumpList.length === 0) {
-    console.log(`获取活动列表失败`);
+    console.log(`获取活动列表失败，请等待下一期活动\n`);
     return;
   }
   await $.wait(1000);
@@ -110,6 +111,7 @@ async function jump() {
     } else if ($.oneJumpInfo.userInfo.userState === 'complete') {
       console.log(`${$.jumpName},已到达终点，等待瓜分，瓜分时间：${new Date($.oneJumpInfo.jumpActivityDetail.endTime)} 之后`);
       console.log(`\n`);
+      break;
     } else if ($.oneJumpInfo.userInfo.userState === 'playing') {
       console.log(`开始执行活动：${$.jumpName}，活动时间：${new Date($.oneJumpInfo.jumpActivityDetail.startTime).toLocaleString()}至${new Date($.oneJumpInfo.jumpActivityDetail.endTime).toLocaleString()}`);
     } else {//complete
@@ -134,10 +136,11 @@ async function jump() {
     if ($.oneJumpInfo.userInfo.diceLeft === 0) {
       console.log(`骰子数量为0`);
     }
-    while ($.oneJumpInfo.userInfo.diceLeft > 0 && flag) {
+    let runTime = 0;
+    while ($.oneJumpInfo.userInfo.diceLeft > 0 && flag && runTime < 10) {
       //丢骰子
       await throwDice();
-      if ($.gridType && ($.gridType === 'boom' || $.gridType === 'road_block')) break;
+      if ($.gridType && ($.gridType === 'boom' || $.gridType === 'road_block' || $.gridType === 'join_member' || $.gridType === 'add_cart')) break;
       await $.wait(3000);
       switch ($.gridType) {
         case 'give_dice':
@@ -159,7 +162,6 @@ async function jump() {
         case 'follow_channel':
         case 'scan_good':
         case 'add_cart':
-          break;
         case 'join_member':
         case 'boom':
         case 'road_block':
@@ -176,6 +178,7 @@ async function jump() {
       }
       await $.wait(2000);
       await getOneJumpInfo();
+      runTime++;
     }
     newReward = await getReward();
     console.log(`执行结束,本次执行获得${newReward - oldReward}京豆,共获得${newReward}京豆`);
