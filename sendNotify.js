@@ -1,11 +1,17 @@
 /*
- * @Author: lxk0301 https://gitee.com/lxk0301
- * @Date: 2020-08-19 16:12:40 
- * @Last Modified by: lxk0301
- * @Last Modified time: 2021-3-29 11:52:54
+ Last Modified time: 2021-4-3 16:00:54
+ */
+/**
+ * sendNotify 推送通知功能
+ * @param text 通知头
+ * @param desp 通知体
+ * @param params 某些推送通知方式点击弹窗可跳转, 例：{ url: 'https://abc.com' }
+ * @param author 作者仓库等信息  例：`本脚本免费使用 By：xxx`
+ * @returns {Promise<unknown>}
  */
 const querystring = require("querystring");
 const $ = new Env();
+const timeout = 15000;//超时时间(单位毫秒)
 // =======================================微信server酱通知设置区域===========================================
 //此处填你申请的SCKEY.
 //(环境变量名 PUSH_KEY)
@@ -135,14 +141,14 @@ if (process.env.PUSH_PLUS_USER) {
 //==========================云端环境变量的判断与接收=========================
 
 /**
- * 推送通知功能
+ * sendNotify 推送通知功能
  * @param text 通知头
  * @param desp 通知体
  * @param params 某些推送通知方式点击弹窗可跳转, 例：{ url: 'https://abc.com' }
- * @param author 作者仓库等信息  例：`本脚本免费使用 By：https://gitee.com/lxk0301/jd_docker`
+ * @param author 作者仓库等信息  例：`本脚本免费使用 By：xxxx`
  * @returns {Promise<unknown>}
  */
-async function sendNotify(text, desp, params = {}, author = '\n\n本脚本免费使用 By：https://gitee.com/lxk0301/jd_docker') {
+async function sendNotify(text, desp, params = {}, author = '\n\n仅供用于学习 https://t.me/jdfruit') {
   //提供6种通知
   desp += author;//增加作者信息，防止被贩卖等
   await Promise.all([
@@ -162,7 +168,7 @@ async function sendNotify(text, desp, params = {}, author = '\n\n本脚本免费
   ])
 }
 
-function serverNotify(text, desp, timeout = 2100) {
+function serverNotify(text, desp, time = 2100) {
   return  new Promise(resolve => {
     if (SCKEY) {
       //微信server酱推送通知一个\n不会换行，需要两个\n才能换行，故做此替换
@@ -173,7 +179,7 @@ function serverNotify(text, desp, timeout = 2100) {
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded'
         },
-        timeout: 10000
+        timeout
       }
       setTimeout(() => {
         $.post(options, (err, resp, data) => {
@@ -199,7 +205,7 @@ function serverNotify(text, desp, timeout = 2100) {
             resolve(data);
           }
         })
-      }, timeout)
+      }, time)
     } else {
       console.log('\n\n您未提供server酱的SCKEY，取消微信推送消息通知🚫\n');
       resolve()
@@ -289,7 +295,7 @@ function BarkNotify(text, desp, params={}) {
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded'
         },
-        timeout: 10000
+        timeout
       }
       $.get(options, (err, resp, data) => {
         try {
@@ -326,7 +332,7 @@ function tgBotNotify(text, desp) {
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded'
         },
-        timeout: 10000
+        timeout
       }
       if (TG_PROXY_HOST && TG_PROXY_PORT) {
         const tunnel = require("tunnel");
@@ -381,7 +387,7 @@ function ddBotNotify(text, desp) {
       headers: {
         'Content-Type': 'application/json'
       },
-      timeout: 10000
+      timeout
     }
     if (DD_BOT_TOKEN && DD_BOT_SECRET) {
       const crypto = require('crypto');
@@ -449,7 +455,7 @@ function qywxBotNotify(text, desp) {
       headers: {
         'Content-Type': 'application/json',
       },
-      timeout: 10000
+      timeout
     };
     if (QYWX_KEY) {
       $.post(options, (err, resp, data) => {
@@ -510,7 +516,7 @@ function qywxamNotify(text, desp) {
         headers: {
           'Content-Type': 'application/json',
         },
-        timeout: 10000
+        timeout
       };
       $.post(options_accesstoken, (err, resp, data) => {
         html = desp.replace(/\n/g, "<br/>")
@@ -622,7 +628,7 @@ function iGotNotify(text, desp, params={}){
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded'
         },
-        timeout: 10000
+        timeout
       }
       $.post(options, (err, resp, data) => {
         try {
@@ -666,7 +672,7 @@ function pushPlusNotify(text, desp) {
         headers: {
           'Content-Type': ' application/json'
         },
-        timeout: 10000
+        timeout
       }
       $.post(options, (err, resp, data) => {
         try {
