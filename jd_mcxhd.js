@@ -23,7 +23,7 @@ const notify = $.isNode() ? require('./sendNotify') : '';
 //Node.js用户请在jdCookie.js处填写京东ck;
 const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
 //IOS等用户直接用NobyDa的jd cookie
-let cookiesArr = [], cookie = '', message;
+let cookiesArr = [], cookie = '', message='';
 
 if ($.isNode()) {
   Object.keys(jdCookieNode).forEach((item) => {
@@ -50,7 +50,6 @@ const JD_API_HOST = 'https://api.m.jd.com/';
       $.isLogin = true;
       $.beans = 0
       $.nickName = '';
-      message = '';
       await TotalBean();
       console.log(`\n******开始【京东账号${$.index}】${$.nickName || $.UserName}*********\n`);
       if (!$.isLogin) {
@@ -64,9 +63,11 @@ const JD_API_HOST = 'https://api.m.jd.com/';
         continue
       }
       await superBox()
-      await showMsg();
+      message += `京东账号${$.index}】${$.nickName}\n本次运行获得${$.earn}京豆\n`
+      $.msg($.name, '', `京东账号${$.index}】${$.nickName}\n本次运行获得${$.earn}京豆`);
     }
   }
+  await showMsg()
   console.log(`\n开始自己京东内部相互助力\n`);
   for (let i = 0; i < cookiesArr.length; i++) {
     if (cookiesArr[i]) {
@@ -86,9 +87,10 @@ const JD_API_HOST = 'https://api.m.jd.com/';
   })
 
 function showMsg() {
-  message += `本次运行获得${$.earn}京豆`
   return new Promise(resolve => {
-    $.msg($.name, '', `【京东账号${$.index}】${$.nickName}\n${message}`);
+    if ($.isNode()) {
+         notify.sendNotify(`${$.name}`, `${message}`);
+        }
     resolve()
   })
 }
