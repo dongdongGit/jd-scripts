@@ -220,13 +220,13 @@ jd_scripts
 > ![image](https://user-images.githubusercontent.com/6993269/99031839-09e04b00-25b3-11eb-8e47-0b6515a282bb.png)
 - 目录文件配置好之后在 `jd_scripts`目录执行。  
  `docker-compose up -d` 启动（修改docker-compose.yml后需要使用此命令使更改生效）；  
- `docker-compose logs` 打印日志；  
- `docker-compose logs -f` 打印日志，-f表示跟随日志；  
- `docker logs -f jd_scripts` 和上面两条相比可以显示汉字；  
- `docker-compose pull` 更新镜像；多容器用户推荐使用`docker pull lxk0301/jd_scripts`；  
- `docker-compose stop` 停止容器；  
- `docker-compose restart` 重启容器；  
- `docker-compose down` 停止并删除容器；  
+  `docker-compose logs` 打印日志；  
+  `docker-compose logs -f` 打印日志，-f表示跟随日志；  
+  `docker logs -f jd_scripts` 和上面两条相比可以显示汉字；  
+  `docker-compose pull` 更新镜像；多容器用户推荐使用`docker pull lxk0301/jd_scripts`；  
+  `docker-compose stop` 停止容器；  
+  `docker-compose restart` 重启容器；  
+  `docker-compose down` 停止并删除容器；  
 
 - 你可能会用到的命令
   
@@ -249,11 +249,6 @@ jd_scripts
 - 如果是群晖用户，在docker注册表搜`jd_scripts`，双击下载映像。
 不需要`docker-compose.yml`，只需建个logs/目录，调整`jd_scripts.syno.json`里面对应的配置值，然后导入json配置新建容器。
 若要自定义`my_crontab_list.sh`，再建个`my_crontab_list.sh`文件，配置参考`jd_scripts.my_crontab_list.syno.json`。
-![image](../icon/qh1.png)
-
-![image](../icon/qh2.png)
-
-![image](../icon/qh3.png)
 
 ### DOCKER专属环境变量
 
