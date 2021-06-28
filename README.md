@@ -25,7 +25,7 @@
 
 #### 说明
 
-1. 其中 [jd_bean_sign.js](./jd_bean_sign.js) 可N个京东账号，Node.js专用，核心脚本是JD_DailyBonus.js， IOS软件用户请使用NobyDa的 [JD_DailyBonus.js](https://raw.githubusercontent.com/NobyDa/Script/master/JD-DailyBonus/JD_DailyBonus.js)
+1. 其中 [jd_bean_sign.js](./jd_bean_sign.js) 可N个京东账号，Node.js专用，核心脚本是JD_DailyBonus.js， IOS软件用户请使用NobyDa的 JD_DailyBonus.js
 
 2. 以字母排序。
 
@@ -62,7 +62,7 @@
 |  25  | [jd_health.js](./jd_health.js)                   | 东东健康社区             | 京东APP首页搜索 "玩一玩"即可                                 |
 |  26  | [jd_jdfactory.js](./jd_jdfactory.js)             | 东东工厂                 | 京东APP首页-数码电器-东东工厂                                |
 |  27  | [jd_jdzz.js](./jd_jdzz.js)                       | 京东赚赚                 | 京东赚赚小程序                                               |
-|  28  | [jd_jin_tie.js](./jd_jin_tie.js)                 | 领金贴                   | 京东APP首页-领金贴，[活动地址](https://active.jd.com/forever/cashback/index/) |
+|  28  | [jd_jin_tie.js](./jd_jin_tie.js)                 | 领金贴                   | 京东APP首页-领金贴                                           |
 |  29  | [jd_joy_feedPets.js](./jd_joy_feedPets.js)       | 宠汪汪🐕喂食              | 京东APP我的-更多工具-宠汪汪                                  |
 |  30  | [jd_joy_help.js](./jd_joy_help.js)               | 宠汪汪强制为别人助力     | 京东APP我的-更多工具-宠汪汪                                  |
 |  31  | [jd_joy.js](./jd_joy.js)                         | 宠汪汪                   | 京东APP我的-更多工具-宠汪汪                                  |
@@ -72,21 +72,21 @@
 |  35  | [jd_joy_steal.js](./jd_joy_steal.js)             | 宠汪汪偷好友积分与狗粮   | 京东APP我的-更多工具-宠汪汪                                  |
 |  36  | [jd_jump.js](./jd_jump.js)                       | 跳跳乐瓜分京豆           | 来客有礼(微信小程序)=>跳跳乐或京东APP=》首页=》母婴馆=》底部中间 |
 |  37  | [jd_jxnc.js](./jd_jxnc.js)                       | 京喜农场                 | 京喜APP我的-京喜农场                                         |
-|  38  | [jd_kd.js](./jd_kd.js)                           | 京东快递签到             | [活动地址](https://jingcai-h5.jd.com/#/)                     |
+|  38  | [jd_kd.js](./jd_kd.js)                           | 京东快递签到             |                                                              |
 |  39  | [jd_live.js](./jd_live.js)                       | 京东直播                 | 京东APP首页-京东直播                                         |
 |  40  | [jd_live_redrain.js](./jd_live_redrain.js)       | 超级直播间红包雨         |                                                              |
 |  41  | [jd_lotteryMachine.js](./jd_lotteryMachine.js)   | 京东抽奖机               | 京东APP中各种抽奖活动的汇总                                  |
-|  42  | [jd_market_lottery.js](./jd_market_lottery.js)   | 幸运大转盘               | [活动地址](https://pro.m.jd.com/mall/active/3ryu78eKuLyY5YipWWVSeRQEpLQP/index.html) |
-|  43  | [jd_moneyTree.js](./jd_moneyTree.js)             | 京东摇钱树               | 京东APP我的-更多工具-摇钱树，[活动链接](https://uua.jr.jd.com/uc-fe-wxgrowing/moneytree/index/?channel=yxhd) |
+|  42  | [jd_market_lottery.js](./jd_market_lottery.js)   | 幸运大转盘               |                                                              |
+|  43  | [jd_moneyTree.js](./jd_moneyTree.js)             | 京东摇钱树               | 京东APP我的-更多工具-摇钱树，                                |
 |  44  | [jd_ms.js](./jd_ms.js)                           | 京东秒秒币               | 京东app-京东秒杀-签到领红包                                  |
-|  45  | [jd_necklace.js](./jd_necklace.js)               | 点点券                   | 京东APP-领券中心/券后9.9-领点点券 [活动地址](https://h5.m.jd.com/babelDiy/Zeus/41Lkp7DumXYCFmPYtU3LTcnTTXTX/index.html) |
+|  45  | [jd_necklace.js](./jd_necklace.js)               | 点点券                   | 京东APP-领券中心/券后9.9-领点点券                            |
 |  46  | [jd_nzmh.js](./jd_nzmh.js)                       | 女装盲盒抽京豆           | 京东app-女装馆-赢京豆                                        |
 |  47  | [jd_pet.js](./jd_pet.js)                         | 东东萌宠                 | 京东APP我的-更多工具-东东萌宠                                |
 |  48  | [jd_pigPet.js](./jd_pigPet.js)                   | 金融养猪                 | 京东金融养猪猪                                               |
 |  49  | [jd_plantBean.js](./jd_plantBean.js)             | 京东种豆得豆             | 京东APP我的-更多工具-种豆得豆                                |
 |  50  | [jd_price.js](./jd_price.js)                     | 京东保价                 | 京东保价                                                     |
 |  51  | [jd_rankingList.js](./jd_rankingList.js)         | 京东排行榜               | 京东APP首页-更多频道-排行榜-悬浮按钮                         |
-|  52  | [jd_redPacket.js](./jd_redPacket.js)             | 京东全民开红包           | 京东APP首页-领券-锦鲤红包。[活动地址](https://happy.m.jd.com/babelDiy/zjyw/3ugedFa7yA6NhxLN5gw2L3PF9sQC/index.html) |
+|  52  | [jd_redPacket.js](./jd_redPacket.js)             | 京东全民开红包           | 京东APP首页-领券-锦鲤红包。                                  |
 |  53  | [jd_sgmh.js](./jd_sgmh.js)                       | 闪购盲盒                 | 京东APP首页-闪购-闪购盲盒                                    |
 |  54  | [jd_shop.js](./jd_shop.js)                       | 进店领豆                 | 京东APP首页-领京豆-进店领豆                                  |
 |  55  | [jd_small_home.js](./jd_small_home.js)           | 东东小窝                 | 京东APP我的-游戏与更多-东东小窝                              |
@@ -101,13 +101,7 @@
 <!-- 此表格由 update_list.sh 脚本自动生成，请不要人工修改。 -->
 <!-- 这是隐藏信息，用来给 update_list.sh 脚本提供标记信息的，用于自动生成上面的脚本清单，请勿删除这里的标记信息。 -->
 
-#### 搬运脚本
-
-1.  【 [@yangtingxiao](https://github.com/yangtingxiao) 】 京东抽奖机([jd_lotteryMachine.js](./jd_lotteryMachine.js))
-
-2.  【 [@yangtingxiao](https://github.com/yangtingxiao) 】 京东排行榜([jd_rankingList.js](./jd_rankingList.js))
-
-**脚本兼容: [QuantumultX](https://apps.apple.com/us/app/quantumult-x/id1443988620), [Surge](https://apps.apple.com/us/app/surge-4/id1442620678), [Loon](https://apps.apple.com/us/app/loon/id1373567447), 小火箭, JSBox, Node.js**
+**脚本兼容: QuantumultX, Loon, 小火箭, JSBox, Node.js**
 
 ## 邀请码互助
 
@@ -131,7 +125,7 @@
     
   + 京东APP扫码获取cookie(此种方式获取的cookie有效期为90天)(执行`node getJDCookie.js`即可)
 
-### 2. iOS代理软件（QuantumultX, Surge, Loon, 小火箭）
+### 2. iOS代理软件（QuantumultX, Surge, Loon, 小火箭）（以下方法不保证可用）
 
 ##### BoxJs订阅地址：[lxk0301.boxjs.json](./lxk0301.boxjs.json)
 
@@ -145,18 +139,3 @@
 
 - QuantumultX Task脚本订阅链接: [lxk0301_gallery.json](./QuantumultX/lxk0301_gallery.json)，cookie(重写)订阅链接: [lxk0301_cookies.conf](./QuantumultX/lxk0301_cookies.conf)
 
-
-## 特别感谢(排名不分先后)：
-
-
-* [@NobyDa](https://github.com/NobyDa)
-
-* [@chavyleung](https://github.com/chavyleung)
-
-* [@liuxiaoyucc](https://github.com/liuxiaoyucc)
-
-* [@Zero-S1](https://github.com/Zero-S1)
-
-* [@uniqueque](https://github.com/uniqueque)
-
-* [@nzw9314](https://github.com/nzw9314)
