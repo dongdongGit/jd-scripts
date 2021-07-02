@@ -1,6 +1,6 @@
 /*
 女装盲盒
-活动时间：2021-5-24至2021-6-22
+活动时间：2021-7-1至2021-7-31
 活动地址：https://anmp.jd.com/babelDiy/Zeus/sVeWYpCvtfH754mtAT13s8V1Yjt/index.html
 活动入口：京东app-女装馆-赢京豆
 已支持IOS双京东账号,Node.js支持N个京东账号
