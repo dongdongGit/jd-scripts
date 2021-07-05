@@ -128,7 +128,7 @@ async function jdWish() {
   }
   if ($.tuan && $.tuan.hasOwnProperty('assistedPinEncrypted') && $.assistStatus !== 3) $.tuanList.push($.tuan)
 
-  await helpFriends()
+  //await helpFriends()
   await getUserInfo()
   $.nowBean = parseInt($.totalBeanNum)
   $.nowNum = parseInt($.totalNum)
