@@ -108,6 +108,11 @@ function showMsg() {
   return new Promise(resolve => {
     message += `本次运行获得${$.score}金币，共计${$.total}金币\n可兑换 ${($.total/10000).toFixed(2)} 元京东红包\n兑换入口：京东极速版->我的->金币`
     $.msg($.name, '', `京东账号${$.index}${$.nickName}\n${message}`);
+	if ($.isNode()) {
+       if ($.total/10000 > 50)     
+		  notify.sendNotify(`${$.name}金币 - ${$.UserName}`, `京东账号${$.index} ${$.nickName}可兑换 ${($.total/10000).toFixed(2)} 元京东红
+包\n,请及时使用,忌积攒\n兑换入口：京东极速版->我的->>金币`);
+    }
     resolve()
   })
 }
