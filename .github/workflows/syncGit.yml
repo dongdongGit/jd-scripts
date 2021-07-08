@@ -25,7 +25,7 @@ jobs:
         if: env.PAT
         with:
           source_repo: "https://gitee.com/danwangshimoluo/jdTools.git"
-          source_branch: "master"
+          source_branch: "JdScripts"
           destination_branch: "jd-scripts"
           github_token: ${{ secrets.PAT }}
       
