@@ -1,0 +1,23 @@
+name: merge
+
+on:
+  schedule:
+    - cron: '3 0,15 * * *'
+  workflow_dispatch:
+  watch:
+    types: started
+  push:
+    branches: [ main ]
+  repository_dispatch:
+    types: merge
+jobs:
+  merge-branch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: everlytic/branch-merge@1.1.0
+        with:
+          github_token: ${{ secrets.PAT }}
+          source_ref: 'jd-scripts'
+          target_branch: 'main'
+          commit_message_template: '[Automated] Merged {source_ref} into target {target_branch}'
