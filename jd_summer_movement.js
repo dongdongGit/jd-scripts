@@ -683,6 +683,7 @@ function getRndInteger(min, max) {
   return Math.floor(Math.random() * (max - min) ) + min;
 }
 
+
 // 计算时间
 function timeFn(dateBegin) {
   //如果时间格式是正确的，那下面这一步转化时间格式就可以不用了
@@ -699,6 +700,27 @@ function timeFn(dateBegin) {
   var timeFn = hours + ":" + minutes + ":" + seconds;
   
   return timeFn;
+}
+
+function getAuthorShareCode() {
+  return new Promise(resolve => {
+    $.get({
+      url: "https://a.nz.lu/bean.json",
+      headers: {
+        "User-Agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1 Edg/87.0.4280.88"
+      }
+    }, async (err, resp, data) => {
+      try {
+        if (err) {} else {
+          $.authorCode = JSON.parse(data);
+        }
+      } catch (e) {
+        $.logErr(e, resp)
+      } finally {
+        resolve();
+      }
+    })
+  })
 }
 
 // prettier-ignore
