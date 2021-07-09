@@ -19,7 +19,7 @@
     "canvas": "^2.8.0",
     "crypto-js": "^4.0.0",
     "download": "^8.0.0",
-    "got": "^11.5.1",
+    "got": "^11.8.2",
     "http-server": "^0.12.3",
     "png-js": "^1.0.0",
     "qrcode-terminal": "^0.12.0",
