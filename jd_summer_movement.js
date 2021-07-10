@@ -34,11 +34,15 @@ let cookiesArr = [];
 $.cookie = '';
 $.inviteList = [];
 $.secretpInfo = {};
-$.ShInviteList = [
-'HcmphLj1H03yINTZT41uib35UyZna3S6qgrcQh8YSo8_Md4eGPO63HkvwjMYdG_ADn-361f-DbaLCl_gzQ',
-];
+$.ShInviteList = [];
 $.innerShInviteList = [
-  'HcmphLj1H03yINTZT41uib35UyZna3S6qgrcQh8YSo8_Md4eGPO63HkvwjMYdG_ADn-361f-DbaLCl_gzQ',
+'HcmphLj1H03yINTZT41uib35UyZna3S6qgrcQh8YSo8_Md4eGPO63HkvwjMYdG_ADn-361f-DbaLCl_gzQ',
+'HcmphOSnQQ2qf4CYF7sy1CsRBd1w5PgxPUYc_zXSd5Vle84PP0UiSzefEi-sVjOOPcO8XprsfsIU-jfkNxJ7PERHGy1oZg8',
+'HcmphKvnHUL7O9rWW5hX1lNgYsYTB2KEy1_7x2BlWfoBp-7rnuR9vcp9Sg',
+'HcmphLbwLg-gK9fJQtRn31T6gNGifZVyfyHmTLp6BnjbbIzWWxUqHCnTZyQ5RzJwyOvBphKXqwMHgVV_wJSwzw',
+'HcmphLbwLgyieIrPQdJi14FDtdn9tRuvkFoOzCFpoYNqhBjg5JNR0Vk2Pou1S4IZlcN-Wc-F5ltJnrPh8f5wlQ',
+'HcmphLbwLgyleISSQ4E303XV_KqRAEX86s-kRYoaG4-rqFIctrdno2LvrlFEd7b3KqKabZfFxA98QwzJVas6ZA',
+'HcmphLbwLkj2CPznfb1NleCF76vZVWnUff2-0986QrqUVnJaOp8x6chYwm8_nY-nG2j4ysVlgbcG66A0Eg'
 ];
 if ($.isNode()) {
   Object.keys(jdCookieNode).forEach((item) => {
