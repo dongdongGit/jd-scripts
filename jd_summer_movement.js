@@ -12,7 +12,7 @@ const $ = new Env('燃动夏季');
 const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
 
 const https = require('https');
-const fs = require('fs').promises;
+const fs = require('fs/promises');
 const { R_OK } = require('fs').constants;
 const vm = require('vm');
 let smashUtils;
@@ -34,15 +34,11 @@ let cookiesArr = [];
 $.cookie = '';
 $.inviteList = [];
 $.secretpInfo = {};
-$.ShInviteList = [];
+$.ShInviteList = [
+'HcmphLj1H03yINTZT41uib35UyZna3S6qgrcQh8YSo8_Md4eGPO63HkvwjMYdG_ADn-361f-DbaLCl_gzQ',
+];
 $.innerShInviteList = [
-  'H8mphLbwLgz3e4GeFdc0g9GS9KyvaS3S',
-  'H8mphLbwLn_LHtvAULB0thOUapqKwhU',
-  'H8mphLbwLnPnJ8L9XqdUv7O1wfsqrXQ',
-  'H8mphLbwLg_xLIKcQ9I30BOoZKpsdike',//zero205：我的互助码，加在smiek2221大佬后面
-  'H8mphLbwLg2gd4rIQoEz19OIROyGRmqQ',
-  'H8mphLbwLgz2ftDOEtQx1Yp-v5_fkMS_',
-  'H8mphO2nRAmleYWfHtA0uY-QzpCd'
+  'HcmphLj1H03yINTZT41uib35UyZna3S6qgrcQh8YSo8_Md4eGPO63HkvwjMYdG_ADn-361f-DbaLCl_gzQ',
 ];
 if ($.isNode()) {
   Object.keys(jdCookieNode).forEach((item) => {
