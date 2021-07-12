@@ -8,6 +8,7 @@ const ua = `jdltapp;iPhone;3.1.0;${Math.ceil(Math.random()*4+10)}.${Math.ceil(Ma
 let cookiesArr = []
 let cookie = ''
 
+
 !(async () => {
     await requireConfig()
     if (!cookiesArr[0]) {
