@@ -187,22 +187,14 @@ async function movement() {
         }
       }
     }
-<<<<<<< HEAD
-=======
-
     console.log('\n运动\n')
     $.speedTraining = true;
     await takePostRequest('olympicgames_startTraining');
->>>>>>> 72b7628447a001f0013e10a5ceb392f4082883ef
     await $.wait(1000);
     console.log('百元守卫站')
     await takePostRequest('olypicgames_guradHome');
-    
-<<<<<<< HEAD
     await $.wait(1000);
-=======
     console.log(`\n做任务\n`);
->>>>>>> 72b7628447a001f0013e10a5ceb392f4082883ef
     await takePostRequest('olympicgames_getTaskDetail');
     await $.wait(1000);
     //做任务
