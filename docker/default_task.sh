@@ -78,7 +78,6 @@ EOF
 #temp-@TuringLabbot-jd_sgmh.log-sgmh-暂无
 #每天变化活动示例
 #daily-@TuringLabbot-jd_818.log-818-暂无
-
 #种豆得豆
 long-@TuringLabbot-/submit_activity_codes-jd_plantBean.log-bean-种豆得豆好友互助码】
 #京东农场
@@ -94,7 +93,6 @@ temp-@TuringLabbot-/submit_activity_codes-jd_sgmh.log-sgmh-您的好友助力码
 #临时活动
 temp-@TuringLabbot-/submit_activity_codes-jd_cfd.log-jxcfd-主】你的互助码:
 temp-@TuringLabbot-/submit_activity_codes-jd_global.log-jdglobal-好友助力码为
-
 #分红狗活动
 long-@LvanLamCommitCodeBot-/jdcrazyjoy-jd_crazy_joy.log-@N-crazyJoy任务好友互助码】
 #签到领现金
