@@ -62,14 +62,6 @@ const UA = $.isNode() ? (process.env.JD_USER_AGENT ? process.env.JD_USER_AGENT :
     $.msg($.name, '【提示】请先获取京东账号一cookie\n直接使用NobyDa的京东签到获取', 'https://bean.m.jd.com/bean/signIndex.action', { "open-url": "https://bean.m.jd.com/bean/signIndex.action" });
     return;
   }
-<<<<<<< HEAD
-  console.log("活动入口：京东APP-》 首页-》 右边小窗口（点我赢千元）\n" +
-      "邀请好友助力：内部账号自行互助(排名靠前账号得到的机会多)\n" +
-      "SH互助：内部账号自行互助(排名靠前账号得到的机会多),多余的助力次数会默认助力作者内置助力码\n" +
-      "店铺任务 已添加，下午2点到7点执行\n" +
-      "活动时间：2021-07-08至2021-08-8\n" +
-      "脚本更新时间：2021年7月8日 14点00分\n");
-=======
   console.log('活动入口：京东APP-》 首页-》 右边小窗口（点我赢千元）\n' +
       '邀请好友助力：内部账号自行互助(排名靠前账号得到的机会多)\n' +
       'SH互助：内部账号自行互助(排名靠前账号得到的机会多),多余的助力次数会默认助力作者内置助力码\n' +
@@ -96,7 +88,6 @@ const UA = $.isNode() ? (process.env.JD_USER_AGENT ? process.env.JD_USER_AGENT :
       
   console.log(`注意：若执行失败，则请手动删除脚本目录下的“app.*.js”文件，然后重新执行脚本`);
   console.log(`类似 app.5c2472d1.js、app.c7364f20.js 等都删除\n不用每次删 执行失败再删`);
->>>>>>> 72b7628447a001f0013e10a5ceb392f4082883ef
   for (let i = 0; i < cookiesArr.length; i++) {
     if (cookiesArr[i]) {
       $.cookie = cookiesArr[i];
