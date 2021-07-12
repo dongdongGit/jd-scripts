@@ -2,7 +2,7 @@ const https = require('https');
 const fs = require('fs/promises');
 const { R_OK } = require('fs').constants;
 const vm = require('vm');
-const UA = require('./USER_AGENTS.js').USER_AGENT;
+const UA = require('../USER_AGENTS.js').USER_AGENT;
 
 const URL = 'https://h5.m.jd.com/babelDiy/Zeus/41Lkp7DumXYCFmPYtU3LTcnTTXTX/index.html';
 const REG_SCRIPT = /<script src="([^><]+\/(main\.\w+\.js))\?t=\d+">/gm;
