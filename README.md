@@ -4,6 +4,8 @@
 
 **之所以仍保留此仓库是为了给小白多提供一个低学习成本的选择，还请遵守声明。如果有能力部署本地运行，请优先考虑使用本地运行。不再更新提供yml文件，如有需要请自行添加。**
 
+##### 保存gitee地址以防失联https://gitee.com/danwangshimoluo/jdTools.git
+
 * 本仓库发布的Script项目中涉及的任何解锁和解密分析脚本，仅用于测试和学习研究，禁止用于商业用途，不能保证其合法性，准确性，完整性和有效性，请根据情况自行判断.
 
 * 本项目内所有资源文件，禁止任何公众号、自媒体进行任何形式的转载、发布。
@@ -109,12 +111,6 @@
 
 - [邀请码使用规范](githubAction.md#互助码类环境变量)(仅限云端)
 
-## 食用方法
-
-### 1. Docker
-
-- [部署方法](./docker)
-
 - [环境变量集合](./githubAction.md)
 
 - 获取京东cookie教程可参考：
@@ -125,17 +121,5 @@
     
   + 京东APP扫码获取cookie(此种方式获取的cookie有效期为90天)(执行`node getJDCookie.js`即可)
 
-### 2. iOS代理软件（QuantumultX, Surge, Loon, 小火箭）（以下方法不保证可用）
-
-##### BoxJs订阅地址：[lxk0301.boxjs.json](./lxk0301.boxjs.json)
-
 ##### 获取京东cookie [JD_extra_cookie.js](./JD_extra_cookie.js)
-
-##### 订阅链接：
-
-- Surge：Task&Cookies脚本模块地址: [lxk0301_Task.sgmodule.sgmodule](./Surge/lxk0301_Task.sgmodule.sgmodule)
-
-- Loon：Task&Cookies脚本订阅链接: [lxk0301_LoonTask.conf](./Loon/lxk0301_LoonTask.conf)
-
-- QuantumultX Task脚本订阅链接: [lxk0301_gallery.json](./QuantumultX/lxk0301_gallery.json)，cookie(重写)订阅链接: [lxk0301_cookies.conf](./QuantumultX/lxk0301_cookies.conf)
 
