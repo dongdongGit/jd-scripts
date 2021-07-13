@@ -16,8 +16,11 @@
   "author": "LXK9301",
   "license": "ISC",
   "dependencies": {
+    "axios": "^0.21.1",
     "canvas": "^2.8.0",
     "crypto-js": "^4.0.0",
+    "date-fns": "^2.22.1",
+    "dotenv": "^10.0.0",
     "download": "^8.0.0",
     "got": "^11.8.2",
     "http-server": "^0.12.3",
