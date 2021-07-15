@@ -12,7 +12,7 @@ const $ = new Env('燃动夏季');
 const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
 
 const https = require('https');
-const fs = require('fs/promises');
+const fs = require('fs').promises;
 const { R_OK } = require('fs').constants;
 const vm = require('vm');
 let smashUtils;
@@ -45,7 +45,12 @@ $.ShInviteList = [];
 $.innerShInviteList = [
   'H8mphLbwLgz3e4GeFdc0g9GS9KyvaS3S',
   'H8mphLbwLn_LHtvAULB0thOUapqKwhU',
-  'H8mphLbwLnPnJ8L9XqdUv7O1wfsqrXQ'
+  'H8mphLbwLnPnJ8L9XqdUv7O1wfsqrXQ',
+  'H8mphLbwLg_xLIKcQ9I30BOoZKpsdike',
+  'H8mphLbwLg2gd4rIQoEz19OIROyGRmqQ',
+  'H8mphLbwLgz2ftDOEtQx1Yp-v5_fkMS_',
+  'H8mphO2nRAmleYWfHtA0uY-QzpCd',
+  'H8mphLbwLnbqGMrzbr5pgGi6h4ngNTk'
 ];
 if ($.isNode()) {
   Object.keys(jdCookieNode).forEach((item) => {
