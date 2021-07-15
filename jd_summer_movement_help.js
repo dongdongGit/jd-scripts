@@ -87,18 +87,13 @@ function randomString(e) {
     }
   }
   // 助力
-  let res = [], res2 = [];
+  let res = [], res2 = [], res3 = [];
+  $.innerShInviteList = await getAuthorShareCode('https://ghproxy.com/https://raw.githubusercontent.com/smiek2221/scripts/master/summer_movement_one.json');
+  res2 = await getAuthorShareCode('https://ghproxy.com/https://raw.githubusercontent.com/smiek2221/scripts/master/summer_movement.json');
+  res3 = await getAuthorShareCode('https://raw.fastgit.org/zero205/updateTeam/main/shareCodes/jd_zero205_summer.json');
   $.ShInviteLists = []
   if (ShHelpAuthorFlag) {
-    $.innerShInviteList = await getAuthorShareCode('https://raw.githubusercontent.com/smiek2221/updateTeam/master/shareCodes/summer_movement_one.json');
-    res2 = await getAuthorShareCode('https://raw.githubusercontent.com/smiek2221/updateTeam/master/shareCodes/summer_movement.json');
-    if(!$.innerShInviteList[0]){
-      $.innerShInviteList = await getAuthorShareCode('https://ghproxy.com/https://raw.githubusercontent.com/smiek2221/updateTeam/master/shareCodes/summer_movement.json');
-    }
-    if(!res2[0]){
-      res2 = await getAuthorShareCode('https://ghproxy.com/https://raw.githubusercontent.com/smiek2221/updateTeam/master/shareCodes/summer_movement.json');
-    }
-    $.innerShInviteLists = getRandomArrayElements([...res, ...res2], [...res, ...res2].length);
+    $.innerShInviteLists = getRandomArrayElements([...res, ...res2, ...res3], [...res, ...res2, ...res3].length);
     $.ShInviteLists.push(...$.ShInviteList,...$.innerShInviteList,...$.innerShInviteLists);
   }else{
     $.ShInviteLists.push(...$.ShInviteList);
