@@ -7,7 +7,6 @@ const PNG = require('png-js');
 let UA = require('./USER_AGENTS.js').USER_AGENT;
 const validatorCount = process.env.JDJR_validator_Count ? process.env.JDJR_validator_Count : 100
 
-
 Math.avg = function average() {
   var sum = 0;
   var len = this.length;
