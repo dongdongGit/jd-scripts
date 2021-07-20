@@ -880,7 +880,6 @@ function getRndInteger(min, max) {
   return Math.floor(Math.random() * (max - min) ) + min;
 }
 
-
 // 计算时间
 function timeFn(dateBegin) {
   //如果时间格式是正确的，那下面这一步转化时间格式就可以不用了
