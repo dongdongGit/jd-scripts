@@ -1,5 +1,7 @@
-const https = require('https');
-const http = require('http');
+const {
+  http,
+  https
+} = require('follow-redirects');
 const stream = require('stream');
 const zlib = require('zlib');
 const vm = require('vm');
