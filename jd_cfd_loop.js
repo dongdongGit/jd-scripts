@@ -114,6 +114,7 @@ async function querystorageroom() {
             bags.push(vo.dwType)
             bags.push(vo.dwCount)
           }
+
           if (bags.length !== 0) {
             let strTypeCnt = ''
             for (let j = 0; j < bags.length; j++) {
@@ -124,7 +125,7 @@ async function querystorageroom() {
               }
             }
             await $.wait(1000)
-            // await sellgoods(`strTypeCnt=${strTypeCnt}&dwSceneId=1`)
+            await sellgoods(`strTypeCnt=${strTypeCnt}&dwSceneId=1`)
           } else {
             console.log(`背包是空的，快去捡贝壳吧\n`)
           }
