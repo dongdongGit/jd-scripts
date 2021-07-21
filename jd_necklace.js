@@ -160,7 +160,7 @@ async function reportTask(item = {}) {
 function necklace_sign() {
   return new Promise(async resolve => {
     $.action = 'sign'
-    const body=await ZooFaker.getBody($)
+    const body = await ZooFaker.getBody($)
     // const body = {
     //   currentDate: $.lastRequestTime.replace(/:/g, "%3A"),
     // }
@@ -270,7 +270,7 @@ function necklace_startTask(taskId, functionId = 'necklace_startTask', itemId = 
     if(functionId == 'necklace_startTask'){
       $.id = taskId
       $.action = 'startTask'
-      body=await ZooFaker.getBody($)
+      body = await ZooFaker.getBody($)
     }else{
       if (itemId) body['itemId'] = itemId;
     }

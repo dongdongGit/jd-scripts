@@ -66,7 +66,7 @@ class ZooFakerNecklace {
                 navigator: { userAgent: UA },
             };
             const _this = this;
-            Object.defineProperty(ctx.document,'cookie',{
+            Object.defineProperty(ctx.document, 'cookie', {
                 get() {
                     return _this.cookie;
                 },
