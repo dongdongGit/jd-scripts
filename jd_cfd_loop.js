@@ -37,6 +37,7 @@ $.appId = 10028;
     return;
   }
   let count = 0
+  $.info = [];
   $.CryptoJS = $.isNode() ? require('crypto-js') : CryptoJS;
   await requestAlgo();
   await $.wait(1000)
@@ -51,7 +52,6 @@ $.appId = 10028;
         $.index = i + 1;
         $.nickName = '';
         $.isLogin = true;
-        $.nickName = '';
         await TotalBean();
         console.log(`\n******开始【京东账号${$.index}】${$.nickName || $.UserName}*********\n`);
         if (!$.isLogin) {
@@ -62,26 +62,34 @@ $.appId = 10028;
           // }
           continue
         }
-        $.info = {}
-        await cfd();
+
+        if ($.info[i] == undefined) {
+          $.info.push({
+            loop_limit: false
+          });
+        }
+        
+        await cfd(i);
         let time = process.env.CFD_LOOP_SLEEPTIME ? process.env.CFD_LOOP_SLEEPTIME : 2000
         await $.wait(time)
       }
     }
   }
 })()
-    .catch((e) => $.logErr(e))
-    .finally(() => $.done());
+  .catch((e) => $.logErr(e))
+  .finally(() => $.done());
 
-async function cfd() {
+async function cfd(i) {
   try {
-    const beginInfo = await getUserInfo(false);
+    const beginInfo = await getUserInfo(false, i);
     if (beginInfo.Fund.ddwFundTargTm === 0) {
       console.log(`还未开通活动，请先开通\n`)
       return
     }
     await $.wait(1000)
-    await speedUp()
+    if (!$.info[i].loop_limit) {
+      await speedUp(i)
+    }
     await $.wait(2000)
     await queryshell()
   } catch (e) {
@@ -116,7 +124,7 @@ async function querystorageroom() {
               }
             }
             await $.wait(1000)
-            await sellgoods(`strTypeCnt=${strTypeCnt}&dwSceneId=1`)
+            // await sellgoods(`strTypeCnt=${strTypeCnt}&dwSceneId=1`)
           } else {
             console.log(`背包是空的，快去捡贝壳吧\n`)
           }
@@ -170,7 +178,6 @@ async function queryshell() {
               await $.wait(1000)
             }
           }
-          console.log('')
         }
       } catch (e) {
         $.logErr(e, resp);
@@ -226,7 +233,7 @@ async function pickshell(body) {
 }
 
 // 热气球接客
-async function speedUp() {
+async function speedUp(i) {
   return new Promise(async (resolve) => {
     $.get(taskUrl(`user/SpeedUp`, `strBuildIndex=food`), async (err, resp, data) => {
       try {
@@ -238,6 +245,9 @@ async function speedUp() {
           if (data.iRet === 0) {
             console.log(`热气球接客成功：已接待 ${data.dwTodaySpeedPeople} 人\n`)
           } else {
+            if (data.iRet == 2027) {
+              $.info[i].loop_limit = true;
+            }
             console.log(`热气球接客失败：${data.sErrMsg}\n`)
           }
         }
@@ -251,7 +261,7 @@ async function speedUp() {
 }
 
 // 获取用户信息
-function getUserInfo(showInvite = true) {
+function getUserInfo(showInvite = true, i) {
   return new Promise(async (resolve) => {
     $.get(taskUrl(`user/QueryUserInfo`), (err, resp, data) => {
       try {
@@ -282,8 +292,8 @@ function getUserInfo(showInvite = true) {
             console.log(`\n【京东账号${$.index} ${$.UserName} 的${$.name}好友互助码】${strMyShareId}\n\n`);
             $.shareCodes.push(strMyShareId)
           }
-          $.info = {
-            ...$.info,
+          $.info[i] = {
+            ...$.info[i],
             buildInfo,
             ddwRichBalance,
             ddwCoinBalance,
