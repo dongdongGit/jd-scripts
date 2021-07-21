@@ -10,22 +10,14 @@
  export JD_JOY_teamLevel = 2
  */
 const $ = new Env("宠汪汪二代目")
-console.log('\n====================Hello World====================\n')
-
-const http = require('http');
-const stream = require('stream');
-const zlib = require('zlib');
-const vm = require('vm');
-const PNG = require('png-js');
-const UA = require('./USER_AGENTS.js').USER_AGENT;
-const fs = require("fs");
 const validator = require('./utils/JDJRValidator_Pure.js');
+
+$.get = validator.injectToRequest($.get.bind($))
+$.post = validator.injectToRequest($.post.bind($))
 
 let cookiesArr = [],
   cookie = '',
   notify;
-$.get = validator.injectToRequest($.get.bind($))
-$.post = validator.injectToRequest($.post.bind($))
 
 !(async () => {
   await requireConfig();
@@ -530,12 +522,6 @@ function jsonParse(str) {
       $.msg($.name, '', '请勿随意在BoxJs输入框修改内容\n建议通过脚本去获取cookie')
       return [];
     }
-  }
-}
-
-function writeFile(text) {
-  if ($.isNode()) {
-    fs.writeFile('a.json', text, () => {})
   }
 }
 
