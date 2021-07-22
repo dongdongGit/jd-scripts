@@ -6,8 +6,6 @@ on:
   workflow_dispatch:
   watch:
     types: started
-  push:
-    branches: [ main ]
   repository_dispatch:
     types: merge
 jobs:
