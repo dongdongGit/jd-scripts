@@ -68,7 +68,6 @@
 |  29  | [jd_joy_feedPets.js](./jd_joy_feedPets.js)       | 宠汪汪🐕喂食              | 京东APP我的-更多工具-宠汪汪                                  |
 |  30  | [jd_joy_help.js](./jd_joy_help.js)               | 宠汪汪强制为别人助力     | 京东APP我的-更多工具-宠汪汪                                  |
 |  31  | [jd_joy.js](./jd_joy.js)                         | 宠汪汪                   | 京东APP我的-更多工具-宠汪汪                                  |
-|  32  | [jd_joy_reward_20.js](./jd_joy_reward_20.js)     | 宠汪汪积分兑换奖品       | 京东APP我的-更多工具-宠汪汪                                  |
 |  33  | [jd_joy_reward.js](./jd_joy_reward.js)           | 宠汪汪积分兑换奖品       | 京东APP我的-更多工具-宠汪汪                                  |
 |  34  | [jd_joy_run.js](./jd_joy_run.js)                 | 宠汪汪赛跑               | 京东APP我的-更多工具-宠汪汪                                  |
 |  35  | [jd_joy_steal.js](./jd_joy_steal.js)             | 宠汪汪偷好友积分与狗粮   | 京东APP我的-更多工具-宠汪汪                                  |
