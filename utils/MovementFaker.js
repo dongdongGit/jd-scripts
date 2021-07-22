@@ -2,7 +2,7 @@ const https = require('https');
 const fs = require('fs').promises;
 const { R_OK } = require('fs').constants;
 const vm = require('vm');
-const UA = require('./USER_AGENTS.js').USER_AGENT;
+const UA = require('../USER_AGENTS.js').USER_AGENT;
 
 const URL = 'https://wbbny.m.jd.com/babelDiy/Zeus/2rtpffK8wqNyPBH6wyUDuBKoAbCt/index.html';
 // const REG_MODULE = /(\d+)\:function\(.*(?=smashUtils\.get_risk_result)/gm;
