@@ -6,6 +6,9 @@ on:
       - main
     paths:
       - 'docker/Dockerfile'
+  workflow_dispatch:
+  watch:
+    types: started
   release:
     types: [published]
 
