@@ -1,8 +1,5 @@
 FROM node:lts-alpine3.12
 
-LABEL repository="writing/jd-scripts" \
-    version="0.0.1"
-
 ENV DEFAULT_LIST_FILE=crontab_list.sh \
     CUSTOM_LIST_MERGE_TYPE=append \
     COOKIES_LIST=/scripts/logs/cookies.list \
