@@ -23,8 +23,7 @@ jobs:
         with:
           # list of Docker images to use as base name for tags
           images: |
-            name/app
-            ghcr.io/username/app
+            ${{ secrets.DOCKERHUB_USERNAME }}/jd-scripts
           # generate Docker tags based on the following events/attributes
           tags: |
             type=schedule
