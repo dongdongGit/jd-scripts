@@ -184,15 +184,10 @@ async function joyReward() {
                   $.msg($.name, ``, `【京东账号${$.index}】${$.nickName}\n【${giftValue}京豆】兑换成功🎉\n【积分详情】消耗积分 ${salePrice}`);
                   if ($.isNode()) {
                     allMessage += `【京东账号${$.index}】 ${$.nickName}\n【${giftValue}京豆】兑换成功🎉\n【积分详情】消耗积分 ${salePrice}${$.index !== cookiesArr.length ? '\n\n' : ''}`
-                    // await notify.sendNotify(`${$.name} - 账号${$.index} - ${$.nickName}`, `【京东账号${$.index}】 ${$.nickName}\n【${giftValue}京豆】兑换成功\n【宠物等级】${data.level}\n【积分详情】消耗积分 ${salePrice}, 剩余积分 ${data.coin - salePrice}`);
                   }
                 }
-                // if ($.isNode()) {
-                //   await notify.BarkNotify(`${$.name}`, `【京东账号${$.index}】 ${$.nickName}\n【兑换${giftName}】成功\n【宠物等级】${data.level}\n【消耗积分】${salePrice}分\n【当前剩余】${data.coin - salePrice}积分`);
-                // }
               } else if ($.exchangeRes && $.exchangeRes.errorCode === 'buy_limit') {
                 console.log(`\n兑换${rewardNum}京豆失败，原因：兑换京豆已达上限，请把机会留给更多的小伙伴~\n`)
-                //$.msg($.name, `兑换${giftName}失败`, `【京东账号${$.index}】${$.nickName}\n兑换京豆已达上限\n请把机会留给更多的小伙伴~\n`)
               } else if ($.exchangeRes && $.exchangeRes.errorCode === 'stock_empty') {
                 console.log(`\n兑换${rewardNum}京豆失败，原因：当前京豆库存为空\n`)
               } else if ($.exchangeRes && $.exchangeRes.errorCode === 'insufficient') {
@@ -221,16 +216,9 @@ async function joyReward() {
   }
 }
 function getExchangeRewards() {
-  let opt = {
-    url: `//jdjoy.jd.com/common/gift/getBeanConfigs?reqSource=h5&invokeKey=qRKHmL4sna8ZOP9F&validate=${$.validate}`,
-    method: "GET",
-    data: {},
-    credentials: "include",
-    header: {"content-type": "application/json"}
-  }
   return new Promise((resolve) => {
-    const option = {
-      url: "https:"+ taroRequest(opt)['url'],
+    $.get({
+      url: `https://jdjoy.jd.com/common/gift/getBeanConfigs?reqSource=h5&invokeKey=qRKHmL4sna8ZOP9F`,
       headers: {
         "Host": "jdjoy.jd.com",
         "Content-Type": "application/json",
@@ -242,9 +230,8 @@ function getExchangeRewards() {
         "Referer": "https://jdjoy.jd.com/pet/index",
         "Accept-Language": "zh-cn",
         "Accept-Encoding": "gzip, deflate, br"
-      },
-    }
-    $.get(option, (err, resp, data) => {
+      }
+    }, (err, resp, data) => {
       try {
         if (err) {
           console.log(`${JSON.stringify(err)}`)
@@ -265,14 +252,9 @@ function getExchangeRewards() {
 }
 function exchange(saleInfoId, orderSource) {
   let body = {"buyParam":{"orderSource":orderSource,"saleInfoId":saleInfoId},"deviceInfo":{}}
-  let opt = {
-    "url": `//jdjoy.jd.com/common/gift/new/exchange?reqSource=h5&invokeKey=qRKHmL4sna8ZOP9F&validate=${$.validate}`,
-    "data":body,
-    "credentials":"include","method":"POST","header":{"content-type":"application/json"}
-  }
   return new Promise((resolve) => {
-    const option = {
-      url: "https:"+ taroRequest(opt)['url'],
+    $.post({
+      url: `https://jdjoy.jd.com/common/gift/new/exchange?reqSource=h5&invokeKey=qRKHmL4sna8ZOP9F`,
       body: `${JSON.stringify(body)}`,
       headers: {
         "Host": "jdjoy.jd.com",
@@ -287,9 +269,8 @@ function exchange(saleInfoId, orderSource) {
         "Referer": "https://jdjoy.jd.com/pet/index",
         "Content-Length": "10",
         "Cookie": cookie
-      },
-    }
-    $.post(option, (err, resp, data) => {
+      }
+    }, (err, resp, data) => {
       try {
         if (err) {
           console.log(`${JSON.stringify(err)}`)
