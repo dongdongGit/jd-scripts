@@ -20,10 +20,17 @@ jobs:
         name: Checkout
         uses: actions/checkout@v2
 
-      - name: Extract Version
-        id: version_step
-        run: |
-          echo "##[set-output name=latest_tag;]${{ secrets.DOCKER_USER_NAME}}:latest"
+      -
+        name: Docker meta
+        id: meta
+        uses: docker/metadata-action@v3
+        with:
+          # list of Docker images to use as base name for tags
+          images: |
+            writing/jd-scripts
+          # generate Docker tags based on the following events/attributes
+          tags: |
+            type=semver,pattern={{version}}
       -
         name: Set up QEMU
         uses: docker/setup-qemu-action@v1
@@ -47,7 +54,6 @@ jobs:
         with:
           context: ./docker
           push: true
-          tags: |
-            ${{ steps.version_step.outputs.version }}
+          tags: ${{ steps.meta.outputs.tags }}
 
   
