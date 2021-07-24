@@ -750,7 +750,7 @@ async function noviceTask(){
 function taskGet(type, stk, additional){
     return new Promise(async (resolve) => {
         let myRequest = getGetRequest(type, stk, additional)
-        console.log(myRequest);
+        // console.log(myRequest);
         $.get(myRequest, async (err, resp, _data) => {
             let data = ''
             try {
