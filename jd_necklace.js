@@ -9,39 +9,55 @@ Last Modified time: 2021-05-28 17:27:14
 20 0,20 * * * jd_necklace.js, tag=点点券, img-url=https://raw.githubusercontent.com/Orz-3/mini/master/Color/jd.png, enabled=true
 
  */
-const $ = new Env('点点券');
-const ZooFaker = require('./utils/ZooFaker_Necklace.js') 
+const $ = new Env("点点券");
+const ZooFaker = require("./utils/ZooFaker_Necklace.js").utils;
 let allMessage = ``;
-const notify = $.isNode() ? require('./sendNotify') : '';
+const notify = $.isNode() ? require("./sendNotify") : "";
 //Node.js用户请在jdCookie.js处填写京东ck;
-const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
-const openUrl = `openjd://virtual?params=%7B%20%22category%22:%20%22jump%22,%20%22des%22:%20%22m%22,%20%22url%22:%20%22https://h5.m.jd.com/babelDiy/Zeus/41Lkp7DumXYCFmPYtU3LTcnTTXTX/index.html%22%20%7D`
+const jdCookieNode = $.isNode() ? require("./jdCookie.js") : "";
+const openUrl = `openjd://virtual?params=%7B%20%22category%22:%20%22jump%22,%20%22des%22:%20%22m%22,%20%22url%22:%20%22https://h5.m.jd.com/babelDiy/Zeus/41Lkp7DumXYCFmPYtU3LTcnTTXTX/index.html%22%20%7D`;
 
-const UA = `jdltapp;iPhone;3.1.0;${Math.ceil(Math.random()*4+10)}.${Math.ceil(Math.random()*4)};${randomString(40)};`
+const UA = `jdapp;android;10.0.2;9;8363237353630343334383837333-73D2164353034363465693662666;network/wifi;model/MI 8;addressid/138087843;aid/0a4fc8ec9548a7f9;oaid/3ac46dd4d42fa41c;osVer/28;appBuild/88569;partner/jingdong;eufv/1;jdSupportDarkMode/0;Mozilla/5.0 (Linux; Android 9; MI 8 Build/PKQ1.180729.001; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/77.0.3865.120 MQQBrowser/6.2 TBS/045715 Mobile Safari/537.36`;
 function randomString(e) {
   e = e || 32;
-  let t = "abcdefhijkmnprstwxyz2345678", a = t.length, n = "";
-  for (i = 0; i < e; i++)
-    n += t.charAt(Math.floor(Math.random() * a));
-  return n
+  let t = "abcdefhijkmnprstwxyz2345678",
+    a = t.length,
+    n = "";
+  for (i = 0; i < e; i++) n += t.charAt(Math.floor(Math.random() * a));
+  return n;
 }
-let message = '';
-let nowTimes = new Date(new Date().getTime() + new Date().getTimezoneOffset() * 60 * 1000 + 8 * 60 * 60 * 1000);
+let message = "";
+let nowTimes = new Date(
+  new Date().getTime() +
+    new Date().getTimezoneOffset() * 60 * 1000 +
+    8 * 60 * 60 * 1000
+);
 //IOS等用户直接用NobyDa的jd cookie
-let cookiesArr = [], cookie = '';
+let cookiesArr = [],
+  cookie = "";
 if ($.isNode()) {
   Object.keys(jdCookieNode).forEach((item) => {
-    cookiesArr.push(jdCookieNode[item])
-  })
-  if (process.env.JD_DEBUG && process.env.JD_DEBUG === 'false') console.log = () => {};
+    cookiesArr.push(jdCookieNode[item]);
+  });
+  if (process.env.JD_DEBUG && process.env.JD_DEBUG === "false")
+    console.log = () => {};
 } else {
-  cookiesArr = [$.getdata('CookieJD'), $.getdata('CookieJD2'), ...jsonParse($.getdata('CookiesJD') || "[]").map(item => item.cookie)].filter(item => !!item);
+  cookiesArr = [
+    $.getdata("CookieJD"),
+    $.getdata("CookieJD2"),
+    ...jsonParse($.getdata("CookiesJD") || "[]").map((item) => item.cookie),
+  ].filter((item) => !!item);
 }
 
-const JD_API_HOST = 'https://api.m.jd.com/api';
+const JD_API_HOST = "https://api.m.jd.com/api";
 !(async () => {
   if (!cookiesArr[0]) {
-    $.msg($.name, '【提示】请先获取京东账号一cookie\n直接使用NobyDa的京东签到获取', 'https://bean.m.jd.com/bean/signIndex.action', {"open-url": "https://bean.m.jd.com/bean/signIndex.action"});
+    $.msg(
+      $.name,
+      "【提示】请先获取京东账号一cookie\n直接使用NobyDa的京东签到获取",
+      "https://bean.m.jd.com/bean/signIndex.action",
+      { "open-url": "https://bean.m.jd.com/bean/signIndex.action" }
+    );
     return;
   }
   // console.log(`\n通知：京东已在领取任务、签到、领取点点券三个添加了log做了校验，暂时无可解决\n`);
@@ -49,62 +65,104 @@ const JD_API_HOST = 'https://api.m.jd.com/api';
     if (cookiesArr[i]) {
       cookie = cookiesArr[i];
       $.cookie = cookiesArr[i];
-      $.UserName = decodeURIComponent(cookie.match(/pt_pin=([^; ]+)(?=;?)/) && cookie.match(/pt_pin=([^; ]+)(?=;?)/)[1])
+      $.UserName = decodeURIComponent(
+        cookie.match(/pt_pin=([^; ]+)(?=;?)/) &&
+          cookie.match(/pt_pin=([^; ]+)(?=;?)/)[1]
+      );
       $.index = i + 1;
       $.isLogin = true;
-      $.nickName = '';
-      message = '';
+      $.nickName = "";
+      $.joyytoken = "";
+      message = "";
       await TotalBean();
-      await ZooFaker.getBody($)
       console.log(`\n开始【京东账号${$.index}】${$.nickName || $.UserName}\n`);
       if (!$.isLogin) {
-        $.msg($.name, `【提示】cookie已失效`, `京东账号${$.index} ${$.nickName || $.UserName}\n请重新登录获取\nhttps://bean.m.jd.com/bean/signIndex.action`, {"open-url": "https://bean.m.jd.com/bean/signIndex.action"});
+        $.msg(
+          $.name,
+          `【提示】cookie已失效`,
+          `京东账号${$.index} ${
+            $.nickName || $.UserName
+          }\n请重新登录获取\nhttps://bean.m.jd.com/bean/signIndex.action`,
+          { "open-url": "https://bean.m.jd.com/bean/signIndex.action" }
+        );
 
         if ($.isNode()) {
-          await notify.sendNotify(`${$.name}cookie已失效 - ${$.UserName}`, `京东账号${$.index} ${$.UserName}\n请重新登录获取cookie`);
+          await notify.sendNotify(
+            `${$.name}cookie已失效 - ${$.UserName}`,
+            `京东账号${$.index} ${$.UserName}\n请重新登录获取cookie`
+          );
         }
-        continue
+        continue;
       }
       await jd_necklace();
       // break
     }
   }
   if ($.isNode() && allMessage) {
-    await notify.sendNotify(`${$.name}`, `${allMessage}`, { url: openUrl })
+    await notify.sendNotify(`${$.name}`, `${allMessage}`, { url: openUrl });
   }
 })()
-    .catch((e) => {
-      $.log('', `❌ ${$.name}, 失败! 原因: ${e}!`, '')
-    })
-    .finally(() => {
-      $.done();
-    })
+  .catch((e) => {
+    $.log("", `❌ ${$.name}, 失败! 原因: ${e}!`, "");
+  })
+  .finally(() => {
+    $.done();
+  });
 async function jd_necklace() {
   try {
     await necklace_homePage();
+    await $.wait(2000);
     await doTask();
+    await $.wait(2000);
     await sign();
+    await $.wait(2000);
     await necklace_homePage();
+    await $.wait(2000);
     await receiveBubbles();
+    await $.wait(2000);
     await necklace_homePage();
-    // await necklace_exchangeGift($.totalScore);//自动兑换多少钱的无门槛红包，1000代表1元，默认兑换全部点点券
+    await $.wait(2000);
+    // // await necklace_exchangeGift($.totalScore);//自动兑换多少钱的无门槛红包，1000代表1元，默认兑换全部点点券
     await showMsg();
   } catch (e) {
-    $.logErr(e)
+    $.logErr(e);
   }
 }
 function showMsg() {
-  return new Promise(async resolve => {
+  return new Promise(async (resolve) => {
     // if (nowTimes.getHours() >= 20) {
-      $.msg($.name, '', `京东账号${$.index}\n当前${$.name}：${$.totalScore}个\n可兑换无门槛红包：${$.totalScore / 1000}元\n点击弹窗即可去兑换(注：此红包具有时效性)`, { 'open-url': openUrl});
+    $.msg(
+      $.name,
+      "",
+      `京东账号${$.index} ${$.nickName || $.UserName}\n当前${$.name}：${
+        $.totalScore
+      }个\n可兑换无门槛红包：${
+        $.totalScore / 1000
+      }元\n点击弹窗即可去兑换(注：此红包具有时效性)`,
+      { "open-url": openUrl }
+    );
     // }
     // 云端大于10元无门槛红包时进行通知推送
     // if ($.isNode() && $.totalScore >= 20000 && nowTimes.getHours() >= 20) await notify.sendNotify(`${$.name} - 京东账号${$.index}`, `京东账号${$.index}\n当前${$.name}：${$.totalScore}个\n可兑换无门槛红包：${$.totalScore / 1000}元\n点击链接即可去兑换(注：此红包具有时效性)\n↓↓↓ \n\n ${openUrl} \n\n ↑↑↑`, { url: openUrl })
-    if ($.isNode() && nowTimes.getHours() >= 20 && (process.env.DDQ_NOTIFY_CONTROL ? process.env.DDQ_NOTIFY_CONTROL === 'false' : !!1)) {
-      allMessage += `京东账号${$.index}\n当前${$.name}：${$.totalScore}个\n可兑换无门槛红包：${$.totalScore / 1000}元\n(京东APP->领券->左上角点点券.注：此红包具有时效性)${$.index !== cookiesArr.length ? '\n\n' : `\n↓↓↓ \n\n "https://h5.m.jd.com/babelDiy/Zeus/41Lkp7DumXYCFmPYtU3LTcnTTXTX/index.html" \n\n ↑↑↑`}`
+    if (
+      $.isNode() &&
+      nowTimes.getHours() >= 20 &&
+      (process.env.DDQ_NOTIFY_CONTROL
+        ? process.env.DDQ_NOTIFY_CONTROL === "false"
+        : !!1)
+    ) {
+      allMessage += `京东账号${$.index} ${$.nickName || $.UserName}\n当前${
+        $.name
+      }：${$.totalScore}个\n可兑换无门槛红包：${
+        $.totalScore / 1000
+      }元\n(京东APP->领券->左上角点点券.注：此红包具有时效性)${
+        $.index !== cookiesArr.length
+          ? "\n\n"
+          : `\n↓↓↓ \n\n "https://h5.m.jd.com/babelDiy/Zeus/41Lkp7DumXYCFmPYtU3LTcnTTXTX/index.html" \n\n ↑↑↑`
+      }`;
     }
-    resolve()
-  })
+    resolve();
+  });
 }
 async function doTask() {
   for (let item of $.taskConfigVos) {
@@ -127,54 +185,74 @@ async function doTask() {
 async function receiveBubbles() {
   for (let item of $.bubbles) {
     console.log(`\n开始领取点点券`);
-    await necklace_chargeScores(item.id)
+    await necklace_chargeScores(item.id);
   }
 }
 async function sign() {
   if ($.signInfo.todayCurrentSceneSignStatus === 1) {
-    console.log(`\n开始每日签到`)
+    console.log(`\n开始每日签到`);
     await necklace_sign();
   } else {
-    console.log(`当前${new Date(new Date().getTime() + new Date().getTimezoneOffset()*60*1000 + 8*60*60*1000).toLocaleString()}已签到`)
+    console.log(
+      `当前${new Date(
+        new Date().getTime() +
+          new Date().getTimezoneOffset() * 60 * 1000 +
+          8 * 60 * 60 * 1000
+      ).toLocaleString()}已签到`
+    );
   }
 }
 async function reportTask(item = {}) {
   //普通任务
-  if (item['taskType'] === 2) await necklace_startTask(item.id, 'necklace_reportTask');
+  if (item["taskType"] === 2)
+    await necklace_startTask(item.id, "necklace_reportTask");
   //逛很多商品店铺等等任务
-  if (item['taskType'] === 6 || item['taskType'] === 8 || item['taskType'] === 5 || item['taskType'] === 9) {
+  if (
+    item["taskType"] === 6 ||
+    item["taskType"] === 8 ||
+    item["taskType"] === 5 ||
+    item["taskType"] === 9
+  ) {
     //浏览精选活动任务
     await necklace_getTask(item.id);
-    $.taskItems = $.taskItems.filter(value => !!value && value['status'] === 0);
+    $.taskItems = $.taskItems.filter(
+      (value) => !!value && value["status"] === 0
+    );
     for (let vo of $.taskItems) {
-      console.log(`浏览精选活动 【${vo['title']}】`);
-      await necklace_startTask(item.id, 'necklace_reportTask', vo['id']);
+      console.log(`浏览精选活动 【${vo["title"]}】`);
+      await necklace_startTask(item.id, "necklace_reportTask", vo["id"]);
     }
   }
   //首页浏览XX秒的任务
-  console.log(item)
-  if (item['taskType'] === 3) await doAppTask('3', item.id);
-  if (item['taskType'] === 4) await doAppTask('4', item.id);
+  console.log(item);
+  if (item["taskType"] === 3) await doAppTask("3", item.id);
+  if (item["taskType"] === 4) await doAppTask("4", item.id);
 }
 //每日签到福利
 function necklace_sign() {
-  return new Promise(async resolve => {
-    $.action = 'sign'
-    const body = await ZooFaker.getBody($)
+  return new Promise(async (resolve) => {
+    $.action = "sign";
+    const body = await ZooFaker.get_risk_result($);
     // const body = {
     //   currentDate: $.lastRequestTime.replace(/:/g, "%3A"),
     // }
     $.post(taskPostUrl("necklace_sign", body), async (err, resp, data) => {
       try {
         if (err) {
-          console.log(`${JSON.stringify(err)}`)
-          console.log(`${$.name} API请求失败，请检查网路重试`)
+          console.log(`${JSON.stringify(err)}`);
+          console.log(`${$.name} API请求失败，请检查网路重试`);
         } else {
           if (safeGet(data)) {
             data = JSON.parse(data);
             if (data.rtn_code === 0) {
               if (data.data.biz_code === 0) {
-                console.log(`签到成功，时间：${new Date(new Date().getTime() + new Date().getTimezoneOffset()*60*1000 + 8*60*60*1000).toLocaleString()}`)
+                console.log(
+                  `签到成功，时间：${new Date(
+                    new Date().getTime() +
+                      new Date().getTimezoneOffset() * 60 * 1000 +
+                      8 * 60 * 60 * 1000
+                  ).toLocaleString()}`
+                );
                 // $.taskConfigVos = data.data.result.taskConfigVos;
                 // $.exchangeGiftConfigs = data.data.result.exchangeGiftConfigs;
               }
@@ -184,103 +262,123 @@ function necklace_sign() {
           }
         }
       } catch (e) {
-        $.logErr(e, resp)
+        $.logErr(e, resp);
       } finally {
         resolve(data);
       }
-    })
-  })
+    });
+  });
 }
 //兑换无门槛红包
 function necklace_exchangeGift(scoreNums) {
-  return new Promise(resolve => {
+  return new Promise((resolve) => {
     const body = {
       scoreNums,
-      "giftConfigId": 31,
+      giftConfigId: 31,
       currentDate: $.lastRequestTime.replace(/:/g, "%3A"),
-    }
-    $.post(taskPostUrl("necklace_exchangeGift", body), async (err, resp, data) => {
-      try {
-        if (err) {
-          console.log(`${JSON.stringify(err)}`)
-          console.log(`${$.name} API请求失败，请检查网路重试`)
-        } else {
-          if (safeGet(data)) {
-            data = JSON.parse(data);
-            if (data.rtn_code === 0) {
-              if (data.data.biz_code === 0) {
-                const { result } = data.data;
-                message += `${result.redpacketTitle}：${result.redpacketAmount}元兑换成功\n`;
-                message += `红包有效期：${new Date(result.endTime + new Date().getTimezoneOffset()*60*1000 + 8*60*60*1000).toLocaleString('zh', {hour12: false})}`;
-                console.log(message)
+    };
+    $.post(
+      taskPostUrl("necklace_exchangeGift", body),
+      async (err, resp, data) => {
+        try {
+          if (err) {
+            console.log(`${JSON.stringify(err)}`);
+            console.log(`${$.name} API请求失败，请检查网路重试`);
+          } else {
+            if (safeGet(data)) {
+              data = JSON.parse(data);
+              if (data.rtn_code === 0) {
+                if (data.data.biz_code === 0) {
+                  const { result } = data.data;
+                  message += `${result.redpacketTitle}：${result.redpacketAmount}元兑换成功\n`;
+                  message += `红包有效期：${new Date(
+                    result.endTime +
+                      new Date().getTimezoneOffset() * 60 * 1000 +
+                      8 * 60 * 60 * 1000
+                  ).toLocaleString("zh", { hour12: false })}`;
+                  console.log(message);
+                }
               }
             }
           }
+        } catch (e) {
+          $.logErr(e, resp);
+        } finally {
+          resolve(data);
         }
-      } catch (e) {
-        $.logErr(e, resp)
-      } finally {
-        resolve(data);
       }
-    })
-  })
+    );
+  });
 }
 //领取奖励
 function necklace_chargeScores(bubleId) {
-  return new Promise(async resolve => {
-    $.id = bubleId
-    $.action = 'chargeScores'
-    const body=await ZooFaker.getBody($)
+  return new Promise(async (resolve) => {
+    $.id = bubleId;
+    $.action = "chargeScores";
+    const body = await ZooFaker.get_risk_result($);
     // const body = {
     //   bubleId,
     //   currentDate: $.lastRequestTime.replace(/:/g, "%3A"),
     // }
-    $.post(taskPostUrl("necklace_chargeScores", body), async (err, resp, data) => {
-      try {
-        if (err) {
-          console.log(`${JSON.stringify(err)}`)
-          console.log(`${$.name} API请求失败，请检查网路重试`)
-        } else {
-          if (safeGet(data)) {
-            data = JSON.parse(data);
-            if (data.rtn_code === 0) {
-              if (data.data.biz_code === 0) {
-                // $.taskConfigVos = data.data.result.taskConfigVos;
-                // $.exchangeGiftConfigs = data.data.result.exchangeGiftConfigs;
+    $.post(
+      taskPostUrl("necklace_chargeScores", body),
+      async (err, resp, data) => {
+        try {
+          if (err) {
+            console.log(`${JSON.stringify(err)}`);
+            console.log(`${$.name} API请求失败，请检查网路重试`);
+          } else {
+            if (safeGet(data)) {
+              data = JSON.parse(data);
+              if (data.rtn_code === 0) {
+                if (data.data.biz_code === 0) {
+                  // $.taskConfigVos = data.data.result.taskConfigVos;
+                  // $.exchangeGiftConfigs = data.data.result.exchangeGiftConfigs;
+                }
+              } else {
+                console.log(`领取点点券失败：${JSON.stringify(data)}\n`);
               }
-            } else {
-              console.log(`领取点点券失败：${JSON.stringify(data)}\n`)
             }
           }
+        } catch (e) {
+          $.logErr(e, resp);
+        } finally {
+          resolve(data);
         }
-      } catch (e) {
-        $.logErr(e, resp)
-      } finally {
-        resolve(data);
       }
-    })
-  })
+    );
+  });
 }
-function necklace_startTask(taskId, functionId = 'necklace_startTask', itemId = "") {
-  return new Promise(async resolve => {
+function necklace_startTask(
+  taskId,
+  functionId = "necklace_startTask",
+  itemId = ""
+) {
+  return new Promise(async (resolve) => {
     let body = {
       taskId,
       currentDate: $.lastRequestTime.replace(/:/g, "%3A"),
-    }
-    if(functionId == 'necklace_startTask'){
-      $.id = taskId
-      $.action = 'startTask'
-      body = await ZooFaker.getBody($)
-    }else{
-      if (itemId) body['itemId'] = itemId;
+    };
+    if (functionId == "necklace_startTask") {
+      $.id = taskId;
+      $.action = "startTask";
+      body = await ZooFaker.get_risk_result($);
+    } else {
+      if (itemId) body["itemId"] = itemId;
     }
     $.post(taskPostUrl(functionId, body), async (err, resp, data) => {
       try {
         if (err) {
-          console.log(`${JSON.stringify(err)}`)
-          console.log(`${$.name} API请求失败，请检查网路重试`)
+          console.log(`${JSON.stringify(err)}`);
+          console.log(`${$.name} API请求失败，请检查网路重试`);
         } else {
-          console.log(`${functionId === 'necklace_startTask' ? '领取任务结果' : '做任务结果'}：${data}`);
+          console.log(
+            `${
+              functionId === "necklace_startTask"
+                ? "领取任务结果"
+                : "做任务结果"
+            }：${data}`
+          );
           if (safeGet(data)) {
             data = JSON.parse(data);
             if (data.rtn_code === 0) {
@@ -292,25 +390,25 @@ function necklace_startTask(taskId, functionId = 'necklace_startTask', itemId = 
           }
         }
       } catch (e) {
-        $.logErr(e, resp)
+        $.logErr(e, resp);
       } finally {
         resolve();
       }
-    })
-  })
+    });
+  });
 }
 function necklace_getTask(taskId) {
-  return new Promise(resolve => {
+  return new Promise((resolve) => {
     const body = {
       taskId,
       currentDate: $.lastRequestTime.replace(/:/g, "%3A"),
-    }
+    };
     $.taskItems = [];
     $.post(taskPostUrl("necklace_getTask", body), async (err, resp, data) => {
       try {
         if (err) {
-          console.log(`${JSON.stringify(err)}`)
-          console.log(`${$.name} API请求失败，请检查网路重试`)
+          console.log(`${JSON.stringify(err)}`);
+          console.log(`${$.name} API请求失败，请检查网路重试`);
         } else {
           if (safeGet(data)) {
             data = JSON.parse(data);
@@ -322,24 +420,24 @@ function necklace_getTask(taskId) {
           }
         }
       } catch (e) {
-        $.logErr(e, resp)
+        $.logErr(e, resp);
       } finally {
         resolve();
       }
-    })
-  })
+    });
+  });
 }
 
 function necklace_homePage() {
   $.taskConfigVos = [];
   $.bubbles = [];
   $.signInfo = {};
-  return new Promise(resolve => {
-    $.post(taskPostUrl('necklace_homePage'), async (err, resp, data) => {
+  return new Promise((resolve) => {
+    $.post(taskPostUrl("necklace_homePage"), async (err, resp, data) => {
       try {
         if (err) {
-          console.log(`${JSON.stringify(err)}`)
-          console.log(`${$.name} API请求失败，请检查网路重试`)
+          console.log(`${JSON.stringify(err)}`);
+          console.log(`${$.name} API请求失败，请检查网路重试`);
         } else {
           if (safeGet(data)) {
             data = JSON.parse(data);
@@ -356,157 +454,182 @@ function necklace_homePage() {
           }
         }
       } catch (e) {
-        $.logErr(e, resp)
+        $.logErr(e, resp);
       } finally {
         resolve();
       }
-    })
-  })
+    });
+  });
 }
 
-async function doAppTask(type = '3', id) {
-  console.log(id)
-  let functionId = 'getCcTaskList'
-  let body = "area=16_1315_3486_59648&body=%7B%22pageClickKey%22%3A%22CouponCenter%22%2C%22shshshfpb%22%3A%22dPH6zeJy%5C/HFogCIf0ZGFYqSDOShGwmpjVOPM%5C/ViCGC5fgBLL9JoI9mjgUt46vjSFeSkmU9DZLEjFaeFTWBj4Axg%3D%3D%22%2C%22eid%22%3A%22eidIeb54812323sf%2BAJEbj5LR0Kf6GUzM9DKXvgCReTpKTRyRwiuxY%5C/uvRHBqebAAKCAXkJFzhWtPj5uoHxNeK3DjTumb%2BrfXOt1w0%5C/dGmOJzfbLuyNo%22%2C%22childActivityUrl%22%3A%22openapp.jdmobile%253a%252f%252fvirtual%253fparams%253d%257b%255c%2522category%255c%2522%253a%255c%2522jump%255c%2522%252c%255c%2522des%255c%2522%253a%255c%2522couponCenter%255c%2522%257d%22%2C%22lat%22%3A%2224.49441271645999%22%2C%22globalLat%22%3A%2224.49335%22%2C%22lng%22%3A%22118.1447713674174%22%2C%22globalLng%22%3A%22118.1423%22%7D&build=167707&client=apple&clientVersion=10.0.4&d_brand=apple&d_model=iPhone12%2C1&eid=eidIeb54812323sf%2BAJEbj5LR0Kf6GUzM9DKXvgCReTpKTRyRwiuxY/uvRHBqebAAKCAXkJFzhWtPj5uoHxNeK3DjTumb%2BrfXOt1w0/dGmOJzfbLuyNo&isBackground=N&joycious=70&lang=zh_CN&networkType=wifi&networklibtype=JDNetworkBaseAF&openudid=8a0d1837f803a12eb217fcf5e1f8769cbb3f898d&osVersion=14.3&partner=apple&rfs=0000&scope=11&screen=828%2A1792&sign=75afd018b5751e9ac4cba0b51b8adb3c&st=1624535152771&sv=101&uemps=0-0&uts=0f31TVRjBStsz%2BC9YKuTtbGZPv/xrvQQdSUKvavez1nEbzXO4dLo%2BXEvUHAXAd0VPmZqkUNAf2yO/fBM7ImhPYnyBrotzw06Kk7qP6mG42fhA1t5BkW3ZGLaQgPtiuosYOHPMyHpg%2BJ9ZQBP4g3zsSFq2DUWsTOZbb85I4ThMCgqvymyLl48ebUg7aQTle9CfTJVWu5gx0YZ/ScklgN9Pg%3D%3D&uuid=hjudwgohxzVu96krv/T6Hg%3D%3D&wifiBssid=796606e8e181aa5865ec20728a27238b"
+async function doAppTask(type = "3", id) {
+  console.log(id);
+  let functionId = "getCcTaskList";
+  let body =
+    "area=16_1315_3486_59648&body=%7B%22pageClickKey%22%3A%22CouponCenter%22%2C%22shshshfpb%22%3A%22dPH6zeJy%5C/HFogCIf0ZGFYqSDOShGwmpjVOPM%5C/ViCGC5fgBLL9JoI9mjgUt46vjSFeSkmU9DZLEjFaeFTWBj4Axg%3D%3D%22%2C%22eid%22%3A%22eidIeb54812323sf%2BAJEbj5LR0Kf6GUzM9DKXvgCReTpKTRyRwiuxY%5C/uvRHBqebAAKCAXkJFzhWtPj5uoHxNeK3DjTumb%2BrfXOt1w0%5C/dGmOJzfbLuyNo%22%2C%22childActivityUrl%22%3A%22openapp.jdmobile%253a%252f%252fvirtual%253fparams%253d%257b%255c%2522category%255c%2522%253a%255c%2522jump%255c%2522%252c%255c%2522des%255c%2522%253a%255c%2522couponCenter%255c%2522%257d%22%2C%22lat%22%3A%2224.49441271645999%22%2C%22globalLat%22%3A%2224.49335%22%2C%22lng%22%3A%22118.1447713674174%22%2C%22globalLng%22%3A%22118.1423%22%7D&build=167707&client=apple&clientVersion=10.0.4&d_brand=apple&d_model=iPhone12%2C1&eid=eidIeb54812323sf%2BAJEbj5LR0Kf6GUzM9DKXvgCReTpKTRyRwiuxY/uvRHBqebAAKCAXkJFzhWtPj5uoHxNeK3DjTumb%2BrfXOt1w0/dGmOJzfbLuyNo&isBackground=N&joycious=70&lang=zh_CN&networkType=wifi&networklibtype=JDNetworkBaseAF&openudid=8a0d1837f803a12eb217fcf5e1f8769cbb3f898d&osVersion=14.3&partner=apple&rfs=0000&scope=11&screen=828%2A1792&sign=75afd018b5751e9ac4cba0b51b8adb3c&st=1624535152771&sv=101&uemps=0-0&uts=0f31TVRjBStsz%2BC9YKuTtbGZPv/xrvQQdSUKvavez1nEbzXO4dLo%2BXEvUHAXAd0VPmZqkUNAf2yO/fBM7ImhPYnyBrotzw06Kk7qP6mG42fhA1t5BkW3ZGLaQgPtiuosYOHPMyHpg%2BJ9ZQBP4g3zsSFq2DUWsTOZbb85I4ThMCgqvymyLl48ebUg7aQTle9CfTJVWu5gx0YZ/ScklgN9Pg%3D%3D&uuid=hjudwgohxzVu96krv/T6Hg%3D%3D&wifiBssid=796606e8e181aa5865ec20728a27238b";
   await getCcTaskList(functionId, body, type);
-  if(Number(id) == 229){
-    body = `area=16_1315_3486_59648&body=%7B%22shshshfpb%22%3A%22dPH6zeJy%5C/HFogCIf0ZGFYqSDOShGwmpjVOPM%5C/ViCGC5fgBLL9JoI9mjgUt46vjSFeSkmU9DZLEjFaeFTWBj4Axg%3D%3D%22%2C%22globalLng%22%3A%22118.1423%22%2C%22globalLat%22%3A%2224.49335%22%2C%22monitorSource%22%3A%22ccgroup_ios_index_task%22%2C%22monitorRefer%22%3A%22%22%2C%22taskType%22%3A%222%22%2C%22childActivityUrl%22%3A%22openapp.jdmobile%253a%252f%252fvirtual%253fparams%253d%257b%255c%2522category%255c%2522%253a%255c%2522jump%255c%2522%252c%255c%2522des%255c%2522%253a%255c%2522couponCenter%255c%2522%257d%22%2C%22pageClickKey%22%3A%22CouponCenter%22%2C%22lat%22%3A%2224.49441271645999%22%2C%22taskId%22%3A%22necklace_229%22%2C%22lng%22%3A%22118.1447713674174%22%2C%22eid%22%3A%22eidIeb54812323sf%2BAJEbj5LR0Kf6GUzM9DKXvgCReTpKTRyRwiuxY%5C/uvRHBqebAAKCAXkJFzhWtPj5uoHxNeK3DjTumb%2BrfXOt1w0%5C/dGmOJzfbLuyNo%22%7D&build=167707&client=apple&clientVersion=10.0.4&d_brand=apple&d_model=iPhone12%2C1&eid=eidIeb54812323sf%2BAJEbj5LR0Kf6GUzM9DKXvgCReTpKTRyRwiuxY/uvRHBqebAAKCAXkJFzhWtPj5uoHxNeK3DjTumb%2BrfXOt1w0/dGmOJzfbLuyNo&isBackground=N&joycious=70&lang=zh_CN&networkType=wifi&networklibtype=JDNetworkBaseAF&openudid=8a0d1837f803a12eb217fcf5e1f8769cbb3f898d&osVersion=14.3&partner=apple&rfs=0000&scope=11&screen=828%2A1792&sign=57453a76ffe9440d7961b05405fb4f13&st=1624535165882&sv=110&uemps=0-0&uts=0f31TVRjBStsz%2BC9YKuTtbGZPv/xrvQQdSUKvavez1nEbzXO4dLo%2BXEvUHAXAd0VPmZqkUNAf2yO/fBM7ImhPYnyBrotzw06Kk7qP6mG42fhA1t5BkW3ZGLaQgPtiuosYOHPMyHpg%2BJ9ZQBP4g3zsSFq2DUWsTOZbb85I4ThMCgqvymyLl48ebUg7aQTle9CfTJVWu5gx0YZ/ScklgN9Pg%3D%3D&uuid=hjudwgohxzVu96krv/T6Hg%3D%3D&wifiBssid=796606e8e181aa5865ec20728a27238b`
-  }else if(Number(id) == 260){
-    body = `area=16_1315_3486_59648&body=%7B%22shshshfpb%22%3A%22hRRVbEkLST%2BoqUB6fhir%2BfMoJS814u0eqASGoy8xq0vV1m9X9zKoAVYtaZjcO4UsQaWNyUrMVkZK5HBZ5aJo5zQ%3D%3D%22%2C%22globalLng%22%3A%22118.1423%22%2C%22globalLat%22%3A%2224.49335%22%2C%22monitorSource%22%3A%22ccgroup_ios_index_task%22%2C%22monitorRefer%22%3A%22%22%2C%22taskType%22%3A%222%22%2C%22childActivityUrl%22%3A%22openapp.jdmobile%253a%252f%252fvirtual%253fparams%253d%257b%255c%2522category%255c%2522%253a%255c%2522jump%255c%2522%252c%255c%2522des%255c%2522%253a%255c%2522couponCenter%255c%2522%257d%22%2C%22pageClickKey%22%3A%22CouponCenter%22%2C%22lat%22%3A%2224.49435886957707%22%2C%22taskId%22%3A%22necklace_260%22%2C%22lng%22%3A%22118.144791637343%22%2C%22eid%22%3A%22eidI0faa812328s1AvGqBpW%2BSouJeXiZIORi9gLxq36FvXhk6SQPmtUFPglIaTIxGXnVzVAwHm%5C/QEwj14SR2vxSgH5tw4rWGdLJtHzSh8bloRLoX8mFY%22%7D&build=167568&client=apple&clientVersion=9.4.2&d_brand=apple&d_model=iPhone12%2C1&eid=eidI0faa812328s1AvGqBpW%2BSouJeXiZIORi9gLxq36FvXhk6SQPmtUFPglIaTIxGXnVzVAwHm/QEwj14SR2vxSgH5tw4rWGdLJtHzSh8bloRLoX8mFY&isBackground=N&joycious=51&lang=zh_CN&networkType=wifi&networklibtype=JDNetworkBaseAF&openudid=ebf4ce8ecbb641054b00c00483b1cee85660d196&osVersion=14.3&partner=apple&rfs=0000&scope=11&screen=828%2A1792&sign=93249982ced7ec850c69de8b3e859dab&st=1624610691429&sv=110&uts=0f31TVRjBSsqndu4/jgUPz6uymy50MQJSTfJm3Nbyn7GqB7OtrJRuHoZMYV%2Bs0mkEZsSwjxzwlDPXLeepml5BnM5XPZQmPVomYBHlkSfLJWR5D1y0Ovgf60fpjMS2gXL5aLh50cNO3cmx2GvVTaTeYxvRUl%2BpaW7HXsuBhxJgA6pUzd01tBX9yiFih8xvToesg91Nl8KcWGYzXJ2/hWKXg%3D%3D&uuid=hjudwgohxzVu96krv/T6Hg%3D%3D&wifiBssid=796606e8e181aa5865ec20728a27238b`
-  }else if(Number(id) == 267){
-    body = `area=16_1315_3486_59648&body=%7B%22shshshfpb%22%3A%22dPH6zeJy%5C/HFogCIf0ZGFYqSDOShGwmpjVOPM%5C/ViCGC5fgBLL9JoI9mjgUt46vjSFeSkmU9DZLEjFaeFTWBj4Axg%3D%3D%22%2C%22globalLng%22%3A%22118.1423%22%2C%22globalLat%22%3A%2224.49335%22%2C%22monitorSource%22%3A%22ccgroup_ios_index_task%22%2C%22monitorRefer%22%3A%22%22%2C%22taskType%22%3A%222%22%2C%22childActivityUrl%22%3A%22openapp.jdmobile%253a%252f%252fvirtual%253fparams%253d%257b%255c%2522category%255c%2522%253a%255c%2522jump%255c%2522%252c%255c%2522des%255c%2522%253a%255c%2522couponCenter%255c%2522%257d%22%2C%22pageClickKey%22%3A%22CouponCenter%22%2C%22lat%22%3A%2224.49437467152672%22%2C%22taskId%22%3A%22necklace_267%22%2C%22lng%22%3A%22118.1447981202065%22%2C%22eid%22%3A%22eidIeb54812323sf%2BAJEbj5LR0Kf6GUzM9DKXvgCReTpKTRyRwiuxY%5C/uvRHBqebAAKCAXkJFzhWtPj5uoHxNeK3DjTumb%2BrfXOt1w0%5C/dGmOJzfbLuyNo%22%7D&build=167707&client=apple&clientVersion=10.0.4&d_brand=apple&d_model=iPhone12%2C1&eid=eidIeb54812323sf%2BAJEbj5LR0Kf6GUzM9DKXvgCReTpKTRyRwiuxY/uvRHBqebAAKCAXkJFzhWtPj5uoHxNeK3DjTumb%2BrfXOt1w0/dGmOJzfbLuyNo&isBackground=N&joycious=70&lang=zh_CN&networkType=wifi&networklibtype=JDNetworkBaseAF&openudid=8a0d1837f803a12eb217fcf5e1f8769cbb3f898d&osVersion=14.3&partner=apple&rfs=0000&scope=11&screen=828%2A1792&sign=64e2361aa2a81068930c0c3325fd45ef&st=1624950832218&sv=111&uemps=0-0&uts=0f31TVRjBSsMGLCxYS3UIqlZl8dbXmnuZ4ayfhN43Ot1QaV41onc66czNm7agt5ZxuI/ZiEjTyLMd9C68bu6j250BhqFBz9aHYMZHRsZRt99av4Tsia77GOWxlDaSYf5ixm0pZhBRR4OQ%2BUBD6%2BPW4wCMOS5CO3/VI2cFHPfi%2BdGNinbfncIha86vGUGuGKiHSAf4rUFY4wrafX6Rksw7g%3D%3D&uuid=hjudwgohxzVu96krv/T6Hg%3D%3D&wifiBssid=796606e8e181aa5865ec20728a27238b`
+  if (Number(id) == 229) {
+    body = `area=16_1315_3486_59648&body=%7B%22shshshfpb%22%3A%22dPH6zeJy%5C/HFogCIf0ZGFYqSDOShGwmpjVOPM%5C/ViCGC5fgBLL9JoI9mjgUt46vjSFeSkmU9DZLEjFaeFTWBj4Axg%3D%3D%22%2C%22globalLng%22%3A%22118.1423%22%2C%22globalLat%22%3A%2224.49335%22%2C%22monitorSource%22%3A%22ccgroup_ios_index_task%22%2C%22monitorRefer%22%3A%22%22%2C%22taskType%22%3A%222%22%2C%22childActivityUrl%22%3A%22openapp.jdmobile%253a%252f%252fvirtual%253fparams%253d%257b%255c%2522category%255c%2522%253a%255c%2522jump%255c%2522%252c%255c%2522des%255c%2522%253a%255c%2522couponCenter%255c%2522%257d%22%2C%22pageClickKey%22%3A%22CouponCenter%22%2C%22lat%22%3A%2224.49441271645999%22%2C%22taskId%22%3A%22necklace_229%22%2C%22lng%22%3A%22118.1447713674174%22%2C%22eid%22%3A%22eidIeb54812323sf%2BAJEbj5LR0Kf6GUzM9DKXvgCReTpKTRyRwiuxY%5C/uvRHBqebAAKCAXkJFzhWtPj5uoHxNeK3DjTumb%2BrfXOt1w0%5C/dGmOJzfbLuyNo%22%7D&build=167707&client=apple&clientVersion=10.0.4&d_brand=apple&d_model=iPhone12%2C1&eid=eidIeb54812323sf%2BAJEbj5LR0Kf6GUzM9DKXvgCReTpKTRyRwiuxY/uvRHBqebAAKCAXkJFzhWtPj5uoHxNeK3DjTumb%2BrfXOt1w0/dGmOJzfbLuyNo&isBackground=N&joycious=70&lang=zh_CN&networkType=wifi&networklibtype=JDNetworkBaseAF&openudid=8a0d1837f803a12eb217fcf5e1f8769cbb3f898d&osVersion=14.3&partner=apple&rfs=0000&scope=11&screen=828%2A1792&sign=57453a76ffe9440d7961b05405fb4f13&st=1624535165882&sv=110&uemps=0-0&uts=0f31TVRjBStsz%2BC9YKuTtbGZPv/xrvQQdSUKvavez1nEbzXO4dLo%2BXEvUHAXAd0VPmZqkUNAf2yO/fBM7ImhPYnyBrotzw06Kk7qP6mG42fhA1t5BkW3ZGLaQgPtiuosYOHPMyHpg%2BJ9ZQBP4g3zsSFq2DUWsTOZbb85I4ThMCgqvymyLl48ebUg7aQTle9CfTJVWu5gx0YZ/ScklgN9Pg%3D%3D&uuid=hjudwgohxzVu96krv/T6Hg%3D%3D&wifiBssid=796606e8e181aa5865ec20728a27238b`;
+  } else if (Number(id) == 260) {
+    body = `area=16_1315_3486_59648&body=%7B%22shshshfpb%22%3A%22hRRVbEkLST%2BoqUB6fhir%2BfMoJS814u0eqASGoy8xq0vV1m9X9zKoAVYtaZjcO4UsQaWNyUrMVkZK5HBZ5aJo5zQ%3D%3D%22%2C%22globalLng%22%3A%22118.1423%22%2C%22globalLat%22%3A%2224.49335%22%2C%22monitorSource%22%3A%22ccgroup_ios_index_task%22%2C%22monitorRefer%22%3A%22%22%2C%22taskType%22%3A%222%22%2C%22childActivityUrl%22%3A%22openapp.jdmobile%253a%252f%252fvirtual%253fparams%253d%257b%255c%2522category%255c%2522%253a%255c%2522jump%255c%2522%252c%255c%2522des%255c%2522%253a%255c%2522couponCenter%255c%2522%257d%22%2C%22pageClickKey%22%3A%22CouponCenter%22%2C%22lat%22%3A%2224.49435886957707%22%2C%22taskId%22%3A%22necklace_260%22%2C%22lng%22%3A%22118.144791637343%22%2C%22eid%22%3A%22eidI0faa812328s1AvGqBpW%2BSouJeXiZIORi9gLxq36FvXhk6SQPmtUFPglIaTIxGXnVzVAwHm%5C/QEwj14SR2vxSgH5tw4rWGdLJtHzSh8bloRLoX8mFY%22%7D&build=167568&client=apple&clientVersion=9.4.2&d_brand=apple&d_model=iPhone12%2C1&eid=eidI0faa812328s1AvGqBpW%2BSouJeXiZIORi9gLxq36FvXhk6SQPmtUFPglIaTIxGXnVzVAwHm/QEwj14SR2vxSgH5tw4rWGdLJtHzSh8bloRLoX8mFY&isBackground=N&joycious=51&lang=zh_CN&networkType=wifi&networklibtype=JDNetworkBaseAF&openudid=ebf4ce8ecbb641054b00c00483b1cee85660d196&osVersion=14.3&partner=apple&rfs=0000&scope=11&screen=828%2A1792&sign=93249982ced7ec850c69de8b3e859dab&st=1624610691429&sv=110&uts=0f31TVRjBSsqndu4/jgUPz6uymy50MQJSTfJm3Nbyn7GqB7OtrJRuHoZMYV%2Bs0mkEZsSwjxzwlDPXLeepml5BnM5XPZQmPVomYBHlkSfLJWR5D1y0Ovgf60fpjMS2gXL5aLh50cNO3cmx2GvVTaTeYxvRUl%2BpaW7HXsuBhxJgA6pUzd01tBX9yiFih8xvToesg91Nl8KcWGYzXJ2/hWKXg%3D%3D&uuid=hjudwgohxzVu96krv/T6Hg%3D%3D&wifiBssid=796606e8e181aa5865ec20728a27238b`;
+  } else if (Number(id) == 267) {
+    body = `area=16_1315_3486_59648&body=%7B%22shshshfpb%22%3A%22dPH6zeJy%5C/HFogCIf0ZGFYqSDOShGwmpjVOPM%5C/ViCGC5fgBLL9JoI9mjgUt46vjSFeSkmU9DZLEjFaeFTWBj4Axg%3D%3D%22%2C%22globalLng%22%3A%22118.1423%22%2C%22globalLat%22%3A%2224.49335%22%2C%22monitorSource%22%3A%22ccgroup_ios_index_task%22%2C%22monitorRefer%22%3A%22%22%2C%22taskType%22%3A%222%22%2C%22childActivityUrl%22%3A%22openapp.jdmobile%253a%252f%252fvirtual%253fparams%253d%257b%255c%2522category%255c%2522%253a%255c%2522jump%255c%2522%252c%255c%2522des%255c%2522%253a%255c%2522couponCenter%255c%2522%257d%22%2C%22pageClickKey%22%3A%22CouponCenter%22%2C%22lat%22%3A%2224.49437467152672%22%2C%22taskId%22%3A%22necklace_267%22%2C%22lng%22%3A%22118.1447981202065%22%2C%22eid%22%3A%22eidIeb54812323sf%2BAJEbj5LR0Kf6GUzM9DKXvgCReTpKTRyRwiuxY%5C/uvRHBqebAAKCAXkJFzhWtPj5uoHxNeK3DjTumb%2BrfXOt1w0%5C/dGmOJzfbLuyNo%22%7D&build=167707&client=apple&clientVersion=10.0.4&d_brand=apple&d_model=iPhone12%2C1&eid=eidIeb54812323sf%2BAJEbj5LR0Kf6GUzM9DKXvgCReTpKTRyRwiuxY/uvRHBqebAAKCAXkJFzhWtPj5uoHxNeK3DjTumb%2BrfXOt1w0/dGmOJzfbLuyNo&isBackground=N&joycious=70&lang=zh_CN&networkType=wifi&networklibtype=JDNetworkBaseAF&openudid=8a0d1837f803a12eb217fcf5e1f8769cbb3f898d&osVersion=14.3&partner=apple&rfs=0000&scope=11&screen=828%2A1792&sign=64e2361aa2a81068930c0c3325fd45ef&st=1624950832218&sv=111&uemps=0-0&uts=0f31TVRjBSsMGLCxYS3UIqlZl8dbXmnuZ4ayfhN43Ot1QaV41onc66czNm7agt5ZxuI/ZiEjTyLMd9C68bu6j250BhqFBz9aHYMZHRsZRt99av4Tsia77GOWxlDaSYf5ixm0pZhBRR4OQ%2BUBD6%2BPW4wCMOS5CO3/VI2cFHPfi%2BdGNinbfncIha86vGUGuGKiHSAf4rUFY4wrafX6Rksw7g%3D%3D&uuid=hjudwgohxzVu96krv/T6Hg%3D%3D&wifiBssid=796606e8e181aa5865ec20728a27238b`;
+  } else if (Number(id) == 273) {
+    body = `area=16_1315_3486_59648&body=%7B%22shshshfpb%22%3A%22dPH6zeJy%5C/HFogCIf0ZGFYqSDOShGwmpjVOPM%5C/ViCGC5fgBLL9JoI9mjgUt46vjSFeSkmU9DZLEjFaeFTWBj4Axg%3D%3D%22%2C%22globalLng%22%3A%22118.1423%22%2C%22globalLat%22%3A%2224.49335%22%2C%22monitorSource%22%3A%22ccgroup_ios_index_task%22%2C%22monitorRefer%22%3A%22%22%2C%22taskType%22%3A%222%22%2C%22childActivityUrl%22%3A%22openapp.jdmobile%253a%252f%252fvirtual%253fparams%253d%257b%255c%2522category%255c%2522%253a%255c%2522jump%255c%2522%252c%255c%2522des%255c%2522%253a%255c%2522couponCenter%255c%2522%257d%22%2C%22pageClickKey%22%3A%22CouponCenter%22%2C%22lat%22%3A%2224.494383110087%22%2C%22taskId%22%3A%22necklace_273%22%2C%22lng%22%3A%22118.1447767134287%22%2C%22eid%22%3A%22eidIeb54812323sf%2BAJEbj5LR0Kf6GUzM9DKXvgCReTpKTRyRwiuxY%5C/uvRHBqebAAKCAXkJFzhWtPj5uoHxNeK3DjTumb%2BrfXOt1w0%5C/dGmOJzfbLuyNo%22%7D&build=167741&client=apple&clientVersion=10.0.8&d_brand=apple&d_model=iPhone12%2C1&eid=eidIeb54812323sf%2BAJEbj5LR0Kf6GUzM9DKXvgCReTpKTRyRwiuxY/uvRHBqebAAKCAXkJFzhWtPj5uoHxNeK3DjTumb%2BrfXOt1w0/dGmOJzfbLuyNo&isBackground=N&joycious=71&lang=zh_CN&networkType=wifi&networklibtype=JDNetworkBaseAF&openudid=8a0d1837f803a12eb217fcf5e1f8769cbb3f898d&osVersion=14.3&partner=apple&rfs=0000&scope=11&screen=828%2A1792&sign=c5f1773c699259a32596629ff17c77af&st=1627034890276&sv=101&uemps=0-0&uts=0f31TVRjBSuc9dw/M%2Bj%2BYjMPuoLDUbUPjPag%2BZ5OSbdXPyIGbVBxfPOWG8Z24KZdpryfyfoAUE5oYfYi1SuqGZ5atF1ARqzdFrPeo%2BZQVMmuwn/nYDGsLdj0Q9HcidhJXAaY1ti0j023Mv4f/ls51fJl5ypecBgw2sWtd8KiGQncYOe9GxCz6tlkHuSHDk3zN6hF%2BN0deRJOqJP8OOrJog%3D%3D&uuid=hjudwgohxzVu96krv/T6Hg%3D%3D&wifiBssid=796606e8e181aa5865ec20728a27238b`;
   }
-  if (type === '4') {
+  if (type === "4") {
     // https://h5.m.jd.com/babelDiy/Zeus/2fDwtAwAQX1PJh51f3UXzLhKiD86/index.html
-    console.log('需等待30秒')
-    functionId = 'reportSinkTask'
-    body = `&appid=XPMSGC2019&monitorSource=&uuid=16245525345801334814959&body=%7B%22platformType%22%3A%221%22%2C%22taskId%22%3A%22necklace_${id}%22%7D&client=m&clientVersion=4.6.0&area=16_1315_1316_59175&geo=%5Bobject%20Object%5D`
+    console.log("需等待30秒");
+    functionId = "reportSinkTask";
+    body = `&appid=XPMSGC2019&monitorSource=&uuid=16245525345801334814959&body=%7B%22platformType%22%3A%221%22%2C%22taskId%22%3A%22necklace_${id}%22%7D&client=m&clientVersion=4.6.0&area=16_1315_1316_59175&geo=%5Bobject%20Object%5D`;
     await $.wait(15000);
   } else {
     // https://h5.m.jd.com/babelDiy/Zeus/3TcqzbLKXwyiGDzrn5nKV7sSEC8N/index.html
-    console.log('需等待15秒')
-    functionId = 'reportCcTask'
+    console.log("需等待15秒");
+    functionId = "reportCcTask";
   }
   await $.wait(15500);
   await getCcTaskList(functionId, body, type);
 }
-function getCcTaskList(functionId, body, type = '3') {
-  let url = `https://api.m.jd.com/client.action?functionId=${functionId}`
-  return new Promise(resolve => {
-    if (functionId === 'getCcTaskList') {
-      
+function getCcTaskList(functionId, body, type = "3") {
+  let url = `https://api.m.jd.com/client.action?functionId=${functionId}`;
+  return new Promise((resolve) => {
+    if (functionId === "getCcTaskList") {
     }
-    if (functionId === 'reportCcTask'){
-      
+    if (functionId === "reportCcTask") {
     }
-    if (functionId === 'reportSinkTask'){
-      url += body
-      body = ''
+    if (functionId === "reportSinkTask") {
+      url += body;
+      body = "";
     }
     // if (type === '4' && functionId === 'reportCcTask'){
-      // url = `https://api.m.jd.com/client.action?functionId=${functionId}&body=${escape(JSON.stringify(body))}&uuid=8888888&client=apple&clientVersion=9.4.1&st=1622193986049&sign=f5abd9fd7b9b8abaa25b34088f9e8a54&sv=102`
-      // body = `body=${escape(JSON.stringify(body))}`
+    // url = `https://api.m.jd.com/client.action?functionId=${functionId}&body=${escape(JSON.stringify(body))}&uuid=8888888&client=apple&clientVersion=9.4.1&st=1622193986049&sign=f5abd9fd7b9b8abaa25b34088f9e8a54&sv=102`
+    // body = `body=${escape(JSON.stringify(body))}`
     // }
     const options = {
       url,
       body,
       headers: {
-        "Accept": "application/json, text/plain, */*",
+        Accept: "application/json, text/plain, */*",
         "Accept-Encoding": "gzip, deflate, br",
         "Accept-Language": "zh-cn",
-        "Connection": "keep-alive",
+        Connection: "keep-alive",
         "Content-Length": "63",
         "Content-Type": "application/x-www-form-urlencoded",
-        "Host": "api.m.jd.com",
-        "Origin": "https://h5.m.jd.com",
-        "Cookie": cookie,
-        "Referer": "https://h5.m.jd.com/babelDiy/Zeus/4ZK4ZpvoSreRB92RRo8bpJAQNoTq/index.html",
+        Host: "api.m.jd.com",
+        Origin: "https://h5.m.jd.com",
+        Cookie: cookie + $.joyytoken,
+        Referer:
+          "https://h5.m.jd.com/babelDiy/Zeus/4ZK4ZpvoSreRB92RRo8bpJAQNoTq/index.html",
         "User-Agent": UA,
-      }
-    }
-    $.post((options), async (err, resp, data) => {
+      },
+    };
+    $.post(options, async (err, resp, data) => {
       try {
         if (err) {
-          console.log(`${JSON.stringify(err)}`)
-          console.log(`${$.name} API请求失败，请检查网路重试`)
+          console.log(`${JSON.stringify(err)}`);
+          console.log(`${$.name} API请求失败，请检查网路重试`);
         } else {
           if (safeGet(data)) {
-            if (type === '3' && functionId === 'reportCcTask') console.log(`点击首页领券图标(进入领券中心浏览15s)任务:${data}`)
-            if (type === '4' && functionId === 'reportSinkTask') console.log(`点击“券后9.9”任务:${data}`)
+            if (type === "3" && functionId === "reportCcTask")
+              console.log(`点击首页领券图标(进入领券中心浏览15s)任务:${data}`);
+            if (type === "4" && functionId === "reportSinkTask")
+              console.log(`点击“券后9.9”任务:${data}`);
             // data = JSON.parse(data);
           }
         }
       } catch (e) {
-        $.logErr(e, resp)
+        $.logErr(e, resp);
       } finally {
         resolve();
       }
-    })
-  })
+    });
+  });
 }
 function taskPostUrl(function_id, body = {}) {
-  const time = new Date().getTime() + new Date().getTimezoneOffset()*60*1000 + 8*60*60*1000;
+  const time =
+    new Date().getTime() +
+    new Date().getTimezoneOffset() * 60 * 1000 +
+    8 * 60 * 60 * 1000;
   return {
-    url: `${JD_API_HOST}?functionId=${function_id}&appid=coupon-necklace&loginType=2&client=coupon-necklace&t=${time}&body=${escape(JSON.stringify(body))}&uuid=88732f840b77821b345bf07fd71f609e6ff12f43`,
-    // url: `${JD_API_HOST}?functionId=${function_id}&appid=jd_mp_h5&loginType=2&client=jd_mp_h5&t=${time}&body=${escape(JSON.stringify(body))}`,
+    url: `${JD_API_HOST}?functionId=${function_id}&appid=coupon-necklace&loginType=2&client=coupon-necklace&t=${Date.now()}`,
+    body: `body=${escape(JSON.stringify(body))}`,
     headers: {
-      "accept": "*/*",
-      "accept-encoding": "gzip, deflate, br",
-      "accept-language": "zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6",
-      "content-length": "0",
-      "cookie": cookie,
-      "origin": "https://h5.m.jd.com",
-      "referer": "https://h5.m.jd.com/",
-      "sec-fetch-dest": "empty",
-      "sec-fetch-mode": "cors",
-      "sec-fetch-site": "same-site",
-      "user-agent": UA
-    }
-  }
+      Host: "api.m.jd.com",
+      accept: "application/json, text/plain, */*",
+      "content-type": "application/x-www-form-urlencoded",
+      origin: "https://h5.m.jd.com",
+      "accept-language": "zh-cn",
+      "User-Agent": UA,
+      referer: "https://h5.m.jd.com/",
+      cookie: cookie + $.joyytoken,
+    },
+    // url: `${JD_API_HOST}?functionId=${function_id}&appid=jd_mp_h5&loginType=2&client=jd_mp_h5&t=${time}&body=${escape(JSON.stringify(body))}`,
+    // headers: {
+    //   "accept": "*/*",
+    //   "accept-encoding": "gzip, deflate, br",
+    //   "accept-language": "zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6",
+    //   "content-length": "0",
+    //   "cookie": cookie+$.joyytoken,
+    //   "origin": "https://h5.m.jd.com",
+    //   "referer": "https://h5.m.jd.com/",
+    //   "sec-fetch-dest": "empty",
+    //   "sec-fetch-mode": "cors",
+    //   "sec-fetch-site": "same-site",
+    //   "user-agent": UA
+    // }
+  };
 }
 function TotalBean() {
-  return new Promise(async resolve => {
+  return new Promise(async (resolve) => {
     const options = {
-      "url": `https://wq.jd.com/user/info/QueryJDUserInfo?sceneval=2`,
-      "headers": {
-        "Accept": "application/json,text/plain, */*",
+      url: `https://wq.jd.com/user/info/QueryJDUserInfo?sceneval=2`,
+      headers: {
+        Accept: "application/json,text/plain, */*",
         "Content-Type": "application/x-www-form-urlencoded",
         "Accept-Encoding": "gzip, deflate, br",
         "Accept-Language": "zh-cn",
-        "Connection": "keep-alive",
-        "Cookie": cookie,
-        "Referer": "https://wqs.jd.com/my/jingdou/my.shtml?sceneval=2",
-        "User-Agent": $.isNode() ? (process.env.JD_USER_AGENT ? process.env.JD_USER_AGENT : (require('./USER_AGENTS').USER_AGENT)) : ($.getdata('JDUA') ? $.getdata('JDUA') : "jdapp;iPhone;9.4.4;14.3;network/4g;Mozilla/5.0 (iPhone; CPU iPhone OS 14_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148;supportJDSHWK/1")
-      }
-    }
+        Connection: "keep-alive",
+        Cookie: cookie + $.joyytoken,
+        Referer: "https://wqs.jd.com/my/jingdou/my.shtml?sceneval=2",
+        "User-Agent": $.isNode()
+          ? process.env.JD_USER_AGENT
+            ? process.env.JD_USER_AGENT
+            : require("./USER_AGENTS").USER_AGENT
+          : $.getdata("JDUA")
+          ? $.getdata("JDUA")
+          : "jdapp;iPhone;9.4.4;14.3;network/4g;Mozilla/5.0 (iPhone; CPU iPhone OS 14_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148;supportJDSHWK/1",
+      },
+    };
     $.post(options, (err, resp, data) => {
       try {
         if (err) {
-          console.log(`${JSON.stringify(err)}`)
-          console.log(`${$.name} API请求失败，请检查网路重试`)
+          console.log(`${JSON.stringify(err)}`);
+          console.log(`${$.name} API请求失败，请检查网路重试`);
         } else {
           if (data) {
             data = JSON.parse(data);
-            if (data['retcode'] === 13) {
+            if (data["retcode"] === 13) {
               $.isLogin = false; //cookie过期
-              return
+              return;
             }
-            if (data['retcode'] === 0) {
-              $.nickName = (data['base'] && data['base'].nickname) || $.UserName;
+            if (data["retcode"] === 0) {
+              $.nickName =
+                (data["base"] && data["base"].nickname) || $.UserName;
             } else {
-              $.nickName = $.UserName
+              $.nickName = $.UserName;
             }
           } else {
-            console.log(`京东服务器返回空数据`)
+            console.log(`京东服务器返回空数据`);
           }
         }
       } catch (e) {
-        $.logErr(e, resp)
+        $.logErr(e, resp);
       } finally {
         resolve();
       }
-    })
-  })
+    });
+  });
 }
 function safeGet(data) {
   try {
@@ -525,7 +648,11 @@ function jsonParse(str) {
       return JSON.parse(str);
     } catch (e) {
       console.log(e);
-      $.msg($.name, '', '请勿随意在BoxJs输入框修改内容\n建议通过脚本去获取cookie')
+      $.msg(
+        $.name,
+        "",
+        "请勿随意在BoxJs输入框修改内容\n建议通过脚本去获取cookie"
+      );
       return [];
     }
   }
