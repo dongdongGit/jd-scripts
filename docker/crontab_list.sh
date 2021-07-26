@@ -15,17 +15,6 @@
 
 #每日抽奖(活动时间：2021-05-01至2021-05-31)
 13 1,22,23 * * * node /scripts/jd_daily_lottery.js >> /scripts/logs/jd_daily_lottery.log 2>&1
-
-#手机狂欢城
-0 0,12,18,21 * * * node /scripts/jd_carnivalcity.js >> /scripts/logs/jd_carnivalcity.log 2>&1
-#618动物联萌
-33 0,6-23/2 * * * node /scripts/jd_zoo.js >> /scripts/logs/jd_zoo.log 2>&1
-#618动物联萌专门收集金币(每小时的第30分运行一次)
-0-59/30 * * * * node /scripts/jd_zooCollect.js >> /scripts/logs/jd_zooCollect.log 2>&1
-#家电星推官 活动时间：2021年5月27日 00:00:00-2021年6月18日 23:59:59
-0 0 * * * node /scripts/jd_xtg.js >> /scripts/logs/jd_xtg.log 2>&1
-#家电星推官好友互助 活动时间：2021年5月27日 00:00:00-2021年6月18日 23:59:59
-0 0 * * * node /scripts/jd_xtg_help.js >> /scripts/logs/jd_xtg_help.log 2>&1
 #金榜创造营 活动时间：2021-05-21至2021-12-31
 0 1,22 * * * node /scripts/jd_gold_creator.js >> /scripts/logs/jd_gold_creator.log 2>&1
 #5G超级盲盒(活动时间：2021-06-2到2021-07-31)
@@ -41,6 +30,7 @@
 ##############长期活动##############
 # 签到
 7 0,17 * * * cd /scripts && node jd_bean_sign.js >> /scripts/logs/jd_bean_sign.log 2>&1
+14 7 * * * node /scripts/jd_sign_graphics.js |ts >> /scripts/logs/jd_sign_graphics.log 2>&1
 # 东东超市兑换奖品
 0,30 0 * * * node /scripts/jd_blueCoin.js >> /scripts/logs/jd_blueCoin.log 2>&1
 # 摇京豆
@@ -142,6 +132,31 @@
 0 11 * * * node /scripts/jd_lsj.js >> /scripts/logs/jd_lsj.log 2>&1
 #来客有礼小程序 送豆得豆
 45 4 * * * node /scripts/jd_senbeans.js >> /scripts/logs/jd_senbeans.log 2>&1
+# 燃动夏季
 12 9,11,13,15,17 * * * node /scripts/jd_summer_movement.js >> /scripts/logs/jd_summer_movement.log 2>&1
-# 欧洲杯签到
-55 59 9  * * * node /scripts/jd_europeancup.js >> /scripts/logs/jd_europeancup.log 2>&1
+
+# 早起福利
+0 0 * * * node /scripts/jd_goodMorning.js |ts >> /scripts/logs/jd_goodMorning.log 2>&1
+# 汪汪乐园
+30 2,20 * * * node /scripts/jd_joy_park.js |ts >> /scripts/logs/jd_joy_park.log 2>&1
+# 7月粉丝互动
+1 8 * * * node /scripts/jd_wxFans.js |ts >> /scripts/logs/jd_wxFans.log 2>&1
+# 特物Z|万物皆可国创
+30 11 * * * node /scripts/jd_superBrand.js |ts >> /scripts/logs/jd_superBrand.log 2>&1
+# 柠檬特务Z行动-星小店
+20 1 * * *  node /scripts/jd_twz_star.js |ts >> /scripts/logs/jd_twz_star.log 2>&1
+# 京东众筹好物上新
+20 12,14 * * * node /scripts/jd_hwsx.js |ts >> /scripts/logs/jd_hwsx.log 2>&1
+# 天天优惠大乐透
+20 12,14 * * * node /scripts/jd_DrawEntrance.js |ts >> /scripts/logs/jd_DrawEntrance.log 2>&1
+# 柠檬伊利养牛记
+4 12 * * * node /scripts/jd_yili_cattle.js |ts >> /scripts/logs/jd_yili_cattle.log 2>&1
+# 全民摸冰
+6 9,12 * * * node /scripts/jd_feel_ice.js |ts >> /scripts/logs/jd_feel_ice.log 2>&1
+
+# 升级领京豆
+21 9 * * * node /scripts/jd_bean_box.js |ts >> /scripts/logs/jd_bean_box.log 2>&1
+# 特务Zx佳沛jd_jx_sign
+23 0,9 24-27 7 * node /scripts/jd_productZ4Brand.js |ts >> /scripts/logs/jd_productZ4Brand.log 2>&1
+# 京喜app签到
+5 0 * * * node /scripts/jd_jx_sign.js |ts >> /scripts/logs/jd_jx_sign.log 2>&1
