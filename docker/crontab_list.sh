@@ -132,8 +132,13 @@
 0 11 * * * node /scripts/jd_lsj.js >> /scripts/logs/jd_lsj.log 2>&1
 #来客有礼小程序 送豆得豆
 45 4 * * * node /scripts/jd_senbeans.js >> /scripts/logs/jd_senbeans.log 2>&1
+
 # 燃动夏季
 12 9,11,13,15,17 * * * node /scripts/jd_summer_movement.js >> /scripts/logs/jd_summer_movement.log 2>&1
+# 燃动夏季领红包
+45 16,20 * * * node /scripts/jd_summer_movement_red.js >> /scripts/logs/jd_summer_movement_red.log 2>&1
+# 燃动夏季领店铺任务 和 燃动夏季领会员奖励
+7 12,13 * * * node /scripts/jd_summer_movement_card_and_map.js >> /scripts/logs/jd_summer_movement_card_and_map.log 2>&1
 
 # 早起福利
 0 0 * * * node /scripts/jd_goodMorning.js |ts >> /scripts/logs/jd_goodMorning.log 2>&1
