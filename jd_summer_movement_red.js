@@ -1,17 +1,8 @@
 /**
- *  燃动夏季下注
- *  注意：每个奖品会花费200币下注，不想下注的人不要跑这个脚本
- *  若想下满注则设置环境变量 MAX_BET=true 前提：需要账号已经开通店铺会员
- *  每日20点开奖，脚本会自动开奖，
- *  cron  11 12,20 * * *
+ *  尝试领取红包，貌似不是每天都有
+ *  cron 45 16,20 * * *
  * */
-const $ = new Env("燃动夏季下注");
-//环境变量是否下满注，false否，true是，（满注20次，前提：需要已经开过会员卡，若未开同会员，则只能下3注）
-const maxBet = $.isNode()
-  ? process.env.MAX_BET
-    ? process.env.MAX_BET
-    : false
-  : false;
+const $ = new Env("燃动夏季领红包");
 const notify = $.isNode() ? require("./sendNotify") : "";
 const jdCookieNode = $.isNode() ? require("./jdCookie.js") : "";
 const UA = `jdpingou;iPhone;10.0.6;${Math.ceil(
@@ -44,10 +35,7 @@ if ($.isNode()) {
     );
     return;
   }
-  console.log(`注意：每个奖品会花费200币下注，不想下注的人不要跑这个脚本`);
-  console.log(
-    `脚本默认下7注，若需要花费金币下满20注，则修改环境变量“MAX_BET”为true`
-  );
+  console.log(`尝试领取随机出现的红包`);
   for (let i = 0; i < cookiesArr.length; i++) {
     if (cookiesArr[i]) {
       $.cookie = cookiesArr[i];
@@ -107,36 +95,19 @@ async function main() {
     } \n`
   );
   await $.wait(1000);
-  bubbleInfos = $.homeData.result.bubbleInfos;
-  $.continueRun = true;
-  $.betGoodsList = $.homeData.result.pawnshopInfo.betGoodsList;
-  for (let i = 0; i < $.betGoodsList.length; i++) {
-    $.oneGoodsInfo = $.betGoodsList[i];
-    $.continueRun = true;
-    if ($.oneGoodsInfo.status === 1) {
-      console.log(`\n奖品：${$.oneGoodsInfo.skuName}，去开奖`);
-      await takePostRequest("olympicgames_pawnshopRewardPop");
-      await $.wait(2000);
-      continue;
-    } else if ($.oneGoodsInfo.status === 3) {
-      console.log(`\n奖品：${$.oneGoodsInfo.skuName}，已开奖`);
-      continue;
-    }
-    while (
-      ($.oneGoodsInfo.score < 7 || (maxBet && $.oneGoodsInfo.score < 20)) &&
-      $.continueRun
-    ) {
-      await takePostRequest("olympicgames_pawnshopBetPop");
-      await $.wait(1000);
-      console.log(
-        `\n奖品：${$.oneGoodsInfo.skuName}，${$.betInfo.betText},去下注`
-      );
-      await takePostRequest("olympicgames_pawnshopBet");
-      await $.wait(2000);
+  let bubbleInfos = $.homeData.result.bubbleInfos;
+  console.log(JSON.stringify(bubbleInfos));
+  let flag = true;
+  for (let i = 0; i < bubbleInfos.length; i++) {
+    if (bubbleInfos[i].type === 5) {
+      console.log(`领取红包：${bubbleInfos[i].context}`);
+      await takePostRequest("olympicgames_receiveCash");
+      flag = false;
     }
   }
-  await $.wait(2000);
-  await takePostRequest("olympicgames_pawnshopBetRecord");
+  if (flag) {
+    console.log(`没有红包可以领取`);
+  }
 }
 
 async function takePostRequest(type) {
@@ -147,20 +118,8 @@ async function takePostRequest(type) {
       body = `functionId=olympicgames_home&body={}&client=wh5&clientVersion=1.0.0&uuid=${uuid}&appid=o2_act`;
       myRequest = await getPostRequest(body);
       break;
-    case "olympicgames_pawnshopBet":
-      body = `functionId=olympicgames_pawnshopBet&body={"skuId":${$.oneGoodsInfo.skuId}}&client=wh5&clientVersion=1.0.0&uuid=${uuid}&appid=o2_act`;
-      myRequest = await getPostRequest(body);
-      break;
-    case "olympicgames_pawnshopBetPop":
-      body = `functionId=olympicgames_pawnshopBetPop&body={"skuId":${$.oneGoodsInfo.skuId}}&client=wh5&clientVersion=1.0.0&uuid=${uuid}&appid=o2_act`;
-      myRequest = await getPostRequest(body);
-      break;
-    case "olympicgames_pawnshopRewardPop":
-      body = `functionId=olympicgames_pawnshopRewardPop&body={"skuId":${$.oneGoodsInfo.skuId}}&client=wh5&clientVersion=1.0.0&uuid=${uuid}&appid=o2_act`;
-      myRequest = await getPostRequest(body);
-      break;
-    case "olympicgames_pawnshopBetRecord":
-      body = `functionId=olympicgames_pawnshopBetRecord&body={}&client=wh5&clientVersion=1.0.0&uuid=&uuid=${uuid}&appid=o2_act`;
+    case "olympicgames_receiveCash":
+      body = `functionId=olympicgames_receiveCash&body={"type":3}&client=wh5&clientVersion=1.0.0&uuid=${uuid}&appid=o2_act`;
       myRequest = await getPostRequest(body);
       break;
     default:
@@ -196,58 +155,11 @@ async function dealReturn(type, data) {
         }
       }
       break;
-    case "olympicgames_pawnshopBet":
-      if (data.code === 0 && data.data && data.data.result) {
-        console.log(`下注成功，已下注${data.data.result.score}次`);
-        $.oneGoodsInfo.score = data.data.result.score;
-      } else {
-        $.continueRun = false;
-        console.log(JSON.stringify(data));
-      }
-      break;
-    case "olympicgames_pawnshopBetPop":
-      if (data.code === 0 && data.data && data.data.result) {
-        $.betInfo = data.data.result;
-      } else {
-        console.log(JSON.stringify(data));
-      }
-      break;
-    case "olympicgames_pawnshopRewardPop":
-      console.log(`开奖结果`);
-      console.log(JSON.stringify(data));
-      if (data.code === 0 && data.data && data.data.result) {
-        if (data.data.result.status === 2) {
-          console.log("恭喜你，应该是中奖了；");
-          let message = `第【${$.index}】个账号，${$.UserName},可能抽中了【${data.data.result.skuName}】,请登录APP查看`;
-          await notify.sendNotify(`燃动夏季下注`, message);
-        } else {
-          console.log("未中奖");
+    case "olympicgames_receiveCash":
+      if (data.code === 0) {
+        if (data.data["bizCode"] === 0) {
+          console.log(`领取成功`);
         }
-      }
-      break;
-    case "olympicgames_pawnshopBetRecord":
-      if (
-        data.code === 0 &&
-        data.data &&
-        data.data.result &&
-        data.data.result[0]
-      ) {
-        let rewardList = data.data.result[0].betRecordVOList;
-        console.log(`\n下注记录`);
-        for (let i = 0; i < rewardList.length; i++) {
-          let oneInfo = rewardList[i];
-          if (oneInfo.status === 0) {
-            console.log(
-              `奖品：${oneInfo.skuName},已下注${oneInfo.score}次，未开奖`
-            );
-          } else if (oneInfo.status === 3) {
-            console.log(`奖品：${oneInfo.skuName},未中奖`);
-          } else {
-            console.log(`奖品：${oneInfo.skuName},其他情况，进APP查看`);
-          }
-        }
-      } else {
-        console.log(JSON.stringify(data));
       }
       break;
     default:
