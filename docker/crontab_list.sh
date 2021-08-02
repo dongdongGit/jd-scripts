@@ -164,4 +164,4 @@
 # 特务Zx佳沛jd_jx_sign
 23 0,9 24-27 7 * node /scripts/jd_productZ4Brand.js |ts >> /scripts/logs/jd_productZ4Brand.log 2>&1
 # 京喜app签到
-5 0 * * * node /scripts/jd_jx_sign.js |ts >> /scripts/logs/jd_jx_sign.log 2>&1
+20 1 * * * node /scripts/jd_jx_sign.js |ts >> /scripts/logs/jd_jx_sign.log 2>&1
