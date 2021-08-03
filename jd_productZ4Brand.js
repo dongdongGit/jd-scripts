@@ -34,11 +34,7 @@ if ($.isNode()) {
     return;
   }
   for (let i = 0; i < cookiesArr.length; i++) {
-    UA = `jdapp;iPhone;10.0.8;14.6;${randomWord(
-      false,
-      40,
-      40
-    )};network/wifi;JDEbook/openapp.jdreader;model/iPhone9,2;addressid/2214222493;appBuild/168841;jdSupportDarkMode/0;Mozilla/5.0 (iPhone; CPU iPhone OS 14_6 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/16E158;supportJDSHWK/1`;
+    UA = `jdapp;iPhone;10.0.8;14.6;${randomWord(false, 40, 40)};network/wifi;JDEbook/openapp.jdreader;model/iPhone9,2;addressid/2214222493;appBuild/168841;jdSupportDarkMode/0;Mozilla/5.0 (iPhone; CPU iPhone OS 14_6 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/16E158;supportJDSHWK/1`;
     $.index = i + 1;
     $.cookie = cookiesArr[i];
     $.isLogin = true;
