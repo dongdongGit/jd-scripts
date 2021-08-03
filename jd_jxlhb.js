@@ -8,14 +8,11 @@
 [task_local]
 #京喜领88元红包
 4 2,10 * * * jd_jxlhb.js, tag=京喜领88元红包, img-url=https://raw.githubusercontent.com/Orz-3/mini/master/Color/jd.png, enabled=true
-
 ==============Loon==============
 [Script]
-cron "4 2,10 * * *" script-path=/jd_jxlhb.js,tag=京喜领88元红包
-
+cron "4 2,10 * * *" script-path=jd_jxlhb.js,tag=京喜领88元红包
 ================Surge===============
-京喜领88元红包 = type=cron,cronexp="4 2,10 * * *",wake-system=1,timeout=3600,script-path=/jd_jxlhb.js
-
+京喜领88元红包 = type=cron,cronexp="4 2,10 * * *",wake-system=1,timeout=3600,script-path=jd_jxlhb.js
 ===============小火箭==========
 京喜领88元红包 = type=cron,script-path=jd_jxlhb.js, cronexpr="4 2,10 * * *", timeout=3600, enable=true
  */
@@ -223,17 +220,19 @@ function getUserInfo() {
           data = JSON.parse(data);
           if (data.iRet === 0) {
             $.grades = [];
+            $.helpNum = "";
             let grades = data.Data.gradeConfig;
             for (let key of Object.keys(grades)) {
               let vo = grades[key];
               $.grades.push(vo.dwGrade);
+              $.helpNum = vo.dwHelpTimes;
             }
-            console.log(`获取助力码成功：${data.Data.strUserPin}\n`);
-            if (data.Data["dwCurrentGrade"] >= $.grades[$.grades.length - 1]) {
+            if (data.Data.dwHelpedTimes === $.helpNum) {
               console.log(
                 `${$.grades[$.grades.length - 1]}个阶梯红包已全部拆完\n`
               );
             } else {
+              console.log(`获取助力码成功：${data.Data.strUserPin}\n`);
               if (data.Data.strUserPin) {
                 $.packetIdArr.push({
                   strUserPin: data.Data.strUserPin,
@@ -403,9 +402,9 @@ function taskurl(function_path, body = "", stk) {
 function TotalBean() {
   return new Promise(async (resolve) => {
     const options = {
-      url: "https://wq.jd.com/user_new/info/GetJDUserInfoUnion?sceneval=2",
+      url: "https://me-api.jd.com/user_new/info/GetJDUserInfoUnion",
       headers: {
-        Host: "wq.jd.com",
+        Host: "me-api.jd.com",
         Accept: "*/*",
         Connection: "keep-alive",
         Cookie: cookie,
@@ -428,12 +427,12 @@ function TotalBean() {
         } else {
           if (data) {
             data = JSON.parse(data);
-            if (data["retcode"] === 1001) {
+            if (data["retcode"] === "1001") {
               $.isLogin = false; //cookie过期
               return;
             }
             if (
-              data["retcode"] === 0 &&
+              data["retcode"] === "0" &&
               data.data &&
               data.data.hasOwnProperty("userInfo")
             ) {
