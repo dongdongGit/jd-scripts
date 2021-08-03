@@ -152,6 +152,8 @@
 30 11 * * * node /scripts/jd_superBrand.js |ts >> /scripts/logs/jd_superBrand.log 2>&1
 # 柠檬特务Z行动-星小店
 20 1 * * *  node /scripts/jd_twz_star.js |ts >> /scripts/logs/jd_twz_star.log 2>&1
+# 特务Zx佳沛
+23 8,9 * * * node /scripts/jd_superZ4Brand.js |ts >> /scripts/logs/jd_superZ4Brand.log 2>&1
 # 京东众筹好物上新
 20 12,14 * * * node /scripts/jd_hwsx.js |ts >> /scripts/logs/jd_hwsx.log 2>&1
 # 天天优惠大乐透
@@ -163,7 +165,5 @@
 
 # 升级领京豆
 21 9 * * * node /scripts/jd_bean_box.js |ts >> /scripts/logs/jd_bean_box.log 2>&1
-# 特务Zx佳沛jd_jx_sign
-23 0,9 24-27 7 * node /scripts/jd_productZ4Brand.js |ts >> /scripts/logs/jd_productZ4Brand.log 2>&1
 # 京喜app签到
 20 1 * * * node /scripts/jd_jx_sign.js |ts >> /scripts/logs/jd_jx_sign.log 2>&1
