@@ -1,9 +1,9 @@
 /*
 特务Z
-cron 23 8,9 3 8 *
+cron 23 8,9 5 8 *
 要跑2次
 */
-const $ = new Env("特物Z");
+const $ = new Env("特务Z");
 const notify = $.isNode() ? require("./sendNotify") : "";
 const jdCookieNode = $.isNode() ? require("./jdCookie.js") : "";
 let cookiesArr = [];
@@ -388,12 +388,15 @@ function randomWord(randomFlag, min, max) {
 function TotalBean() {
   return new Promise(async (resolve) => {
     const options = {
-      url: "https://me-api.jd.com/user_new/info/GetJDUserInfoUnion",
+      url: `https://wq.jd.com/user/info/QueryJDUserInfo?sceneval=2`,
       headers: {
-        Host: "me-api.jd.com",
-        Accept: "*/*",
+        Accept: "application/json,text/plain, */*",
+        "Content-Type": "application/x-www-form-urlencoded",
+        "Accept-Encoding": "gzip, deflate, br",
+        "Accept-Language": "zh-cn",
         Connection: "keep-alive",
         Cookie: $.cookie,
+        Referer: "https://wqs.jd.com/my/jingdou/my.shtml?sceneval=2",
         "User-Agent": $.isNode()
           ? process.env.JD_USER_AGENT
             ? process.env.JD_USER_AGENT
@@ -401,35 +404,32 @@ function TotalBean() {
           : $.getdata("JDUA")
           ? $.getdata("JDUA")
           : "jdapp;iPhone;9.4.4;14.3;network/4g;Mozilla/5.0 (iPhone; CPU iPhone OS 14_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148;supportJDSHWK/1",
-        "Accept-Language": "zh-cn",
-        Referer: "https://home.m.jd.com/myJd/newhome.action?sceneval=2&ufc=&",
-        "Accept-Encoding": "gzip, deflate, br",
       },
     };
-    $.get(options, (err, resp, data) => {
+    $.post(options, (err, resp, data) => {
       try {
         if (err) {
-          $.logErr(err);
+          console.log(`${JSON.stringify(err)}`);
+          console.log(`${$.name} API请求失败，请检查网路重试`);
         } else {
           if (data) {
             data = JSON.parse(data);
-            if (data["retcode"] === "1001") {
+            if (data["retcode"] === 13) {
               $.isLogin = false; //cookie过期
               return;
             }
-            if (
-              data["retcode"] === "0" &&
-              data.data &&
-              data.data.hasOwnProperty("userInfo")
-            ) {
-              $.nickName = data.data.userInfo.baseInfo.nickname;
+            if (data["retcode"] === 0) {
+              $.nickName =
+                (data["base"] && data["base"].nickname) || $.UserName;
+            } else {
+              $.nickName = $.UserName;
             }
           } else {
-            $.log("京东服务器返回空数据");
+            console.log(`京东服务器返回空数据`);
           }
         }
       } catch (e) {
-        $.logErr(e);
+        $.logErr(e, resp);
       } finally {
         resolve();
       }
