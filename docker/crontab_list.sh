@@ -150,7 +150,7 @@
 # 汪汪乐园
 30 2,20 * * * node /scripts/jd_joy_park.js |ts >> /scripts/logs/jd_joy_park.log 2>&1
 # 7月粉丝互动
-1 8 * * * node /scripts/jd_wxFans.js |ts >> /scripts/logs/jd_wxFans.log 2>&1
+34 6,18 * * * node /scripts/jd_wxFans.js |ts >> /scripts/logs/jd_wxFans.log 2>&1
 # 特物Z|万物皆可国创
 30 11 * * * node /scripts/jd_superBrand.js |ts >> /scripts/logs/jd_superBrand.log 2>&1
 # 柠檬特务Z行动-星小店
@@ -170,3 +170,5 @@
 21 9 * * * node /scripts/jd_bean_box.js |ts >> /scripts/logs/jd_bean_box.log 2>&1
 # 京喜app签到
 20 1 * * * node /scripts/jd_jx_sign.js |ts >> /scripts/logs/jd_jx_sign.log 2>&1
+# 七夕情报局
+36 0,10,21 4-15 8 * node /scripts/jd_chinese_valentine_day.js >> /scripts/logs/jd_chinese_valentine_day.log 2>&1
