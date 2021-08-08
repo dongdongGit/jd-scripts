@@ -172,3 +172,5 @@
 20 1 * * * node /scripts/jd_jx_sign.js |ts >> /scripts/logs/jd_jx_sign.log 2>&1
 # 七夕情报局
 36 0,10,21 4-15 8 * node /scripts/jd_chinese_valentine_day.js >> /scripts/logs/jd_chinese_valentine_day.log 2>&1
+#荣耀换新
+20 8 * * * node /scripts/jd_honor_renew.js >> /scripts/logs/jd_honor_renew.log 2>&1
