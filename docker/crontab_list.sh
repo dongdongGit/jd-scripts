@@ -145,8 +145,6 @@
 # 燃动夏季领店铺任务 和 燃动夏季领会员奖励
 7 12,13 * * * node /scripts/jd_summer_movement_card_and_map.js >> /scripts/logs/jd_summer_movement_card_and_map.log 2>&1
 
-# 早起福利
-0 0 * * * node /scripts/jd_goodMorning.js |ts >> /scripts/logs/jd_goodMorning.log 2>&1
 # 汪汪乐园
 30 2,20 * * * node /scripts/jd_joy_park.js |ts >> /scripts/logs/jd_joy_park.log 2>&1
 # 7月粉丝互动
@@ -166,8 +164,6 @@
 # 全民摸冰
 6 9,12 * * * node /scripts/jd_feel_ice.js |ts >> /scripts/logs/jd_feel_ice.log 2>&1
 
-# 升级领京豆
-21 9 * * * node /scripts/jd_bean_box.js |ts >> /scripts/logs/jd_bean_box.log 2>&1
 # 京喜app签到
 20 1 * * * node /scripts/jd_jx_sign.js |ts >> /scripts/logs/jd_jx_sign.log 2>&1
 # 七夕情报局
