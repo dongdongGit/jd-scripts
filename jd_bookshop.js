@@ -18,6 +18,7 @@ cron "1 8,12,18 * * *" script-path=https://gitee.com/lxk0301/jd_scripts/raw/mast
 ============小火箭=========
 口袋书店 = type=cron,script-path=https://gitee.com/lxk0301/jd_scripts/raw/master/jd_bookshop.js, cronexpr="1 8,12,18* * *", timeout=3600, enable=true
  */
+const jd_heplers = require("./utils/JDHelpers.js");
 const jd_env = require("./utils/JDEnv.js");
 const $ = jd_env.env("口袋书店");
 const notify = $.isNode() ? require("./sendNotify") : "";
@@ -44,7 +45,7 @@ if ($.isNode()) {
   });
   if (process.env.JD_DEBUG && process.env.JD_DEBUG === "false") console.log = () => {};
 } else {
-  cookiesArr = [$.getdata("CookieJD"), $.getdata("CookieJD2"), ...jsonParse($.getdata("CookiesJD") || "[]").map((item) => item.cookie)].filter((item) => !!item);
+  cookiesArr = [$.getdata("CookieJD"), $.getdata("CookieJD2"), ...jd_heplers.jsonParse($.getdata("CookiesJD") || "[]").map((item) => item.cookie)].filter((item) => !!item);
 }
 
 !(async () => {
@@ -129,7 +130,7 @@ function getIsvToken() {
         if (err) {
           console.log(`${$.name} API请求失败，请检查网路重试`);
         } else {
-          if (safeGet(data)) {
+          if (jd_heplers.safeGet(data)) {
             data = JSON.parse(data);
             $.isvToken = data["tokenKey"];
           }
@@ -153,7 +154,7 @@ function getIsvToken2() {
         if (err) {
           console.log(`${$.name} API请求失败，请检查网路重试`);
         } else {
-          if (safeGet(data)) {
+          if (jd_heplers.safeGet(data)) {
             data = JSON.parse(data);
             $.token2 = data["token"];
           }
@@ -202,7 +203,7 @@ function getActInfo() {
         if (err) {
           console.log(`${$.name} API请求失败，请检查网路重试`);
         } else {
-          if (safeGet(data)) {
+          if (jd_heplers.safeGet(data)) {
             data = JSON.parse(data);
             if (data.result) {
               $.shopId = data.data.shopId;
@@ -227,7 +228,7 @@ function getToken() {
         if (err) {
           console.log(`${$.name} API请求失败，请检查网路重试`);
         } else {
-          if (safeGet(data)) {
+          if (jd_heplers.safeGet(data)) {
             data = JSON.parse(data);
             $.token = data.data.secretPin;
           }
@@ -250,7 +251,7 @@ function getUserInfo() {
         if (err) {
           console.log(`${$.name} API请求失败，请检查网路重试`);
         } else {
-          if (safeGet(data)) {
+          if (jd_heplers.safeGet(data)) {
             data = JSON.parse(data);
             if (data.data) {
               console.log(`用户【${data.data.nickname}】信息获取成功`);
@@ -278,7 +279,7 @@ function getActContent(info = false, shareUuid = "") {
         if (err) {
           console.log(`${$.name} API请求失败，请检查网路重试`);
         } else {
-          if (data && safeGet(data)) {
+          if (data && jd_heplers.safeGet(data)) {
             data = JSON.parse(data);
             if (data.data) {
               $.userInfo = data.data;
@@ -344,7 +345,7 @@ function doHelpList(taskType, value) {
         if (err) {
           console.log(`${$.name} API请求失败，请检查网路重试`);
         } else {
-          if (safeGet(data)) {
+          if (jd_heplers.safeGet(data)) {
             data = JSON.parse(data);
             console.log(`今日助力情况${data.data.length}/10`);
           }
@@ -366,7 +367,7 @@ function doTask(taskType, value) {
         if (err) {
           console.log(`${$.name} API请求失败，请检查网路重试`);
         } else {
-          if (safeGet(data)) {
+          if (jd_heplers.safeGet(data)) {
             data = JSON.parse(data);
             if (data.result && data.data) {
               console.log(`任务完成成功，获得${data.data.addScore}积分`);
@@ -394,7 +395,7 @@ function draw() {
         if (err) {
           console.log(`${$.name} API请求失败，请检查网路重试`);
         } else {
-          if (data && safeGet(data)) {
+          if (data && jd_heplers.safeGet(data)) {
             data = JSON.parse(data);
             if (data.result && data.data) {
               if (data.data.name) {
@@ -425,7 +426,7 @@ function getAllBook() {
         if (err) {
           console.log(`${$.name} API请求失败，请检查网路重试`);
         } else {
-          if (safeGet(data)) {
+          if (jd_heplers.safeGet(data)) {
             data = JSON.parse(data);
             if (data.result && data.data) {
               const book = data.data.bookConfigList[0];
@@ -455,7 +456,7 @@ function buyBook(bookUuid, num) {
         if (err) {
           console.log(`${$.name} API请求失败，请检查网路重试`);
         } else {
-          if (safeGet(data)) {
+          if (jd_heplers.safeGet(data)) {
             data = JSON.parse(data);
             if (data.result && data.data) {
               console.log(`购买【${data.data.BookIncome.bookName}】成功`);
@@ -479,7 +480,7 @@ function getMyBook() {
         if (err) {
           console.log(`${$.name} API请求失败，请检查网路重试`);
         } else {
-          if (safeGet(data)) {
+          if (jd_heplers.safeGet(data)) {
             data = JSON.parse(data);
             if (data.result && data.data) {
               for (let book of data.data.myBookList) {
@@ -508,7 +509,7 @@ function upBook(bookUuid) {
         if (err) {
           console.log(`${$.name} API请求失败，请检查网路重试`);
         } else {
-          if (safeGet(data)) {
+          if (jd_heplers.safeGet(data)) {
             data = JSON.parse(data);
             if (data.result && data.data) {
               console.log(`上架成功`);
@@ -534,7 +535,7 @@ function chargeGold() {
         if (err) {
           console.log(`${$.name} API请求失败，请检查网路重试`);
         } else {
-          if (safeGet(data)) {
+          if (jd_heplers.safeGet(data)) {
             data = JSON.parse(data);
             if (data.result && data.data) {
               console.log(`金币收获成功，获得${data.data.chargeGold}`);
@@ -705,28 +706,4 @@ function requireConfig() {
     console.log(`您提供了${$.shareCodesArr.length}个账号的${$.name}助力码\n`);
     resolve();
   });
-}
-
-function safeGet(data) {
-  try {
-    if (typeof JSON.parse(data) == "object") {
-      return true;
-    }
-  } catch (e) {
-    console.log(e);
-    console.log(`京东服务器访问数据为空，请检查自身设备网络情况`);
-    return false;
-  }
-}
-
-function jsonParse(str) {
-  if (typeof str == "string") {
-    try {
-      return JSON.parse(str);
-    } catch (e) {
-      console.log(e);
-      $.msg($.name, "", "不要在BoxJS手动复制粘贴修改cookie");
-      return [];
-    }
-  }
 }

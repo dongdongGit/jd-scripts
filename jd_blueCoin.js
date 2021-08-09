@@ -17,6 +17,7 @@ cron "59 23 * * *" script-path=jd_blueCoin.js,tag=东东超市兑换奖品
 ============小火箭=========
 东东超市兑换奖品 = type=cron,script-path=jd_blueCoin.js, cronexpr="59 23 * * *", timeout=3600, enable=true
  */
+const jd_heplers = require("./utils/JDHelpers.js");
 const jd_env = require("./utils/JDEnv.js");
 const $ = jd_env.env("东东超市兑换奖品");
 const notify = $.isNode() ? require('./sendNotify') : '';
@@ -33,7 +34,7 @@ if ($.isNode()) {
   })
   if (process.env.JD_DEBUG && process.env.JD_DEBUG === 'false') console.log = () => {};
 } else {
-  cookiesArr = [$.getdata('CookieJD'), $.getdata('CookieJD2'), ...jsonParse($.getdata('CookiesJD') || "[]").map(item => item.cookie)].filter(item => !!item);
+  cookiesArr = [$.getdata('CookieJD'), $.getdata('CookieJD2'), ...jd_heplers.jsonParse($.getdata('CookiesJD') || "[]").map(item => item.cookie)].filter(item => !!item);
 }
 
 const JD_API_HOST = `https://api.m.jd.com/api?appid=jdsupermarket`;
@@ -250,7 +251,7 @@ function smtg_materialPrizeIndex(timeout = 0) {
       }
       $.post(url, async (err, resp, data) => {
         try {
-          if (safeGet(data)) {
+          if (jd_heplers.safeGet(data)) {
             data = JSON.parse(data);
             if (data.data.bizCode !== 0) {
               $.beanerr = `${data.data.bizMsg}`;
@@ -287,7 +288,7 @@ function smtg_queryPrize(timeout = 0){
       }
       $.post(url, async (err, resp, data) => {
         try {
-          if (safeGet(data)) {
+          if (jd_heplers.safeGet(data)) {
             data = JSON.parse(data);
             // $.queryPrizeData = data;
             if (data.data.bizCode !== 0) {
@@ -352,7 +353,7 @@ function smtg_obtainPrize(prizeId, timeout = 0, functionId = 'smt_exchangePrize'
       $.post(url, async (err, resp, data) => {
         try {
           console.log(`兑换结果:${data}`);
-          if (safeGet(data)) {
+          if (jd_heplers.safeGet(data)) {
             data = JSON.parse(data);
             $.data = data;
             if ($.data.data.bizCode !== 0 && $.data.data.bizCode !== 400) {
@@ -399,7 +400,7 @@ function smtgHome() {
           console.log('\n东东超市兑换奖品: API查询请求失败 ‼️‼️')
           console.log(JSON.stringify(err));
         } else {
-          if (safeGet(data)) {
+          if (jd_heplers.safeGet(data)) {
             data = JSON.parse(data);
             // console.log(data)
             if (data.data.bizCode === 0) {
@@ -487,17 +488,7 @@ function TotalBean() {
     })
   })
 }
-function safeGet(data) {
-  try {
-    if (typeof JSON.parse(data) == "object") {
-      return true;
-    }
-  } catch (e) {
-    console.log(e);
-    console.log(`京东服务器访问数据为空，请检查自身设备网络情况`);
-    return false;
-  }
-}
+
 function taskUrl(function_id, body = {}) {
   return {
     url: `${JD_API_HOST}&functionId=${function_id}&clientVersion=8.0.0&client=m&body=${escape(JSON.stringify(body))}&t=${Date.now()}`,
@@ -507,17 +498,6 @@ function taskUrl(function_id, body = {}) {
       'Cookie': cookie,
       'Referer': 'https://jdsupermarket.jd.com/game',
       'Origin': 'https://jdsupermarket.jd.com',
-    }
-  }
-}
-function jsonParse(str) {
-  if (typeof str == "string") {
-    try {
-      return JSON.parse(str);
-    } catch (e) {
-      console.log(e);
-      $.msg($.name, '', '请勿随意在BoxJs输入框修改内容\n建议通过脚本去获取cookie')
-      return [];
     }
   }
 }
