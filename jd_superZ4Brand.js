@@ -1,9 +1,10 @@
 /*
-特务Z
+特物Z
 cron 23 8,9 5 8 *
 要跑2次
 */
-const $ = new Env("特务Z");
+const jd_env = require("./utils/JDEnv.js");
+const $ = jd_env.env("特物Z");
 const notify = $.isNode() ? require("./sendNotify") : "";
 const jdCookieNode = $.isNode() ? require("./jdCookie.js") : "";
 let cookiesArr = [];
@@ -341,4 +342,3 @@ function TotalBean() {
     });
   });
 }
-

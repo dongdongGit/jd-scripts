@@ -14,7 +14,8 @@ cron "13 1,22,23 * * *" script-path=jd_daily_lottery.js, tag=每日抽奖
 ============小火箭=========
 每日抽奖 = type=cron,script-path=jd_daily_lottery.js, cronexpr="13 1,22,23 * * *", timeout=3600, enable=true
 */
-const $ = new Env("小鸽有礼-每日抽奖");
+const jd_env = require("./utils/JDEnv.js");
+const $ = jd_env.env("小鸽有礼-每日抽奖");
 const notify = $.isNode() ? require("./sendNotify") : "";
 const jdCookieNode = $.isNode() ? require("./jdCookie.js") : "";
 let activityType = "";

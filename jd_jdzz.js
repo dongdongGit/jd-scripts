@@ -20,7 +20,9 @@ cron "10 0 * * *" script-path=jd_jdzz.js,tag=京东赚赚
 ============小火箭=========
 京东赚赚 = type=cron,script-path=jd_jdzz.js, cronexpr="10 0 * * *", timeout=3600, enable=true
  */
-const $ = new Env("京东赚赚");
+const jd_heplers = require("./utils/JDHelpers.js");
+const jd_env = require("./utils/JDEnv.js");
+const $ = jd_env.env("京东赚赚");
 const notify = $.isNode() ? require("./sendNotify") : "";
 //Node.js用户请在jdCookie.js处填写京东ck;
 const jdCookieNode = $.isNode() ? require("./jdCookie.js") : "";
@@ -38,7 +40,7 @@ if ($.isNode()) {
   });
   if (process.env.JD_DEBUG && process.env.JD_DEBUG === "false") console.log = () => {};
 } else {
-  cookiesArr = [$.getdata("CookieJD"), $.getdata("CookieJD2"), ...jsonParse($.getdata("CookiesJD") || "[]").map((item) => item.cookie)].filter((item) => !!item);
+  cookiesArr = [$.getdata("CookieJD"), $.getdata("CookieJD2"), ...jd_heplers.jsonParse($.getdata("CookiesJD") || "[]").map((item) => item.cookie)].filter((item) => !!item);
 }
 const JD_API_HOST = "https://api.m.jd.com/client.action";
 const inviteCodes = [""];
@@ -141,7 +143,7 @@ function getUserInfo() {
           console.log(`${JSON.stringify(err)}`);
           console.log(`${$.name} API请求失败，请检查网路重试`);
         } else {
-          if (safeGet(data)) {
+          if (jd_heplers.safeGet(data)) {
             data = JSON.parse(data);
             // if (data.data.shareTaskRes) {
             //   console.log(`\n【京东账号${$.index}（${$.nickName || $.UserName}）的${$.name}好友互助码】${data.data.shareTaskRes.itemId}\n`);
@@ -167,7 +169,7 @@ function getTaskList(flag = false) {
           console.log(`${JSON.stringify(err)}`);
           console.log(`${$.name} API请求失败，请检查网路重试`);
         } else {
-          if (safeGet(data)) {
+          if (jd_heplers.safeGet(data)) {
             data = JSON.parse(data);
             $.taskList = data.data.taskDetailResList;
             $.totalNum = data.data.totalNum;
@@ -196,7 +198,7 @@ function doTask(body, func = "doInteractTask") {
           console.log(`${JSON.stringify(err)}`);
           console.log(`${$.name} API请求失败，请检查网路重试`);
         } else {
-          if (safeGet(data)) {
+          if (jd_heplers.safeGet(data)) {
             data = JSON.parse(data);
             // console.log(data)
             if (func === "doInteractTask") {
@@ -411,28 +413,3 @@ function TotalBean() {
     });
   });
 }
-
-function safeGet(data) {
-  try {
-    if (typeof JSON.parse(data) == "object") {
-      return true;
-    }
-  } catch (e) {
-    console.log(e);
-    console.log(`京东服务器访问数据为空，请检查自身设备网络情况`);
-    return false;
-  }
-}
-
-function jsonParse(str) {
-  if (typeof str == "string") {
-    try {
-      return JSON.parse(str);
-    } catch (e) {
-      console.log(e);
-      $.msg($.name, "", "不要在BoxJS手动复制粘贴修改cookie");
-      return [];
-    }
-  }
-}
-

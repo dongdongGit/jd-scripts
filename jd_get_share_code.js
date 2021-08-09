@@ -20,7 +20,9 @@ cron "20 13 * * 6" script-path=https://gitee.com/lxk0301/jd_scripts/raw/master/j
 ============小火箭=========
 获取互助码 = type=cron,script-path=https://gitee.com/lxk0301/jd_scripts/raw/master/jd_get_share_code.js, cronexpr="20 13 * * 6", timeout=3600, enable=true
  */
-const $ = new Env("获取互助码");
+const jd_heplers = require("./utils/JDHelpers.js");
+const jd_env = require("./utils/JDEnv.js");
+const $ = jd_env.env("获取互助码");
 const JD_API_HOST = "https://api.m.jd.com/client.action";
 let cookiesArr = [], cookie = '', message;
 const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
@@ -31,7 +33,7 @@ if ($.isNode()) {
   })
   if (process.env.JD_DEBUG && process.env.JD_DEBUG === 'false') console.log = () => {};
 } else {
-  cookiesArr = [$.getdata('CookieJD'), $.getdata('CookieJD2'), ...jsonParse($.getdata('CookiesJD') || "[]").map(item => item.cookie)].filter(item => !!item);
+  cookiesArr = [$.getdata('CookieJD'), $.getdata('CookieJD2'), ...jd_heplers.jsonParse($.getdata('CookiesJD') || "[]").map(item => item.cookie)].filter(item => !!item);
 }
 !(async () => {
   if (!cookiesArr[0]) {
@@ -71,7 +73,7 @@ function getJdFactory() {
             console.log(`${JSON.stringify(err)}`);
             console.log(`$东东工厂 API请求失败，请检查网路重试`);
           } else {
-            if (safeGet(data)) {
+            if (jd_heplers.safeGet(data)) {
               data = JSON.parse(data);
               if (data.data.bizCode === 0) {
                 $.taskVos = data.data.result.taskVos; //任务列表
@@ -126,7 +128,7 @@ function getJxFactory(){
             console.log(`${JSON.stringify(err)}`);
             console.log(`京喜工厂 API请求失败，请检查网路重试`);
           } else {
-            if (safeGet(data)) {
+            if (jd_heplers.safeGet(data)) {
               data = JSON.parse(data);
               if (data["ret"] === 0) {
                 data = data["data"];
@@ -198,7 +200,7 @@ function getJxNc(){
             console.log(`京喜农场 API请求失败，请检查网路重试`);
           } else {
             data = data.match(/try\{Query\(([\s\S]*)\)\;\}catch\(e\)\{\}/)[1];
-            if (safeGet(data)) {
+            if (jd_heplers.safeGet(data)) {
               data = JSON.parse(data);
               if (data["ret"] === 0) {
                 if (data.active) {
@@ -307,7 +309,7 @@ async function getJdZZ() {
             console.log(`${JSON.stringify(err)}`)
             console.log(`${$.name} API请求失败，请检查网路重试`)
           } else {
-            if (safeGet(data)) {
+            if (jd_heplers.safeGet(data)) {
               data = JSON.parse(data);
               if (data.data.shareTaskRes) {
                 console.log(`【账号${$.index}（${$.nickName || $.UserName}）京东赚赚】${data.data.shareTaskRes.itemId}`);
@@ -459,7 +461,7 @@ async function getJDFruit() {
             console.log(JSON.stringify(err));
             $.logErr(err);
           } else {
-            if (safeGet(data)) {
+            if (jd_heplers.safeGet(data)) {
               $.farmInfo = JSON.parse(data);
             }
           }
@@ -519,7 +521,7 @@ async function getJoy(){
           console.log(`${JSON.stringify(err)}`)
           console.log(`${$.name} API请求失败，请检查网路重试`)
         } else {
-          if (safeGet(data)) {
+          if (jd_heplers.safeGet(data)) {
             data = JSON.parse(data);
             if (data.success && data.data && data.data.userInviteCode) {
               console.log(`【账号${$.index}（${$.nickName || $.UserName}）crazyJoy】${data.data.userInviteCode}`)
@@ -622,17 +624,6 @@ async function getShareCode() {
   console.log(`======账号${$.index}结束======\n`)
 }
 
-function safeGet(data) {
-  try {
-    if (typeof JSON.parse(data) == "object") {
-      return true;
-    }
-  } catch (e) {
-    console.log(e);
-    console.log(`京东服务器访问数据为空，请检查自身设备网络情况`);
-    return false;
-  }
-}
 function TotalBean() {
   return new Promise(async resolve => {
     const options = {
@@ -702,15 +693,3 @@ function taskPostUrl(function_id, body = {}, function_id2) {
     },
   };
 }
-function jsonParse(str) {
-  if (typeof str == "string") {
-    try {
-      return JSON.parse(str);
-    } catch (e) {
-      console.log(e);
-      $.msg($.name, '', '不要在BoxJS手动复制粘贴修改cookie')
-      return [];
-    }
-  }
-}
-

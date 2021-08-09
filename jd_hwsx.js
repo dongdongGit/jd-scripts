@@ -5,7 +5,9 @@
 [task_local]
 20 12,14 * * *
 */
-const $ = new Env("京东众筹好物上新");
+const jd_heplers = require("./utils/JDHelpers.js");
+const jd_env = require("./utils/JDEnv.js");
+const $ = jd_env.env("京东众筹好物上新");
 const notify = $.isNode() ? require("./sendNotify") : "";
 //Node.js用户请在jdCookie.js处填写京东ck;
 const jdCookieNode = $.isNode() ? require("./jdCookie.js") : "";
@@ -23,7 +25,7 @@ if ($.isNode()) {
   });
   if (process.env.JD_DEBUG && process.env.JD_DEBUG === "false") console.log = () => {};
 } else {
-  cookiesArr = [$.getdata("CookieJD"), $.getdata("CookieJD2"), ...jsonParse($.getdata("CookiesJD") || "[]").map((item) => item.cookie)].filter((item) => !!item);
+  cookiesArr = [$.getdata("CookieJD"), $.getdata("CookieJD2"), ...jd_heplers.jsonParse($.getdata("CookiesJD") || "[]").map((item) => item.cookie)].filter((item) => !!item);
 }
 const JD_API_HOST = "https://wq.jd.com/";
 let allMessage = "";
@@ -215,28 +217,3 @@ function TotalBean() {
     });
   });
 }
-
-function safeGet(data) {
-  try {
-    if (typeof JSON.parse(data) == "object") {
-      return true;
-    }
-  } catch (e) {
-    console.log(e);
-    console.log(`京东服务器访问数据为空，请检查自身设备网络情况`);
-    return false;
-  }
-}
-
-function jsonParse(str) {
-  if (typeof str == "string") {
-    try {
-      return JSON.parse(str);
-    } catch (e) {
-      console.log(e);
-      $.msg($.name, "", "请勿随意在BoxJs输入框修改内容\n建议通过脚本去获取cookie");
-      return [];
-    }
-  }
-}
-

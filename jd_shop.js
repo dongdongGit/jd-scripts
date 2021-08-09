@@ -13,7 +13,9 @@
  //Surge
  进店领豆 = type=cron,cronexp="10 0 * * *",wake-system=1,timeout=20,script-path=https://raw.githubusercontent.com/LXK9301/jd_scripts/master/jd_shop.js
 * */
-const $ = new Env("进店领豆");
+const jd_heplers = require("./utils/JDHelpers.js");
+const jd_env = require("./utils/JDEnv.js");
+const $ = jd_env.env("进店领豆");
 const notify = $.isNode() ? require("./sendNotify") : "";
 //Node.js用户请在jdCookie.js处填写京东ck;
 const jdCookieNode = $.isNode() ? require("./jdCookie.js") : "";
@@ -28,7 +30,7 @@ if ($.isNode()) {
   if (process.env.JD_DEBUG && process.env.JD_DEBUG === "false") console.log = () => {};
 } else {
   let cookiesData = $.getdata("CookiesJD") || "[]";
-  cookiesData = jsonParse(cookiesData);
+  cookiesData = jd_heplers.jsonParse(cookiesData);
   cookiesArr = cookiesData.map((item) => item.cookie);
   cookiesArr.reverse();
   cookiesArr.push(...[$.getdata("CookieJD2"), $.getdata("CookieJD")]);
@@ -213,7 +215,7 @@ function TotalBean() {
               $.isLogin = false; //cookie过期
               return;
             }
-            $.nickName = data["base"].nickname;
+            $.nickName = data["base"]?.nickname;
           } else {
             console.log(`京东服务器返回空数据`);
           }
@@ -226,15 +228,3 @@ function TotalBean() {
     });
   });
 }
-function jsonParse(str) {
-  if (typeof str == "string") {
-    try {
-      return JSON.parse(str);
-    } catch (e) {
-      console.log(e);
-      $.msg($.name, "", "请勿随意在BoxJs输入框修改内容\n建议通过脚本去获取cookie");
-      return [];
-    }
-  }
-}
-

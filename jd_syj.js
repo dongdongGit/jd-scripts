@@ -20,6 +20,7 @@ cron "10 0,7,23 * * *" script-path=https://gitee.com/lxk0301/jd_scripts/raw/mast
 ============小火箭=========
 赚京豆 = type=cron,script-path=https://gitee.com/lxk0301/jd_scripts/raw/master/jd_syj.js, cronexpr="10 0,7,23 * * *", timeout=3600, enable=true
  */
+const jd_heplers = require("./utils/JDHelpers.js");
 const jd_env = require("./utils/JDEnv.js");
 const $ = jd_env.env("赚京豆");
 
@@ -39,7 +40,7 @@ if ($.isNode()) {
   if (process.env.JD_DEBUG && process.env.JD_DEBUG === 'false') console.log = () => {};
  // if (JSON.stringify(process.env).indexOf('GITHUB') > -1) process.exit(0);
 } else {
-  cookiesArr = [$.getdata('CookieJD'), $.getdata('CookieJD2'), ...jsonParse($.getdata('CookiesJD') || "[]").map(item => item.cookie)].filter(item => !!item);
+  cookiesArr = [$.getdata('CookieJD'), $.getdata('CookieJD2'), ...jd_heplers.jsonParse($.getdata('CookiesJD') || "[]").map(item => item.cookie)].filter(item => !!item);
 }
 const JD_API_HOST = 'https://api.m.jd.com/api';
 !(async () => {
@@ -133,7 +134,7 @@ function userSignIn() {
           console.log(`${JSON.stringify(err)}`)
           console.log(`${$.name} API请求失败，请检查网路重试`)
         } else {
-          if (safeGet(data)) {
+          if (jd_heplers.safeGet(data)) {
             data = JSON.parse(data);
             if (data.code === 0) {
               signFlag = 0;
@@ -196,7 +197,7 @@ function pg_channel_page_data() {
           console.log(`${JSON.stringify(err)}`)
           console.log(`${$.name} API请求失败，请检查网路重试`)
         } else {
-          if (safeGet(data)) {
+          if (jd_heplers.safeGet(data)) {
             data = JSON.parse(data);
             if (data['success']) {
               if (data['data'] && data['data']['floorInfoList']) {
@@ -267,7 +268,7 @@ function vvipscdp_raffle_auto_send_bean() {
           console.log(`${JSON.stringify(err)}`)
           console.log(`${$.name} API请求失败，请检查网路重试`)
         } else {
-          if (safeGet(data)) {
+          if (jd_heplers.safeGet(data)) {
             data = JSON.parse(data);
             if (data['success']) {
               if (data.data && data.data['sendBeanAmount']) {
@@ -311,7 +312,7 @@ function vviptask_receive_list() {
           console.log(`${JSON.stringify(err)}`)
           console.log(`${$.name} API请求失败，请检查网路重试`)
         } else {
-          if (safeGet(data)) {
+          if (jd_heplers.safeGet(data)) {
             data = JSON.parse(data);
             if (data['success']) {
               $.taskData = data['data'].filter(vo => !!vo && vo['taskDataStatus'] !== 3);
@@ -394,7 +395,7 @@ function vviptask_reach_task(taskIdEncrypted) {
           console.log(`${$.name} API请求失败，请检查网路重试`)
         } else {
           // console.log(`做任务任务:${data}`)
-          // if (safeGet(data)) {
+          // if (jd_heplers.safeGet(data)) {
           //   data = JSON.parse(data);
           //   if (data['success']) {
           //     $.taskData = data['data'];
@@ -437,7 +438,7 @@ function vviptask_reward_receive(idEncKey) {
           console.log(`${$.name} API请求失败，请检查网路重试`)
         } else {
           // console.log(`做任务任务:${data}`)
-          // if (safeGet(data)) {
+          // if (jd_heplers.safeGet(data)) {
           //   data = JSON.parse(data);
           //   if (data['success']) {
           //     $.taskData = data['data'];
@@ -479,7 +480,7 @@ function pg_interact_interface_invoke(floorToken) {
           console.log(`${JSON.stringify(err)}`)
           console.log(`${$.name} API请求失败，请检查网路重试`)
         } else {
-          if (safeGet(data)) {
+          if (jd_heplers.safeGet(data)) {
             data = JSON.parse(data);
             if (data['success']) {
               console.log(`【做任务 天天领京豆】${data['data']['rewardBeanAmount']}京豆领取成功`);
@@ -521,7 +522,7 @@ function openRedPacket(floorToken) {
           console.log(`${JSON.stringify(err)}`)
           console.log(`${$.name} API请求失败，请检查网路重试`)
         } else {
-          if (safeGet(data)) {
+          if (jd_heplers.safeGet(data)) {
             data = JSON.parse(data);
             if (data['success']) {
               console.log(`活动开启成功，初始：${data.data && data.data['activityBeanInitAmount']}京豆`)
@@ -594,7 +595,7 @@ function helpFriendTuan(body) {
           console.log(`${JSON.stringify(err)}`)
           console.log(`${$.name} API请求失败，请检查网路重试`)
         } else {
-          if (safeGet(data)) {
+          if (jd_heplers.safeGet(data)) {
             data = JSON.parse(data);
             if (data.success) {
               console.log('助力结果：助力成功\n')
@@ -626,7 +627,7 @@ function getUserTuanInfo() {
           console.log(`${JSON.stringify(err)}`)
           console.log(`${$.name} API请求失败，请检查网路重试`)
         } else {
-          if (safeGet(data)) {
+          if (jd_heplers.safeGet(data)) {
             data = JSON.parse(data);
             if (data['success']) {
               $.log(`\n\n当前【赚京豆(微信小程序)-瓜分京豆】能否再次开团: ${data.data.canStartNewAssist ? '可以' : '否'}`)
@@ -674,7 +675,7 @@ function openTuan() {
           console.log(`${JSON.stringify(err)}`)
           console.log(`${$.name} API请求失败，请检查网路重试`)
         } else {
-          if (safeGet(data)) {
+          if (jd_heplers.safeGet(data)) {
             data = JSON.parse(data);
             if (data['success']) {
               console.log(`【赚京豆(微信小程序)-瓜分京豆】开团成功`)
@@ -820,26 +821,4 @@ function TotalBean() {
       }
     })
   })
-}
-function safeGet(data) {
-  try {
-    if (typeof JSON.parse(data) == "object") {
-      return true;
-    }
-  } catch (e) {
-    console.log(e);
-    console.log(`京东服务器访问数据为空，请检查自身设备网络情况`);
-    return false;
-  }
-}
-function jsonParse(str) {
-  if (typeof str == "string") {
-    try {
-      return JSON.parse(str);
-    } catch (e) {
-      console.log(e);
-      $.msg($.name, '', '请勿随意在BoxJs输入框修改内容\n建议通过脚本去获取cookie')
-      return [];
-    }
-  }
 }

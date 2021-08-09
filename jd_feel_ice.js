@@ -7,7 +7,9 @@ https://xinrui2-isv.isvjcloud.com/jd-tourism/load_app/load_app.html
 # 入口：京东家电-清凉一夏-摸冰领补贴
 6 9,12 * * * https://raw.githubusercontent.com/Wenmoux/scripts/wen/jd/jd_mb.js, tag=全民摸冰, img-url=https://raw.githubusercontent.com/Orz-3/mini/master/Color/jd.png, enabled=true
 */
-const $ = new Env("全民摸冰");
+const jd_heplers = require("./utils/JDHelpers.js");
+const jd_env = require("./utils/JDEnv.js");
+const $ = jd_env.env("全民摸冰");
 //Node.js用户请在jdCookie.js处填写京东ck;
 const jdCookieNode = $.isNode() ? require("./jdCookie.js") : "";
 const randomCount = $.isNode() ? 20 : 5;
@@ -24,7 +26,7 @@ if ($.isNode()) {
   });
   if (process.env.JD_DEBUG && process.env.JD_DEBUG === "false") console.log = () => {};
 } else {
-  cookiesArr = [$.getdata("CookieJD"), $.getdata("CookieJD2"), ...jsonParse($.getdata("CookiesJD") || "[]").map((item) => item.cookie)].filter((item) => !!item);
+  cookiesArr = [$.getdata("CookieJD"), $.getdata("CookieJD2"), ...jd_heplers.jsonParse($.getdata("CookiesJD") || "[]").map((item) => item.cookie)].filter((item) => !!item);
 }
 const JD_API_HOST = `https://api.m.jd.com/client.action`;
 !(async () => {
@@ -265,15 +267,3 @@ function taskPostUrl(url, data) {
     });
   });
 }
-function jsonParse(str) {
-  if (typeof str == "string") {
-    try {
-      return JSON.parse(str);
-    } catch (e) {
-      console.log(e);
-      $.msg($.name, "", "请勿随意在BoxJs输入框修改内容\n建议通过脚本去获取cookie");
-      return [];
-    }
-  }
-}
-

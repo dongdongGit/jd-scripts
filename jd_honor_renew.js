@@ -22,7 +22,9 @@ cron "20 8 * * *" script-path=jd_ryhx.js, tag=荣耀换新
 荣耀换新 = type=cron,script-path=jd_ryhx.js, cronexpr="20 8 * * *", timeout=3600, enable=true
 
  */
-const $ = new Env("荣耀换新");
+const jd_heplers = require("./utils/JDHelpers.js");
+const jd_env = require("./utils/JDEnv.js");
+const $ = jd_env.env("荣耀换新");
 //Node.js用户请在jdCookie.js处填写京东ck;
 const jdCookieNode = $.isNode() ? require("./jdCookie.js") : "";
 let appId = "1E1NYwqc",
@@ -45,7 +47,7 @@ if ($.isNode()) {
   if (process.env.JD_DEBUG && process.env.JD_DEBUG === "false") console.log = () => {};
 } else {
   let cookiesData = $.getdata("CookiesJD") || "[]";
-  cookiesData = jsonParse(cookiesData);
+  cookiesData = jd_heplers.jsonParse(cookiesData);
   cookiesArr = cookiesData.map((item) => item.cookie);
   cookiesArr.reverse();
   cookiesArr.push(...[$.getdata("CookieJD2"), $.getdata("CookieJD")]);
@@ -399,15 +401,3 @@ function TotalBean() {
     });
   });
 }
-function jsonParse(str) {
-  if (typeof str == "string") {
-    try {
-      return JSON.parse(str);
-    } catch (e) {
-      console.log(e);
-      $.msg($.name, "", "请勿随意在BoxJs输入框修改内容\n建议通过脚本去获取cookie");
-      return [];
-    }
-  }
-}
-

@@ -24,6 +24,7 @@ cron "15 6-18/6 * * *" script-path=https://gitee.com/lxk0301/jd_scripts/raw/mast
 东东萌宠 = type=cron,script-path=https://gitee.com/lxk0301/jd_scripts/raw/master/jd_pet.js, cronexpr="15 6-18/6 * * *", timeout=3600, enable=true
 
 */
+const jd_heplers = require("./utils/JDHelpers.js");
 const jd_env = require("./utils/JDEnv.js");
 const $ = jd_env.env("东东萌宠");
 let cookiesArr = [], cookie = '', jdPetShareArr = [], isBox = false, notify, newShareCodes, allMessage = '';
@@ -511,7 +512,7 @@ function requireConfig() {
       })
       if (process.env.JD_DEBUG && process.env.JD_DEBUG === 'false') console.log = () => {};
     } else {
-      cookiesArr = [$.getdata('CookieJD'), $.getdata('CookieJD2'), ...jsonParse($.getdata('CookiesJD') || "[]").map(item => item.cookie)].filter(item => !!item);
+      cookiesArr = [$.getdata('CookieJD'), $.getdata('CookieJD2'), ...jd_heplers.jsonParse($.getdata('CookiesJD') || "[]").map(item => item.cookie)].filter(item => !!item);
     }
     console.log(`共${cookiesArr.length}个京东账号\n`)
     $.shareCodesArr = [];
@@ -618,15 +619,4 @@ function taskUrl(function_id, body = {}) {
       'Content-Type': 'application/x-www-form-urlencoded',
     }
   };
-}
-function jsonParse(str) {
-  if (typeof str == "string") {
-    try {
-      return JSON.parse(str);
-    } catch (e) {
-      console.log(e);
-      $.msg($.name, '', '请勿随意在BoxJs输入框修改内容\n建议通过脚本去获取cookie')
-      return [];
-    }
-  }
 }

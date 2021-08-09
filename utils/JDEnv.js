@@ -35,7 +35,7 @@ function env(t, e) {
         (this.logSeparator = "\n"),
         (this.startTime = new Date().getTime()),
         Object.assign(this, e),
-        this.log("", `🔔${this.name}, 开始!`);
+        this.log("", `${this.name}, 开始!`);
     }
     isNode() {
       return "undefined" != typeof module && !!module.exports;
@@ -297,7 +297,7 @@ function env(t, e) {
         }
       };
       if ((this.isMute || (this.isSurge() || this.isLoon() ? $notification.post(e, s, i, o(r)) : this.isQuanX() && $notify(e, s, i, o(r))), !this.isMuteLog)) {
-        let t = ["", "==============📣系统通知📣=============="];
+        let t = ["", "==============系统通知=============="];
         t.push(e), s && t.push(s), i && t.push(i), console.log(t.join("\n")), (this.logs = this.logs.concat(t));
       }
     }
@@ -306,7 +306,7 @@ function env(t, e) {
     }
     logErr(t, e) {
       const s = !this.isSurge() && !this.isQuanX() && !this.isLoon();
-      s ? this.log("", `❗️${this.name}, 错误!`, t.stack) : this.log("", `❗️${this.name}, 错误!`, t);
+      s ? this.log("", `❗️${this.name}, 错误!`, t.stack) : this.log("", `${this.name}, 错误!`, t);
     }
     wait(t) {
       return new Promise((e) => setTimeout(e, t));
@@ -314,7 +314,7 @@ function env(t, e) {
     done(t = {}) {
       const e = new Date().getTime(),
         s = (e - this.startTime) / 1e3;
-      this.log("", `🔔${this.name}, 结束! 🕛 ${s} 秒`), this.log(), (this.isSurge() || this.isQuanX() || this.isLoon()) && $done(t);
+      this.log("", `${this.name}, 结束! 耗时 ${s} 秒`), this.log(), (this.isSurge() || this.isQuanX() || this.isLoon()) && $done(t);
     }
   })(t, e);
 }

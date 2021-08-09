@@ -20,7 +20,9 @@ cron "13 1,6,22 * * *" script-path=https://gitee.com/lxk0301/jd_scripts/raw/mast
 ============小火箭=========
 东东健康社区 = type=cron,script-path=https://gitee.com/lxk0301/jd_scripts/raw/master/jd_health.js, cronexpr="13 1,6,22 * * *", timeout=3600, enable=true
  */
-const $ = new Env("东东健康社区");
+const jd_heplers = require("./utils/JDHelpers.js");
+const jd_env = require("./utils/JDEnv.js");
+const $ = jd_env.env("东东健康社区");
 const jdCookieNode = $.isNode() ? require("./jdCookie.js") : "";
 let cookiesArr = [],
   cookie = "",
@@ -113,7 +115,7 @@ function getTaskDetail(taskId = "") {
   return new Promise((resolve) => {
     $.get(taskUrl("jdhealth_getTaskDetail", { buildingId: "", taskId: taskId === -1 ? "" : taskId, channelId: 1 }), async (err, resp, data) => {
       try {
-        if (safeGet(data)) {
+        if (jd_heplers.safeGet(data)) {
           data = $.toObj(data);
           if (taskId === -1) {
             let tmp = parseInt(parseFloat(data?.data?.result?.userScore ?? "0"));
@@ -172,7 +174,7 @@ function doTask(taskToken, taskId, actionType = 0) {
     const options = taskUrl("jdhealth_collectScore", { taskToken, taskId, actionType });
     $.get(options, (err, resp, data) => {
       try {
-        if (safeGet(data)) {
+        if (jd_heplers.safeGet(data)) {
           data = $.toObj(data);
           if ([0, 1].includes(data?.data?.bizCode ?? -1)) {
             $.canDo = true;
@@ -195,7 +197,7 @@ function collectScore() {
   return new Promise((resolve) => {
     $.get(taskUrl("jdhealth_collectProduceScore", {}), (err, resp, data) => {
       try {
-        if (safeGet(data)) {
+        if (jd_heplers.safeGet(data)) {
           data = $.toObj(data);
           if (data?.data?.bizCode === 0) {
             if (data?.data?.result?.produceScore) console.log(`任务完成成功，获得：${data?.data?.result?.produceScore ?? "未知"}能量`);
@@ -231,19 +233,6 @@ function taskUrl(function_id, body = {}) {
     },
   };
 }
-
-function safeGet(data) {
-  try {
-    if (typeof JSON.parse(data) == "object") {
-      return true;
-    }
-  } catch (e) {
-    console.log(e);
-    console.log(`京东服务器访问数据为空，请检查自身设备网络情况`);
-    return false;
-  }
-}
-
 function readShareCode() {
   console.log(`开始`);
   return new Promise(async (resolve) => {

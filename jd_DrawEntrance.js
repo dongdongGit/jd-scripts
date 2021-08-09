@@ -13,6 +13,7 @@ cron "15 6 * * *" script-path=jd_DrawEntrance.js,tag=天天优惠大乐透
 ============小火箭=========
 天天优惠大乐透 = type=cron,script-path=jd_DrawEntrance.js, cronexpr="15 6 * * *", timeout=3600, enable=true
  */
+const jd_heplers = require("./utils/JDHelpers.js");
 const jd_env = require("./utils/JDEnv.js");
 const $ = jd_env.env("天天优惠大乐透");
 const notify = $.isNode() ? require('./sendNotify') : '';
@@ -29,7 +30,7 @@ if ($.isNode()) {
   })
   if (process.env.JD_DEBUG && process.env.JD_DEBUG === 'false') console.log = () => {};
 } else {
-  cookiesArr = [$.getdata('CookieJD'), $.getdata('CookieJD2'), ...jsonParse($.getdata('CookiesJD') || "[]").map(item => item.cookie)].filter(item => !!item);
+  cookiesArr = [$.getdata('CookieJD'), $.getdata('CookieJD2'), ...jd_heplers.safeGet($.getdata('CookiesJD') || "[]").map(item => item.cookie)].filter(item => !!item);
 }
 const JD_API_HOST = 'https://api.m.jd.com/api';
 !(async () => {
@@ -98,7 +99,7 @@ function extend() {
           console.log(err)
           console.log(`${$.name} API请求失败，请检查网路重试`)
         } else {
-          if (safeGet(data)) {
+          if (jd_heplers.safeGet(data)) {
             data = JSON.parse(data);
             $.extend = data.result.luckyDrawConfig.extend
           }
@@ -124,7 +125,7 @@ function doLuckDrawEntrance() {
           console.log(`${JSON.stringify(err)}`)
           console.log(`${$.name} API请求失败，请检查网路重试`)
         } else {
-          if (safeGet(data)) {
+          if (jd_heplers.safeGet(data)) {
             data = JSON.parse(data);
             if (data.success && "luckyDrawData" in data.result) {
               if (data.result.luckyDrawData.checkWinOrNot) { //调整判断的顺序
@@ -231,28 +232,4 @@ function TotalBean() {
       }
     })
   })
-}
-
-function safeGet(data) {
-  try {
-    if (typeof JSON.parse(data) == "object") {
-      return true;
-    }
-  } catch (e) {
-    console.log(e);
-    console.log(`京东服务器访问数据为空，请检查自身设备网络情况`);
-    return false;
-  }
-}
-
-function jsonParse(str) {
-  if (typeof str == "string") {
-    try {
-      return JSON.parse(str);
-    } catch (e) {
-      console.log(e);
-      $.msg($.name, '', '不要在BoxJS手动复制粘贴修改cookie')
-      return [];
-    }
-  }
 }

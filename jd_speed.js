@@ -23,8 +23,9 @@ cron "8 0-23/3 * * *" script-path=https://gitee.com/lxk0301/jd_scripts/raw/maste
 ==============小火箭=============
 天天加速 = type=cron,script-path=https://gitee.com/lxk0301/jd_scripts/raw/master/jd_speed.js, cronexpr="11 0-23/3 * * *", timeout=3600, enable=true
 */
-
-const $ = new Env("✈️天天加速");
+const jd_heplers = require("./utils/JDHelpers.js");
+const jd_env = require("./utils/JDEnv.js");
+const $ = jd_env.env("天天加速");
 const notify = $.isNode() ? require("./sendNotify") : "";
 //Node.js用户请在jdCookie.js处填写京东ck;
 const jdCookieNode = $.isNode() ? require("./jdCookie.js") : "";
@@ -38,7 +39,7 @@ if ($.isNode()) {
   });
   if (process.env.JD_DEBUG && process.env.JD_DEBUG === "false") console.log = () => {};
 } else {
-  cookiesArr = [$.getdata("CookieJD"), $.getdata("CookieJD2"), ...jsonParse($.getdata("CookiesJD") || "[]").map((item) => item.cookie)].filter((item) => !!item);
+  cookiesArr = [$.getdata("CookieJD"), $.getdata("CookieJD2"), ...jd_heplers.jsonParse($.getdata("CookiesJD") || "[]").map((item) => item.cookie)].filter((item) => !!item);
 }
 let jdNotify = true; //是否开启静默运行。默认true开启
 let message = "",
@@ -531,7 +532,7 @@ function getMemBerList() {
           console.log(`${$.name} API请求失败，请检查网路重试`);
           console.log(`${JSON.stringify(err)}`);
         } else {
-          if (safeGet(data)) {
+          if (jd_heplers.safeGet(data)) {
             data = JSON.parse(data);
             if (data && data.success) {
               for (let item of data.data) {
@@ -590,7 +591,7 @@ function getMemBerGetTask(sourceId) {
           console.log(`${$.name} API请求失败，请检查网路重试`);
           console.log(`${JSON.stringify(err)}`);
         } else {
-          if (safeGet(data)) {
+          if (jd_heplers.safeGet(data)) {
             data = JSON.parse(data);
             if (data && data.success) {
               // $.getRewardBeans += data.data.beans;
@@ -628,7 +629,7 @@ function getReward(uuid) {
           console.log(`${$.name} API请求失败，请检查网路重试`);
           console.log(`${JSON.stringify(err)}`);
         } else {
-          if (safeGet(data)) {
+          if (jd_heplers.safeGet(data)) {
             data = JSON.parse(data);
             if (data && data.success) {
               $.getRewardBeans += data.data.beans;
@@ -693,26 +694,3 @@ function TotalBean() {
     });
   });
 }
-function jsonParse(str) {
-  if (typeof str == "string") {
-    try {
-      return JSON.parse(str);
-    } catch (e) {
-      console.log(e);
-      $.msg($.name, "", "请勿随意在BoxJs输入框修改内容\n建议通过脚本去获取cookie");
-      return [];
-    }
-  }
-}
-function safeGet(data) {
-  try {
-    if (typeof JSON.parse(data) == "object") {
-      return true;
-    }
-  } catch (e) {
-    console.log(e);
-    console.log(`京东服务器访问数据为空，请检查自身设备网络情况`);
-    return false;
-  }
-}
-

@@ -14,7 +14,9 @@ update 2021/4/11
 # 京东试用
 30 10 * * * https://raw.githubusercontent.com/ZCY01/daily_scripts/main/jd/jd_try.js, tag=京东试用, img-url=https://raw.githubusercontent.com/ZCY01/img/master/jdtryv1.png, enabled=true
  */
-const $ = new Env("京东试用");
+const jd_heplers = require("./utils/JDHelpers.js");
+const jd_env = require("./utils/JDEnv.js");
+const $ = jd_env.env("京东试用");
 
 const selfDomain = "https://try.m.jd.com";
 let allGoodList = [];
@@ -121,7 +123,7 @@ function requireConfig() {
       if (process.env.JD_DEBUG && process.env.JD_DEBUG === "false") console.log = () => {};
     } else {
       //IOS等用户直接用NobyDa的jd $.cookie
-      $.cookiesArr = [$.getdata("CookieJD"), $.getdata("CookieJD2"), ...jsonParse($.getdata("CookiesJD") || "[]").map((item) => item.cookie)].filter((item) => !!item);
+      $.cookiesArr = [$.getdata("CookieJD"), $.getdata("CookieJD2"), ...jd_heplers.jsonParse($.getdata("CookiesJD") || "[]").map((item) => item.cookie)].filter((item) => !!item);
     }
     console.log(`共${$.cookiesArr.length}个京东账号\n`);
 
@@ -508,17 +510,3 @@ function totalBean() {
     });
   });
 }
-
-function jsonParse(str) {
-  if (typeof str == "string") {
-    try {
-      return JSON.parse(str);
-    } catch (e) {
-      console.log(e);
-      $.msg($.name, "", "请勿随意在BoxJs输入框修改内容\n建议通过脚本去获取cookie");
-      return [];
-    }
-  }
-}
-
-

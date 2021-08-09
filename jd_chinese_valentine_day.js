@@ -19,7 +19,8 @@ cron "36 0,10,21 4-15 8 *" script-path=jd_qxqbj.js,tag=8.4-8.15 七夕情报局
 ============小火箭=========
 8.4-8.15 七夕情报局 = type=cron,script-path=jd_qxqbj.js, cronexpr="36 0,10,21 4-15 8 *", timeout=3600, enable=true
 */
-const $ = new Env("8.4-8.15 七夕情报局");
+const jd_env = require("./utils/JDEnv.js");
+const $ = jd_env.env("8.4-8.15 七夕情报局");
 const jdCookieNode = $.isNode() ? require("./jdCookie.js") : "";
 const notify = $.isNode() ? require("./sendNotify") : "";
 //IOS等用户直接用NobyDa的jd cookie

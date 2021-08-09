@@ -8,7 +8,9 @@ Last Modified time: 2021-05-28 17:27:14
 #点点券
 20 0,20 * * * jd_necklace.js, tag=点点券, img-url=https://raw.githubusercontent.com/Orz-3/mini/master/Color/jd.png, enabled=true
  */
-const $ = new Env("点点券二代目");
+const jd_heplers = require("./utils/JDHelpers.js");
+const jd_env = require("./utils/JDEnv.js");
+const $ = jd_env.env("点点券二代目");
 const ZooFaker = require("./utils/ZooFaker_Necklace.js").utils;
 let allMessage = ``;
 const notify = $.isNode() ? require("./sendNotify") : "";
@@ -31,7 +33,7 @@ if ($.isNode()) {
   });
   if (process.env.JD_DEBUG && process.env.JD_DEBUG === "false") console.log = () => {};
 } else {
-  cookiesArr = [$.getdata("CookieJD"), $.getdata("CookieJD2"), ...jsonParse($.getdata("CookiesJD") || "[]").map((item) => item.cookie)].filter((item) => !!item);
+  cookiesArr = [$.getdata("CookieJD"), $.getdata("CookieJD2"), ...jd_heplers.jsonParse($.getdata("CookiesJD") || "[]").map((item) => item.cookie)].filter((item) => !!item);
 }
 
 const JD_API_HOST = "https://api.m.jd.com/api";
@@ -175,7 +177,7 @@ function necklace_sign() {
           console.log(`${JSON.stringify(err)}`);
           console.log(`${$.name} API请求失败，请检查网路重试`);
         } else {
-          if (safeGet(data)) {
+          if (jd_heplers.safeGet(data)) {
             data = JSON.parse(data);
             if (data.rtn_code === 0) {
               if (data.data.biz_code === 0) {
@@ -214,7 +216,7 @@ function necklace_exchangeGift(scoreNums) {
           console.log(`${JSON.stringify(err)}`);
           console.log(`${$.name} API请求失败，请检查网路重试`);
         } else {
-          if (safeGet(data)) {
+          if (jd_heplers.safeGet(data)) {
             data = JSON.parse(data);
             if (data.rtn_code === 0) {
               if (data.data.biz_code === 0) {
@@ -250,7 +252,7 @@ function necklace_chargeScores(bubleId) {
           console.log(`${JSON.stringify(err)}`);
           console.log(`${$.name} API请求失败，请检查网路重试`);
         } else {
-          if (safeGet(data)) {
+          if (jd_heplers.safeGet(data)) {
             data = JSON.parse(data);
             if (data.rtn_code === 0) {
               if (data.data.biz_code === 0) {
@@ -294,7 +296,7 @@ function necklace_startTask(taskId, functionId = "necklace_startTask", itemId = 
           console.log(`${$.name} API请求失败，请检查网路重试`);
         } else {
           console.log(`${functionId === "necklace_startTask" ? "领取任务结果" : "做任务结果"}：${data}`);
-          if (safeGet(data)) {
+          if (jd_heplers.safeGet(data)) {
             data = JSON.parse(data);
             if (data.rtn_code === 0) {
               if (data.data.biz_code === 0) {
@@ -331,7 +333,7 @@ function necklace_getTask(taskId) {
           console.log(`${JSON.stringify(err)}`);
           console.log(`${$.name} API请求失败，请检查网路重试`);
         } else {
-          if (safeGet(data)) {
+          if (jd_heplers.safeGet(data)) {
             data = JSON.parse(data);
             if (data.rtn_code === 0) {
               if (data.data.biz_code === 0) {
@@ -366,7 +368,7 @@ function necklace_homePage() {
           console.log(`${JSON.stringify(err)}`);
           console.log(`${$.name} API请求失败，请检查网路重试`);
         } else {
-          if (safeGet(data)) {
+          if (jd_heplers.safeGet(data)) {
             data = JSON.parse(data);
             if (data.rtn_code === 0) {
               if (data.data.biz_code === 0) {
@@ -458,7 +460,7 @@ function getCcTaskList(functionId, body, type = "3") {
           console.log(`${JSON.stringify(err)}`);
           console.log(`${$.name} API请求失败，请检查网路重试`);
         } else {
-          if (safeGet(data)) {
+          if (jd_heplers.safeGet(data)) {
             if (type === "3" && functionId === "reportCcTask") console.log(`点击首页领券图标(进入领券中心浏览15s)任务:${data}`);
             if (type === "4" && functionId === "reportSinkTask") console.log(`点击“券后9.9”任务:${data}`);
             // data = JSON.parse(data);
@@ -488,29 +490,6 @@ function taskPostUrl(function_id, body = {}) {
       cookie: cookie + `joyytoken=${"50082" + $.joyytoken};`,
     },
   };
-}
-
-function safeGet(data) {
-  try {
-    if (typeof JSON.parse(data) == "object") {
-      return true;
-    }
-  } catch (e) {
-    console.log(e);
-    console.log(`京东服务器访问数据为空，请检查自身设备网络情况`);
-    return false;
-  }
-}
-function jsonParse(str) {
-  if (typeof str == "string") {
-    try {
-      return JSON.parse(str);
-    } catch (e) {
-      console.log(e);
-      $.msg($.name, "", "请勿随意在BoxJs输入框修改内容\n建议通过脚本去获取cookie");
-      return [];
-    }
-  }
 }
 
 function getUA() {

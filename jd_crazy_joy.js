@@ -23,7 +23,7 @@ crazyJoy任务 = type=cron,script-path=https://raw.githubusercontent.com/LXK9301
 
  */
 
-
+const jd_heplers = require("./utils/JDHelpers.js");
 const jd_env = require("./utils/JDEnv.js");
 const $ = jd_env.env("crazyJoy任务");
 const JD_API_HOST = 'https://api.m.jd.com/';
@@ -301,7 +301,7 @@ function doApplyJdBean(bean = 1000) {
           console.log(`${JSON.stringify(err)}`)
           console.log(`${$.name} API请求失败，请检查网路重试`)
         } else {
-          if (safeGet(data)) {
+          if (jd_heplers.safeGet(data)) {
             data = JSON.parse(data);
             if (data.success) {
               console.log(`兑换${bean}京豆成功`)
@@ -328,7 +328,7 @@ function getUserInfo(code = "EdLPh8A6X5G1iWXu-uPYfA==") {
           console.log(`${JSON.stringify(err)}`)
           console.log(`${$.name} API请求失败，请检查网路重试`)
         } else {
-          if (safeGet(data)) {
+          if (jd_heplers.safeGet(data)) {
             data = JSON.parse(data);
             if (data.success && data.data && data.data.userInviteCode) {
               console.log(`\n【京东账号${$.index}（${$.nickName || $.UserName}）的${$.name}好友互助码】${data.data.userInviteCode}`)
@@ -368,7 +368,7 @@ function getTaskInfo() {
           console.log(`${JSON.stringify(err)}`)
           console.log(`${$.name} API请求失败，请检查网路重试`)
         } else {
-          if (safeGet(data)) {
+          if (jd_heplers.safeGet(data)) {
             data = JSON.parse(data);
             if (data.success && data.data && data.data.length) {
               $.taskList = data.data;
@@ -394,7 +394,7 @@ function doSign() {
           console.log(`${JSON.stringify(err)}`)
           console.log(`${$.name} API请求失败，请检查网路重试`)
         } else {
-          if (safeGet(data)) {
+          if (jd_heplers.safeGet(data)) {
             data = JSON.parse(data);
             if (data.success && data.data) {
               console.log(`签到成功，获得${data.data.beans}京豆，${data.data.coins}金币`)
@@ -421,7 +421,7 @@ function doTask(taskId) {
           console.log(`${JSON.stringify(err)}`)
           console.log(`${$.name} API请求失败，请检查网路重试`)
         } else {
-          if (safeGet(data)) {
+          if (jd_heplers.safeGet(data)) {
             data = JSON.parse(data);
             if (data.success && data.data && data.data.taskRecordId) {
               console.log(`去做任务【${data.data.taskTitle}】，任务id: ${data.data.taskRecordId}`)
@@ -450,7 +450,7 @@ function recordTask(taskId, taskRecordId) {
           console.log(`${JSON.stringify(err)}`)
           console.log(`${$.name} API请求失败，请检查网路重试`)
         } else {
-          if (safeGet(data)) {
+          if (jd_heplers.safeGet(data)) {
             data = JSON.parse(data);
             if (data.success) {
               console.log(`任务【${data.data.taskTitle}】记录成功，去领奖`)
@@ -478,7 +478,7 @@ function awardTask(taskId) {
           console.log(`${JSON.stringify(err)}`)
           console.log(`${$.name} API请求失败，请检查网路重试`)
         } else {
-          if (safeGet(data)) {
+          if (jd_heplers.safeGet(data)) {
             data = JSON.parse(data);
             if (data.success && data.data && data.data.taskTitle) {
               console.log(`任务【${data.data.taskTitle}】领奖成功，任务奖励：${data.data.beans}京豆，${data.data.coins}金币`)
@@ -505,7 +505,7 @@ function helpFriend(code) {
           console.log(`${JSON.stringify(err)}`)
           console.log(`${$.name} API请求失败，请检查网路重试`)
         } else {
-          if (safeGet(data)) {
+          if (jd_heplers.safeGet(data)) {
             data = JSON.parse(data);
             if (data['resultCode'] ==='0') {
               console.log(`助力结果:${JSON.stringify(data)}`);
@@ -533,7 +533,7 @@ function getUserBean() {
           console.log(`${JSON.stringify(err)}`)
           console.log(`${$.name} API请求失败，请检查网路重试`)
         } else {
-          if (safeGet(data)) {
+          if (jd_heplers.safeGet(data)) {
             data = JSON.parse(data);
             if (data.success && data.data && data.data.totalBeans)
               $.bean = data.data.totalBeans
@@ -558,7 +558,7 @@ function getCoin() {
           console.log(`${JSON.stringify(err)}`)
           console.log(`${$.name} API请求失败，请检查网路重试`)
         } else {
-          if (safeGet(data)) {
+          if (jd_heplers.safeGet(data)) {
             data = JSON.parse(data);
             if (data.data && data.data.totalCoinAmount) {
               $.coin = data.data.totalCoinAmount;
@@ -583,7 +583,7 @@ function getGrowthReward() {
           console.log(`${JSON.stringify(err)}`)
           console.log(`${$.name} API请求失败，请检查网路重试`)
         } else {
-          if (safeGet(data)) {
+          if (jd_heplers.safeGet(data)) {
             data = JSON.parse(data);
             if (data['resultCode'] === '0') {
               if (data.data) {
@@ -616,7 +616,7 @@ function obtainAward(eventRecordId) {
           console.log(`${JSON.stringify(err)}`)
           console.log(`${$.name} API请求失败，请检查网路重试`)
         } else {
-          if (safeGet(data)) {
+          if (jd_heplers.safeGet(data)) {
             data = JSON.parse(data);
             if (data['resultCode'] === '0') {
               $.GROWTH_REWARD_BEAN += data.data['beans'];
@@ -735,18 +735,6 @@ function requireConfig() {
     console.log(`您提供了${$.shareCodesArr.length}个账号的${$.name}助力码\n`);
     resolve()
   })
-}
-
-function safeGet(data) {
-  try {
-    if (typeof JSON.parse(data) == "object") {
-      return true;
-    }
-  } catch (e) {
-    console.log(e);
-    console.log(`京东服务器访问数据为空，请检查自身设备网络情况`);
-    return false;
-  }
 }
 
 function TotalBean() {

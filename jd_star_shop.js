@@ -22,7 +22,8 @@ cron "0 1,21 * * *" script-path=https://gitee.com/lxk0301/jd_scripts/raw/master/
 明星小店 = type=cron,script-path=https://gitee.com/lxk0301/jd_scripts/raw/master/jd_star_shop.js, cronexpr="0 1,21 * * *", timeout=3600, enable=true
  */
 
-const $ = new Env("明星小店");
+const jd_env = require("./utils/JDEnv.js");
+const $ = jd_env.env("明星小店");
 const notify = $.isNode() ? require("./sendNotify") : "";
 const jdCookieNode = $.isNode() ? require("./jdCookie.js") : "";
 $.inviteCodeList = [];
@@ -817,4 +818,3 @@ function getRandomArrayElements(arr, count) {
   }
   return shuffled.slice(min);
 }
-

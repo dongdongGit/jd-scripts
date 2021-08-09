@@ -1,7 +1,9 @@
 /*
 店铺签到，各类店铺签到，有新的店铺直接添加token即可
 */
-const $ = new Env("店铺签到");
+const jd_heplers = require("./utils/JDHelpers.js");
+const jd_env = require("./utils/JDEnv.js");
+const $ = jd_env.env("店铺签到");
 
 const notify = $.isNode() ? require("./sendNotify") : "";
 //Node.js用户请在jdCookie.js处填写京东ck;
@@ -43,7 +45,7 @@ if ($.isNode()) {
   if (process.env.JD_DEBUG && process.env.JD_DEBUG === "false") console.log = () => {};
 } else {
   let cookiesData = $.getdata("CookiesJD") || "[]";
-  cookiesData = jsonParse(cookiesData);
+  cookiesData = jd_heplers.jsonParse(cookiesData);
   cookiesArr = cookiesData.map((item) => item.cookie);
   cookiesArr.reverse();
   cookiesArr.push(...[$.getdata("CookieJD2"), $.getdata("CookieJD")]);
@@ -337,17 +339,3 @@ function TotalBean() {
     });
   });
 }
-
-function jsonParse(str) {
-  if (typeof str == "string") {
-    try {
-      return JSON.parse(str);
-    } catch (e) {
-      console.log(e);
-      $.msg($.name, "", "请勿随意在BoxJs输入框修改内容\n建议通过脚本去获取cookie");
-      return [];
-    }
-  }
-}
-
-

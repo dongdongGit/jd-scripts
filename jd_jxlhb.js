@@ -16,7 +16,8 @@ cron "4 2,10 * * *" script-path=jd_jxlhb.js,tag=京喜领88元红包
 ===============小火箭==========
 京喜领88元红包 = type=cron,script-path=jd_jxlhb.js, cronexpr="4 2,10 * * *", timeout=3600, enable=true
  */
-const $ = new Env("京喜领88元红包");
+const jd_env = require("./utils/JDEnv.js");
+const $ = jd_env.env("京喜领88元红包");
 const notify = $.isNode() ? require("./sendNotify") : {};
 const jdCookieNode = $.isNode() ? require("./jdCookie.js") : {};
 let cookiesArr = [],
@@ -380,4 +381,3 @@ function TotalBean() {
     });
   });
 }
-

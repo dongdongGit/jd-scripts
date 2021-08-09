@@ -23,12 +23,14 @@ cron "5 6-18/6 * * *" script-path=https://gitee.com/lxk0301/jd_scripts/raw/maste
 
 jd免费水果 搬的https://github.com/liuxiaoyucc/jd-helper/blob/a6f275d9785748014fc6cca821e58427162e9336/fruit/fruit.js
 */
-const $ = new Env("东东农场");
+const jd_heplers = require("./utils/JDHelpers.js");
+const jd_env = require("./utils/JDEnv.js");
+const $ = jd_env.env("东东农场");
+const notify = $.isNode() ? require("./sendNotify") : "";
 let cookiesArr = [],
   cookie = "",
   jdFruitShareArr = [],
   isBox = false,
-  notify,
   newShareCodes,
   allMessage = "";
 //助力好友分享码(最多3个,否则后面的助力失败),原因:京东农场每人每天只有3次助力机会
@@ -975,7 +977,7 @@ async function getFullCollectionReward() {
           console.log(JSON.stringify(err));
           $.logErr(err);
         } else {
-          if (safeGet(data)) {
+          if (jd_heplers.safeGet(data)) {
             $.duckRes = JSON.parse(data);
           }
         }
@@ -1236,7 +1238,7 @@ async function initForFarm() {
           console.log(JSON.stringify(err));
           $.logErr(err);
         } else {
-          if (safeGet(data)) {
+          if (jd_heplers.safeGet(data)) {
             $.farmInfo = JSON.parse(data);
           }
         }
@@ -1365,7 +1367,7 @@ function requireConfig() {
       });
       if (process.env.JD_DEBUG && process.env.JD_DEBUG === "false") console.log = () => {};
     } else {
-      cookiesArr = [$.getdata("CookieJD"), $.getdata("CookieJD2"), ...jsonParse($.getdata("CookiesJD") || "[]").map((item) => item.cookie)].filter((item) => !!item);
+      cookiesArr = [$.getdata("CookieJD"), $.getdata("CookieJD2"), ...jd_heplers.jsonParse($.getdata("CookiesJD") || "[]").map((item) => item.cookie)].filter((item) => !!item);
     }
     console.log(`共${cookiesArr.length}个京东账号\n`);
     $.shareCodesArr = [];
@@ -1446,7 +1448,7 @@ function request(function_id, body = {}, timeout = 1000) {
             console.log(`function_id:${function_id}`);
             $.logErr(err);
           } else {
-            if (safeGet(data)) {
+            if (jd_heplers.safeGet(data)) {
               data = JSON.parse(data);
             }
           }
@@ -1458,17 +1460,6 @@ function request(function_id, body = {}, timeout = 1000) {
       });
     }, timeout);
   });
-}
-function safeGet(data) {
-  try {
-    if (typeof JSON.parse(data) == "object") {
-      return true;
-    }
-  } catch (e) {
-    console.log(e);
-    console.log(`京东服务器访问数据为空，请检查自身设备网络情况`);
-    return false;
-  }
 }
 function taskUrl(function_id, body = {}) {
   return {
@@ -1486,15 +1477,3 @@ function taskUrl(function_id, body = {}) {
     timeout: 10000,
   };
 }
-function jsonParse(str) {
-  if (typeof str == "string") {
-    try {
-      return JSON.parse(str);
-    } catch (e) {
-      console.log(e);
-      $.msg($.name, "", "请勿随意在BoxJs输入框修改内容\n建议通过脚本去获取cookie");
-      return [];
-    }
-  }
-}
-

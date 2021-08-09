@@ -21,7 +21,9 @@ cron "30 11 * * *" script-path=https://raw.githubusercontent.com/asd920/Auto-jd/
 特物Z|万物皆可国创 = type=cron,script-path=https://raw.githubusercontent.com/asd920/Auto-jd/main/jd_superBrand.js, cronexpr="30 11 * * *", timeout=3600, enable=true
 
  */
-const $ = new Env("特物Z|万物皆可国创");
+const jd_heplers = require("./utils/JDHelpers.js");
+const jd_env = require("./utils/JDEnv.js");
+const $ = jd_env.env("特物Z|万物皆可国创");
 //Node.js用户请在jdCookie.js处填写京东ck;
 const jdCookieNode = $.isNode() ? require("./jdCookie.js") : "";
 const randomCount = $.isNode() ? 20 : 5;
@@ -38,7 +40,7 @@ if ($.isNode()) {
   });
   if (process.env.JD_DEBUG && process.env.JD_DEBUG === "false") console.log = () => {};
 } else {
-  cookiesArr = [$.getdata("CookieJD"), $.getdata("CookieJD2"), ...jsonParse($.getdata("CookiesJD") || "[]").map((item) => item.cookie)].filter((item) => !!item);
+  cookiesArr = [$.getdata("CookieJD"), $.getdata("CookieJD2"), ...jd_heplers.jsonParse($.getdata("CookiesJD") || "[]").map((item) => item.cookie)].filter((item) => !!item);
 }
 
 const JD_API_HOST = `https://api.m.jd.com/client.action`;
@@ -319,15 +321,3 @@ function taskPostUrl(functionid, body) {
     },
   };
 }
-function jsonParse(str) {
-  if (typeof str == "string") {
-    try {
-      return JSON.parse(str);
-    } catch (e) {
-      console.log(e);
-      $.msg($.name, "", "请勿随意在BoxJs输入框修改内容\n建议通过脚本去获取cookie");
-      return [];
-    }
-  }
-}
-

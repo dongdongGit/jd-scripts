@@ -10,6 +10,7 @@
 先这样子吧
  */
 //0 */3 * * *
+const jd_heplers = require("./utils/JDHelpers.js");
 const jd_env = require("./utils/JDEnv.js");
 const $ = jd_env.env("天天提鹅");
 let cookiesArr = [], cookie = '';
@@ -24,7 +25,7 @@ if ($.isNode()) {
   if (process.env.JD_DEBUG && process.env.JD_DEBUG === 'false') console.log = () => {};
 } else {
   let cookiesData = $.getdata('CookiesJD') || "[]";
-  cookiesData = jsonParse(cookiesData);
+  cookiesData = jd_heplers.jsonParse(cookiesData);
   cookiesArr = cookiesData.map(item => item.cookie);
   cookiesArr.reverse();
   cookiesArr.push(...[$.getdata('CookieJD2'), $.getdata('CookieJD')]);
@@ -226,15 +227,3 @@ function taskUrl(function_id, body) {
     }
   }
 }
-function jsonParse(str) {
-  if (typeof str == "string") {
-    try {
-      return JSON.parse(str);
-    } catch (e) {
-      console.log(e);
-      $.msg($.name, '', '请勿随意在BoxJs输入框修改内容\n建议通过脚本去获取cookie')
-      return [];
-    }
-  }
-}
-

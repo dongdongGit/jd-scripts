@@ -5,7 +5,9 @@ Last Modified time: 2021-1-22 14:27:20
 做日常任务任务，每日抽奖（有机会活动京豆，使用的是免费机会，不消耗WO币）
 自动使用WO币购买装饰品可以获得京豆，分别可获得5,20，50,100,200,400,700，1200京豆）
 */
-const $ = new Env("东东小窝");
+const jd_heplers = require("./utils/JDHelpers.js");
+const jd_env = require("./utils/JDEnv.js");
+const $ = jd_env.env("东东小窝");
 const notify = $.isNode() ? require("./sendNotify") : "";
 //Node.js用户请在jdCookie.js处填写京东ck;
 const jdCookieNode = $.isNode() ? require("./jdCookie.js") : "";
@@ -23,7 +25,7 @@ if ($.isNode()) {
   if (process.env.JD_DEBUG && process.env.JD_DEBUG === "false") console.log = () => {};
 } else {
   let cookiesData = $.getdata("CookiesJD") || "[]";
-  cookiesData = jsonParse(cookiesData);
+  cookiesData = jd_heplers.jsonParse(cookiesData);
   cookiesArr = cookiesData.map((item) => item.cookie);
   cookiesArr.reverse();
   cookiesArr.push(...[$.getdata("CookieJD2"), $.getdata("CookieJD")]);
@@ -249,7 +251,7 @@ function queryFurnituresCenterList() {
           console.log(`${JSON.stringify(err)}`);
           console.log(`${$.name} API请求失败，请检查网路重试`);
         } else {
-          if (safeGet(data)) {
+          if (jd_heplers.safeGet(data)) {
             data = JSON.parse(data);
             if (data.head.code === 200) {
               if (data.body) {
@@ -293,7 +295,7 @@ function furnituresCenterPurchase(id, jdBeanNum) {
           console.log(`${JSON.stringify(err)}`);
           console.log(`${$.name} API请求失败，请检查网路重试`);
         } else {
-          if (safeGet(data)) {
+          if (jd_heplers.safeGet(data)) {
             data = JSON.parse(data);
             if (data.head.code === 200) {
               message += `【装饰领京豆】${jdBeanNum}兑换成功\n`;
@@ -318,7 +320,7 @@ function queryByUserId() {
           console.log(`${JSON.stringify(err)}`);
           console.log(`${$.name} API请求失败，请检查网路重试`);
         } else {
-          if (safeGet(data)) {
+          if (jd_heplers.safeGet(data)) {
             data = JSON.parse(data);
             if (data.head.code === 200) {
               if (data.body) {
@@ -346,7 +348,7 @@ function queryChannelsList(taskId) {
           console.log(`${JSON.stringify(err)}`);
           console.log(`${$.name} API请求失败，请检查网路重试`);
         } else {
-          if (safeGet(data)) {
+          if (jd_heplers.safeGet(data)) {
             data = JSON.parse(data);
             if (data.head.code === 200) {
               if (data.body) {
@@ -373,7 +375,7 @@ function browseChannels(functionID, taskId, browseId) {
           console.log(`${JSON.stringify(err)}`);
           console.log(`${$.name} API请求失败，请检查网路重试`);
         } else {
-          if (safeGet(data)) {
+          if (jd_heplers.safeGet(data)) {
             console.log(`${functionID === "browseChannels" ? "浏览频道" : functionID === "browseMeetings" ? "浏览会场" : functionID === "browseShops" ? "浏览店铺" : "浏览商品"}`, data);
             data = JSON.parse(data);
             if (data.head.code === 200) {
@@ -400,7 +402,7 @@ function queryDoneTaskRecord(taskId, taskType) {
           console.log(`${JSON.stringify(err)}`);
           console.log(`${$.name} API请求失败，请检查网路重试`);
         } else {
-          if (safeGet(data)) {
+          if (jd_heplers.safeGet(data)) {
             data = JSON.parse(data);
             if (data.head.code === 200) {
               if (data.body) {
@@ -426,7 +428,7 @@ function followShops(functionID, taskId) {
           console.log(`${JSON.stringify(err)}`);
           console.log(`${$.name} API请求失败，请检查网路重试`);
         } else {
-          if (safeGet(data)) {
+          if (jd_heplers.safeGet(data)) {
             data = JSON.parse(data);
             if (data.head.code === 200) {
               if (data.body) {
@@ -453,7 +455,7 @@ function followChannel(taskId, channelId) {
           console.log(`${JSON.stringify(err)}`);
           console.log(`${$.name} API请求失败，请检查网路重试`);
         } else {
-          if (safeGet(data)) {
+          if (jd_heplers.safeGet(data)) {
             data = JSON.parse(data);
             if (data.head.code === 200) {
               if (data.body) {
@@ -478,7 +480,7 @@ function createInviteUser() {
           console.log(`${JSON.stringify(err)}`);
           console.log(`${$.name} API请求失败，请检查网路重试`);
         } else {
-          if (safeGet(data)) {
+          if (jd_heplers.safeGet(data)) {
             data = JSON.parse(data);
             if (data.head.code === 200) {
               if (data.body) {
@@ -509,7 +511,7 @@ function createAssistUser(inviteId, taskId) {
           console.log(`${JSON.stringify(err)}`);
           console.log(`${$.name} API请求失败，请检查网路重试`);
         } else {
-          if (safeGet(data)) {
+          if (jd_heplers.safeGet(data)) {
             data = JSON.parse(data);
             if (data.head.code === 200) {
               if (data.body) {
@@ -536,7 +538,7 @@ function game(taskId, index, awardWoB = 100) {
           console.log(`${JSON.stringify(err)}`);
           console.log(`${$.name} API请求失败，请检查网路重试`);
         } else {
-          if (safeGet(data)) {
+          if (jd_heplers.safeGet(data)) {
             data = JSON.parse(data);
             if (data.head.code === 200) {
               if (data.body) {
@@ -561,7 +563,7 @@ function clock(taskId, awardWoB) {
           console.log(`${JSON.stringify(err)}`);
           console.log(`${$.name} API请求失败，请检查网路重试`);
         } else {
-          if (safeGet(data)) {
+          if (jd_heplers.safeGet(data)) {
             data = JSON.parse(data);
             if (data.head.code === 200) {
               if (data.body) {
@@ -586,7 +588,7 @@ function queryAllTaskInfo() {
           console.log(`${JSON.stringify(err)}`);
           console.log(`${$.name} API请求失败，请检查网路重试`);
         } else {
-          if (safeGet(data)) {
+          if (jd_heplers.safeGet(data)) {
             data = JSON.parse(data);
             if (data.head.code === 200) {
               if (data.body) {
@@ -612,7 +614,7 @@ function drawRecord(id) {
           console.log(`${JSON.stringify(err)}`);
           console.log(`${$.name} API请求失败，请检查网路重试`);
         } else {
-          if (safeGet(data)) {
+          if (jd_heplers.safeGet(data)) {
             data = JSON.parse(data);
             if (data.head.code === 200) {
               if (data.body) {
@@ -640,7 +642,7 @@ function queryDraw() {
           console.log(`${JSON.stringify(err)}`);
           console.log(`${$.name} API请求失败，请检查网路重试`);
         } else {
-          if (safeGet(data)) {
+          if (jd_heplers.safeGet(data)) {
             data = JSON.parse(data);
             if (data.head.code === 200) {
               $.freeDrawCount = data.body.freeDrawCount; //免费抽奖次数
@@ -665,7 +667,7 @@ function ssjjRooms() {
           console.log(`${JSON.stringify(err)}`);
           console.log(`${$.name} API请求失败，请检查网路重试`);
         } else {
-          if (safeGet(data)) {
+          if (jd_heplers.safeGet(data)) {
             data = JSON.parse(data);
             if (data.head.code === 200) {
               $.isUnLock = data.body.isUnLock;
@@ -717,7 +719,7 @@ function loginHome() {
           console.log(`${JSON.stringify(err)}`);
           console.log(`${$.name} API请求失败，请检查网路重试`);
         } else {
-          if (safeGet(data)) {
+          if (jd_heplers.safeGet(data)) {
             data = JSON.parse(data);
             await login(data.data);
           }
@@ -918,7 +920,7 @@ function TotalBean() {
           console.log(`${JSON.stringify(err)}`);
           console.log(`${$.name} API请求失败，请检查网路重试`);
         } else {
-          if (safeGet(data)) {
+          if (jd_heplers.safeGet(data)) {
             data = JSON.parse(data);
             if (data["retcode"] === 13) {
               $.isLogin = false; //cookie过期
@@ -939,26 +941,3 @@ function TotalBean() {
     });
   });
 }
-function safeGet(data) {
-  try {
-    if (typeof JSON.parse(data) == "object") {
-      return true;
-    }
-  } catch (e) {
-    console.log(e);
-    console.log(`京东服务器访问数据为空，请检查自身设备网络情况`);
-    return false;
-  }
-}
-function jsonParse(str) {
-  if (typeof str == "string") {
-    try {
-      return JSON.parse(str);
-    } catch (e) {
-      console.log(e);
-      $.msg($.name, "", "请勿随意在BoxJs输入框修改内容\n建议通过脚本去获取cookie");
-      return [];
-    }
-  }
-}
-

@@ -30,7 +30,7 @@ cron "0 2 * * *" script-path=https://gitee.com/lxk0301/jd_scripts/raw/master/jd_
 ============小火箭=========
 京东保价 = type=cron,script-path=https://gitee.com/lxk0301/jd_scripts/raw/master/jd_price.js, cronexpr="0 2 * * *", timeout=3600, enable=true
  */
-
+const jd_heplers = require("./utils/JDHelpers.js");
 const jd_env = require("./utils/JDEnv.js");
 const $ = jd_env.env("京东保价");
 const notify = $.isNode() ? require('./sendNotify') : '';
@@ -44,7 +44,7 @@ if ($.isNode()) {
   })
   if (process.env.JD_DEBUG && process.env.JD_DEBUG === 'false') console.log = () => {};
 } else {
-  cookiesArr = [$.getdata('CookieJD'), $.getdata('CookieJD2'), ...jsonParse($.getdata('CookiesJD') || "[]").map(item => item.cookie)].filter(item => !!item);
+  cookiesArr = [$.getdata('CookieJD'), $.getdata('CookieJD2'), ...jd_heplers.jsonParse($.getdata('CookiesJD') || "[]").map(item => item.cookie)].filter(item => !!item);
 }
 
 !(async () => {
@@ -530,21 +530,4 @@ function totalBean() {
     });
   });
 }
-
-function jsonParse(str) {
-  if (typeof str == 'string') {
-    try {
-      return JSON.parse(str);
-    } catch (e) {
-      console.log(e);
-      $.msg(
-        $.name,
-        '',
-        '请勿随意在BoxJs输入框修改内容\n建议通过脚本去获取cookie'
-      );
-      return [];
-    }
-  }
-}
-// https://github.com/chavyleung/scripts/blob/master/Env.js
 

@@ -22,8 +22,9 @@ cron "20 0,22 * * *" script-path=https://gitee.com/lxk0301/jd_scripts/raw/master
 ============小火箭=========
 京东极速版红包 = type=cron,script-path=https://gitee.com/lxk0301/jd_scripts/raw/master/jd_speed_redpocke.js, cronexpr="20 0,22 * * *", timeout=3600, enable=true
 */
-
-const $ = new Env("京东极速版红包");
+const jd_heplers = require("./utils/JDHelpers.js");
+const jd_env = require("./utils/JDEnv.js");
+const $ = jd_env.env("京东极速版红包");
 
 const notify = $.isNode() ? require("./sendNotify") : "";
 //Node.js用户请在jdCookie.js处填写京东ck;
@@ -41,7 +42,7 @@ if ($.isNode()) {
   if (process.env.JD_DEBUG && process.env.JD_DEBUG === "false") console.log = () => {};
   //if (JSON.stringify(process.env).indexOf('GITHUB') > -1) process.exit(0);
 } else {
-  cookiesArr = [$.getdata("CookieJD"), $.getdata("CookieJD2"), ...jsonParse($.getdata("CookiesJD") || "[]").map((item) => item.cookie)].filter((item) => !!item);
+  cookiesArr = [$.getdata("CookieJD"), $.getdata("CookieJD2"), ...jd_heplers.jsonParse($.getdata("CookiesJD") || "[]").map((item) => item.cookie)].filter((item) => !!item);
 }
 
 !(async () => {
@@ -130,7 +131,7 @@ async function sign() {
           console.log(`${JSON.stringify(err)}`);
           console.log(`${$.name} API请求失败，请检查网路重试`);
         } else {
-          if (safeGet(data)) {
+          if (jd_heplers.safeGet(data)) {
             data = $.toObj(data);
             if (data.code === 0) {
               if (data.data.retCode === 0) {
@@ -165,7 +166,7 @@ function reward_query() {
             console.log(`${JSON.stringify(err)}`);
             console.log(`${$.name} API请求失败，请检查网路重试`);
           } else {
-            if (safeGet(data)) {
+            if (jd_heplers.safeGet(data)) {
               data = JSON.parse(data);
               if (data.code === 0) {
               } else {
@@ -192,7 +193,7 @@ async function redPacket() {
             console.log(`${JSON.stringify(err)}`);
             console.log(`${$.name} API请求失败，请检查网路重试`);
           } else {
-            if (safeGet(data)) {
+            if (jd_heplers.safeGet(data)) {
               data = JSON.parse(data);
               if (data.code === 0) {
                 if (data.data.received.prizeType !== 1) {
@@ -224,7 +225,7 @@ function getPacketList() {
           console.log(`${JSON.stringify(err)}`);
           console.log(`${$.name} API请求失败，请检查网路重试`);
         } else {
-          if (safeGet(data)) {
+          if (jd_heplers.safeGet(data)) {
             data = JSON.parse(data);
             if (data.code === 0) {
               for (let item of data.data.items.filter((vo) => vo.prizeType === 4)) {
@@ -273,7 +274,7 @@ function signPrizeDetailList() {
           console.log(`${JSON.stringify(err)}`);
           console.log(`${$.name} API请求失败，请检查网路重试`);
         } else {
-          if (safeGet(data)) {
+          if (jd_heplers.safeGet(data)) {
             data = $.toObj(data);
             if (data.code === 0) {
               if (data.data.code === 0) {
@@ -336,7 +337,7 @@ function apCashWithDraw(id, poolBaseId, prizeGroupId, prizeBaseId) {
           console.log(`${JSON.stringify(err)}`);
           console.log(`${$.name} API请求失败，请检查网路重试`);
         } else {
-          if (safeGet(data)) {
+          if (jd_heplers.safeGet(data)) {
             data = $.toObj(data);
             if (data.code === 0) {
               if (data.data.status === "310") {
@@ -379,7 +380,7 @@ function cashOut(id, poolBaseId, prizeGroupId, prizeBaseId) {
           console.log(`${JSON.stringify(err)}`);
           console.log(`${$.name} API请求失败，请检查网路重试`);
         } else {
-          if (safeGet(data)) {
+          if (jd_heplers.safeGet(data)) {
             console.log(`提现零钱结果：${data}`);
             data = JSON.parse(data);
             if (data.code === 0) {
@@ -711,28 +712,3 @@ function TotalBean() {
     });
   });
 }
-
-function safeGet(data) {
-  try {
-    if (typeof JSON.parse(data) == "object") {
-      return true;
-    }
-  } catch (e) {
-    console.log(e);
-    console.log(`京东服务器访问数据为空，请检查自身设备网络情况`);
-    return false;
-  }
-}
-
-function jsonParse(str) {
-  if (typeof str == "string") {
-    try {
-      return JSON.parse(str);
-    } catch (e) {
-      console.log(e);
-      $.msg($.name, "", "请勿随意在BoxJs输入框修改内容\n建议通过脚本去获取cookie");
-      return [];
-    }
-  }
-}
-
