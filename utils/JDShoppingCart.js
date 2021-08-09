@@ -24,12 +24,12 @@ function unsubscribeCartsFun() {
       try {
         data = JSON.parse(data);
         if (data["errId"] == "0") {
-          allMessage += `清空结果：✅\n`;
+          allMessage += `清空结果：\n`;
         } else {
-          allMessage += `清空结果：❌\n`;
+          allMessage += `清空结果：\n`;
         }
       } catch (e) {
-        allMessage += `清空结果：❌\n`;
+        allMessage += `清空结果：\n`;
         $.logErr(e, resp);
       } finally {
         resolve(data);
@@ -48,10 +48,7 @@ function getStr(text, start, end) {
   if (bPos < 0) {
     return null;
   }
-  var retstr = str.substr(
-    aPos + start.length,
-    text.length - (aPos + start.length) - (text.length - bPos)
-  );
+  var retstr = str.substr(aPos + start.length, text.length - (aPos + start.length) - (text.length - bPos));
   return retstr;
 }
 function getCarts() {
@@ -77,9 +74,7 @@ function getCarts() {
     };
     $.get(option, (err, resp, data) => {
       try {
-        data = JSON.parse(
-          getStr(data, "window.cartData =", "window._PFM_TIMING")
-        );
+        data = JSON.parse(getStr(data, "window.cartData =", "window._PFM_TIMING"));
         $.cartsTotalNum = 0;
         if (data.errId === "0") {
           $.traceId = data["traceId"];
@@ -100,19 +95,7 @@ function getCarts() {
                   sKuId = itemId;
                   index = sorted["polyType"] == "4" ? "13" : "11";
                 }
-                temp = [
-                  products["mainSku"]["id"],
-                  ,
-                  "1",
-                  products["mainSku"]["id"],
-                  index,
-                  sKuId,
-                  "0",
-                  "skuUuid:" +
-                    products["skuUuid"] +
-                    "@@useUuid:" +
-                    products["useUuid"],
-                ].join(",");
+                temp = [products["mainSku"]["id"], , "1", products["mainSku"]["id"], index, sKuId, "0", "skuUuid:" + products["skuUuid"] + "@@useUuid:" + products["useUuid"]].join(",");
                 if ($.commlist.length > 0) {
                   $.commlist += "$";
                 }
@@ -169,8 +152,7 @@ function TotalBean() {
               return;
             }
             if (data["retcode"] === 0) {
-              $.nickName =
-                (data["base"] && data["base"].nickname) || $.UserName;
+              $.nickName = (data["base"] && data["base"].nickname) || $.UserName;
             } else {
               $.nickName = $.UserName;
             }
@@ -192,11 +174,7 @@ function jsonParse(str) {
       return JSON.parse(str);
     } catch (e) {
       console.log(e);
-      $.msg(
-        $.name,
-        "",
-        "请勿随意在BoxJs输入框修改内容\n建议通过脚本去获取cookie"
-      );
+      $.msg($.name, "", "请勿随意在BoxJs输入框修改内容\n建议通过脚本去获取cookie");
       return [];
     }
   }
