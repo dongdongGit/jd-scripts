@@ -6,6 +6,8 @@
 脚本兼容: Node.js
 cron 1 7,12,19 * * * jd_beauty.js
  */
+
+const jd_heplers = require("./utils/JDHelpers.js");
 const jd_env = require("./utils/JDEnv.js");
 const $ = jd_env.env("美丽研究院");
 const notify = $.isNode() ? require('./sendNotify') : '';
@@ -27,7 +29,7 @@ if ($.isNode()) {
   })
   if (process.env.JD_DEBUG && process.env.JD_DEBUG === 'false') console.log = () => {};
 } else {
-  cookiesArr = [$.getdata('CookieJD'), $.getdata('CookieJD2'), ...jsonParse($.getdata('CookiesJD') || "[]").map(item => item.cookie)].filter(item => !!item);
+  cookiesArr = [$.getdata('CookieJD'), $.getdata('CookieJD2'), ...jd_heplers.jsonParse($.getdata('CookiesJD') || "[]").map(item => item.cookie)].filter(item => !!item);
 }
 const JD_API_HOST = 'https://api.m.jd.com/client.action';
 !(async () => {
@@ -101,7 +103,7 @@ async function accountCheck() {
     client.send(`{"msg":{"type":"action","args":{"source":1},"action":"get_user"}}`);
   };
   client.onmessage = async function (e) {
-    if (e.data !== 'pong' && e.data && safeGet(e.data)) {
+    if (e.data !== 'pong' && e.data && jd_heplers.safeGet(e.data)) {
       let vo = JSON.parse(e.data);
       if (vo.action === "_init_") {
         let vo = JSON.parse(e.data);
@@ -209,7 +211,7 @@ async function mr() {
     }
   };
   client.onmessage = async function (e) {
-    if (e.data !== 'pong' && e.data && safeGet(e.data)) {
+    if (e.data !== 'pong' && e.data && jd_heplers.safeGet(e.data)) {
       let vo = JSON.parse(e.data);
       await $.wait(Math.random()*2000+500);
       console.log(`\n开始任务："${JSON.stringify(vo.action)}`);
@@ -541,7 +543,7 @@ function getIsvToken() {
           console.log(`${$.name} API请求失败，请检查网路重试`);
           console.log(`${JSON.stringify(err)}`)
         } else {
-          if (safeGet(data)) {
+          if (jd_heplers.safeGet(data)) {
             data = JSON.parse(data);
             $.isvToken = data['tokenKey'];
             console.log(`isvToken:${$.isvToken}`);
@@ -576,7 +578,7 @@ function getIsvToken2() {
           console.log(`${JSON.stringify(err)}`)
           console.log(`${$.name} API请求失败，请检查网路重试`)
         } else {
-          if (safeGet(data)) {
+          if (jd_heplers.safeGet(data)) {
             data = JSON.parse(data);
             $.token2 = data['token']
             console.log(`token2:${$.token2}`);
@@ -615,7 +617,7 @@ function getToken() {
           console.log(`${JSON.stringify(err)}`)
           console.log(`${$.name} API请求失败，请检查网路重试`)
         } else {
-          if (safeGet(data)) {
+          if (jd_heplers.safeGet(data)) {
             data = JSON.parse(data);
             $.token = data.access_token
             console.log(`【$.token】 ${$.token}`)
@@ -682,29 +684,3 @@ function TotalBean() {
     })
   })
 }
-
-function safeGet(data) {
-  try {
-    if (typeof JSON.parse(data) == "object") {
-      return true;
-    }
-  } catch (e) {
-    console.log(e);
-    console.log(`京东服务器访问数据为空，请检查自身设备网络情况`);
-    return false;
-  }
-}
-
-function jsonParse(str) {
-  if (typeof str == "string") {
-    try {
-      return JSON.parse(str);
-    } catch (e) {
-      console.log(e);
-      $.msg($.name, '', '不要在BoxJS手动复制粘贴修改cookie')
-      return [];
-    }
-  }
-}
-
-

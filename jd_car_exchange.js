@@ -25,6 +25,7 @@ cron "0 0 * * *" script-path=https://raw.githubusercontent.com/LXK9301/jd_script
 ============小火箭=========
 京东汽车兑换 = type=cron,script-path=https://raw.githubusercontent.com/LXK9301/jd_scripts/master/jd_car_exchange.js, cronexpr="0 0 * * *", timeout=2000, enable=true
  */
+const jd_heplers = require("./utils/JDHelpers.js");
 const jd_env = require("./utils/JDEnv.js");
 const $ = jd_env.env("京东汽车兑换");
 
@@ -44,7 +45,7 @@ if ($.isNode()) {
   if (process.env.JD_DEBUG && process.env.JD_DEBUG === "false") console.log = () => {};
 } else {
   let cookiesData = $.getdata("CookiesJD") || "[]";
-  cookiesData = jsonParse(cookiesData);
+  cookiesData = jd_heplers.jsonParse(cookiesData);
   cookiesArr = cookiesData.map((item) => item.cookie);
   cookiesArr.reverse();
   cookiesArr.push(...[$.getdata("CookieJD2"), $.getdata("CookieJD")]);
@@ -96,7 +97,7 @@ function exchange() {
         if (err) {
           data = JSON.parse(resp.body);
         } else {
-          if (safeGet(data)) {
+          if (jd_heplers.safeGet(data)) {
             data = JSON.parse(data);
             console.log(`兑换结果：${JSON.stringify(data)}`);
           }
@@ -182,25 +183,3 @@ function TotalBean() {
   });
 }
 
-function safeGet(data) {
-  try {
-    if (typeof JSON.parse(data) == "object") {
-      return true;
-    }
-  } catch (e) {
-    console.log(e);
-    console.log(`京东服务器访问数据为空，请检查自身设备网络情况`);
-    return false;
-  }
-}
-function jsonParse(str) {
-  if (typeof str == "string") {
-    try {
-      return JSON.parse(str);
-    } catch (e) {
-      console.log(e);
-      $.msg($.name, "", "请勿随意在BoxJs输入框修改内容\n建议通过脚本去获取cookie");
-      return [];
-    }
-  }
-}

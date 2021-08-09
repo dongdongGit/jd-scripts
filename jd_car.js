@@ -20,6 +20,7 @@ cron "10 7 * * *" script-path=https://raw.githubusercontent.com/LXK9301/jd_scrip
 ============小火箭=========
 京东汽车 = type=cron,script-path=https://raw.githubusercontent.com/LXK9301/jd_scripts/master/jd_car.js, cronexpr="10 7 * * *", timeout=200, enable=true
  */
+const jd_heplers = require("./utils/JDHelpers.js");
 const jd_env = require("./utils/JDEnv.js");
 const $ = jd_env.env("京东汽车");
 
@@ -38,7 +39,7 @@ if ($.isNode()) {
   };
 } else {
   let cookiesData = $.getdata('CookiesJD') || "[]";
-  cookiesData = jsonParse(cookiesData);
+  cookiesData = jd_heplers.jsonParse(cookiesData);
   cookiesArr = cookiesData.map(item => item.cookie);
   cookiesArr.reverse();
   cookiesArr.push(...[$.getdata('CookieJD2'), $.getdata('CookieJD')]);
@@ -106,7 +107,7 @@ function check() {
           console.log(`${data.error.msg}`)
           message += `签到失败，${data.error.msg}\n`
         } else {
-          if (safeGet(data)) {
+          if (jd_heplers.safeGet(data)) {
             data = JSON.parse(data);
             console.log(`兑换结果：${JSON.stringify(data)}`)
           }
@@ -129,7 +130,7 @@ function sign() {
           console.log(`${data.error.msg}`)
           message += `签到失败，${data.error.msg}\n`
         } else {
-          if (safeGet(data)) {
+          if (jd_heplers.safeGet(data)) {
             data = JSON.parse(data);
             if (data.status) {
               console.log(`签到成功，获得${data.data.point}，已签到${data.data.signDays}天`)
@@ -154,7 +155,7 @@ function mission() {
           console.log(`${JSON.stringify(err)}`)
           console.log(`${$.name} API请求失败，请检查网路重试`)
         } else {
-          if (safeGet(data)) {
+          if (jd_heplers.safeGet(data)) {
             data = JSON.parse(data);
             if (data.status) {
               let missions = data.data.missionList
@@ -186,7 +187,7 @@ function doMission(missionId) {
           data = JSON.parse(resp.body)
           console.log(`${data.error.msg}`)
         } else {
-          if (safeGet(data)) {
+          if (jd_heplers.safeGet(data)) {
             data = JSON.parse(data);
             if (data.status) {
               console.log("任务领取成功")
@@ -211,7 +212,7 @@ function receiveMission(missionId) {
           data = JSON.parse(resp.body)
           console.log(`${data.error.msg}`)
         } else {
-          if (safeGet(data)) {
+          if (jd_heplers.safeGet(data)) {
             data = JSON.parse(data);
             if (data.status) {
               console.log("任务完成成功")
@@ -235,7 +236,7 @@ function getPoint() {
           data = JSON.parse(resp.body)
           console.log(`${data.error.msg}`)
         } else {
-          if (safeGet(data)) {
+          if (jd_heplers.safeGet(data)) {
             data = JSON.parse(data);
             if (data.status) {
               if (data.data.remainPoint >= data.data.oncePoint) {
@@ -333,27 +334,3 @@ function TotalBean() {
     })
   })
 }
-
-function safeGet(data) {
-  try {
-    if (typeof JSON.parse(data) == "object") {
-      return true;
-    }
-  } catch (e) {
-    console.log(e);
-    console.log(`京东服务器访问数据为空，请检查自身设备网络情况`);
-    return false;
-  }
-}
-function jsonParse(str) {
-  if (typeof str == "string") {
-    try {
-      return JSON.parse(str);
-    } catch (e) {
-      console.log(e);
-      $.msg($.name, '', '请勿随意在BoxJs输入框修改内容\n建议通过脚本去获取cookie')
-      return [];
-    }
-  }
-}
-
