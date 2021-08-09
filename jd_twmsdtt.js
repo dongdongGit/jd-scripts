@@ -1,5 +1,6 @@
 
-const $ = new Env('柠檬特物Z密室大逃脱');
+const jd_env = require("./utils/JDEnv.js");
+const $ = jd_env.env("柠檬特物Z密室大逃脱");
 const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
 const randomCount = $.isNode() ? 20 : 5;
 const notify = $.isNode() ? require('./sendNotify') : '';

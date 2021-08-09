@@ -102,6 +102,8 @@
 30 9,12,18 * * * node /scripts/jd_jxnc.js >> /scripts/logs/jd_jxnc.log 2>&1
 # 签到领现金
 10 */4 * * * node /scripts/jd_cash.js >> /scripts/logs/jd_cash.log 2>&1
+# 签到领现金兑换
+0 0 * * *  node /scripts/jd_cash_exchange.js >> /scripts/logs/jd_cash_exchange.log 2>&1
 # 闪购盲盒
 47 8,22 * * * node /scripts/jd_sgmh.js >> /scripts/logs/jd_sgmh.log 2>&1
 # 京东秒秒币
@@ -157,10 +159,11 @@
 4 12 * * * node /scripts/jd_yili_cattle.js |ts >> /scripts/logs/jd_yili_cattle.log 2>&1
 # 全民摸冰
 6 9,12 * * * node /scripts/jd_feel_ice.js |ts >> /scripts/logs/jd_feel_ice.log 2>&1
-
+# 京东众筹许愿
+0 8,12 * * * node /scripts/jd_crowdfunding_wish.js |ts >> /scripts/logs/jd_crowdfunding_wish.log 2>&1
 # 京喜app签到
 20 1 * * * node /scripts/jd_jx_sign.js |ts >> /scripts/logs/jd_jx_sign.log 2>&1
 # 七夕情报局
 36 0,10,21 4-15 8 * node /scripts/jd_chinese_valentine_day.js >> /scripts/logs/jd_chinese_valentine_day.log 2>&1
-#荣耀换新
+# 荣耀换新
 20 8 * * * node /scripts/jd_honor_renew.js >> /scripts/logs/jd_honor_renew.log 2>&1

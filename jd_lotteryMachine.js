@@ -7,7 +7,8 @@ github： https://github.com/yangtingxiao
 修改自用 By xxx
 更新时间：2021-05-25 8:50
  */
-const $ = new Env('京东抽奖机&内部互助');
+const jd_env = require("./utils/JDEnv.js");
+const $ = jd_env.env("京东抽奖机&内部互助");
 const notify = $.isNode() ? require('./sendNotify') : '';
 //Node.js用户请在jdCookie.js处填写京东ck;
 const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';

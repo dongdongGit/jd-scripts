@@ -10,7 +10,8 @@ export joyinviterPin=""
 // #汪汪乐园
 // 30 2,20 * * * node /scripts/jd_joy_park.js >> /scripts/logs/jd_joy_park.log 2>&1
 
-const $ = new Env('汪汪乐园');
+const jd_env = require("./utils/JDEnv.js");
+const $ = jd_env.env("汪汪乐园");
 const notify = $.isNode() ? require('./sendNotify') : '';
 //Node.js用户请在jdCookie.js处填写京东ck;
 const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';

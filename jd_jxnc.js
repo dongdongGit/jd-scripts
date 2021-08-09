@@ -27,7 +27,8 @@ cron "0 9,12,18 * * *" script-path=https://gitee.com/lxk0301/jd_scripts/raw/mast
 京喜农场 = type=cron,script-path=https://gitee.com/lxk0301/jd_scripts/raw/master/jd_jxnc.js, cronexpr="0 9,12,18 * * *", timeout=3600, enable=true
 */
 
-const $ = new Env('京喜农场');
+const jd_env = require("./utils/JDEnv.js");
+const $ = jd_env.env("京喜农场");
 let notify = ''; // nodejs 发送通知脚本
 let notifyLevel = $.isNode() ? process.env.JXNC_NOTIFY_LEVEL || 1 : 1; // 通知级别 0=只通知成熟;1=本次获得水滴>0;2=任务执行;3=任务执行+未种植种子;
 let notifyBool = true; // 代码内部使用，控制是否通知
