@@ -161,6 +161,12 @@
 6 9,12 * * * node /scripts/jd_feel_ice.js |ts >> /scripts/logs/jd_feel_ice.log 2>&1
 # 京东众筹许愿
 0 8,12 * * * node /scripts/jd_crowdfunding_wish.js |ts >> /scripts/logs/jd_crowdfunding_wish.log 2>&1
+# 来电好物季
+35 8 * * * node /scripts/jd_ldhwj.js >> /scripts/logs/jd_ldhwj.log 2>&1
+# 京东手机狂欢城
+0 0-18/6 * * * node /scripts/jd_5g.js >> /scripts/logs/jd_5g.log 2>&1
+# 金机奖投票
+33 4,7 8-20 8 * node /scripts/jd_golden_machine.js >> /scripts/logs/jd_golden_machine.log 2>&1
 # 京喜app签到
 20 1 * * * node /scripts/jd_jx_sign.js |ts >> /scripts/logs/jd_jx_sign.log 2>&1
 # 七夕情报局
