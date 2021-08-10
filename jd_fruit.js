@@ -1,5 +1,5 @@
 /*
-东东水果:脚本更新地址 https://gitee.com/lxk0301/jd_scripts/raw/master/jd_fruit.js
+东东水果:脚本更新地址 jd_fruit.js
 更新时间：2021-5-18
 活动入口：京东APP我的-更多工具-东东农场
 东东农场活动链接：https://h5.m.jd.com/babelDiy/Zeus/3KSjXqQabiTuD1cJ28QskrpWoBKT/index.html
@@ -10,27 +10,27 @@
 ==========================Quantumultx=========================
 [task_local]
 #jd免费水果
-5 6-18/6 * * * https://gitee.com/lxk0301/jd_scripts/raw/master/jd_fruit.js, tag=东东农场, img-url=https://raw.githubusercontent.com/58xinian/icon/master/jdnc.png, enabled=true
+5 6-18/6 * * * jd_fruit.js, tag=东东农场, img-url=https://raw.githubusercontent.com/58xinian/icon/master/jdnc.png, enabled=true
 =========================Loon=============================
 [Script]
-cron "5 6-18/6 * * *" script-path=https://gitee.com/lxk0301/jd_scripts/raw/master/jd_fruit.js,tag=东东农场
+cron "5 6-18/6 * * *" script-path=jd_fruit.js,tag=东东农场
 
 =========================Surge============================
-东东农场 = type=cron,cronexp="5 6-18/6 * * *",wake-system=1,timeout=3600,script-path=https://gitee.com/lxk0301/jd_scripts/raw/master/jd_fruit.js
+东东农场 = type=cron,cronexp="5 6-18/6 * * *",wake-system=1,timeout=3600,script-path=jd_fruit.js
 
 =========================小火箭===========================
-东东农场 = type=cron,script-path=https://gitee.com/lxk0301/jd_scripts/raw/master/jd_fruit.js, cronexpr="5 6-18/6 * * *", timeout=3600, enable=true
+东东农场 = type=cron,script-path=jd_fruit.js, cronexpr="5 6-18/6 * * *", timeout=3600, enable=true
 
 jd免费水果 搬的https://github.com/liuxiaoyucc/jd-helper/blob/a6f275d9785748014fc6cca821e58427162e9336/fruit/fruit.js
 */
 const jd_heplers = require("./utils/JDHelpers.js");
 const jd_env = require("./utils/JDEnv.js");
 const $ = jd_env.env("东东农场");
-const notify = $.isNode() ? require("./sendNotify") : "";
 let cookiesArr = [],
   cookie = "",
   jdFruitShareArr = [],
   isBox = false,
+  notify,
   newShareCodes,
   allMessage = "";
 //助力好友分享码(最多3个,否则后面的助力失败),原因:京东农场每人每天只有3次助力机会
@@ -38,10 +38,7 @@ let cookiesArr = [],
 //下面给出两个账号的填写示例（iOS只支持2个京东账号）
 let shareCodes = [
   // 这个列表填入你要助力的好友的shareCode
-  //账号一的好友shareCode,不同好友的shareCode中间用@符号隔开
-  "5d419f12f9ae473083c76e1f3a34c3e1@567fd3bbeeb6456591bd691f8da17e18@70b9e1691a2d4b2b9adf1df16e3ee9ea@001d7fff22ab412abfa13cbb31a85783@296fb72b51af4c10ad0eb4d4cd386374@8c7859f6aa5b4460979b0783e7352df5@995aa81002144b1a8a26148f32547b0c@6eea3748f6534d47862e78706c87e6dc@e55d5fbd66f942d9adeafd632f6d0d3b@a8e17c0aa6b54144adb2e5ea6ec8fbbe@fdcfaa2e1f824eb68581095132038ee8@8ad506fff12a455982fcc9c6d319e5dd@4af26ed40f5a4a2585eefaf7ae8b1713@df44013087fc427baa1926433e9dece1@4e1e3ec2cb884c339ad0bc9d5bc272ed@247f4412ae474e01aad68206c28b8751",
-  //账号二的好友shareCode,不同好友的shareCode中间用@符号隔开
-  "5d419f12f9ae473083c76e1f3a34c3e1@567fd3bbeeb6456591bd691f8da17e18@70b9e1691a2d4b2b9adf1df16e3ee9ea@001d7fff22ab412abfa13cbb31a85783@296fb72b51af4c10ad0eb4d4cd386374@8c7859f6aa5b4460979b0783e7352df5@995aa81002144b1a8a26148f32547b0c@6eea3748f6534d47862e78706c87e6dc@e55d5fbd66f942d9adeafd632f6d0d3b@a8e17c0aa6b54144adb2e5ea6ec8fbbe@fdcfaa2e1f824eb68581095132038ee8@8ad506fff12a455982fcc9c6d319e5dd@4af26ed40f5a4a2585eefaf7ae8b1713@df44013087fc427baa1926433e9dece1@4e1e3ec2cb884c339ad0bc9d5bc272ed@247f4412ae474e01aad68206c28b8751",
+  "",
 ];
 let message = "",
   subTitle = "",
@@ -89,15 +86,16 @@ const urlSchema = `openjd://virtual?params=%7B%20%22category%22:%20%22jump%22,%2
     await notify.sendNotify(`${$.name}`, `${allMessage}`);
   }
 })()
-  .catch((e) => {
-    $.log("", `❌ ${$.name}, 失败! 原因: ${e}!`, "");
-  })
-  .finally(() => {
-    $.done();
-  });
+  // .catch((e) => {
+  //   $.log("", `❌ ${$.name}, 失败! 原因: ${e}!`, "");
+  // })
+  // .finally(() => {
+  //   $.done();
+  // });
 async function jdFruit() {
   subTitle = `【京东账号${$.index}】${$.nickName}`;
   try {
+    //await helpAuthor();
     await initForFarm();
     if ($.farmInfo.farmUserPro) {
       // option['media-url'] = $.farmInfo.farmUserPro.goodsImage;
@@ -814,11 +812,7 @@ async function getAwardInviteFriend() {
     if ($.friendList.friends && $.friendList.friends.length > 0) {
       for (let friend of $.friendList.friends) {
         console.log(`\n开始删除好友 [${friend.shareCode}]`);
-        const deleteFriendForFarm = await request("deleteFriendForFarm", {
-          shareCode: `${friend.shareCode}`,
-          version: 8,
-          channel: 1,
-        });
+        const deleteFriendForFarm = await request("deleteFriendForFarm", { shareCode: `${friend.shareCode}`, version: 8, channel: 1 });
         if (deleteFriendForFarm && deleteFriendForFarm.code === "0") {
           console.log(`删除好友 [${friend.shareCode}] 成功\n`);
         }
@@ -1005,10 +999,7 @@ async function firstWaterTaskForFarm() {
 //领取给3个好友浇水后的奖励水滴API
 async function waterFriendGotAwardForFarm() {
   const functionId = arguments.callee.name.toString();
-  $.waterFriendGotAwardRes = await request(functionId, {
-    version: 4,
-    channel: 1,
-  });
+  $.waterFriendGotAwardRes = await request(functionId, { version: 4, channel: 1 });
 }
 // 查询背包道具卡API
 async function myCardInfoForFarm() {
@@ -1026,9 +1017,7 @@ async function userMyCardForFarm(cardType) {
  * @returns {Promise<void>}
  */
 async function gotStageAwardForFarm(type) {
-  $.gotStageAwardForFarmRes = await request(arguments.callee.name.toString(), {
-    type: type,
-  });
+  $.gotStageAwardForFarmRes = await request(arguments.callee.name.toString(), { type: type });
 }
 //浇水API
 async function waterGoodForFarm() {
@@ -1040,26 +1029,16 @@ async function waterGoodForFarm() {
 }
 // 初始化集卡抽奖活动数据API
 async function initForTurntableFarm() {
-  $.initForTurntableFarmRes = await request(arguments.callee.name.toString(), {
-    version: 4,
-    channel: 1,
-  });
+  $.initForTurntableFarmRes = await request(arguments.callee.name.toString(), { version: 4, channel: 1 });
 }
 async function lotteryForTurntableFarm() {
   await $.wait(2000);
   console.log("等待了2秒");
-  $.lotteryRes = await request(arguments.callee.name.toString(), {
-    type: 1,
-    version: 4,
-    channel: 1,
-  });
+  $.lotteryRes = await request(arguments.callee.name.toString(), { type: 1, version: 4, channel: 1 });
 }
 
 async function timingAwardForTurntableFarm() {
-  $.timingAwardRes = await request(arguments.callee.name.toString(), {
-    version: 4,
-    channel: 1,
-  });
+  $.timingAwardRes = await request(arguments.callee.name.toString(), { version: 4, channel: 1 });
 }
 
 async function browserForTurntableFarm(type, adId) {
@@ -1186,9 +1165,9 @@ async function gotThreeMealForFarm() {
 async function browseAdTaskForFarm(advertId, type) {
   const functionId = arguments.callee.name.toString();
   if (type === 0) {
-    $.browseResult = await request(functionId, { advertId, type });
+    $.browseResult = await request(functionId, { advertId, type, version: 14, channel: 1, babelChannel: "45" });
   } else if (type === 1) {
-    $.browseRwardResult = await request(functionId, { advertId, type });
+    $.browseRwardResult = await request(functionId, { advertId, type, version: 14, channel: 1, babelChannel: "45" });
   }
 }
 // 被水滴砸中API
@@ -1207,7 +1186,7 @@ async function initForFarm() {
   return new Promise((resolve) => {
     const option = {
       url: `${JD_API_HOST}?functionId=initForFarm`,
-      body: `body=${escape(JSON.stringify({ version: 4 }))}&appid=wh5&clientVersion=9.1.0`,
+      body: `body=${escape(JSON.stringify({ version: 14 }))}&appid=wh5&clientVersion=9.1.0`,
       headers: {
         accept: "*/*",
         "accept-encoding": "gzip, deflate, br",
@@ -1259,10 +1238,7 @@ async function taskInitForFarm() {
 }
 //获取好友列表API
 async function friendListInitForFarm() {
-  $.friendList = await request("friendListInitForFarm", {
-    version: 4,
-    channel: 1,
-  });
+  $.friendList = await request("friendListInitForFarm", { version: 4, channel: 1 });
   // console.log('aa', aa);
 }
 // 领取邀请好友的奖励API
@@ -1302,35 +1278,7 @@ function timeFormat(time) {
   }
   return date.getFullYear() + "-" + (date.getMonth() + 1 >= 10 ? date.getMonth() + 1 : "0" + (date.getMonth() + 1)) + "-" + (date.getDate() >= 10 ? date.getDate() : "0" + date.getDate());
 }
-function readShareCode() {
-  return new Promise(async (resolve) => {
-    $.get(
-      {
-        url: `http://share.turinglabs.net/api/v3/farm/query/${randomCount}/`,
-        timeout: 10000,
-      },
-      (err, resp, data) => {
-        try {
-          if (err) {
-            console.log(`${JSON.stringify(err)}`);
-            console.log(`${$.name} API请求失败，请检查网路重试`);
-          } else {
-            if (data) {
-              console.log(`随机取个${randomCount}码放到您固定的互助码后面(不影响已有固定互助)`);
-              data = JSON.parse(data);
-            }
-          }
-        } catch (e) {
-          $.logErr(e, resp);
-        } finally {
-          resolve(data);
-        }
-      }
-    );
-    await $.wait(10000);
-    resolve();
-  });
-}
+
 function shareCodesFormat() {
   return new Promise(async (resolve) => {
     // console.log(`第${$.index}个京东账号的助力码:::${$.shareCodesArr[$.index - 1]}`)
@@ -1342,11 +1290,11 @@ function shareCodesFormat() {
       const tempIndex = $.index > shareCodes.length ? shareCodes.length - 1 : $.index - 1;
       newShareCodes = shareCodes[tempIndex].split("@");
     }
-    const readShareCodeRes = await readShareCode();
-    if (readShareCodeRes && readShareCodeRes.code === 200) {
-      // newShareCodes = newShareCodes.concat(readShareCodeRes.data || []);
-      newShareCodes = [...new Set([...newShareCodes, ...(readShareCodeRes.data || [])])];
-    }
+    //const readShareCodeRes = await readShareCode();
+    //if (readShareCodeRes && readShareCodeRes.code === 200) {
+    // newShareCodes = newShareCodes.concat(readShareCodeRes.data || []);
+    // newShareCodes = [...new Set([...newShareCodes, ...(readShareCodeRes.data || [])])];
+    //}
     console.log(`第${$.index}个京东账号将要助力的好友${JSON.stringify(newShareCodes)}`);
     resolve();
   });
