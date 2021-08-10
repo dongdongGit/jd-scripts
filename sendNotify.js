@@ -11,7 +11,7 @@
  */
 const jd_env = require("./utils/JDEnv");
 const querystring = require("querystring");
-const $ = jd_env.env;
+const $ = jd_env.env("通知");
 const timeout = 15000; //超时时间(单位毫秒)
 // =======================================微信server酱通知设置区域===========================================
 //此处填你申请的SCKEY.
