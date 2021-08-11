@@ -5,15 +5,14 @@
  * 若发现脚本里没有的粉丝互动活动。欢迎反馈给我
  * cron  34 6,18 * * *
  * */
+const jd_shopping_cart = require("./utils/JDShoppingCart");
 const jd_heplers = require("./utils/JDHelpers.js");
 const jd_env = require("./utils/JDEnv.js");
-const $ = jd_env.env("粉丝互动");
+let $ = jd_env.env("粉丝互动");
 const jdCookieNode = $.isNode() ? require("./jdCookie.js") : "";
 const notify = $.isNode() ? require("./sendNotify") : "";
 let cookiesArr = [];
 const activityList = [
-  { actid: "4d2f7df45a0e4a1b8d663e7da0fc0d0d", endTime: 1628394029000 },
-  { actid: "4776be60946e45b1847bd982e24b4aa9", endTime: 1628438400000 },
   { actid: "c75ae2afd7ff4aec9ed47008b08400f7", endTime: 1630288800000 },
   { actid: "ea52a4da34d34be0a1c6470bd7d92063", endTime: 1628352000000 },
   { actid: "3da50af9e8664746844c5456b8920b7d", endTime: 1630425599000 },
@@ -61,6 +60,7 @@ if ($.isNode()) {
     for (let j = 0; j < activityList.length && !$.hotFlag; j++) {
       $.activityInfo = activityList[j];
       $.activityID = $.activityInfo.actid;
+      $.skuIds = [];
       console.log(`互动ID：${JSON.stringify($.activityInfo)}`);
       if ($.activityInfo.endTime && Date.now() > $.activityInfo.endTime) {
         console.log(`活动已结束`);
@@ -73,7 +73,7 @@ if ($.isNode()) {
   }
 })()
   .catch((e) => {
-    $.log("", `❌ ${$.name}, 失败! 原因: ${e}!`, "");
+    $.log("", `${$.name}, 失败! 原因: ${e}!`, "");
   })
   .finally(() => {
     $.done();
@@ -135,6 +135,9 @@ async function main() {
   await $.wait(1000);
   $.upFlag = false;
   await doTask();
+  // 清除加购物品
+  await jd_shopping_cart.getCarts($).then(function ($this) {$ = $this;});
+  await jd_shopping_cart.unsubscribeCartsFun($);
   await luckDraw(); //抽奖
 }
 
