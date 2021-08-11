@@ -19,6 +19,7 @@ cron "36 0,10,21 4-15 8 *" script-path=jd_qxqbj.js,tag=8.4-8.15 七夕情报局
 ============小火箭=========
 8.4-8.15 七夕情报局 = type=cron,script-path=jd_qxqbj.js, cronexpr="36 0,10,21 4-15 8 *", timeout=3600, enable=true
 */
+const jd_heplers = require("./utils/JDHelpers.js");
 const jd_env = require("./utils/JDEnv.js");
 const $ = jd_env.env("8.4-8.15 七夕情报局");
 const jdCookieNode = $.isNode() ? require("./jdCookie.js") : "";
@@ -32,7 +33,7 @@ if ($.isNode()) {
   });
   if (process.env.JD_DEBUG && process.env.JD_DEBUG === "false") console.log = () => {};
 } else {
-  cookiesArr = [$.getdata("CookieJD"), $.getdata("CookieJD2"), ...jsonParse($.getdata("CookiesJD") || "[]").map((item) => item.cookie)].filter((item) => !!item);
+  cookiesArr = [$.getdata("CookieJD"), $.getdata("CookieJD2"), ...jd_heplers.jsonParse($.getdata("CookiesJD") || "[]").map((item) => item.cookie)].filter((item) => !!item);
 }
 const JD_API_HOST = `https://api.m.jd.com/client.action`;
 message = "";
@@ -219,14 +220,14 @@ async function run() {
           let info = $.resTask.letter_info;
           if (info.is_win) {
             if (info.type == 1) {
-              msg += `${info.prize}京豆🥔`;
+              msg += `${info.prize}京豆`;
             } else if (info.type == 4) {
               msg += `${info.prize.name} 满${info.prize.setting.quota}减${info.prize.setting.discount}`;
             } else if (info.type != 0) {
               msg += `${$.toStr(info.prize)}`;
             }
           }
-          console.log(`${$.resTask.letter_info.peroration}\n${$.resTask.letter_info.content}\n收情书获得:${msg || "空气💨"}`);
+          console.log(`${$.resTask.letter_info.peroration}\n${$.resTask.letter_info.content}\n收情书获得:${msg || "空气"}`);
         } else {
           console.log(`收情书:失败${$.toStr($.resTask)}`);
         }
@@ -471,16 +472,3 @@ function randomString(e) {
   for (i = 0; i < e; i++) n += t.charAt(Math.floor(Math.random() * a));
   return n;
 }
-
-function jsonParse(str) {
-  if (typeof str == "string") {
-    try {
-      return JSON.parse(str);
-    } catch (e) {
-      console.log(e);
-      $.msg($.name, "", "请勿随意在BoxJs输入框修改内容\n建议通过脚本去获取cookie");
-      return [];
-    }
-  }
-}
-
