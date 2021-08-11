@@ -50,7 +50,7 @@ const JD_API_HOST = "https://api.m.jd.com/client.action";
       await task();
     }
   }
-  if ($.isNode() && allMessage && process.env.CROWDFUNDING_WISH_NOTIFY_CONTROL) {
+  if ($.isNode() && allMessage && !process.env.CROWDFUNDING_WISH_NOTIFY_CONTROL) {
     await notify.sendNotify(`${$.name}`, `${allMessage}`);
   }
 })()
