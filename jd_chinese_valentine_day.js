@@ -19,9 +19,10 @@ cron "36 0,10,21 4-15 8 *" script-path=jd_qxqbj.js,tag=8.4-8.15 七夕情报局
 ============小火箭=========
 8.4-8.15 七夕情报局 = type=cron,script-path=jd_qxqbj.js, cronexpr="36 0,10,21 4-15 8 *", timeout=3600, enable=true
 */
+const jd_shopping_cart = require("./utils/JDShoppingCart");
 const jd_heplers = require("./utils/JDHelpers.js");
 const jd_env = require("./utils/JDEnv.js");
-const $ = jd_env.env("8.4-8.15 七夕情报局");
+let $ = jd_env.env("8.4-8.15 七夕情报局");
 const jdCookieNode = $.isNode() ? require("./jdCookie.js") : "";
 const notify = $.isNode() ? require("./sendNotify") : "";
 //IOS等用户直接用NobyDa的jd cookie
@@ -54,8 +55,13 @@ $.inviter = [];
       $.index = i + 1;
       await getUA();
       $.nickName = "";
+      $.skuIds = [];
       console.log(`\n\n******开始【京东账号${$.index}】${$.UserName}*********\n`);
       await run();
+      await jd_shopping_cart.getCarts($).then(function ($this) {
+        $ = $this;
+      });
+      await jd_shopping_cart.unsubscribeCartsFun($);
     }
   }
   console.log("\n\n==================================================\n助力");
@@ -179,6 +185,10 @@ async function run() {
             console.log(`加购商品 ${$.oneTask.name}`);
             $.resTask = "";
             if ($.oneTask.is_add == 0) {
+              let match_result = $.oneTask.jd_url.match(/(\d+)/)
+              if (Array.isArray(match_result)) {
+                $.skuIds.push(match_result[0]);
+              }
               await taskPost(`add_product?id=${$.oneTask.id}`);
             } else if ($.oneTask.is_task == 0) {
               await taskPost(`view_product?id=${$.oneTask.id}`);

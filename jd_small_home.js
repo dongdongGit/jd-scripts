@@ -5,9 +5,10 @@ Last Modified time: 2021-1-22 14:27:20
 做日常任务任务，每日抽奖（有机会活动京豆，使用的是免费机会，不消耗WO币）
 自动使用WO币购买装饰品可以获得京豆，分别可获得5,20，50,100,200,400,700，1200京豆）
 */
+const jd_shopping_cart = require("./utils/JDShoppingCart");
 const jd_heplers = require("./utils/JDHelpers.js");
 const jd_env = require("./utils/JDEnv.js");
-const $ = jd_env.env("东东小窝");
+let $ = jd_env.env("东东小窝");
 const notify = $.isNode() ? require("./sendNotify") : "";
 //Node.js用户请在jdCookie.js处填写京东ck;
 const jdCookieNode = $.isNode() ? require("./jdCookie.js") : "";
@@ -47,6 +48,7 @@ const JD_API_HOST = "https://lkyl.dianpusoft.cn/api";
       $.index = i + 1;
       $.isLogin = true;
       $.nickName = "";
+      $.skuIds = [];
       message = "";
       await TotalBean();
       console.log(`\n*******开始【京东账号${$.index}】${$.nickName || $.UserName}********\n`);
@@ -61,6 +63,10 @@ const JD_API_HOST = "https://lkyl.dianpusoft.cn/api";
         continue;
       }
       await smallHome();
+      await jd_shopping_cart.getCarts($).then(function ($this) {
+        $ = $this;
+      });
+      await jd_shopping_cart.unsubscribeCartsFun($);
     }
   }
   await updateInviteCodeCDN("https://cdn.jsdelivr.net/gh/shuyeshuye/updateTeam@master/jd_updateSmallHomeInviteCode.json");
@@ -84,12 +90,12 @@ const JD_API_HOST = "https://lkyl.dianpusoft.cn/api";
     }
   }
 })()
-  .catch((e) => {
-    $.log("", `❌ ${$.name}, 失败! 原因: ${e}!`, "");
-  })
-  .finally(() => {
-    $.done();
-  });
+  // .catch((e) => {
+  //   $.log("", `❌ ${$.name}, 失败! 原因: ${e}!`, "");
+  // })
+  // .finally(() => {
+  //   $.done();
+  // });
 async function smallHome() {
   await loginHome();
   await ssjjRooms();
@@ -215,6 +221,7 @@ async function doAllTask() {
         continue;
       }
       for (let i = 0; i < new Array(item.ssjjTaskInfo.awardOfDayNum).fill("").length; i++) {
+        await queryCommoditiesListByTaskId(item.ssjjTaskInfo.id);
         await followShops("purchaseCommodities", item.ssjjTaskInfo.id); //一键加购商品
         await queryDoneTaskRecord(item.ssjjTaskInfo.id, item.ssjjTaskInfo.type);
       }
@@ -461,6 +468,32 @@ function followChannel(taskId, channelId) {
               if (data.body) {
                 // message += `【限时连连看】成功，活动${awardWoB}WO币\n`;
               }
+            }
+          }
+        }
+      } catch (e) {
+        $.logErr(e, resp);
+      } finally {
+        resolve(data);
+      }
+    });
+  });
+}
+// 一键加购商品列表
+function queryCommoditiesListByTaskId(taskId) {
+  return new Promise(async (resolve) => {
+    $.get(taskUrl(`/ssjj-task-commodities/queryCommoditiesListByTaskId/${taskId}?body=%7B%7D`), (err, resp, data) => {
+      try {
+        if (err) {
+          console.log(`${JSON.stringify(err)}`);
+          console.log(`${$.name} API请求失败，请检查网路重试`);
+        } else {
+          if (jd_heplers.safeGet(data)) {
+            data = JSON.parse(data);
+            if (data.head.code === 200) {
+              $.skuIds = data.body.map((item) => {
+                return item['commodityId'];
+              });
             }
           }
         }

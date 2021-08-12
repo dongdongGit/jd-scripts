@@ -207,6 +207,7 @@ async function doTask() {
         $.oneGoodInfo = $.activityData.task3AddCart.taskGoodList[i];
         if ($.oneGoodInfo.finished === false) {
           console.log(`加购:${$.oneGoodInfo.skuName || ""}`);
+          $.skuIds.push($.oneGoodInfo.skuId);
           await takePostRequest("doAddGoodsTask");
           await $.wait(2000);
           needFinishNumber--;
