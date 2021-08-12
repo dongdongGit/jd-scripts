@@ -23,6 +23,8 @@
 4 2,10 * * * node /scripts/jd_jxlhb.js >> /scripts/logs/jd_jxlhb.log 2>&1
 # 省钱大赢家之翻翻乐
 10,40 * * * * node /scripts/jd_big_winner.js >> /scripts/logs/jd_big_winner.log 2>&1
+# 家电815周年庆礼包
+54 5 9-15 8 * node /scripts/jd_appliances.js >> /scripts/logs/jd_appliances.log 2>&1
 ##############长期活动##############
 # 签到
 7 0,17 * * * cd /scripts && node jd_bean_sign.js >> /scripts/logs/jd_bean_sign.log 2>&1
@@ -149,15 +151,15 @@
 # 柠檬特务Z行动-星小店
 20 1 * * *  node /scripts/jd_twz_star.js >> /scripts/logs/jd_twz_star.log 2>&1
 # 特务Zx佳沛
-23 8,9 * * * node /scripts/jd_superZ4Brand.js |ts >> /scripts/logs/jd_superZ4Brand.log 2>&1
+23 8,9 * * * node /scripts/jd_superZ4Brand.js >> /scripts/logs/jd_superZ4Brand.log 2>&1
 # 天天优惠大乐透
-20 12,14 * * * node /scripts/jd_DrawEntrance.js |ts >> /scripts/logs/jd_DrawEntrance.log 2>&1
+20 12,14 * * * node /scripts/jd_DrawEntrance.js >> /scripts/logs/jd_DrawEntrance.log 2>&1
 # 柠檬伊利养牛记
-4 12 * * * node /scripts/jd_yili_cattle.js |ts >> /scripts/logs/jd_yili_cattle.log 2>&1
+4 12 * * * node /scripts/jd_yili_cattle.js >> /scripts/logs/jd_yili_cattle.log 2>&1
 # 全民摸冰
-6 9,12 * * * node /scripts/jd_feel_ice.js |ts >> /scripts/logs/jd_feel_ice.log 2>&1
+6 9,12 * * * node /scripts/jd_feel_ice.js >> /scripts/logs/jd_feel_ice.log 2>&1
 # 京东众筹许愿
-0 8,12 * * * node /scripts/jd_crowdfunding_wish.js |ts >> /scripts/logs/jd_crowdfunding_wish.log 2>&1
+0 8,12 * * * node /scripts/jd_crowdfunding_wish.js >> /scripts/logs/jd_crowdfunding_wish.log 2>&1
 # 来电好物季
 35 8 * * * node /scripts/jd_ldhwj.js >> /scripts/logs/jd_ldhwj.log 2>&1
 # 京东手机狂欢城
@@ -170,7 +172,7 @@
 20 8 * * * node /scripts/jd_honor_renew.js >> /scripts/logs/jd_honor_renew.log 2>&1
 # 京享值PK
 15 0,6,13,19,21 * * * node /scripts/jd_ddo_pk.js >> /scripts/logs/jd_ddo_pk.log 2>&1
-#京小兑
+# 京小兑
 13 8,16,20 * * * node /scripts/jd_jxd.js >> /scripts/logs/jd_jxd.log 2>&1
 # 京小鸽吾悦寄
 13 3 * * * node /scripts/jd_pigeon.js >> /scripts/logs/jd_pigeon.log 2>&1
