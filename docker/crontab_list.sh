@@ -27,7 +27,7 @@
 54 5 9-15 8 * node /scripts/jd_appliances.js >> /scripts/logs/jd_appliances.log 2>&1
 ##############长期活动##############
 # 签到
-7 0,17 * * * cd /scripts && node jd_bean_sign.js >> /scripts/logs/jd_bean_sign.log 2>&1
+0 0,17 * * * cd /scripts && node jd_bean_sign.js >> /scripts/logs/jd_bean_sign.log 2>&1
 14 7 * * * node /scripts/jd_sign_graphics.js |ts >> /scripts/logs/jd_sign_graphics.log 2>&1
 
 # 店铺签到
