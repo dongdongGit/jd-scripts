@@ -506,6 +506,7 @@ async function mr() {
           } else {
             console.log(`兑换京豆失败：${JSON.stringify(vo)}`)
           }
+          await $.wait(2000)
           break
         case "get_produce_material":
           console.log('get_produce_material', vo?.msg);
