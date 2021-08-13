@@ -82,7 +82,7 @@ $.shareId = [];
     }
   }
   if (allMessage) {
-    if ($.isNode()) await notify.sendNotify($.name, allMessage);
+    if ($.isNode() && !process.env.MOHE_NOTIFY_CONTROL) await notify.sendNotify($.name, allMessage);
     $.msg($.name, "", allMessage, { "open-url": "https://blindbox5g.jd.com" });
   }
   $.shareId = [...($.shareId || [])];

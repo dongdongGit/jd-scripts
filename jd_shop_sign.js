@@ -293,7 +293,7 @@ function taskUrl(token, venderId) {
 }
 
 async function showMsg() {
-  if ($.isNode()) {
+  if ($.isNode() && !process.env.SHOP_SIGN_NOTIFY_CONTROL) {
     $.msg($.name, "", `【京东账号${$.index}】${$.nickName}\n${message}`);
     await notify.sendNotify(`${$.name} - 账号${$.index} - ${$.nickName}`, `【京东账号${$.index}】${$.nickName}\n${message}`);
   }
