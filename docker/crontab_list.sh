@@ -139,7 +139,7 @@
 # 京东零食街
 0 11 * * * node /scripts/jd_lsj.js >> /scripts/logs/jd_lsj.log 2>&1
 # 来客有礼小程序 送豆得豆
-45 4 * * * node /scripts/jd_senbeans.js >> /scripts/logs/jd_senbeans.log 2>&1
+45 0,8 * * * node /scripts/jd_senbeans.js >> /scripts/logs/jd_senbeans.log 2>&1
 # 东东电竞经理
 0 0-23/2 * * * node /scripts/jd_djjl.js >> /scripts/logs/jd_djjl.log 2>&1
 # 汪汪乐园
