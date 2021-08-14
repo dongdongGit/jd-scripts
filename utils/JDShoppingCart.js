@@ -26,9 +26,9 @@ async function unsubscribeCartsFun(jd_env) {
       try {
         data = JSON.parse(data);
         if (data["errId"] == "0") {
-          allMessage += `删除结果：\n`;
+          allMessage += `删除成功：\n`;
         } else {
-          allMessage += `删除结果：\n`;
+          allMessage += `删除失败：\n`;
         }
       } catch (e) {
         allMessage += `删除结果：\n`;
@@ -76,6 +76,7 @@ async function getCarts(jd_env) {
             const vender = data["cart"]["venderCart"][i];
             for (let s = 0; s < vender["sortedItems"].length; s++) {
               const sorted = vender["sortedItems"][s];
+              itemId = sorted.itemId;
               for (let m = 0; m < sorted["polyItem"]["products"].length; m++) {
                 const products = sorted["polyItem"]["products"][m];
                 if (itemId == products["mainSku"]["id"]) {
@@ -85,7 +86,7 @@ async function getCarts(jd_env) {
                   skuId = itemId;
                   index = sorted["polyType"] == "4" ? "13" : "11";
                 }
-                if ($.skuIds.includes(products["mainSku"]["id"] * 1) || $.clear_shopping_cart) {
+                if ($.skuIds.includes(products["mainSku"]["id"]) || process.env.clear_shopping_cart) {
                   temp = [products["mainSku"]["id"], , "1", products["mainSku"]["id"], index, skuId, "0", "skuUuid:" + products["skuUuid"] + "@@useUuid:" + products["useUuid"]].join(",");
                   if ($.commlist.length > 0) {
                     $.commlist += "$";
@@ -107,7 +108,7 @@ async function getCarts(jd_env) {
         resolve($);
       }
     });
-  })
+  });
 }
 
 function getStr(text, start, end) {

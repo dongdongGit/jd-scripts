@@ -23,7 +23,7 @@ let allGoodList = [];
 
 // default params
 const args = {
-  jdNotify: false,
+  jdNotify: process.env.TRY_NOTIFY_CONTROL,
   pageSize: 12,
   cidsList: ["家用电器", "手机数码", "电脑办公", "家居家装"],
   typeList: ["普通试用", "闪电试用"],
@@ -393,7 +393,7 @@ async function doTry(good) {
 }
 
 async function getSuccessList() {
-  // 一页12个商品，不会吧不会吧，不会有人一次性中奖12个商品吧？！🤔
+  // 一页12个商品
   return new Promise((resolve, reject) => {
     const option = {
       url: `https://try.jd.com/my/tryList?selected=2&page=1&tryVersion=2&_s=m`,
@@ -433,7 +433,7 @@ async function getSuccessList() {
 
 async function showMsg() {
   let message = `京东账号${$.index} ${$.nickName || $.UserName}\n🎉 本次申请：${$.totalTry}/${$.totalGoods}个商品🛒\n🎉 ${$.successList.length}个商品待领取🤩\n🎉 结束原因：${$.stopMsg}`;
-  if (!args.jdNotify || args.jdNotify === "false") {
+  if (!args.jdNotify || args.jdNotify === "false" || $.successList.length > 0) {
     $.msg($.name, ``, message, {
       "open-url": "https://try.m.jd.com/user",
     });

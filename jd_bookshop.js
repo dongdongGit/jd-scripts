@@ -72,7 +72,7 @@ if ($.isNode()) {
         }
         continue;
       }
-      await shareCodesFormat();
+      // await shareCodesFormat();
       await jdBeauty();
     }
   }
@@ -100,10 +100,12 @@ async function jdBeauty() {
   await getActContent(true);
   if ($.gold > 800) {
     console.log(`金币大于800，去抽奖`);
-    while ($.gold >= 800) {
+    let i = 0;
+    while ($.gold >= 800 && i < 3) {
       await draw();
       await $.wait(1000);
       $.gold -= 800;
+      i++;
     }
   }
   if ($.userInfo.storeGold) await chargeGold();

@@ -116,19 +116,20 @@ async function execSign() {
 }
 async function downFile () {
   let url = '';
-  // if (process.env.CDN_JD_DAILYBONUS) {
-  //   url = 'https://cdn.jsdelivr.net/gh/NobyDa/Script@master/JD-DailyBonus/JD_DailyBonus.js';
-  // } else if (process.env.JD_COOKIE) {
-  //   url = 'https://raw.githubusercontent.com/NobyDa/Script/master/JD-DailyBonus/JD_DailyBonus.js';
-  // } else {
-  //   url = 'https://cdn.jsdelivr.net/gh/NobyDa/Script@master/JD-DailyBonus/JD_DailyBonus.js';
-  // }
-  await downloadUrl();
-  if ($.body) {
-    url = 'https://raw.githubusercontent.com/NobyDa/Script/master/JD-DailyBonus/JD_DailyBonus.js';
-  } else {
-    url = 'https://cdn.jsdelivr.net/gh/NobyDa/Script@master/JD-DailyBonus/JD_DailyBonus.js';
+  let urls = [
+    'https://cdn.jsdelivr.net/gh/NobyDa/Script@master/JD-DailyBonus/JD_DailyBonus.js',
+    'https://raw.githubusercontent.com/NobyDa/Script/master/JD-DailyBonus/JD_DailyBonus.js'
+  ];
+
+  for (let i = 0; i < urls.length; i++) {
+    await downloadUrl(urls[i]);
+
+    if ($.body) {
+      url = urls[i];
+      break;
+    }
   }
+
   try {
     const options = { }
     if (process.env.TG_PROXY_HOST && process.env.TG_PROXY_PORT) {
