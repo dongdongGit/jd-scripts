@@ -10,7 +10,7 @@
 先这样子吧
  */
 //0 */3 * * *
-const jd_heplers = require("./utils/JDHelpers.js");
+const jd_helpers = require("./utils/JDHelpers.js");
 const jd_env = require("./utils/JDEnv.js");
 const $ = jd_env.env("天天提鹅");
 let cookiesArr = [], cookie = '';
@@ -25,7 +25,7 @@ if ($.isNode()) {
   if (process.env.JD_DEBUG && process.env.JD_DEBUG === 'false') console.log = () => {};
 } else {
   let cookiesData = $.getdata('CookiesJD') || "[]";
-  cookiesData = jd_heplers.jsonParse(cookiesData);
+  cookiesData = jd_helpers.jsonParse(cookiesData);
   cookiesArr = cookiesData.map(item => item.cookie);
   cookiesArr.reverse();
   cookiesArr.push(...[$.getdata('CookieJD2'), $.getdata('CookieJD')]);

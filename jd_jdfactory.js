@@ -24,7 +24,7 @@ cron "10 * * * *" script-path=https://gitee.com/lxk0301/jd_scripts/raw/master/jd
 ============小火箭=========
 东东工厂 = type=cron,script-path=https://gitee.com/lxk0301/jd_scripts/raw/master/jd_jdfactory.js, cronexpr="10 * * * *", timeout=3600, enable=true
  */
-const jd_heplers = require("./utils/JDHelpers.js");
+const jd_helpers = require("./utils/JDHelpers.js");
 const jd_env = require("./utils/JDEnv.js");
 const $ = jd_env.env("东东工厂");
 
@@ -45,7 +45,7 @@ if ($.isNode()) {
   if (process.env.JDFACTORY_FORBID_ACCOUNT)
     process.env.JDFACTORY_FORBID_ACCOUNT.split("&").map((item, index) => (Number(item) === 0 ? (cookiesArr = []) : cookiesArr.splice(Number(item) - 1 - index, 1)));
 } else {
-  cookiesArr = [$.getdata("CookieJD"), $.getdata("CookieJD2"), ...jd_heplers.jsonParse($.getdata("CookiesJD") || "[]").map((item) => item.cookie)].filter((item) => !!item);
+  cookiesArr = [$.getdata("CookieJD"), $.getdata("CookieJD2"), ...jd_helpers.jsonParse($.getdata("CookiesJD") || "[]").map((item) => item.cookie)].filter((item) => !!item);
 }
 let wantProduct = ``; //心仪商品名称
 const JD_API_HOST = "https://api.m.jd.com/client.action";
@@ -125,7 +125,7 @@ async function algorithm() {
           console.log(`${JSON.stringify(err)}`);
           console.log(`${$.name} API请求失败，请检查网路重试`);
         } else {
-          if (jd_heplers.safeGet(data)) {
+          if (jd_helpers.safeGet(data)) {
             data = JSON.parse(data);
             if (data.data.bizCode === 0) {
               $.haveProduct = data.data.result.haveProduct;
@@ -438,7 +438,7 @@ function jdfactory_collectScore(taskToken) {
           console.log(`${JSON.stringify(err)}`);
           console.log(`${$.name} API请求失败，请检查网路重试`);
         } else {
-          if (jd_heplers.safeGet(data)) {
+          if (jd_helpers.safeGet(data)) {
             data = JSON.parse(data);
             if (data.data.bizCode === 0) {
               $.taskVos = data.data.result.taskVos; //任务列表
@@ -465,7 +465,7 @@ function jdfactory_addEnergy() {
           console.log(`${JSON.stringify(err)}`);
           console.log(`${$.name} API请求失败，请检查网路重试`);
         } else {
-          if (jd_heplers.safeGet(data)) {
+          if (jd_helpers.safeGet(data)) {
             data = JSON.parse(data);
             if (data.data.bizCode === 0) {
               console.log(`给商品投入电量：${JSON.stringify(data.data.result)}`);
@@ -492,7 +492,7 @@ function jdfactory_collectElectricity() {
           console.log(`${JSON.stringify(err)}`);
           console.log(`${$.name} API请求失败，请检查网路重试`);
         } else {
-          if (jd_heplers.safeGet(data)) {
+          if (jd_helpers.safeGet(data)) {
             data = JSON.parse(data);
             if (data.data.bizCode === 0) {
               console.log(`成功收集${data.data.result.electricityValue}电量，当前蓄电池总电量：${data.data.result.batteryValue}\n`);
@@ -517,7 +517,7 @@ function jdfactory_getTaskDetail() {
           console.log(`${JSON.stringify(err)}`);
           console.log(`${$.name} API请求失败，请检查网路重试`);
         } else {
-          if (jd_heplers.safeGet(data)) {
+          if (jd_helpers.safeGet(data)) {
             data = JSON.parse(data);
             if (data.data.bizCode === 0) {
               $.taskVos = data.data.result.taskVos; //任务列表
@@ -546,7 +546,7 @@ function jdfactory_makeProduct(skuId) {
           console.log(`${JSON.stringify(err)}`);
           console.log(`${$.name} API请求失败，请检查网路重试`);
         } else {
-          if (jd_heplers.safeGet(data)) {
+          if (jd_helpers.safeGet(data)) {
             data = JSON.parse(data);
             if (data.data.bizCode === 0) {
               console.log(`选购商品成功：${JSON.stringify(data)}`);
@@ -588,7 +588,7 @@ function queryVkComponent() {
           console.log(`${$.name} API请求失败，请检查网路重试`);
         } else {
           // console.log('queryVkComponent', data)
-          if (jd_heplers.safeGet(data)) {
+          if (jd_helpers.safeGet(data)) {
             data = JSON.parse(data);
           }
         }
@@ -609,7 +609,7 @@ function jdfactory_getProductList(flag = false) {
           console.log(`${JSON.stringify(err)}`);
           console.log(`${$.name} API请求失败，请检查网路重试`);
         } else {
-          if (jd_heplers.safeGet(data)) {
+          if (jd_helpers.safeGet(data)) {
             data = JSON.parse(data);
             if (data.data.bizCode === 0) {
               $.canMakeList = [];
@@ -653,7 +653,7 @@ function jdfactory_getHomeData() {
           console.log(`${JSON.stringify(err)}`);
           console.log(`${$.name} API请求失败，请检查网路重试`);
         } else {
-          if (jd_heplers.safeGet(data)) {
+          if (jd_helpers.safeGet(data)) {
             // console.log(data);
             data = JSON.parse(data);
             if (data.data.bizCode === 0) {

@@ -17,7 +17,7 @@ cron "35 1,23 * * *" script-path=jd_nzmh.js,tag=女装盲盒
 ============小火箭=========
 女装盲盒 = type=cron,script-path=jd_nzmh.js, cronexpr="35 1,23 * * *", timeout=3600, enable=true
  */
-const jd_heplers = require("./utils/JDHelpers.js");
+const jd_helpers = require("./utils/JDHelpers.js");
 const jd_env = require("./utils/JDEnv.js");
 const $ = jd_env.env("女装盲盒抽京豆");
 const notify = $.isNode() ? require("./sendNotify") : "";
@@ -34,7 +34,7 @@ if ($.isNode()) {
   });
   if (process.env.JD_DEBUG && process.env.JD_DEBUG === "false") console.log = () => {};
 } else {
-  cookiesArr = [$.getdata("CookieJD"), $.getdata("CookieJD2"), ...jd_heplers.jsonParse($.getdata("CookiesJD") || "[]").map((item) => item.cookie)].filter((item) => !!item);
+  cookiesArr = [$.getdata("CookieJD"), $.getdata("CookieJD2"), ...jd_helpers.jsonParse($.getdata("CookiesJD") || "[]").map((item) => item.cookie)].filter((item) => !!item);
 }
 !(async () => {
   if (!cookiesArr[0]) {
@@ -129,7 +129,7 @@ function getUserInfo() {
     $.get(taskUrl("query"), async (err, resp, data) => {
       try {
         if (err) {
-          console.log(`${err},${jd_heplers.jsonParse(resp.body)["message"]}`);
+          console.log(`${err},${jd_helpers.jsonParse(resp.body)["message"]}`);
           console.log(`${$.name} API请求失败，请检查网路重试`);
         } else {
           $.userInfo = JSON.parse(data.match(/query\((.*)\n/)[1]).data;
@@ -158,7 +158,7 @@ function doTask(taskId) {
     $.get(taskUrl("completeTask", body), async (err, resp, data) => {
       try {
         if (err) {
-          console.log(`${err},${jd_heplers.jsonParse(resp.body)["message"]}`);
+          console.log(`${err},${jd_helpers.jsonParse(resp.body)["message"]}`);
           console.log(`${$.name} API请求失败，请检查网路重试`);
         } else {
           data = JSON.parse(data.match(/query\((.*)\n/)[1]);
@@ -181,7 +181,7 @@ function draw() {
     $.get(taskUrl("draw"), async (err, resp, data) => {
       try {
         if (err) {
-          console.log(`${err},${jd_heplers.jsonParse(resp.body)["message"]}`);
+          console.log(`${err},${jd_helpers.jsonParse(resp.body)["message"]}`);
           console.log(`${$.name} API请求失败，请检查网路重试`);
         } else {
           data = JSON.parse(data.match(/query\((.*)\n/)[1]);

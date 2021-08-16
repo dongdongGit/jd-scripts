@@ -26,7 +26,7 @@ cron "10 7 * * *" script-path=https://gitee.com/lxk0301/jd_scripts/raw/master/jd
 ============小火箭=========
 京东秒秒币 = type=cron,script-path=https://gitee.com/lxk0301/jd_scripts/raw/master/jd_ms.js, cronexpr="10 7 * * *", timeout=200, enable=true
  */
-const jd_heplers = require("./utils/JDHelpers.js");
+const jd_helpers = require("./utils/JDHelpers.js");
 const jd_env = require("./utils/JDEnv.js");
 const $ = jd_env.env("京东秒秒币");
 
@@ -44,7 +44,7 @@ if ($.isNode()) {
   if (process.env.JD_DEBUG && process.env.JD_DEBUG === "false") console.log = () => {};
   //if(JSON.stringify(process.env).indexOf('GITHUB')>-1) process.exit(0)
 } else {
-  cookiesArr = [$.getdata("CookieJD"), $.getdata("CookieJD2"), ...jd_heplers.jsonParse($.getdata("CookiesJD") || "[]").map((item) => item.cookie)].filter((item) => !!item);
+  cookiesArr = [$.getdata("CookieJD"), $.getdata("CookieJD2"), ...jd_helpers.jsonParse($.getdata("CookiesJD") || "[]").map((item) => item.cookie)].filter((item) => !!item);
 }
 const JD_API_HOST = "https://api.m.jd.com/client.action";
 !(async () => {
@@ -98,10 +98,10 @@ function getActInfo() {
     $.post(taskPostUrl("assignmentList", {}, "appid=jwsp"), (err, resp, data) => {
       try {
         if (err) {
-          console.log(`${err},${jd_heplers.jsonParse(resp.body)["message"]}`);
+          console.log(`${err},${jd_helpers.jsonParse(resp.body)["message"]}`);
           console.log(`${$.name} API请求失败，请检查网路重试`);
         } else {
-          if (jd_heplers.safeGet(data)) {
+          if (jd_helpers.safeGet(data)) {
             data = JSON.parse(data);
             if (data.code === 200) {
               $.encryptProjectId = data.result.assignmentResult.encryptProjectId;
@@ -122,10 +122,10 @@ function getUserInfo(info = true) {
     $.post(taskPostUrl("homePageV2", {}, "appid=SecKill2020"), (err, resp, data) => {
       try {
         if (err) {
-          console.log(`${err},${jd_heplers.jsonParse(resp.body)["message"]}`);
+          console.log(`${err},${jd_helpers.jsonParse(resp.body)["message"]}`);
           console.log(`${$.name} API请求失败，请检查网路重试`);
         } else {
-          if (jd_heplers.safeGet(data)) {
+          if (jd_helpers.safeGet(data)) {
             data = JSON.parse(data);
             if (data.code === 2041) {
               $.score = data.result.assignment.assignmentPoints || 0;
@@ -147,10 +147,10 @@ function getTaskList() {
     $.post(taskPostUrl("queryInteractiveInfo", body), async (err, resp, data) => {
       try {
         if (err) {
-          console.log(`${err},${jd_heplers.jsonParse(resp.body)["message"]}`);
+          console.log(`${err},${jd_helpers.jsonParse(resp.body)["message"]}`);
           console.log(`${$.name} API请求失败，请检查网路重试`);
         } else {
-          if (jd_heplers.safeGet(data)) {
+          if (jd_helpers.safeGet(data)) {
             data = JSON.parse(data);
             $.risk = false;
             if (data.code === "0") {
@@ -219,10 +219,10 @@ function doTask(body) {
     $.post(taskPostUrl("doInteractiveAssignment", body), (err, resp, data) => {
       try {
         if (err) {
-          console.log(`${err},${jd_heplers.jsonParse(resp.body)["message"]}`);
+          console.log(`${err},${jd_helpers.jsonParse(resp.body)["message"]}`);
           console.log(`${$.name} API请求失败，请检查网路重试`);
         } else {
-          if (jd_heplers.safeGet(data)) {
+          if (jd_helpers.safeGet(data)) {
             data = JSON.parse(data);
             console.log(data.msg);
             if (data.msg === "风险等级未通过") $.risk = 1;

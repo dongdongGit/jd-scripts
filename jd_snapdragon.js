@@ -23,7 +23,7 @@ cron "18 9,19 13-25 8 *" script-path=https://raw.githubusercontent.com/smiek2221
 ============小火箭=========
 8.13-8.25 骁龙品牌日 = type=cron,script-path=https://raw.githubusercontent.com/smiek2221/scripts/master/gua_xiaolong.js, cronexpr="18 9,19 13-25 8 *", timeout=3600, enable=true
 */
-const jd_heplers = require('./utils/JDHelpers');
+const jd_helpers = require('./utils/JDHelpers');
 const jd_env = require("./utils/JDEnv.js");
 const $ = jd_env.env("骁龙品牌日");
 const jdCookieNode = $.isNode() ? require("./jdCookie.js") : "";
@@ -37,7 +37,7 @@ if ($.isNode()) {
   });
   if (process.env.JD_DEBUG && process.env.JD_DEBUG === "false") console.log = () => {};
 } else {
-  cookiesArr = [$.getdata("CookieJD"), $.getdata("CookieJD2"), ...jd_heplers.jsonParse($.getdata("CookiesJD") || "[]").map((item) => item.cookie)].filter((item) => !!item);
+  cookiesArr = [$.getdata("CookieJD"), $.getdata("CookieJD2"), ...jd_helpers.jsonParse($.getdata("CookiesJD") || "[]").map((item) => item.cookie)].filter((item) => !!item);
 }
 let luckydrawStatus = true;
 luckydrawStatus = $.isNode()

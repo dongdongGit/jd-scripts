@@ -23,7 +23,7 @@ cron "5 6-18/6 * * *" script-path=jd_fruit.js,tag=东东农场
 
 jd免费水果 搬的https://github.com/liuxiaoyucc/jd-helper/blob/a6f275d9785748014fc6cca821e58427162e9336/fruit/fruit.js
 */
-const jd_heplers = require("./utils/JDHelpers.js");
+const jd_helpers = require("./utils/JDHelpers.js");
 const jd_env = require("./utils/JDEnv.js");
 const $ = jd_env.env("东东农场");
 let cookiesArr = [],
@@ -971,7 +971,7 @@ async function getFullCollectionReward() {
           console.log(JSON.stringify(err));
           $.logErr(err);
         } else {
-          if (jd_heplers.safeGet(data)) {
+          if (jd_helpers.safeGet(data)) {
             $.duckRes = JSON.parse(data);
           }
         }
@@ -1217,7 +1217,7 @@ async function initForFarm() {
           console.log(JSON.stringify(err));
           $.logErr(err);
         } else {
-          if (jd_heplers.safeGet(data)) {
+          if (jd_helpers.safeGet(data)) {
             $.farmInfo = JSON.parse(data);
           }
         }
@@ -1315,7 +1315,7 @@ function requireConfig() {
       });
       if (process.env.JD_DEBUG && process.env.JD_DEBUG === "false") console.log = () => {};
     } else {
-      cookiesArr = [$.getdata("CookieJD"), $.getdata("CookieJD2"), ...jd_heplers.jsonParse($.getdata("CookiesJD") || "[]").map((item) => item.cookie)].filter((item) => !!item);
+      cookiesArr = [$.getdata("CookieJD"), $.getdata("CookieJD2"), ...jd_helpers.jsonParse($.getdata("CookiesJD") || "[]").map((item) => item.cookie)].filter((item) => !!item);
     }
     console.log(`共${cookiesArr.length}个京东账号\n`);
     $.shareCodesArr = [];
@@ -1396,7 +1396,7 @@ function request(function_id, body = {}, timeout = 1000) {
             console.log(`function_id:${function_id}`);
             $.logErr(err);
           } else {
-            if (jd_heplers.safeGet(data)) {
+            if (jd_helpers.safeGet(data)) {
               data = JSON.parse(data);
             }
           }

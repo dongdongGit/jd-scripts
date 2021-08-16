@@ -19,7 +19,7 @@ cron "20 0,22 * * *" script-path=jd_speed_redpocke.js,tag=京东极速版红包
 ============小火箭=========
 京东极速版红包 = type=cron,script-path=jd_speed_redpocke.js, cronexpr="20 0,22 * * *", timeout=3600, enable=true
 */
-const jd_heplers = require("./utils/JDHelpers.js");
+const jd_helpers = require("./utils/JDHelpers.js");
 const jd_env = require("./utils/JDEnv.js");
 const $ = jd_env.env("京东极速版红包");
 
@@ -38,7 +38,7 @@ if ($.isNode()) {
   if (process.env.JD_DEBUG && process.env.JD_DEBUG === "false") console.log = () => {};
   if (JSON.stringify(process.env).indexOf("GITHUB") > -1) process.exit(0);
 } else {
-  cookiesArr = [$.getdata("CookieJD"), $.getdata("CookieJD2"), ...jd_heplers.jsonParse($.getdata("CookiesJD") || "[]").map((item) => item.cookie)].filter((item) => !!item);
+  cookiesArr = [$.getdata("CookieJD"), $.getdata("CookieJD2"), ...jd_helpers.jsonParse($.getdata("CookiesJD") || "[]").map((item) => item.cookie)].filter((item) => !!item);
 }
 !(async () => {
   if (!cookiesArr[0]) {
@@ -126,7 +126,7 @@ async function sign() {
           console.log(`${JSON.stringify(err)}`);
           console.log(`${$.name} API请求失败，请检查网路重试`);
         } else {
-          if (jd_heplers.safeGet(data)) {
+          if (jd_helpers.safeGet(data)) {
             data = $.toObj(data);
             if (data.code === 0) {
               if (data.data.retCode === 0) {
@@ -161,7 +161,7 @@ function reward_query() {
             console.log(`${JSON.stringify(err)}`);
             console.log(`${$.name} API请求失败，请检查网路重试`);
           } else {
-            if (jd_heplers.safeGet(data)) {
+            if (jd_helpers.safeGet(data)) {
               data = JSON.parse(data);
               if (data.code === 0) {
               } else {
@@ -186,7 +186,7 @@ async function redPacket() {
           console.log(`${JSON.stringify(err)}`);
           console.log(`${$.name} API请求失败，请检查网路重试`);
         } else {
-          if (jd_heplers.safeGet(data)) {
+          if (jd_helpers.safeGet(data)) {
             data = JSON.parse(data);
             if (data.code === 0) {
               if (data.data.received.prizeType !== 1) {
@@ -217,7 +217,7 @@ function getPacketList() {
           console.log(`${JSON.stringify(err)}`);
           console.log(`${$.name} API请求失败，请检查网路重试`);
         } else {
-          if (jd_heplers.safeGet(data)) {
+          if (jd_helpers.safeGet(data)) {
             data = JSON.parse(data);
             if (data.code === 0) {
               for (let item of data.data.items.filter((vo) => vo.prizeType === 4)) {
@@ -266,7 +266,7 @@ function signPrizeDetailList() {
           console.log(`${JSON.stringify(err)}`);
           console.log(`${$.name} API请求失败，请检查网路重试`);
         } else {
-          if (jd_heplers.safeGet(data)) {
+          if (jd_helpers.safeGet(data)) {
             data = $.toObj(data);
             if (data.code === 0) {
               if (data.data.code === 0) {
@@ -329,7 +329,7 @@ function apCashWithDraw(id, poolBaseId, prizeGroupId, prizeBaseId) {
           console.log(`${JSON.stringify(err)}`);
           console.log(`${$.name} API请求失败，请检查网路重试`);
         } else {
-          if (jd_heplers.safeGet(data)) {
+          if (jd_helpers.safeGet(data)) {
             data = $.toObj(data);
             if (data.code === 0) {
               if (data.data.status === "310") {
@@ -372,7 +372,7 @@ function cashOut(id, poolBaseId, prizeGroupId, prizeBaseId) {
           console.log(`${JSON.stringify(err)}`);
           console.log(`${$.name} API请求失败，请检查网路重试`);
         } else {
-          if (jd_heplers.safeGet(data)) {
+          if (jd_helpers.safeGet(data)) {
             console.log(`提现零钱结果：${data}`);
             data = JSON.parse(data);
             if (data.code === 0) {

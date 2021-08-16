@@ -16,7 +16,7 @@ cron "23 1,12,22 * * *" script-path=jd_bean_home.js, tag=领京豆额外奖励
 ============小火箭=========
 领京豆额外奖励 = type=cron,script-path=jd_bean_home.js, cronexpr="23 1,12,22 * * *", timeout=3600, enable=true
  */
-const jd_heplers = require("./utils/JDHelpers.js");
+const jd_helpers = require("./utils/JDHelpers.js");
 const jd_env = require("./utils/JDEnv.js");
 const $ = jd_env.env("领京豆额外奖励");
 
@@ -215,7 +215,7 @@ function morningGetBean() {
             console.log(`${JSON.stringify(err)}`);
             console.log(`${$.name} morningGetBean API请求失败，请检查网路重试`);
           } else {
-            if (jd_heplers.safeGet(data)) {
+            if (jd_helpers.safeGet(data)) {
               data = JSON.parse(data);
               if (data.data.awardResultFlag === "1") {
                 console.log(`早起福利领取成功：${data.data.bizMsg}`);
@@ -247,7 +247,7 @@ async function beanTaskList(type) {
             console.log(`${JSON.stringify(err)}`);
             console.log(`${$.name} beanTaskList API请求失败，请检查网路重试`);
           } else {
-            if (jd_heplers.safeGet(data)) {
+            if (jd_helpers.safeGet(data)) {
               data = JSON.parse(data);
               switch (type) {
                 case 1:
@@ -338,7 +338,7 @@ function beanDoTask(body, taskType) {
           console.log(`${JSON.stringify(err)}`);
           console.log(`${$.name} beanDoTask API请求失败，请检查网路重试`);
         } else {
-          if (jd_heplers.safeGet(data)) {
+          if (jd_helpers.safeGet(data)) {
             data = JSON.parse(data);
             if (body.actionType === 1 && taskType !== 9) {
               if (data.code === "0" && data.data.bizCode === "0") {
@@ -374,7 +374,7 @@ function beanHomeIconDoTask(body) {
             `${$.name} beanHomeIconDoTask API请求失败，请检查网路重试`
           );
         } else {
-          if (jd_heplers.safeGet(data)) {
+          if (jd_helpers.safeGet(data)) {
             data = JSON.parse(data);
             if (body.flag === "0" && data.data.taskResult) {
               console.log(data.data.remindMsg);
@@ -412,7 +412,7 @@ async function queryCouponInfo() {
               `${$.name} queryCouponInfo API请求失败，请检查网路重试`
             );
           } else {
-            if (jd_heplers.safeGet(data)) {
+            if (jd_helpers.safeGet(data)) {
               data = JSON.parse(data);
               if (data.data && data.data.couponTaskInfo) {
                 if (!data.data.couponTaskInfo.awardFlag) {
@@ -451,7 +451,7 @@ function sceneGetCoupon() {
             console.log(`${JSON.stringify(err)}`);
             console.log(`${$.name} sceneGetCoupon API请求失败，请检查网路重试`);
           } else {
-            if (jd_heplers.safeGet(data)) {
+            if (jd_helpers.safeGet(data)) {
               data = JSON.parse(data);
               if (data.code === "0" && data.data && data.data.bizMsg) {
                 console.log(data.data.bizMsg);
@@ -498,7 +498,7 @@ function doTask2() {
           console.log(`${JSON.stringify(err)}`);
           console.log(`${$.name} API请求失败，请检查网路重试`);
         } else {
-          if (jd_heplers.safeGet(data)) {
+          if (jd_helpers.safeGet(data)) {
             data = JSON.parse(data);
             if (data.code === "0" && data.data) {
               console.log(
@@ -533,7 +533,7 @@ function getUserInfo() {
             console.log(`${JSON.stringify(err)}`);
             console.log(`${$.name} API请求失败，请检查网路重试`);
           } else {
-            if (jd_heplers.safeGet(data)) {
+            if (jd_helpers.safeGet(data)) {
               data = JSON.parse(data);
               if (data.data.jklInfo) {
                 $.actId = data.data.jklInfo.keyId;
@@ -579,7 +579,7 @@ function hitGroup() {
           console.log(`${JSON.stringify(err)}`);
           console.log(`${$.name} API请求失败，请检查网路重试`);
         } else {
-          if (jd_heplers.safeGet(data)) {
+          if (jd_helpers.safeGet(data)) {
             data = JSON.parse(data);
             if (data.data.respCode === "SG150") {
               let { shareCode, groupCode } = data.data.signGroupMain;
@@ -632,7 +632,7 @@ function help(shareCode, groupCode, isTask = 0) {
           console.log(`${JSON.stringify(err)}`);
           console.log(`【抢京豆】${$.name} API请求失败，请检查网路重试`);
         } else {
-          if (jd_heplers.safeGet(data)) {
+          if (jd_helpers.safeGet(data)) {
             data = JSON.parse(data);
             if (data.code === "0") {
               console.log(`【抢京豆】${data.data.helpToast}`);
@@ -672,7 +672,7 @@ function getTaskList() {
           console.log(`${JSON.stringify(err)}`);
           console.log(`${$.name} API请求失败，请检查网路重试`);
         } else {
-          if (jd_heplers.safeGet(data)) {
+          if (jd_helpers.safeGet(data)) {
             data = JSON.parse(data);
             let beanTask = data.data.floorList.filter(
               (vo) => vo.floorName === "种豆得豆定制化场景"
@@ -717,7 +717,7 @@ function receiveTask(itemId = "zddd", type = "3") {
           console.log(`${JSON.stringify(err)}`);
           console.log(`${$.name} API请求失败，请检查网路重试`);
         } else {
-          if (jd_heplers.safeGet(data)) {
+          if (jd_helpers.safeGet(data)) {
             data = JSON.parse(data);
             if (data.data) {
               console.log(
@@ -746,7 +746,7 @@ function award(source = "home") {
           console.log(`${JSON.stringify(err)}`);
           console.log(`${$.name} API请求失败，请检查网路重试`);
         } else {
-          if (jd_heplers.safeGet(data)) {
+          if (jd_helpers.safeGet(data)) {
             data = JSON.parse(data);
             if (data.data) {
               console.log(`领奖成功，获得 ${data.data.beanNum} 个京豆`);
@@ -789,7 +789,7 @@ function receiveJd2() {
           console.log(`${JSON.stringify(err)}`);
           console.log(`${$.name} API请求失败，请检查网路重试`);
         } else {
-          if (jd_heplers.safeGet(data)) {
+          if (jd_helpers.safeGet(data)) {
             data = JSON.parse(data);
             if (data["code"] === "0" && data["data"]) {
               console.log(

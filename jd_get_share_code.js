@@ -20,7 +20,7 @@ cron "20 13 * * 6" script-path=https://gitee.com/lxk0301/jd_scripts/raw/master/j
 ============小火箭=========
 获取互助码 = type=cron,script-path=https://gitee.com/lxk0301/jd_scripts/raw/master/jd_get_share_code.js, cronexpr="20 13 * * 6", timeout=3600, enable=true
  */
-const jd_heplers = require("./utils/JDHelpers.js");
+const jd_helpers = require("./utils/JDHelpers.js");
 const jd_env = require("./utils/JDEnv.js");
 const $ = jd_env.env("获取互助码");
 const JD_API_HOST = "https://api.m.jd.com/client.action";
@@ -33,7 +33,7 @@ if ($.isNode()) {
   })
   if (process.env.JD_DEBUG && process.env.JD_DEBUG === 'false') console.log = () => {};
 } else {
-  cookiesArr = [$.getdata('CookieJD'), $.getdata('CookieJD2'), ...jd_heplers.jsonParse($.getdata('CookiesJD') || "[]").map(item => item.cookie)].filter(item => !!item);
+  cookiesArr = [$.getdata('CookieJD'), $.getdata('CookieJD2'), ...jd_helpers.jsonParse($.getdata('CookiesJD') || "[]").map(item => item.cookie)].filter(item => !!item);
 }
 !(async () => {
   if (!cookiesArr[0]) {
@@ -73,7 +73,7 @@ function getJdFactory() {
             console.log(`${JSON.stringify(err)}`);
             console.log(`$东东工厂 API请求失败，请检查网路重试`);
           } else {
-            if (jd_heplers.safeGet(data)) {
+            if (jd_helpers.safeGet(data)) {
               data = JSON.parse(data);
               if (data.data.bizCode === 0) {
                 $.taskVos = data.data.result.taskVos; //任务列表
@@ -128,7 +128,7 @@ function getJxFactory(){
             console.log(`${JSON.stringify(err)}`);
             console.log(`京喜工厂 API请求失败，请检查网路重试`);
           } else {
-            if (jd_heplers.safeGet(data)) {
+            if (jd_helpers.safeGet(data)) {
               data = JSON.parse(data);
               if (data["ret"] === 0) {
                 data = data["data"];
@@ -200,7 +200,7 @@ function getJxNc(){
             console.log(`京喜农场 API请求失败，请检查网路重试`);
           } else {
             data = data.match(/try\{Query\(([\s\S]*)\)\;\}catch\(e\)\{\}/)[1];
-            if (jd_heplers.safeGet(data)) {
+            if (jd_helpers.safeGet(data)) {
               data = JSON.parse(data);
               if (data["ret"] === 0) {
                 if (data.active) {
@@ -309,7 +309,7 @@ async function getJdZZ() {
             console.log(`${JSON.stringify(err)}`)
             console.log(`${$.name} API请求失败，请检查网路重试`)
           } else {
-            if (jd_heplers.safeGet(data)) {
+            if (jd_helpers.safeGet(data)) {
               data = JSON.parse(data);
               if (data.data.shareTaskRes) {
                 console.log(`【账号${$.index}（${$.nickName || $.UserName}）京东赚赚】${data.data.shareTaskRes.itemId}`);
@@ -461,7 +461,7 @@ async function getJDFruit() {
             console.log(JSON.stringify(err));
             $.logErr(err);
           } else {
-            if (jd_heplers.safeGet(data)) {
+            if (jd_helpers.safeGet(data)) {
               $.farmInfo = JSON.parse(data);
             }
           }
@@ -521,7 +521,7 @@ async function getJoy(){
           console.log(`${JSON.stringify(err)}`)
           console.log(`${$.name} API请求失败，请检查网路重试`)
         } else {
-          if (jd_heplers.safeGet(data)) {
+          if (jd_helpers.safeGet(data)) {
             data = JSON.parse(data);
             if (data.success && data.data && data.data.userInviteCode) {
               console.log(`【账号${$.index}（${$.nickName || $.UserName}）crazyJoy】${data.data.userInviteCode}`)
