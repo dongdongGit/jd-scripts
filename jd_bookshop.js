@@ -101,7 +101,9 @@ async function jdBeauty() {
   if ($.gold > 800) {
     console.log(`金币大于800，去抽奖`);
     let i = 0;
-    while ($.gold >= 800 && i < 3) {
+    date = new Date();
+    hour = date.getHours()
+    while ($.gold >= 800 && i < 3 && hour == 15) {
       await draw();
       await $.wait(1000);
       $.gold -= 800;
@@ -114,6 +116,10 @@ async function jdBeauty() {
 }
 
 async function helpFriends() {
+  if (!Array.isArray($.newShareCodes)) {
+    return;
+  }
+
   for (let code of $.newShareCodes) {
     if (!code) continue;
     console.log(`去助力好友${code}`);
