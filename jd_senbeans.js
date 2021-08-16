@@ -1,8 +1,19 @@
 /*
- * 送豆得豆
- * 至少需要6个ck
- * 入口：京东APP->领京豆->送豆得豆
- * 45 0,8 * * *  jd_senbeans.js
+送豆得豆
+活动入口：来客有礼小程序
+已支持IOS双京东账号,Node.js支持N个京东账号
+脚本兼容: QuantumultX, Surge, Loon, JSBox, Node.js
+============Quantumultx===============
+[task_local]
+#送豆得豆
+45 1,12 * * * https://raw.githubusercontent.com/LingFeng0918/jd_scripts/master/jd_senbeans.js, tag=送豆得豆, img-url=https://raw.githubusercontent.com/Orz-3/mini/master/Color/jd.png, enabled=true
+================Loon==============
+[Script]
+cron "45 1,12 * * *" script-path=https://raw.githubusercontent.com/LingFeng0918/jd_scripts/master/jd_senbeans.js,tag=送豆得豆
+===============Surge=================
+送豆得豆 = type=cron,cronexp="45 1,12 * * *",wake-system=1,timeout=3600,script-path=https://raw.githubusercontent.com/LingFeng0918/jd_scripts/master/jd_senbeans.js
+============小火箭=========
+送豆得豆 = type=cron,script-path=https://raw.githubusercontent.com/LingFeng0918/jd_scripts/master/jd_senbeans.js, cronexpr="45 1,12 * * *", timeout=3600, enable=true
  */
 const jd_env = require("./utils/JDEnv.js");
 const $ = jd_env.env("送豆得豆");
@@ -18,25 +29,22 @@ if ($.isNode()) {
 } else {
   cookiesArr = [$.getdata("CookieJD"), $.getdata("CookieJD2"), ...$.toObj($.getdata("CookiesJD") || "[]").map((item) => item.cookie)].filter((item) => !!item);
 }
-$.activityId = 1604;
 !(async () => {
   $.isLoginInfo = {};
   if (!cookiesArr[0]) {
     $.msg($.name, "【提示】请先获取京东账号一cookie\n直接使用NobyDa的京东签到获取", "https://bean.m.jd.com/bean/signIndex.action", { "open-url": "https://bean.m.jd.com/bean/signIndex.action" });
     return;
   }
-  let openCount = Math.floor((Number(cookiesArr.length) - 1) / 5);
-  console.log(`\n共有${cookiesArr.length}个账号，前${openCount}个账号可以开团\n`);
-  $.openTuanList = [];
-  console.log(`前${openCount}个账号开始开团\n`);
-  for (let i = 0; i < cookiesArr.length && i < openCount; i++) {
+  $.activityId = "";
+  $.completeNumbers = "";
+  console.log(`开始获取活动信息`);
+  for (let i = 0; i < cookiesArr.length; i++) {
     $.cookie = cookiesArr[i];
-    $.UserName = decodeURIComponent($.cookie.match(/pt_pin=(.+?);/) && $.cookie.match(/pt_pin=(.+?);/)[1]);
+    $.UserName = decodeURIComponent($.cookie.match(/pt_pin=([^; ]+)(?=;?)/) && $.cookie.match(/pt_pin=([^; ]+)(?=;?)/)[1]);
     $.index = i + 1;
     $.isLogin = true;
-    $.nickName = $.UserName;
+    $.nickName = "";
     await TotalBean();
-    console.log(`\n*****开始【京东账号${$.index}】${$.nickName || $.UserName}*****\n`);
     $.isLoginInfo[$.UserName] = $.isLogin;
     if (!$.isLogin) {
       $.msg($.name, `【提示】cookie已失效`, `京东账号${$.index} ${$.nickName || $.UserName}\n请重新登录获取\nhttps://bean.m.jd.com/bean/signIndex.action`, {
@@ -47,14 +55,54 @@ $.activityId = 1604;
       }
       continue;
     }
+    await myReward();
+  }
+  for (let i = 0; (cookiesArr.length < 3 ? i < cookiesArr.length : i < 3) && $.activityId === ""; i++) {
+    $.cookie = cookiesArr[i];
+    $.UserName = decodeURIComponent($.cookie.match(/pt_pin=([^; ]+)(?=;?)/) && $.cookie.match(/pt_pin=([^; ]+)(?=;?)/)[1]);
+    $.isLogin = true;
+    $.nickName = "";
+    if (!$.isLoginInfo[$.UserName]) continue;
+    await getActivityInfo();
+  }
+  if ($.activityId === "") {
+    console.log(`获取活动ID失败`);
+    return;
+  }
+  let openCount = Math.floor((Number(cookiesArr.length) - 1) / Number($.completeNumbers));
+  console.log(`\n共有${cookiesArr.length}个账号，前${openCount}个账号可以开团\n`);
+  $.openTuanList = [];
+  console.log(`前${openCount}个账号开始开团\n`);
+  for (let i = 0; i < cookiesArr.length && i < openCount; i++) {
+    $.cookie = cookiesArr[i];
+    $.UserName = decodeURIComponent($.cookie.match(/pt_pin=([^; ]+)(?=;?)/) && $.cookie.match(/pt_pin=([^; ]+)(?=;?)/)[1]);
+    $.index = i + 1;
+    $.isLogin = true;
+    $.nickName = "";
+    if (!$.isLoginInfo[$.UserName]) {
+      await TotalBean();
+      console.log(`\n*****开始【京东账号${$.index}】${$.nickName || $.UserName}*****\n`);
+      $.isLoginInfo[$.UserName] = $.isLogin;
+      if (!$.isLogin) {
+        $.msg($.name, `【提示】cookie已失效`, `京东账号${$.index} ${$.nickName || $.UserName}\n请重新登录获取\nhttps://bean.m.jd.com/bean/signIndex.action`, {
+          "open-url": "https://bean.m.jd.com/bean/signIndex.action",
+        });
+        if ($.isNode()) {
+          await notify.sendNotify(`${$.name}cookie已失效 - ${$.UserName}`, `京东账号${$.index} ${$.UserName}\n请重新登录获取cookie`);
+        }
+        continue;
+      }
+    } else {
+      console.log(`\n*****开始【京东账号${$.index}】${$.nickName || $.UserName}*****\n`);
+    }
     await openTuan();
   }
   console.log("\n开团信息\n" + JSON.stringify($.openTuanList));
-  console.log(`\n======开始账号内部互助======\n`);
+  console.log(`\n开始互助\n`);
   let ckList = getRandomArrayElements(cookiesArr, cookiesArr.length);
-  for (let i = 0; i < ckList.length; i++) {
+  for (let i = 0; i < ckList.length && $.openTuanList.length > 0; i++) {
     $.cookie = ckList[i];
-    $.UserName = decodeURIComponent($.cookie.match(/pt_pin=(.+?);/) && $.cookie.match(/pt_pin=(.+?);/)[1]);
+    $.UserName = decodeURIComponent($.cookie.match(/pt_pin=([^; ]+)(?=;?)/) && $.cookie.match(/pt_pin=([^; ]+)(?=;?)/)[1]);
     $.index = i + 1;
     $.isLogin = true;
     if (!$.isLoginInfo[$.UserName]) {
@@ -75,7 +123,7 @@ $.activityId = 1604;
   console.log(`\n开始领取奖励\n`);
   for (let i = 0; i < cookiesArr.length && i < openCount; i++) {
     $.cookie = cookiesArr[i];
-    $.UserName = decodeURIComponent($.cookie.match(/pt_pin=(.+?);/) && $.cookie.match(/pt_pin=(.+?);/)[1]);
+    $.UserName = decodeURIComponent($.cookie.match(/pt_pin=([^; ]+)(?=;?)/) && $.cookie.match(/pt_pin=([^; ]+)(?=;?)/)[1]);
     $.index = i + 1;
     $.isLogin = true;
     if (!$.isLoginInfo[$.UserName]) {
@@ -101,6 +149,119 @@ $.activityId = 1604;
   .finally(() => {
     $.done();
   });
+
+async function getActivityInfo() {
+  $.activityList = [];
+  await getActivityList();
+  if ($.activityList.length === 0) {
+    return;
+  }
+  for (let i = 0; i < $.activityList.length; i++) {
+    if ($.activityList[i].status !== "NOT_BEGIN") {
+      $.activityId = $.activityList[i].activeId;
+      break;
+    }
+  }
+  await $.wait(3000);
+  $.detail = {};
+  await getActivityDetail();
+  if (JSON.stringify($.detail) === "{}") {
+    console.log(`获取活动详情失败`);
+    return;
+  } else {
+    console.log(`获取活动详情成功`);
+  }
+  $.completeNumbers = $.detail.activityInfo.completeNumbers;
+  console.log(`获取到的活动ID：${$.activityId},需要邀请${$.completeNumbers}人瓜分`);
+}
+
+async function myReward() {
+  return new Promise(async (resolve) => {
+    let options = {
+      url: `https://sendbeans.jd.com/common/api/bean/activity/myReward?itemsPerPage=10&currentPage=1&sendType=0&invokeKey=ztmFUCxcPMNyUq0P`,
+      headers: {
+        Host: "sendbeans.jd.com",
+        Origin: "https://sendbeans.jd.com",
+        Cookie: $.cookie,
+        "app-id": "h5",
+        Connection: "keep-alive",
+        Accept: "application/json, text/plain, */*",
+        "User-Agent": $.isNode()
+          ? process.env.JD_USER_AGENT
+            ? process.env.JD_USER_AGENT
+            : require("./USER_AGENTS").USER_AGENT
+          : $.getdata("JDUA")
+          ? $.getdata("JDUA")
+          : "jdapp;iPhone;9.4.4;14.3;network/4g;Mozilla/5.0 (iPhone; CPU iPhone OS 14_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148;supportJDSHWK/1",
+        "Accept-Language": "zh-cn",
+        Referer: "https://sendbeans.jd.com/dist/index.html",
+        "Accept-Encoding": "gzip, deflate, br",
+        openId: "",
+      },
+    };
+    $.get(options, async (err, resp, data) => {
+      try {
+        data = JSON.parse(data);
+        if (data.success) {
+          for (let key of Object.keys(data.datas)) {
+            let vo = data.datas[key];
+            if (vo.status === 3 && vo.type === 2) {
+              $.rewardRecordId = vo.id;
+              await rewardBean();
+              $.rewardRecordId = "";
+            }
+          }
+        } else {
+          console.log(JSON.stringify(data));
+        }
+      } catch (e) {
+        console.log(e);
+      } finally {
+        resolve(data);
+      }
+    });
+  });
+}
+
+async function getActivityList() {
+  return new Promise((resolve) => {
+    let options = {
+      url: `https://sendbeans.jd.com/common/api/bean/activity/get/entry/list/by/channel?channelId=14&channelType=H5&sendType=0&singleActivity=false&invokeKey=qRKHmL4sna8ZOP9F`,
+      headers: {
+        Host: "sendbeans.jd.com",
+        Origin: "https://sendbeans.jd.com",
+        Cookie: $.cookie,
+        Connection: "keep-alive",
+        Accept: "application/json, text/plain, */*",
+        "User-Agent": $.isNode()
+          ? process.env.JD_USER_AGENT
+            ? process.env.JD_USER_AGENT
+            : require("./USER_AGENTS").USER_AGENT
+          : $.getdata("JDUA")
+          ? $.getdata("JDUA")
+          : "jdapp;iPhone;9.4.4;14.3;network/4g;Mozilla/5.0 (iPhone; CPU iPhone OS 14_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148;supportJDSHWK/1",
+        "Accept-Language": "zh-cn",
+        Referer: "https://sendbeans.jd.com/dist/index.html",
+        "Accept-Encoding": "gzip, deflate, br",
+        openId: "",
+      },
+    };
+    $.get(options, (err, resp, data) => {
+      try {
+        data = JSON.parse(data);
+        if (data.success) {
+          $.activityList = data.data.items;
+        } else {
+          console.log(JSON.stringify(data));
+        }
+      } catch (e) {
+        console.log(e);
+      } finally {
+        resolve(data);
+      }
+    });
+  });
+}
 
 async function openTuan() {
   $.detail = {};
@@ -370,13 +531,12 @@ async function getActivityDetail() {
     });
   });
 }
-
 function TotalBean() {
   return new Promise(async (resolve) => {
     const options = {
-      url: "https://me-api.jd.com/user_new/info/GetJDUserInfoUnion",
+      url: "https://wq.jd.com/user_new/info/GetJDUserInfoUnion?sceneval=2",
       headers: {
-        Host: "me-api.jd.com",
+        Host: "wq.jd.com",
         Accept: "*/*",
         Connection: "keep-alive",
         Cookie: $.cookie,
@@ -399,15 +559,15 @@ function TotalBean() {
         } else {
           if (data) {
             data = JSON.parse(data);
-            if (data["retcode"] === "1001") {
+            if (data["retcode"] === 1001) {
               $.isLogin = false; //cookie过期
               return;
             }
-            if (data["retcode"] === "0" && data.data && data.data.hasOwnProperty("userInfo")) {
+            if (data["retcode"] === 0 && data.data && data.data.hasOwnProperty("userInfo")) {
               $.nickName = data.data.userInfo.baseInfo.nickname;
             }
           } else {
-            $.log("京东服务器返回空数据");
+            console.log("京东服务器返回空数据");
           }
         }
       } catch (e) {
