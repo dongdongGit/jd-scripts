@@ -103,7 +103,7 @@ async function jdBeauty() {
     let i = 0;
     date = new Date();
     hour = date.getHours()
-    while ($.gold >= 800 && i < 3 && hour == 15) {
+    while ($.gold >= 800 && i < 3 && hour == 12) {
       await draw();
       await $.wait(1000);
       $.gold -= 800;
