@@ -18,9 +18,10 @@ cron "1 8,12,18 * * *" script-path=https://gitee.com/lxk0301/jd_scripts/raw/mast
 ============小火箭=========
 口袋书店 = type=cron,script-path=https://gitee.com/lxk0301/jd_scripts/raw/master/jd_bookshop.js, cronexpr="1 8,12,18* * *", timeout=3600, enable=true
  */
+const jd_shopping_cart = require("./utils/JDShoppingCart");
 const jd_helpers = require("./utils/JDHelpers.js");
 const jd_env = require("./utils/JDEnv.js");
-const $ = jd_env.env("口袋书店");
+let $ = jd_env.env("口袋书店");
 const notify = $.isNode() ? require("./sendNotify") : "";
 const jdCookieNode = $.isNode() ? require("./jdCookie.js") : "";
 //Node.js用户请在jdCookie.js处填写京东ck;
@@ -62,6 +63,7 @@ if ($.isNode()) {
       $.index = i + 1;
       $.isLogin = true;
       $.nickName = "";
+      $.skuIds = [];
       message = "";
       await TotalBean();
       console.log(`\n******开始【京东账号${$.index}】${$.nickName || $.UserName}*********\n`);
@@ -73,7 +75,7 @@ if ($.isNode()) {
         continue;
       }
       // await shareCodesFormat();
-      await jdBeauty();
+      await jdBookShop();
     }
   }
 })()
@@ -84,7 +86,7 @@ if ($.isNode()) {
     $.done();
   });
 
-async function jdBeauty() {
+async function jdBookShop() {
   $.score = 0;
   await getIsvToken();
   await getIsvToken2();
@@ -111,6 +113,11 @@ async function jdBeauty() {
     }
   }
   if ($.userInfo.storeGold) await chargeGold();
+  // 删除加购物品
+  await jd_shopping_cart.getCarts($).then(function ($this) {
+    $ = $this;
+  });
+  await jd_shopping_cart.unsubscribeCartsFun($);
   await helpFriends();
   await showMsg();
 }
@@ -327,6 +334,7 @@ function getActContent(info = false, shareUuid = "") {
                       }
                     }
                   } else if (ADD_CART && ["加购商品"].includes(task.title)) {
+                    $.skuIds = task.settings.map(current_task => current_task.value);
                     if (task.okNum < task.dayMaxNum) {
                       console.log(`去做${task.title}任务`);
                       await doTask(task.settings[0].type, task.settings[0].value);
