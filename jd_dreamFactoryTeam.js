@@ -161,7 +161,7 @@ async function getTuanActiveId() {
               const start = item.start;
               const end = item.end;
               const link = item.link;
-              if (new Date(item.end).getTime() > Date.now()) {
+              if (new Date(item.end).getTime() > Date.now() && new Date(item.start).getTime() < Date.now()) {
                 if (link && link.match(/activeId=(.*),/) && link.match(/activeId=(.*),/)[1]) {
                   console.log(`\n获取团活动ID成功: ${link.match(/activeId=(.*),/)[1]}\n有效时段：${start} - ${end}`);
                   tuanActiveId = link.match(/activeId=(.*),/)[1];
