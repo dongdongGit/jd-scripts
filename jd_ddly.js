@@ -21,7 +21,7 @@ cron "30 7 * * *" script-path=https://raw.githubusercontent.com/Wenmoux/scripts/
 东东乐园 = type=cron,script-path=https://raw.githubusercontent.com/Wenmoux/scripts/wen/jd/jd_ddnc_farmpark.js, cronexpr="30 7 * * *", timeout=3600, enable=true
 
  */
-const jd_heplers = require("./utils/JDHelpers.js");
+const jd_helpers = require("./utils/JDHelpers.js");
 const jd_env = require("./utils/JDEnv.js");
 const $ = jd_env.env("东东乐园");
 //Node.js用户请在jdCookie.js处填写京东ck;
@@ -40,7 +40,7 @@ if ($.isNode()) {
   });
   if (process.env.JD_DEBUG && process.env.JD_DEBUG === "false") console.log = () => {};
 } else {
-  cookiesArr = [$.getdata("CookieJD"), $.getdata("CookieJD2"), ...jd_heplers.jsonParse($.getdata("CookiesJD") || "[]").map((item) => item.cookie)].filter((item) => !!item);
+  cookiesArr = [$.getdata("CookieJD"), $.getdata("CookieJD2"), ...jd_helpers.jsonParse($.getdata("CookiesJD") || "[]").map((item) => item.cookie)].filter((item) => !!item);
 }
 
 const JD_API_HOST = `https://api.m.jd.com/client.action`;

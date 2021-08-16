@@ -6,7 +6,7 @@
  * cron  34 6,18 * * *
  * */
 const jd_shopping_cart = require("./utils/JDShoppingCart");
-const jd_heplers = require("./utils/JDHelpers.js");
+const jd_helpers = require("./utils/JDHelpers.js");
 const jd_env = require("./utils/JDEnv.js");
 let $ = jd_env.env("粉丝互动");
 const jdCookieNode = $.isNode() ? require("./jdCookie.js") : "";
@@ -39,7 +39,7 @@ if ($.isNode()) {
   });
   if (process.env.JD_DEBUG && process.env.JD_DEBUG === "false") console.log = () => {};
 } else {
-  cookiesArr = [$.getdata("CookieJD"), $.getdata("CookieJD2"), ...jd_heplers.jsonParse($.getdata("CookiesJD") || "[]").map((item) => item.cookie)].filter((item) => !!item);
+  cookiesArr = [$.getdata("CookieJD"), $.getdata("CookieJD2"), ...jd_helpers.jsonParse($.getdata("CookiesJD") || "[]").map((item) => item.cookie)].filter((item) => !!item);
 }
 !(async () => {
   if (!cookiesArr[0]) {

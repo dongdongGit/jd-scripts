@@ -25,7 +25,7 @@ cron "0 0 * * *" script-path=https://raw.githubusercontent.com/LXK9301/jd_script
 ============小火箭=========
 京东汽车兑换 = type=cron,script-path=https://raw.githubusercontent.com/LXK9301/jd_scripts/master/jd_car_exchange.js, cronexpr="0 0 * * *", timeout=2000, enable=true
  */
-const jd_heplers = require("./utils/JDHelpers.js");
+const jd_helpers = require("./utils/JDHelpers.js");
 const jd_env = require("./utils/JDEnv.js");
 const $ = jd_env.env("京东汽车兑换");
 
@@ -45,7 +45,7 @@ if ($.isNode()) {
   if (process.env.JD_DEBUG && process.env.JD_DEBUG === "false") console.log = () => {};
 } else {
   let cookiesData = $.getdata("CookiesJD") || "[]";
-  cookiesData = jd_heplers.jsonParse(cookiesData);
+  cookiesData = jd_helpers.jsonParse(cookiesData);
   cookiesArr = cookiesData.map((item) => item.cookie);
   cookiesArr.reverse();
   cookiesArr.push(...[$.getdata("CookieJD2"), $.getdata("CookieJD")]);
@@ -97,7 +97,7 @@ function exchange() {
         if (err) {
           data = JSON.parse(resp.body);
         } else {
-          if (jd_heplers.safeGet(data)) {
+          if (jd_helpers.safeGet(data)) {
             data = JSON.parse(data);
             console.log(`兑换结果：${JSON.stringify(data)}`);
           }

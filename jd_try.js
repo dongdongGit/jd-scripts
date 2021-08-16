@@ -14,7 +14,7 @@ update 2021/4/11
 # 京东试用
 30 10 * * * https://raw.githubusercontent.com/ZCY01/daily_scripts/main/jd/jd_try.js, tag=京东试用, img-url=https://raw.githubusercontent.com/ZCY01/img/master/jdtryv1.png, enabled=true
  */
-const jd_heplers = require("./utils/JDHelpers.js");
+const jd_helpers = require("./utils/JDHelpers.js");
 const jd_env = require("./utils/JDEnv.js");
 const $ = jd_env.env("京东试用");
 
@@ -123,7 +123,7 @@ function requireConfig() {
       if (process.env.JD_DEBUG && process.env.JD_DEBUG === "false") console.log = () => {};
     } else {
       //IOS等用户直接用NobyDa的jd $.cookie
-      $.cookiesArr = [$.getdata("CookieJD"), $.getdata("CookieJD2"), ...jd_heplers.jsonParse($.getdata("CookiesJD") || "[]").map((item) => item.cookie)].filter((item) => !!item);
+      $.cookiesArr = [$.getdata("CookieJD"), $.getdata("CookieJD2"), ...jd_helpers.jsonParse($.getdata("CookiesJD") || "[]").map((item) => item.cookie)].filter((item) => !!item);
     }
     console.log(`共${$.cookiesArr.length}个京东账号\n`);
 

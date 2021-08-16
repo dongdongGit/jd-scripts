@@ -22,7 +22,7 @@ cron "1 12,23 * * *" script-path=https://gitee.com/lxk0301/jd_scripts/raw/master
 ============小火箭=========
 京东家庭号 = type=cron,script-path=https://gitee.com/lxk0301/jd_scripts/raw/master/jd_family.js, cronexpr="1 12,23 * * *", timeout=3600, enable=true
  */
-const jd_heplers = require("./utils/JDHelpers.js");
+const jd_helpers = require("./utils/JDHelpers.js");
 const jd_env = require("./utils/JDEnv.js");
 const $ = jd_env.env("京东家庭号");
 const notify = $.isNode() ? require("./sendNotify") : "";
@@ -39,7 +39,7 @@ if ($.isNode()) {
   });
   if (process.env.JD_DEBUG && process.env.JD_DEBUG === "false") console.log = () => {};
 } else {
-  cookiesArr = [$.getdata("CookieJD"), $.getdata("CookieJD2"), ...jd_heplers.jsonParse($.getdata("CookiesJD") || "[]").map((item) => item.cookie)].filter((item) => !!item);
+  cookiesArr = [$.getdata("CookieJD"), $.getdata("CookieJD2"), ...jd_helpers.jsonParse($.getdata("CookiesJD") || "[]").map((item) => item.cookie)].filter((item) => !!item);
 }
 
 !(async () => {
@@ -121,7 +121,7 @@ function getUserInfo(info = false) {
     $.get(taskUrl("family_query"), async (err, resp, data) => {
       try {
         if (err) {
-          console.log(`${err},${jd_heplers.jsonParse(resp.body)["message"]}`);
+          console.log(`${err},${jd_helpers.jsonParse(resp.body)["message"]}`);
           console.log(`${$.name} API请求失败，请检查网路重试`);
         } else {
           $.userInfo = JSON.parse(data.match(/query\((.*)\n/)[1]);
@@ -164,7 +164,7 @@ function doTask(taskId) {
     $.get(taskUrl("family_task", body), async (err, resp, data) => {
       try {
         if (err) {
-          console.log(`${err},${jd_heplers.jsonParse(resp.body)["message"]}`);
+          console.log(`${err},${jd_helpers.jsonParse(resp.body)["message"]}`);
           console.log(`${$.name} API请求失败，请检查网路重试`);
         } else {
           data = JSON.parse(data.match(/query\((.*)\n/)[1]);

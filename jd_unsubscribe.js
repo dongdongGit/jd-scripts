@@ -18,7 +18,7 @@ cron "55 23 * * *" script-path=https://gitee.com/lxk0301/jd_scripts/raw/master/j
 ===========小火箭========
 取关京东店铺商品 = type=cron,script-path=https://gitee.com/lxk0301/jd_scripts/raw/master/jd_unsubscribe.js, cronexpr="55 23 * * *", timeout=3600, enable=true
  */
-const jd_heplers = require("./utils/JDHelpers.js");
+const jd_helpers = require("./utils/JDHelpers.js");
 const jd_env = require("./utils/JDEnv.js");
 const $ = jd_env.env("取关京东店铺和商品");
 //Node.js用户请在jdCookie.js处填写京东ck;
@@ -34,7 +34,7 @@ if ($.isNode()) {
   });
   if (process.env.JD_DEBUG && process.env.JD_DEBUG === "false") console.log = () => {};
 } else {
-  cookiesArr = [$.getdata("CookieJD"), $.getdata("CookieJD2"), ...jd_heplers.jsonParse($.getdata("CookiesJD") || "[]").map((item) => item.cookie)].filter((item) => !!item);
+  cookiesArr = [$.getdata("CookieJD"), $.getdata("CookieJD2"), ...jd_helpers.jsonParse($.getdata("CookiesJD") || "[]").map((item) => item.cookie)].filter((item) => !!item);
 }
 const jdNotify = $.getdata("jdUnsubscribeNotify"); //是否关闭通知，false打开通知推送，true关闭通知推送
 let goodPageSize = $.getdata("jdUnsubscribePageSize") || 100; // 运行一次取消多少个已关注的商品。数字0表示不取关任何商品

@@ -23,7 +23,7 @@ cron "8 0-23/3 * * *" script-path=https://gitee.com/lxk0301/jd_scripts/raw/maste
 ==============小火箭=============
 天天加速 = type=cron,script-path=https://gitee.com/lxk0301/jd_scripts/raw/master/jd_speed.js, cronexpr="11 0-23/3 * * *", timeout=3600, enable=true
 */
-const jd_heplers = require("./utils/JDHelpers.js");
+const jd_helpers = require("./utils/JDHelpers.js");
 const jd_env = require("./utils/JDEnv.js");
 const $ = jd_env.env("天天加速");
 const notify = $.isNode() ? require("./sendNotify") : "";
@@ -39,7 +39,7 @@ if ($.isNode()) {
   });
   if (process.env.JD_DEBUG && process.env.JD_DEBUG === "false") console.log = () => {};
 } else {
-  cookiesArr = [$.getdata("CookieJD"), $.getdata("CookieJD2"), ...jd_heplers.jsonParse($.getdata("CookiesJD") || "[]").map((item) => item.cookie)].filter((item) => !!item);
+  cookiesArr = [$.getdata("CookieJD"), $.getdata("CookieJD2"), ...jd_helpers.jsonParse($.getdata("CookiesJD") || "[]").map((item) => item.cookie)].filter((item) => !!item);
 }
 let jdNotify = true; //是否开启静默运行。默认true开启
 let message = "",
@@ -532,7 +532,7 @@ function getMemBerList() {
           console.log(`${$.name} API请求失败，请检查网路重试`);
           console.log(`${JSON.stringify(err)}`);
         } else {
-          if (jd_heplers.safeGet(data)) {
+          if (jd_helpers.safeGet(data)) {
             data = JSON.parse(data);
             if (data && data.success) {
               for (let item of data.data) {
@@ -591,7 +591,7 @@ function getMemBerGetTask(sourceId) {
           console.log(`${$.name} API请求失败，请检查网路重试`);
           console.log(`${JSON.stringify(err)}`);
         } else {
-          if (jd_heplers.safeGet(data)) {
+          if (jd_helpers.safeGet(data)) {
             data = JSON.parse(data);
             if (data && data.success) {
               // $.getRewardBeans += data.data.beans;
@@ -629,7 +629,7 @@ function getReward(uuid) {
           console.log(`${$.name} API请求失败，请检查网路重试`);
           console.log(`${JSON.stringify(err)}`);
         } else {
-          if (jd_heplers.safeGet(data)) {
+          if (jd_helpers.safeGet(data)) {
             data = JSON.parse(data);
             if (data && data.success) {
               $.getRewardBeans += data.data.beans;

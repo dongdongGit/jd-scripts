@@ -19,7 +19,7 @@ cron "0 0,1-23/3 * * *" script-path=jd_mohe.js,tag=5G超级盲盒
 ====================================小火箭=============================
 5G超级盲盒 = type=cron,script-path=jd_mohe.js, cronexpr="0 0,1-23/3 * * *", timeout=3600, enable=true
  */
-const jd_heplers = require("./utils/JDHelpers.js");
+const jd_helpers = require("./utils/JDHelpers.js");
 const jd_env = require("./utils/JDEnv.js");
 const $ = jd_env.env("5G超级盲盒");
 const notify = $.isNode() ? require("./sendNotify") : "";
@@ -37,7 +37,7 @@ if ($.isNode()) {
   });
   if (process.env.JD_DEBUG && process.env.JD_DEBUG === "false") console.log = () => {};
 } else {
-  cookiesArr = [$.getdata("CookieJD"), $.getdata("CookieJD2"), ...jd_heplers.jsonParse($.getdata("CookiesJD") || "[]").map((item) => item.cookie)].filter((item) => !!item);
+  cookiesArr = [$.getdata("CookieJD"), $.getdata("CookieJD2"), ...jd_helpers.jsonParse($.getdata("CookiesJD") || "[]").map((item) => item.cookie)].filter((item) => !!item);
 }
 
 const JD_API_HOST = "https://api.m.jd.com/api";

@@ -19,7 +19,7 @@ cron "13 1,22 * * *" script-path=https://gitee.com/lxk0301/jd_scripts/raw/master
 ============小火箭=========
 金榜创造营 = type=cron,script-path=https://gitee.com/lxk0301/jd_scripts/raw/master/jd_gold_creator.js, cronexpr="13 1,22 * * *", timeout=3600, enable=true
  */
-const jd_heplers = require("./utils/JDHelpers.js");
+const jd_helpers = require("./utils/JDHelpers.js");
 const jd_env = require("./utils/JDEnv.js");
 const $ = jd_env.env("金榜创造营");
 const notify = $.isNode() ? require("./sendNotify") : "";
@@ -114,7 +114,7 @@ function goldCreatorTab() {
           console.log(`${JSON.stringify(err)}`);
           console.log(`${$.name} goldCreatorDetail API请求失败，请检查网路重试`);
         } else {
-          if (jd_heplers.safeGet(data)) {
+          if (jd_helpers.safeGet(data)) {
             data = JSON.parse(data);
             if (data.code === "0") {
               $.subTitleInfos = data.result.subTitleInfos || [];
@@ -159,7 +159,7 @@ function goldCreatorDetail(groupId, subTitleId, taskId, batchId, flag = false) {
           console.log(`${JSON.stringify(err)}`);
           console.log(`${$.name} goldCreatorDetail API请求失败，请检查网路重试`);
         } else {
-          if (jd_heplers.safeGet(data)) {
+          if (jd_helpers.safeGet(data)) {
             data = JSON.parse(data);
             if (data.code === "0") {
               $.remainVotes = data.result.remainVotes || 0;
@@ -223,7 +223,7 @@ function goldCreatorDoTask(body) {
           console.log(`${JSON.stringify(err)}`);
           console.log(`${$.name} goldCreatorDetail API请求失败，请检查网路重试`);
         } else {
-          if (jd_heplers.safeGet(data)) {
+          if (jd_helpers.safeGet(data)) {
             data = JSON.parse(data);
             if (data.code === "0") {
               if (data.result.taskCode === "0") {

@@ -4,7 +4,7 @@
  cron 10 9,18 9-25 8 * jd_star_shop.js
  */
 
-const jd_heplers = require("./utils/JDHelpers.js");
+const jd_helpers = require("./utils/JDHelpers.js");
 const jd_env = require("./utils/JDEnv.js");
 let $ = jd_env.env("明星小店");
 const notify = $.isNode() ? require("./sendNotify") : "";

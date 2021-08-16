@@ -20,7 +20,7 @@ cron "36 0,10,21 4-15 8 *" script-path=jd_qxqbj.js,tag=8.4-8.15 七夕情报局
 8.4-8.15 七夕情报局 = type=cron,script-path=jd_qxqbj.js, cronexpr="36 0,10,21 4-15 8 *", timeout=3600, enable=true
 */
 const jd_shopping_cart = require("./utils/JDShoppingCart");
-const jd_heplers = require("./utils/JDHelpers.js");
+const jd_helpers = require("./utils/JDHelpers.js");
 const jd_env = require("./utils/JDEnv.js");
 let $ = jd_env.env("8.4-8.15 七夕情报局");
 const jdCookieNode = $.isNode() ? require("./jdCookie.js") : "";
@@ -34,7 +34,7 @@ if ($.isNode()) {
   });
   if (process.env.JD_DEBUG && process.env.JD_DEBUG === "false") console.log = () => {};
 } else {
-  cookiesArr = [$.getdata("CookieJD"), $.getdata("CookieJD2"), ...jd_heplers.jsonParse($.getdata("CookiesJD") || "[]").map((item) => item.cookie)].filter((item) => !!item);
+  cookiesArr = [$.getdata("CookieJD"), $.getdata("CookieJD2"), ...jd_helpers.jsonParse($.getdata("CookiesJD") || "[]").map((item) => item.cookie)].filter((item) => !!item);
 }
 const JD_API_HOST = `https://api.m.jd.com/client.action`;
 message = "";

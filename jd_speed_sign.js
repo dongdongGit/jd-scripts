@@ -22,7 +22,7 @@ cron "21 3,8 * * *" script-path=jd_speed_sign.js,tag=京东极速版
 ============小火箭=========
 京东极速版 = type=cron,script-path=jd_speed_sign.js, cronexpr="21 3,8 * * *", timeout=33600, enable=true
 */
-const jd_heplers = require("./utils/JDHelpers.js");
+const jd_helpers = require("./utils/JDHelpers.js");
 const jd_env = require("./utils/JDEnv.js");
 const $ = jd_env.env("京东极速版");
 const notify = $.isNode() ? require("./sendNotify") : "";
@@ -38,7 +38,7 @@ if ($.isNode()) {
   });
   if (process.env.JD_DEBUG && process.env.JD_DEBUG === "false") console.log = () => {};
 } else {
-  cookiesArr = [$.getdata("CookieJD"), $.getdata("CookieJD2"), ...jd_heplers.jsonParse($.getdata("CookiesJD") || "[]").map((item) => item.cookie)].filter((item) => !!item);
+  cookiesArr = [$.getdata("CookieJD"), $.getdata("CookieJD2"), ...jd_helpers.jsonParse($.getdata("CookiesJD") || "[]").map((item) => item.cookie)].filter((item) => !!item);
 }
 
 const JD_API_HOST = "https://api.m.jd.com/",
@@ -127,7 +127,7 @@ async function signInit() {
             console.log(`${JSON.stringify(err)}`);
             console.log(`${$.name} API请求失败，请检查网路重试`);
           } else {
-            if (jd_heplers.safeGet(data)) {
+            if (jd_helpers.safeGet(data)) {
               data = JSON.parse(data);
               //console.log(data)
             }
@@ -156,7 +156,7 @@ async function sign() {
             console.log(`${JSON.stringify(err)}`);
             console.log(`${$.name} API请求失败，请检查网路重试`);
           } else {
-            if (jd_heplers.safeGet(data)) {
+            if (jd_helpers.safeGet(data)) {
               data = JSON.parse(data);
               if (data.subCode === 0) {
                 console.log(`签到获得${data.data.signAmount}现金，共计获得${data.data.cashDrawAmount}`);
@@ -189,7 +189,7 @@ async function taskList() {
             console.log(`${JSON.stringify(err)}`);
             console.log(`${$.name} API请求失败，请检查网路重试`);
           } else {
-            if (jd_heplers.safeGet(data)) {
+            if (jd_helpers.safeGet(data)) {
               data = JSON.parse(data);
               for (let task of data.data) {
                 $.taskName = task.taskInfo.mainTitle;
@@ -236,7 +236,7 @@ async function doTask(taskId) {
             console.log(`${JSON.stringify(err)}`);
             console.log(`${$.name} API请求失败，请检查网路重试`);
           } else {
-            if (jd_heplers.safeGet(data)) {
+            if (jd_helpers.safeGet(data)) {
               data = JSON.parse(data);
               if (data.code === 0) {
                 console.log(`${data.data.taskInfo.mainTitle}任务完成成功，预计获得${data.data.reward}金币`);
@@ -263,7 +263,7 @@ async function queryJoy() {
           console.log(`${JSON.stringify(err)}`);
           console.log(`${$.name} API请求失败，请检查网路重试`);
         } else {
-          if (jd_heplers.safeGet(data)) {
+          if (jd_helpers.safeGet(data)) {
             data = JSON.parse(data);
             if (data.data.taskBubbles)
               for (let task of data.data.taskBubbles) {
@@ -294,7 +294,7 @@ async function rewardTask(id, taskId) {
             console.log(`${JSON.stringify(err)}`);
             console.log(`${$.name} API请求失败，请检查网路重试`);
           } else {
-            if (jd_heplers.safeGet(data)) {
+            if (jd_helpers.safeGet(data)) {
               data = JSON.parse(data);
               if (data.code === 0) {
                 $.score += data.data.reward;
@@ -327,7 +327,7 @@ async function queryItem(activeType = 1) {
             console.log(`${JSON.stringify(err)}`);
             console.log(`${$.name} API请求失败，请检查网路重试`);
           } else {
-            if (jd_heplers.safeGet(data)) {
+            if (jd_helpers.safeGet(data)) {
               data = JSON.parse(data);
               if (data.code === 0 && data.data) {
                 await startItem(data.data.nextResource, activeType);
@@ -366,7 +366,7 @@ async function startItem(activeId, activeType) {
             console.log(`${JSON.stringify(err)}`);
             console.log(`${$.name} API请求失败，请检查网路重试`);
           } else {
-            if (jd_heplers.safeGet(data)) {
+            if (jd_helpers.safeGet(data)) {
               data = JSON.parse(data);
               if (data.code === 0 && data.data) {
                 if (data.data.taskInfo.isTaskLimit === 0) {
@@ -416,7 +416,7 @@ async function endItem(uuid, activeType, activeId = "", videoTimeLength = "") {
             console.log(`${JSON.stringify(err)}`);
             console.log(`${$.name} API请求失败，请检查网路重试`);
           } else {
-            if (jd_heplers.safeGet(data)) {
+            if (jd_helpers.safeGet(data)) {
               data = JSON.parse(data);
               if (data.code === 0 && data.isSuccess) {
                 await rewardItem(uuid, activeType, activeId, videoTimeLength);
@@ -456,7 +456,7 @@ async function rewardItem(uuid, activeType, activeId = "", videoTimeLength = "")
             console.log(`${JSON.stringify(err)}`);
             console.log(`${$.name} API请求失败，请检查网路重试`);
           } else {
-            if (jd_heplers.safeGet(data)) {
+            if (jd_helpers.safeGet(data)) {
               data = JSON.parse(data);
               if (data.code === 0 && data.isSuccess) {
                 $.score += data.data.reward;
@@ -484,7 +484,7 @@ async function cash() {
           console.log(`${JSON.stringify(err)}`);
           console.log(`${$.name} API请求失败，请检查网路重试`);
         } else {
-          if (jd_heplers.safeGet(data)) {
+          if (jd_helpers.safeGet(data)) {
             data = JSON.parse(data);
             $.total = data.data.goldBalance;
           }
@@ -507,7 +507,7 @@ function wheelsHome() {
           console.log(`${JSON.stringify(err)}`);
           console.log(`${$.name} API请求失败，请检查网路重试`);
         } else {
-          if (jd_heplers.safeGet(data)) {
+          if (jd_helpers.safeGet(data)) {
             data = JSON.parse(data);
             if (data.code === 0) {
               console.log(`【幸运大转盘】剩余抽奖机会：${data.data.lotteryChances}`);
@@ -535,7 +535,7 @@ function wheelsLottery() {
           console.log(`${JSON.stringify(err)}`);
           console.log(`${$.name} API请求失败，请检查网路重试`);
         } else {
-          if (jd_heplers.safeGet(data)) {
+          if (jd_helpers.safeGet(data)) {
             data = JSON.parse(data);
             if (data.data && data.data.rewardType) {
               console.log(`幸运大转盘抽奖获得：【${data.data.couponUsedValue}-${data.data.rewardValue}${data.data.couponDesc}】\n`);
@@ -562,7 +562,7 @@ function apTaskList() {
           console.log(`${JSON.stringify(err)}`);
           console.log(`${$.name} API请求失败，请检查网路重试`);
         } else {
-          if (jd_heplers.safeGet(data)) {
+          if (jd_helpers.safeGet(data)) {
             data = JSON.parse(data);
             if (data.code === 0) {
               for (let task of data.data) {
@@ -593,7 +593,7 @@ function apDoTask(taskType, taskId, channel, itemId) {
           console.log(`${JSON.stringify(err)}`);
           console.log(`${$.name} API请求失败，请检查网路重试`);
         } else {
-          if (jd_heplers.safeGet(data)) {
+          if (jd_helpers.safeGet(data)) {
             data = JSON.parse(data);
             if (data.code === 0 && data.data && data.data.finished) {
               console.log(`任务完成成功`);
@@ -619,7 +619,7 @@ function richManIndex() {
           console.log(`${JSON.stringify(err)}`);
           console.log(`${$.name} API请求失败，请检查网路重试`);
         } else {
-          if (jd_heplers.safeGet(data)) {
+          if (jd_helpers.safeGet(data)) {
             data = JSON.parse(data);
             if (data.code === 0 && data.data && data.data.userInfo) {
               console.log(`用户当前位置：${data.data.userInfo.position}，剩余机会：${data.data.userInfo.randomTimes}`);
@@ -646,7 +646,7 @@ function shootRichManDice() {
           console.log(`${JSON.stringify(err)}`);
           console.log(`${$.name} API请求失败，请检查网路重试`);
         } else {
-          if (jd_heplers.safeGet(data)) {
+          if (jd_helpers.safeGet(data)) {
             data = JSON.parse(data);
             if (data.code === 0 && data.data && data.data.rewardType && data.data.couponDesc) {
               message += `红包大富翁抽奖获得：【${data.data.couponUsedValue}-${data.data.rewardValue} ${data.data.poolName}】\n`;

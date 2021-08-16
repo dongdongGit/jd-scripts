@@ -169,7 +169,7 @@
 # 京东众筹许愿
 0 8,12 * * * node /scripts/jd_crowdfunding_wish.js >> /scripts/logs/jd_crowdfunding_wish.log 2>&1
 # 来电好物季
-35 8 * * * node /scripts/jd_ldhwj.js >> /scripts/logs/jd_ldhwj.log 2>&1
+35 8 * * * node /scripts/jd_good_stuff_season.js >> /scripts/logs/jd_good_stuff_season.log 2>&1
 # 京东手机狂欢城
 0 0-18/6 * * * node /scripts/jd_carnivalcity.js >> /scripts/logs/jd_carnivalcity.log 2>&1
 # 金机奖投票

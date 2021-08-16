@@ -3,7 +3,7 @@
 活动路径：边玩边赚-》京小鸽吾悦寄
 很小的几率能抽到实物。
 */
-const jd_heplers = require("./utils/JDHelpers.js");
+const jd_helpers = require("./utils/JDHelpers.js");
 const jd_env = require("./utils/JDEnv.js");
 const $ = jd_env.env("京小鸽吾悦寄");
 const notify = $.isNode() ? require("./sendNotify") : "";
@@ -21,7 +21,7 @@ if ($.isNode()) {
   if (process.env.JD_DEBUG && process.env.JD_DEBUG === "false") console.log = () => {};
 } else {
   let cookiesData = $.getdata("CookiesJD") || "[]";
-  cookiesData = jd_heplers.jsonParse(cookiesData);
+  cookiesData = jd_helpers.jsonParse(cookiesData);
   cookiesArr = cookiesData.map((item) => item.cookie);
   cookiesArr.reverse();
   cookiesArr.push(...[$.getdata("CookieJD2"), $.getdata("CookieJD")]);

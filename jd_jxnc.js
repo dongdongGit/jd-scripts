@@ -26,7 +26,7 @@ cron "0 9,12,18 * * *" script-path=https://gitee.com/lxk0301/jd_scripts/raw/mast
 =========================小火箭===========================
 京喜农场 = type=cron,script-path=https://gitee.com/lxk0301/jd_scripts/raw/master/jd_jxnc.js, cronexpr="0 9,12,18 * * *", timeout=3600, enable=true
 */
-const jd_heplers = require("./utils/JDHelpers.js");
+const jd_helpers = require("./utils/JDHelpers.js");
 const jd_env = require("./utils/JDEnv.js");
 const $ = jd_env.env("京喜农场");
 let notify = ""; // nodejs 发送通知脚本
@@ -146,7 +146,7 @@ function requireConfig() {
       });
       if (process.env.JD_DEBUG && process.env.JD_DEBUG === "false") console.log = () => {};
     } else {
-      cookieArr = [$.getdata("CookieJD"), $.getdata("CookieJD2"), ...jd_heplers.jsonParse($.getdata("CookiesJD") || "[]").map((item) => item.cookie)].filter((item) => !!item);
+      cookieArr = [$.getdata("CookieJD"), $.getdata("CookieJD2"), ...jd_helpers.jsonParse($.getdata("CookiesJD") || "[]").map((item) => item.cookie)].filter((item) => !!item);
     }
 
     $.log(`共${cookieArr.length}个京东账号\n`);

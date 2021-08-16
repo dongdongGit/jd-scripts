@@ -21,7 +21,7 @@ cron "15 0-23/2 * * *" script-path=jd_joy.js,tag=京东宠汪汪
 ===============小火箭==========
 京东宠汪汪 = type=cron,script-path=jd_joy.js, cronexpr="15 0-23/2 * * *", timeout=3600, enable=true
 */
-const jd_heplers = require("./utils/JDHelpers.js");
+const jd_helpers = require("./utils/JDHelpers.js");
 const jd_env = require("./utils/JDEnv.js");
 const $ = jd_env.env("宠汪汪二代目");
 const validator = require("./utils/JDJRValidator_Pure.js");
