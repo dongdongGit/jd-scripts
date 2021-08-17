@@ -10,11 +10,9 @@ npm i png-js 或者 npm i png-js -S
 */
 
 const jd_env = require("./utils/JDEnv.js");
+const $ = jd_env.env("京东签到图形验证");
 const validator = require("./utils/JDJRValidator_Pure.js");
 const Faker = require("./utils/sign_graphics_validate.js");
-
-const jd_env = require("./utils/JDEnv.js");
-const $ = jd_env.env("京东签到图形验证");
 const notify = $.isNode() ? require("./sendNotify") : "";
 //Node.js用户请在jdCookie.js处填写京东ck;
 const jdCookieNode = $.isNode() ? require("./jdCookie.js") : "";
@@ -38,6 +36,7 @@ let signFlag = false;
 let successNum = 0;
 let errorNum = 0;
 let JD_API_HOST = "https://jdjoy.jd.com";
+$.invokeKey = "ztmFUCxcPMNyUq0P"
 if (process.env.JOY_HOST) {
   JD_API_HOST = process.env.JOY_HOST;
 }
@@ -91,8 +90,8 @@ $.UA = $.isNode()
   : $.getdata("JDUA")
   ? $.getdata("JDUA")
   : "Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1";
-$.get = validator.injectToRequest($.get.bind($), "channelSign", $.UA);
-$.post = validator.injectToRequest($.post.bind($), "channelSign", $.UA);
+$.get = validator.injectToRequest2($.get.bind($), "channelSign", $.UA);
+$.post = validator.injectToRequest2($.post.bind($), "channelSign", $.UA);
 
 !(async () => {
   if (!cookiesArr[0]) {
@@ -276,7 +275,7 @@ function getEid(arr) {
 }
 
 function taskUrl(turnTableId) {
-  const url = `${JD_API_HOST}/api/turncard/channel/detail?turnTableId=${turnTableId}&invokeKey=qRKHmL4sna8ZOP9F`;
+  const url = `${JD_API_HOST}/api/turncard/channel/detail?turnTableId=${turnTableId}&invokeKey=${$.invokeKey}`;
   return {
     url,
     headers: {
@@ -294,7 +293,7 @@ function taskUrl(turnTableId) {
 }
 
 function tasPostkUrl(turnTableId) {
-  const url = `${JD_API_HOST}/api/turncard/channel/sign?turnTableId=${turnTableId}&fp=${fp}&eid=${eid}&invokeKey=qRKHmL4sna8ZOP9F`;
+  const url = `${JD_API_HOST}/api/turncard/channel/sign?turnTableId=${turnTableId}&fp=${fp}&eid=${eid}&invokeKey=${$.invokeKey}`;
   return {
     url,
     headers: {
