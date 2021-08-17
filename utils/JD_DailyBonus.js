@@ -13,7 +13,7 @@ var Key = ''; //该参数已废弃; 仅用于下游脚本的兼容, 请使用jso
 
 var DualKey = ''; //该参数已废弃; 仅用于下游脚本的兼容, 请使用json串数据  ↓
 
-var OtherKey = ``; //无限账号Cookie json串数据, 请严格按照json格式填写, 具体格式请看以下样例:
+var OtherKey = ``; //无限账号Cookie json串数据, 请严格按照json格式填写, 具体格式请看以下样例:[{"cookie":"pt_key=xxx;pt_pin=xxx;","jrBody":""}]
 
 var LogDetails = false; //是否开启响应日志, true则开启
 
@@ -1478,7 +1478,7 @@ function TotalBean() {
     if (disable('Qbear')) return resolve();
     $nobyda.get(
       {
-        url: 'https://me-api.jd.com/user_new/info/GetJDUserInfoUnion?sceneval=2',
+        url: 'https://me-api.jd.com/user_new/info/GetJDUserInfoUnion',
         headers: {
           Cookie: KEY,
         },
