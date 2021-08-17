@@ -1,8 +1,6 @@
 name: merge
 
 on:
-  schedule:
-    - cron: '3 0,15 * * *'
   workflow_dispatch:
   watch:
     types: started
