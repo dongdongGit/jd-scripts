@@ -25,7 +25,7 @@ const notify = $.isNode() ? require("./sendNotify") : "";
 const jdCookieNode = $.isNode() ? require("./jdCookie.js") : "";
 let jdNotify = true; //是否关闭通知，false打开通知推送，true关闭通知推送
 const helpAuthor = true; // 是否帮助作者助力，false打开通知推送，true关闭通知推送
-const qjd = true; // 抢京豆开关，默认开
+const qjd = false; // 抢京豆开关，默认开
 //IOS等用户直接用NobyDa的jd cookie
 let cookiesArr = [],
   cookie = "",
