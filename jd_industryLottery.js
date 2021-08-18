@@ -2,7 +2,6 @@
 京东工业品抽奖
 10 7 17,18 8 * https://raw.githubusercontent.com/LingFeng0918/jd_scripts/master/jd_industryLottery.js
  */
-const jd_shopping_cart = require('./utils/JDShoppingCart');
 const jd_helpers = require('./utils/JDHelpers.js');
 const jd_env = require('./utils/JDEnv.js');
 let $ = jd_env.env('京东工业品抽奖');
@@ -49,6 +48,7 @@ if ($.isNode()) {
         continue;
       }
       await jdmodule();
+      await $.clearShoppingCart();
     }
   }
 })()
@@ -73,11 +73,6 @@ async function jdmodule() {
     await join();
     await $.wait(2000);
   }
-
-  await jd_shopping_cart.getCarts($).then(function ($this) {
-    $ = $this;
-  });
-  await jd_shopping_cart.unsubscribeCartsFun($);
 }
 //运行
 async function run() {

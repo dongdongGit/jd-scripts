@@ -31,7 +31,6 @@ cron "30 9,21 18-25 8 *" script-path=https://raw.githubusercontent.com/smiek2221
 ============小火箭=========
 8.18-8.25 全民818 一“促”即发 = type=cron,script-path=https://raw.githubusercontent.com/smiek2221/scripts/master/gua_opencard12.js, cronexpr="30 9,21 18-25 8 *", timeout=3600, enable=true
 */
-const jd_shopping_cart = require('./utils/JDShoppingCart');
 const jd_helpers = require('./utils/JDHelpers.js');
 const jd_env = require('./utils/JDEnv.js');
 let $ = jd_env.env('8.18-8.25 全民818 一“促”即发');
@@ -78,6 +77,7 @@ message = '';
       getUA();
       console.log(`\n\n******开始【京东账号${$.index}】${$.UserName}*********\n`);
       await run();
+      await $.clearShoppingCart();
       if (i == 0 && !$.actorUuid) return;
     }
   }
@@ -166,10 +166,6 @@ async function run() {
         return;
       }
     }
-    await jd_shopping_cart.getCarts($).then(function ($this) {
-      $ = $this;
-    });
-    await jd_shopping_cart.unsubscribeCartsFun($);
   } catch (e) {
     console.log(e);
   }

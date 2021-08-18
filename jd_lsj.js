@@ -11,7 +11,6 @@ export lsjdh="jdAward4" ##兑换牛奶
 [task_local]
 0 11 * * *
 */
-const jd_shopping_cart = require("./utils/JDShoppingCart");
 const jd_helpers = require('./utils/JDHelpers.js');
 const jd_env = require('./utils/JDEnv.js');
 let $ = jd_env.env('柠檬京东零食街');
@@ -66,6 +65,7 @@ if ($.isNode()) {
         continue;
       }
       await star();
+      await $.clearShoppingCart();
     }
   }
   console.log(`\n开始账号内互助\n`);
@@ -149,11 +149,6 @@ async function star() {
   await duihuan();
   // 获得加购物品skuid
   await getHotGoodsList();
-  // 删除加购物品
-  await jd_shopping_cart.getCarts($).then(function ($this) {
-    $ = $this;
-  });
-  await jd_shopping_cart.unsubscribeCartsFun($);
 }
 
 function gettoken() {

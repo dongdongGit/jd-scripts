@@ -86,7 +86,7 @@ async function getCarts(jd_env) {
                   skuId = itemId;
                   index = sorted["polyType"] == "4" ? "13" : "11";
                 }
-                if ($.skuIds.includes(products["mainSku"]["id"]) || process.env.clear_shopping_cart) {
+                if ($.skuIds.includes(products["mainSku"]["id"]) || process.env.CLEAR_SHOPPING_CART) {
                   temp = [products["mainSku"]["id"], , "1", products["mainSku"]["id"], index, skuId, "0", "skuUuid:" + products["skuUuid"] + "@@useUuid:" + products["useUuid"]].join(",");
                   if ($.commlist.length > 0) {
                     $.commlist += "$";
