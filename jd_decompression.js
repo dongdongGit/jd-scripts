@@ -5,7 +5,7 @@
  */
 
 const jd_env = require("./utils/JDEnv.js");
-const $ = jd_env.env("热血心跳,狂解压");
+let $ = jd_env.env("热血心跳,狂解压");
 const jdCookieNode = $.isNode() ? require("./jdCookie.js") : "";
 const notify = $.isNode() ? require("./sendNotify") : "";
 let cookiesArr = [];
@@ -47,6 +47,7 @@ if ($.isNode()) {
       continue;
     }
     await main();
+    await $.clearShoppingCart();
   }
 })()
   .catch((e) => {
@@ -136,11 +137,6 @@ async function main() {
   if ($.shareUuid === "b6cca01f67b14fb7884798ac2a9a1d3f" || $.shareUuid === "d7a488eefb6a4541b85c40c6a083cae7") {
     $.shareUuid = $.activityData.actorUuid;
   }
-
-  await jd_shopping_cart.getCarts($).then(function ($this) {
-    $ = $this;
-  });
-  await jd_shopping_cart.unsubscribeCartsFun($);
 }
 function getRandomArrayElements(arr, count) {
   var shuffled = arr.slice(0),

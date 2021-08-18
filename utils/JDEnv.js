@@ -1,3 +1,5 @@
+const jd_shopping_cart = require('./JDShoppingCart');
+
 function env(t, e) {
   "undefined" != typeof process && JSON.stringify(process.env).indexOf("GITHUB") > -1 && process.exit(0);
   class s {
@@ -314,7 +316,14 @@ function env(t, e) {
     done(t = {}) {
       const e = new Date().getTime(),
         s = (e - this.startTime) / 1e3;
-      this.log("", `${this.name}, 结束! 耗时 ${s} 秒`), this.log(), (this.isSurge() || this.isQuanX() || this.isLoon()) && $done(t);
+      this.log("", `${this.name}, 结束! 耗时 ${s} 秒`), this.log(), (this.isSurge() || this.isQuanX() || this.isLoon()) && $done(t)
+    }
+    async clearShoppingCart() {
+      let $ = this;
+      await jd_shopping_cart.getCarts(this).then(function ($this) {
+        $ = $this;
+      });
+      await jd_shopping_cart.unsubscribeCartsFun($);
     }
   })(t, e);
 }

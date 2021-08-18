@@ -18,7 +18,6 @@ cron "1 8,12,18 * * *" script-path=https://gitee.com/lxk0301/jd_scripts/raw/mast
 ============小火箭=========
 口袋书店 = type=cron,script-path=https://gitee.com/lxk0301/jd_scripts/raw/master/jd_bookshop.js, cronexpr="1 8,12,18* * *", timeout=3600, enable=true
  */
-const jd_shopping_cart = require("./utils/JDShoppingCart");
 const jd_helpers = require("./utils/JDHelpers.js");
 const jd_env = require("./utils/JDEnv.js");
 let $ = jd_env.env("口袋书店");
@@ -77,6 +76,7 @@ if ($.isNode()) {
       }
       // await shareCodesFormat();
       await jdBookShop();
+      await $.clearShoppingCart();
     }
   }
 })()
@@ -114,11 +114,6 @@ async function jdBookShop() {
     }
   }
   if ($.userInfo.storeGold) await chargeGold();
-  // 删除加购物品
-  await jd_shopping_cart.getCarts($).then(function ($this) {
-    $ = $this;
-  });
-  await jd_shopping_cart.unsubscribeCartsFun($);
   await helpFriends();
   await showMsg();
 }

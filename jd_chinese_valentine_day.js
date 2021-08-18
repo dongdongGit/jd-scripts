@@ -19,7 +19,6 @@ cron "36 0,10,21 4-15 8 *" script-path=jd_qxqbj.js,tag=8.4-8.15 七夕情报局
 ============小火箭=========
 8.4-8.15 七夕情报局 = type=cron,script-path=jd_qxqbj.js, cronexpr="36 0,10,21 4-15 8 *", timeout=3600, enable=true
 */
-const jd_shopping_cart = require("./utils/JDShoppingCart");
 const jd_helpers = require("./utils/JDHelpers.js");
 const jd_env = require("./utils/JDEnv.js");
 let $ = jd_env.env("8.4-8.15 七夕情报局");
@@ -59,10 +58,7 @@ $.inviter = [];
       $.skuIds = [];
       console.log(`\n\n******开始【京东账号${$.index}】${$.UserName}*********\n`);
       await run();
-      await jd_shopping_cart.getCarts($).then(function ($this) {
-        $ = $this;
-      });
-      await jd_shopping_cart.unsubscribeCartsFun($);
+      await $.clearShoppingCart();
     }
   }
   console.log("\n\n==================================================\n助力");
