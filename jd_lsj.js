@@ -50,6 +50,7 @@ if ($.isNode()) {
       $.index = i + 1;
       $.isLogin = true;
       $.nickName = '';
+      $.cookie = cookie;
       $.skuIds = [];
       message = '';
       await TotalBean();
