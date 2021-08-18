@@ -17,51 +17,51 @@ cron "35 1,23 * * *" script-path=jd_nzmh.js,tag=女装盲盒
 ============小火箭=========
 女装盲盒 = type=cron,script-path=jd_nzmh.js, cronexpr="35 1,23 * * *", timeout=3600, enable=true
  */
-const jd_helpers = require("./utils/JDHelpers.js");
-const jd_env = require("./utils/JDEnv.js");
-const $ = jd_env.env("女装盲盒抽京豆");
-const notify = $.isNode() ? require("./sendNotify") : "";
-const jdCookieNode = $.isNode() ? require("./jdCookie.js") : "";
+const jd_helpers = require('./utils/JDHelpers.js');
+const jd_env = require('./utils/JDEnv.js');
+const $ = jd_env.env('女装盲盒抽京豆');
+const notify = $.isNode() ? require('./sendNotify') : '';
+const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
 //Node.js用户请在jdCookie.js处填写京东ck;
 //IOS等用户直接用NobyDa的jd cookie
 let cookiesArr = [],
-  cookie = "",
+  cookie = '',
   message;
 
 if ($.isNode()) {
   Object.keys(jdCookieNode).forEach((item) => {
     cookiesArr.push(jdCookieNode[item]);
   });
-  if (process.env.JD_DEBUG && process.env.JD_DEBUG === "false") console.log = () => {};
+  if (process.env.JD_DEBUG && process.env.JD_DEBUG === 'false') console.log = () => {};
 } else {
-  cookiesArr = [$.getdata("CookieJD"), $.getdata("CookieJD2"), ...jd_helpers.jsonParse($.getdata("CookiesJD") || "[]").map((item) => item.cookie)].filter((item) => !!item);
+  cookiesArr = [$.getdata('CookieJD'), $.getdata('CookieJD2'), ...jd_helpers.jsonParse($.getdata('CookiesJD') || '[]').map((item) => item.cookie)].filter((item) => !!item);
 }
 !(async () => {
   if (!cookiesArr[0]) {
-    $.msg($.name, "【提示】请先获取京东账号一cookie\n直接使用NobyDa的京东签到获取", "https://bean.m.jd.com/", { "open-url": "https://bean.m.jd.com/" });
+    $.msg($.name, '【提示】请先获取京东账号一cookie\n直接使用NobyDa的京东签到获取', 'https://bean.m.jd.com/', { 'open-url': 'https://bean.m.jd.com/' });
     return;
   }
-  console.log("女装盲盒\n" + "活动时间：2021-8-5至2021-8-31\n" + "活动地址：https://anmp.jd.com/babelDiy/Zeus/3bMo2AgbRYYfZt83qHLZ3ruVtrtG/index.html");
+  console.log('女装盲盒\n' + '活动时间：2021-8-5至2021-8-31\n' + '活动地址：https://anmp.jd.com/babelDiy/Zeus/3bMo2AgbRYYfZt83qHLZ3ruVtrtG/index.html');
   for (let i = 0; i < cookiesArr.length; i++) {
     if (cookiesArr[i]) {
       cookie = cookiesArr[i];
       $.UserName = decodeURIComponent(cookie.match(/pt_pin=([^; ]+)(?=;?)/) && cookie.match(/pt_pin=([^; ]+)(?=;?)/)[1]);
       $.index = i + 1;
       $.isLogin = true;
-      $.nickName = "";
+      $.nickName = '';
       $.beans = 0;
-      message = "";
+      message = '';
       await TotalBean();
       console.log(`\n******开始【京东账号${$.index}】${$.nickName || $.UserName}*********\n`);
       if (!$.isLogin) {
-        $.msg($.name, `【提示】cookie已失效`, `京东账号${$.index} ${$.nickName || $.UserName}\n请重新登录获取\nhttps://bean.m.jd.com/`, { "open-url": "https://bean.m.jd.com/" });
+        $.msg($.name, `【提示】cookie已失效`, `京东账号${$.index} ${$.nickName || $.UserName}\n请重新登录获取\nhttps://bean.m.jd.com/`, { 'open-url': 'https://bean.m.jd.com/' });
         if ($.isNode()) {
           await notify.sendNotify(`${$.name}cookie已失效 - ${$.UserName}`, `京东账号${$.index} ${$.UserName}\n请重新登录获取cookie`);
         }
         continue;
       }
       try {
-        await jdMh("https://anmp.jd.com/babelDiy/Zeus/3bMo2AgbRYYfZt83qHLZ3ruVtrtG/index.html");
+        await jdMh('https://anmp.jd.com/babelDiy/Zeus/3c3Bt7WEWr28mWZKXbTR7f881WHM/index.html');
       } catch (e) {
         $.logErr(e);
       }
@@ -69,7 +69,7 @@ if ($.isNode()) {
   }
 })()
   .catch((e) => {
-    $.log("", `❌ ${$.name}, 失败! 原因: ${e}!`, "");
+    $.log('', `❌ ${$.name}, 失败! 原因: ${e}!`, '');
   })
   .finally(() => {
     $.done();
@@ -95,7 +95,7 @@ function showMsg() {
   return new Promise((resolve) => {
     if ($.beans) {
       message += `本次运行获得${$.beans}京豆`;
-      $.msg($.name, "", `京东账号${$.index}${$.nickName}\n${message}`);
+      $.msg($.name, '', `京东账号${$.index}${$.nickName}\n${message}`);
     }
     resolve();
   });
@@ -126,19 +126,19 @@ function getInfo(url) {
 
 function getUserInfo() {
   return new Promise((resolve) => {
-    $.get(taskUrl("query"), async (err, resp, data) => {
+    $.get(taskUrl('query'), async (err, resp, data) => {
       try {
         if (err) {
-          console.log(`${err},${jd_helpers.jsonParse(resp.body)["message"]}`);
+          console.log(`${err},${jd_helpers.jsonParse(resp.body)['message']}`);
           console.log(`${$.name} API请求失败，请检查网路重试`);
         } else {
           $.userInfo = JSON.parse(data.match(/query\((.*)\n/)[1]).data;
           // console.log(`您的好友助力码为${$.userInfo.shareid}`)
           console.log(`当前幸运值：${$.userInfo.bless}`);
           for (let task of $.info.config.tasks) {
-            if (!$.userInfo.complete_task_list.includes(task["_id"])) {
-              console.log(`去做任务${task["_id"]}`);
-              await doTask(task["_id"]);
+            if (!$.userInfo.complete_task_list.includes(task['_id'])) {
+              console.log(`去做任务${task['_id']}`);
+              await doTask(task['_id']);
               await $.wait(500);
             }
           }
@@ -155,10 +155,10 @@ function getUserInfo() {
 function doTask(taskId) {
   let body = `task_bless=10&taskid=${taskId}`;
   return new Promise((resolve) => {
-    $.get(taskUrl("completeTask", body), async (err, resp, data) => {
+    $.get(taskUrl('completeTask', body), async (err, resp, data) => {
       try {
         if (err) {
-          console.log(`${err},${jd_helpers.jsonParse(resp.body)["message"]}`);
+          console.log(`${err},${jd_helpers.jsonParse(resp.body)['message']}`);
           console.log(`${$.name} API请求失败，请检查网路重试`);
         } else {
           data = JSON.parse(data.match(/query\((.*)\n/)[1]);
@@ -178,10 +178,10 @@ function doTask(taskId) {
 
 function draw() {
   return new Promise((resolve) => {
-    $.get(taskUrl("draw"), async (err, resp, data) => {
+    $.get(taskUrl('draw'), async (err, resp, data) => {
       try {
         if (err) {
-          console.log(`${err},${jd_helpers.jsonParse(resp.body)["message"]}`);
+          console.log(`${err},${jd_helpers.jsonParse(resp.body)['message']}`);
           console.log(`${$.name} API请求失败，请检查网路重试`);
         } else {
           data = JSON.parse(data.match(/query\((.*)\n/)[1]);
@@ -203,17 +203,17 @@ function draw() {
   });
 }
 
-function taskUrl(function_id, body = "") {
-  body = `activeid=${$.info.activeId}&token=${$.info.actToken}&sceneval=2&shareid=&_=${new Date().getTime()}&callback=query&${body}`;
+function taskUrl(function_id, body = '') {
+  body = `activeid=${$.info.activeId}&token=${$.info.actToken}&sceneval=2&_=${new Date().getTime()}&callback=query&${body}`;
   return {
     url: `https://wq.jd.com/activet2/piggybank/${function_id}?${body}`,
     headers: {
-      Host: "wq.jd.com",
-      Accept: "application/json",
-      "Accept-Language": "zh-cn",
-      "Content-Type": "application/json;charset=utf-8",
-      Origin: "wq.jd.com",
-      "User-Agent": "JD4iPhone/167490 (iPhone; iOS 14.2; Scale/3.00)",
+      Host: 'wq.jd.com',
+      Accept: 'application/json',
+      'Accept-Language': 'zh-cn',
+      'Content-Type': 'application/json;charset=utf-8',
+      Origin: 'wq.jd.com',
+      'User-Agent': 'JD4iPhone/167490 (iPhone; iOS 14.2; Scale/3.00)',
       Referer: `https://anmp.jd.com/babelDiy/Zeus/xKACpgVjVJM7zPKbd5AGCij5yV9/index.html?wxAppName=jd`,
       Cookie: cookie,
     },
@@ -225,20 +225,20 @@ function TotalBean() {
     const options = {
       url: `https://wq.jd.com/user/info/QueryJDUserInfo?sceneval=2`,
       headers: {
-        Accept: "application/json,text/plain, */*",
-        "Content-Type": "application/x-www-form-urlencoded",
-        "Accept-Encoding": "gzip, deflate, br",
-        "Accept-Language": "zh-cn",
-        Connection: "keep-alive",
+        Accept: 'application/json,text/plain, */*',
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'Accept-Encoding': 'gzip, deflate, br',
+        'Accept-Language': 'zh-cn',
+        Connection: 'keep-alive',
         Cookie: cookie,
-        Referer: "https://wqs.jd.com/my/jingdou/my.shtml?sceneval=2",
-        "User-Agent": $.isNode()
+        Referer: 'https://wqs.jd.com/my/jingdou/my.shtml?sceneval=2',
+        'User-Agent': $.isNode()
           ? process.env.JD_USER_AGENT
             ? process.env.JD_USER_AGENT
-            : require("./USER_AGENTS").USER_AGENT
-          : $.getdata("JDUA")
-          ? $.getdata("JDUA")
-          : "jdapp;iPhone;9.4.4;14.3;network/4g;Mozilla/5.0 (iPhone; CPU iPhone OS 14_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148;supportJDSHWK/1",
+            : require('./USER_AGENTS').USER_AGENT
+          : $.getdata('JDUA')
+          ? $.getdata('JDUA')
+          : 'jdapp;iPhone;9.4.4;14.3;network/4g;Mozilla/5.0 (iPhone; CPU iPhone OS 14_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148;supportJDSHWK/1',
       },
     };
     $.post(options, (err, resp, data) => {
@@ -249,12 +249,12 @@ function TotalBean() {
         } else {
           if (data) {
             data = JSON.parse(data);
-            if (data["retcode"] === 13) {
+            if (data['retcode'] === 13) {
               $.isLogin = false; //cookie过期
               return;
             }
-            if (data["retcode"] === 0) {
-              $.nickName = (data["base"] && data["base"].nickname) || $.UserName;
+            if (data['retcode'] === 0) {
+              $.nickName = (data['base'] && data['base'].nickname) || $.UserName;
             } else {
               $.nickName = $.UserName;
             }
