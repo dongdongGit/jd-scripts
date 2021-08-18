@@ -48,6 +48,7 @@ const JD_API_HOST = "https://lkyl.dianpusoft.cn/api";
       $.index = i + 1;
       $.isLogin = true;
       $.nickName = "";
+      $.cookie = cookie;
       $.skuIds = [];
       message = "";
       await TotalBean();

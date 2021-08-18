@@ -53,6 +53,7 @@ $.inviter = [];
     if (cookie) {
       $.UserName = decodeURIComponent(cookie.match(/pt_pin=([^; ]+)(?=;?)/) && cookie.match(/pt_pin=([^; ]+)(?=;?)/)[1]);
       $.index = i + 1;
+      $.cookie = cookie;
       await getUA();
       $.nickName = "";
       $.skuIds = [];

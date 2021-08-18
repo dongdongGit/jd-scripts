@@ -29,8 +29,10 @@
 5 6,8 12-24 8 *  node /scripts/jd_decompression.js >> /scripts/logs/jd_decompression.log 2>&1
 # 骁龙品牌日
 18 9,19 13-25 8 * node /scripts/jd_snapdragon.js >> /scripts/logs/jd_snapdragon.log 2>&1
-# 骁龙品牌日
+# 小米-星空大冒险
 31 8,22 13-31 8 * node /scripts/jd_xiaomi_game.js >> /scripts/logs/jd_xiaomi_game.log 2>&1
+# 京东工业品抽奖
+10 7 17,18 8 * node /scripts/jd_industryLottery.js >> /scripts/logs/jd_industryLottery.log 2>&1
 ##############长期活动##############
 # 签到
 0 0,17 * * * cd /scripts && node jd_bean_sign.js >> /scripts/logs/jd_bean_sign.log 2>&1
