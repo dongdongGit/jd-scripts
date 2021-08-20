@@ -169,7 +169,7 @@
 # 全民摸冰
 6 9,12 * * * node /scripts/jd_feel_ice.js >> /scripts/logs/jd_feel_ice.log 2>&1
 # 京东众筹许愿
-0 8,12 * * * node /scripts/jd_crowdfunding_wish.js >> /scripts/logs/jd_crowdfunding_wish.log 2>&1
+8 0,8 * * * node /scripts/jd_crowdfunding_wish.js >> /scripts/logs/jd_crowdfunding_wish.log 2>&1
 # 来电好物季
 35 8 * * * node /scripts/jd_good_stuff_season.js >> /scripts/logs/jd_good_stuff_season.log 2>&1
 # 京东手机狂欢城
