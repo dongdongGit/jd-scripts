@@ -33,6 +33,8 @@
 31 8,22 13-31 8 * node /scripts/jd_xiaomi_game.js >> /scripts/logs/jd_xiaomi_game.log 2>&1
 # 京东工业品抽奖
 10 7 17,18 8 * node /scripts/jd_industryLottery.js >> /scripts/logs/jd_industryLottery.log 2>&1
+# 开学焕新加油站
+5 0,8 20-31, 8 * node /scripts/jd_start_school.js >> /scripts/logs/jd_start_school.log 2>&1
 ##############长期活动##############
 # 签到
 0 0,17 * * * cd /scripts && node jd_bean_sign.js >> /scripts/logs/jd_bean_sign.log 2>&1
@@ -137,7 +139,7 @@
 # 京东直播（又回来了）
 30-50/5 12,23 * * * node /scripts/jd_live.js >> /scripts/logs/jd_live.log 2>&1
 # 京东健康社区
-13 1,6,22 * * * node /scripts/jd_health.js >> /scripts/logs/jd_health.log 2>&1
+20 0,6,22 * * * node /scripts/jd_health.js >> /scripts/logs/jd_health.log 2>&1
 # 京东健康社区收集健康能量
 5-45/20 * * * * node /scripts/jd_health_collect.js >> /scripts/logs/jd_health_collect.log 2>&1
 # 幸运大转盘
