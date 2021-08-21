@@ -418,6 +418,7 @@ async function takeGetRequest(type) {
         Math.floor(Math.random() * 26) + 'A'.charCodeAt(0)
       )}&g_ty=ls`;
       myRequest = getGetRequest(`help`, url);
+      break;
     case 'GetVisitBackInfo':
       url = `https://m.jingxi.com/jxmc/queryservice/GetVisitBackInfo?channel=7&sceneid=1001&activeid=${$.activeid}&activekey=${$.activekey}&_stk=channel%2Csceneid&_ste=1`;
       url += `&h5st=${decrypt(Date.now(), '', '', url)}&_=${Date.now() + 2}&sceneval=2&g_login_type=1&callback=jsonpCBK${String.fromCharCode(
