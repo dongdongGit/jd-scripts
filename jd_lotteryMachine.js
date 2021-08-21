@@ -10,6 +10,7 @@ cron "11 1 * * *" script-path=jd_lotteryMachine.js,tag=京东抽奖机
 // Surge
 京东抽奖机 = type=cron,cronexp=11 1 * * *,wake-system=1,timeout=20,script-path=jd_lotteryMachine.js
  */
+const jd_helpers = require("./utils/JDHelpers.js");
 const jd_env = require("./utils/JDEnv.js");
 const $ = jd_env.env("京东抽奖机&内部互助");
 const notify = $.isNode() ? require("./sendNotify") : "";
@@ -18,7 +19,7 @@ const jdCookieNode = $.isNode() ? require("./jdCookie.js") : "";
 const STRSPLIT = "|";
 const needSum = false; //是否需要显示汇总
 const printDetail = false; //是否显示出参详情
-const appIdArr = ["1EFRRxA", "1EFRQwA", "1E1NYwqc", "1EFRXxg", "1EFVRxg", "1E1NYw6w", "1E1xRy6c"];
+const appIdArr = ["1EFRRxA", "1EFRQwA", "1E1NYwqc", "1EFRXxg", "1EFVRxg", "1E1NYw6w", "1E1xRy6c", "1E1xVyqw"];
 const shareCodeArr = [
   "T018v_VxQxkZ_FXVJBqb1ACjVWmIaW5kRrbA",
   "T018v_VxQxkZ_FXVJBqb1ACjVXnIaW5kRrbA",
@@ -353,7 +354,7 @@ function requireConfig() {
       });
     } else {
       let cookiesData = $.getdata("CookiesJD") || "[]";
-      cookiesData = jsonParse(cookiesData);
+      cookiesData = jd_helpers.jsonParse(cookiesData);
       cookiesArr = cookiesData.map((item) => item.cookie);
       cookiesArr.reverse();
       cookiesArr.push(...[$.getdata("CookieJD2"), $.getdata("CookieJD")]);
@@ -363,18 +364,6 @@ function requireConfig() {
     console.log(`共${cookiesArr.length}个京东账号\n`);
     resolve();
   });
-}
-
-function jsonParse(str) {
-  if (typeof str == "string") {
-    try {
-      return JSON.parse(str);
-    } catch (e) {
-      console.log(e);
-      $.msg($.name, "", "请勿随意在BoxJs输入框修改内容\n建议通过脚本去获取cookie");
-      return [];
-    }
-  }
 }
 
 //初始化
