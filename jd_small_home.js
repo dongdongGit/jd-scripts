@@ -489,7 +489,7 @@ function queryCommoditiesListByTaskId(taskId) {
             data = JSON.parse(data);
             if (data.head.code === 200) {
               $.skuIds = data.body.map((item) => {
-                return item['commodityId'];
+                return item["commodityId"];
               });
             }
           }
