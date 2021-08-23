@@ -504,7 +504,7 @@ async function mr() {
                 for (let i = benefit.day_exchange_count; i < 10; i++) {
                   // console.log(`开始兑换`)
                   client.send(`{"msg":{"type":"action","args":{"benefit_id":${benefit.id}},"action":"to_exchange"}}`);
-                  await $.wait(3000);
+                  await $.wait(3500);
                 }
               }
               // console.log(`物品【${benefit.description}】需要${benefit.coins}美妆币，库存${benefit.stock}份`)

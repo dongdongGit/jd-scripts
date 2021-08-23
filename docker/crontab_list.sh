@@ -35,6 +35,8 @@
 10 7 17,18 8 * node /scripts/jd_industryLottery.js >> /scripts/logs/jd_industryLottery.log 2>&1
 # 开学焕新加油站
 5 0,8 20-31, 8 * node /scripts/jd_start_school.js >> /scripts/logs/jd_start_school.log 2>&1
+# 王者荣耀投票
+23 8,9 22-31,1-5 8,9 * node /scripts/jd_honor_of_kings.js >> /scripts/logs/jd_honor_of_kings.log 2>&1
 ##############长期活动##############
 # 签到
 0 0,17 * * * cd /scripts && node jd_bean_sign.js >> /scripts/logs/jd_bean_sign.log 2>&1
