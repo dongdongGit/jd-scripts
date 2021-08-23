@@ -37,6 +37,8 @@ var jrBody = "";
 
 const Faker = require('./JDSignValidator');
 const zooFaker = require('./JDJRValidator_Pure');
+const { MD5 } = require('crypto-js');
+
 let fp = '',
   eid = '';
 
@@ -70,7 +72,7 @@ async function all(cookie, jrBody) {
       await Promise.all([
         JDUserSignPre(stop, 'JDUndies', '京东商城-内衣', '4PgpL1xqPSW1sVXCJ3xopDbB1f69'), //京东内衣馆
         JDUserSignPre(stop, 'JDCard', '京东商城-卡包', '7e5fRnma6RBATV9wNrGXJwihzcD'), //京东卡包
-        JDUserSignPre(stop, 'JDCustomized', '京东商城-定制', '3bhgbFe5HZcFCjEZf2jzp3umx4ZR'), //京东定制
+        // JDUserSignPre(stop, 'JDCustomized', '京东商城-定制', '3bhgbFe5HZcFCjEZf2jzp3umx4ZR'), //京东定制
         JDUserSignPre(stop, 'JDaccompany', '京东商城-陪伴', 'kPM3Xedz1PBiGQjY4ZYGmeVvrts'), //京东陪伴
         JDUserSignPre(stop, 'JDShoes', '京东商城-鞋靴', '4RXyb1W4Y986LJW8ToqMK14BdTD'), //京东鞋靴
         JDUserSignPre(stop, 'JDChild', '京东商城-童装', '3Af6mZNcf5m795T8dtDVfDwWVNhJ'), //京东童装馆
@@ -78,6 +80,7 @@ async function all(cookie, jrBody) {
         JDUserSignPre(stop, 'JD3C', '京东商城-数码', '4SWjnZSCTHPYjE5T7j35rxxuMTb6'), //京东数码电器馆
         JDUserSignPre(stop, 'JDWomen', '京东商城-女装', 'DpSh7ma8JV7QAxSE2gJNro8Q2h9'), //京东女装馆
         JDUserSignPre(stop, 'JDBook', '京东商城-图书', '3SC6rw5iBg66qrXPGmZMqFDwcyXi'), //京东图书
+        JDUserSignPre(stop, 'JDPlus', '京东商城-PLUS', '3bhgbFe5HZcFCjEZf2jzp3umx4ZR'), //京东PLUS
         // JDUserSignPre(stop, 'ReceiveJD', '京东商城-领豆', 'Ni5PUSK7fzZc4EKangHhqPuprn2'), //京东-领京豆
         JingRongDoll(stop, 'JTDouble', '京东金贴-双签', '1DF13833F7'), //京东金融 金贴双签
         // JingRongDoll(stop, 'XJDouble', '金融现金-双签', 'F68B2C3E71', '', '', '', 'xianjin') //京东金融 现金双签
@@ -135,6 +138,7 @@ async function all(cookie, jrBody) {
       await JDUserSignPre(Wait(stop), 'JDShand', '京东拍拍-二手', '3S28janPLYmtFxypu37AYAGgivfp'); //京东拍拍二手
       // await JDUserSignPre(Wait(stop), 'JDMakeup', '京东商城-美妆', '2smCxzLNuam5L14zNJHYu43ovbAP'); //京东美妆馆
       await JDUserSignPre(Wait(stop), 'JDVege', '京东商城-菜场', 'Wcu2LVCFMkBP3HraRvb7pgSpt64'); //京东菜场
+      await JDUserSignPre(Wait(stop), 'JDPlus', '京东商城-PLUS', '3bhgbFe5HZcFCjEZf2jzp3umx4ZR'); //京东PLUS
       await JDUserSignPre(Wait(stop), 'JDStore', '京东超市', 'QPwDgLSops2bcsYqQ57hENGrjgj'); //京东超市
       await JDUserSignPre(Wait(stop), 'JDaccompany', '京东商城-陪伴', 'kPM3Xedz1PBiGQjY4ZYGmeVvrts'); //京东陪伴
       // await JDUserSignPre(Wait(stop), 'JDLive', '京东智能-生活', 'KcfFqWvhb5hHtaQkS4SD1UU6RcQ'); //京东智能生活
@@ -778,11 +782,15 @@ function JDUserSign1(s, key, title, body) {
 
 async function JDUserSign2(s, key, title, tid) {
   await new Promise((resolve) => {
+    let lkt = new Date().getTime()
+    let lks = MD5('' + 'ztmFUCxcPMNyUq0P' + lkt).toString()
     $nobyda.get(
       {
         url: `https://jdjoy.jd.com/api/turncard/channel/detail?turnTableId=${tid}&invokeKey=ztmFUCxcPMNyUq0P`,
         headers: {
           Cookie: KEY,
+          'lkt': lkt,
+          'lks': lks
         },
       },
       async function (error, response, data) {
@@ -809,10 +817,14 @@ async function JDUserSign2(s, key, title, tid) {
   });
   return new Promise((resolve) => {
     setTimeout(() => {
+      let lkt = new Date().getTime()
+      let lks = MD5('' + 'ztmFUCxcPMNyUq0P' + lkt).toString()
       const JDUrl = {
         url: 'https://jdjoy.jd.com/api/turncard/channel/sign?invokeKey=ztmFUCxcPMNyUq0P',
         headers: {
           Cookie: KEY,
+          'lkt': lkt,
+          'lks': lks
         },
         body: `turnTableId=${tid}&fp=${fp}&eid=${eid}`,
       };
