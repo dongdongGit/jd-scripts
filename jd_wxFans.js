@@ -13,6 +13,9 @@ const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
 const notify = $.isNode() ? require('./sendNotify') : '';
 let cookiesArr = [];
 const activityList = [
+  { actid: '59564c90a57443deb40371c83332df27', endTime: 1629907199000 },
+  { actid: '61146464456f4e42927d067cfccdf579', endTime: 1629907200000 },
+  { actid: '4a2eb0132725416fa2a3086018437594', endTime: 1630339200000 },
   { actid: '25d0cb359ef347c69ee1c044a4168efc', endTime: 1629820799000 },
   { actid: '0cdf614f95214c59b94697e3ed5ba37a', endTime: 1629799864000 },
   { actid: 'aac7c63287b54081847a327ed4c73745', endTime: 1629475199000 },
@@ -32,6 +35,9 @@ const activityList = [
   { actid: 'd6fe4bd6a34e4eb9b498932122453890', endTime: 1630548000000 },
   { actid: 'e4c6bdba323948ceb05e4122acd97fba', endTime: 1629648000000 },
   { actid: '5622386323bb4a82a2ed4e0158f7c6a7', endTime: 1631289599000 },
+  { actid: '4ee56f673e164305a527545efe566b20', endTime: 1630425599000 }, //需要入会
+  { actid: '9bb5cb2801114f2981c183abbc2aa522', endTime: 1630425596000 }, //需要入会
+  { actid: '72e2c4f63db0481cbe5acc2d962aa3b1', endTime: 1630252799000 }, //要入会
 ];
 if ($.isNode()) {
   Object.keys(jdCookieNode).forEach((item) => {
