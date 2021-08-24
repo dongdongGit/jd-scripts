@@ -5,7 +5,6 @@
  * 若发现脚本里没有的粉丝互动活动。欢迎反馈给我
  * cron  34 6,18 * * *
  * */
-const jd_shopping_cart = require('./utils/JDShoppingCart');
 const jd_helpers = require('./utils/JDHelpers.js');
 const jd_env = require('./utils/JDEnv.js');
 let $ = jd_env.env('粉丝互动');
@@ -83,6 +82,7 @@ if ($.isNode()) {
       }
       await main();
       await $.wait(1000);
+      await $.clearShoppingCart();
       console.log('\n');
     }
   }
@@ -150,11 +150,6 @@ async function main() {
   await $.wait(1000);
   $.upFlag = false;
   await doTask();
-  // 清除加购物品
-  await jd_shopping_cart.getCarts($).then(function ($this) {
-    $ = $this;
-  });
-  await jd_shopping_cart.unsubscribeCartsFun($);
   await luckDraw(); //抽奖
 }
 
