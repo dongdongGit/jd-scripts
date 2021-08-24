@@ -174,8 +174,8 @@ async function doTask() {
   if (!$.activityData.addCartStatus) {
     console.log(`去执行加购`);
     $.taskType = 21;
-    for (item in $.activityData.addCartData) {
-        $.skuIds.push(item['value']);
+    for (item of $.activityData.addCartData) {
+        $.skuIds.push(item.value);
     }
     await takePostRequest("saveTask");
     await $.wait(1000);
