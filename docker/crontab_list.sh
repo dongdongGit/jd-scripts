@@ -23,20 +23,14 @@
 4 2,10 * * * node /scripts/jd_jxlhb.js >> /scripts/logs/jd_jxlhb.log 2>&1
 # 省钱大赢家之翻翻乐
 10,40 * * * * node /scripts/jd_big_winner.js >> /scripts/logs/jd_big_winner.log 2>&1
-# 家电815周年庆礼包
-54 5 9-15 8 * node /scripts/jd_appliances.js >> /scripts/logs/jd_appliances.log 2>&1
-# 热血心跳,狂解压
-5 6,8 12-24 8 *  node /scripts/jd_decompression.js >> /scripts/logs/jd_decompression.log 2>&1
 # 骁龙品牌日
 18 9,19 13-25 8 * node /scripts/jd_snapdragon.js >> /scripts/logs/jd_snapdragon.log 2>&1
-# 小米-星空大冒险
-31 8,22 13-31 8 * node /scripts/jd_xiaomi_game.js >> /scripts/logs/jd_xiaomi_game.log 2>&1
-# 京东工业品抽奖
-10 7 17,18 8 * node /scripts/jd_industryLottery.js >> /scripts/logs/jd_industryLottery.log 2>&1
 # 开学焕新加油站
 5 0,8 20-31, 8 * node /scripts/jd_start_school.js >> /scripts/logs/jd_start_school.log 2>&1
 # 王者荣耀投票
 23 8,9 22-31,1-5 8,9 * node /scripts/jd_honor_of_kings.js >> /scripts/logs/jd_honor_of_kings.log 2>&1
+# 京东手机狂欢城
+0 0-18/6 * * * node /scripts/jd_carnivalcity.js >> /scripts/logs/jd_carnivalcity.log 2>&1
 ##############长期活动##############
 # 签到
 0 0,17 * * * cd /scripts && node jd_bean_sign.js >> /scripts/logs/jd_bean_sign.log 2>&1
@@ -178,12 +172,8 @@
 8 0,8 * * * node /scripts/jd_crowdfunding_wish.js >> /scripts/logs/jd_crowdfunding_wish.log 2>&1
 # 来电好物季
 35 8 * * * node /scripts/jd_good_stuff_season.js >> /scripts/logs/jd_good_stuff_season.log 2>&1
-# 京东手机狂欢城
-0 0-18/6 * * * node /scripts/jd_carnivalcity.js >> /scripts/logs/jd_carnivalcity.log 2>&1
 # 金机奖投票
 33 4,7 8-20 8 * node /scripts/jd_golden_machine.js >> /scripts/logs/jd_golden_machine.log 2>&1
-# 七夕情报局
-36 0,10,21 4-15 8 * node /scripts/jd_chinese_valentine_day.js >> /scripts/logs/jd_chinese_valentine_day.log 2>&1
 # 荣耀换新
 20 8 * * * node /scripts/jd_honor_renew.js >> /scripts/logs/jd_honor_renew.log 2>&1
 # 京享值PK
