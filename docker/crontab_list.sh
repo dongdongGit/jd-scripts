@@ -31,6 +31,8 @@
 23 8,9 22-31,1-5 8,9 * node /scripts/jd_honor_of_kings.js >> /scripts/logs/jd_honor_of_kings.log 2>&1
 # 京东手机狂欢城
 0 0-18/6 * * * node /scripts/jd_carnivalcity.js >> /scripts/logs/jd_carnivalcity.log 2>&1
+# 京东手机狂欢城助力
+10 0,8 * * * node /scripts/jd_carnivalcity_help.js >> /scripts/logs/jd_carnivalcity_help.log 2>&1
 ##############长期活动##############
 # 签到
 0 0,17 * * * cd /scripts && node jd_bean_sign.js >> /scripts/logs/jd_bean_sign.log 2>&1

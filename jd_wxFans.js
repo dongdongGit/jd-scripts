@@ -1,11 +1,10 @@
-/*
- * 粉丝互动，没啥水
- * 修改温某的脚本，由于温某不干活，只能自己动手修改了
- * 注意：脚本会加购，脚本会加购，脚本会加购
- * 若发现脚本里没有的粉丝互动活动。欢迎反馈给我
- * cron  34 6,18 * * *
+/**
+ 粉丝互动，没啥水
+ 修改温某的脚本，由于温某不干活，只能自己动手修改了
+ 注意：脚本会加购，脚本会加购，脚本会加购
+ 若发现脚本里没有的粉丝互动活动。欢迎反馈给我
+ cron 34 6,18 * * * jd_fan.js
  * */
-const jd_helpers = require('./utils/JDHelpers.js');
 const jd_env = require('./utils/JDEnv.js');
 let $ = jd_env.env('粉丝互动');
 const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
@@ -17,7 +16,6 @@ const activityList = [
   { actid: '4a2eb0132725416fa2a3086018437594', endTime: 1630339200000 },
   { actid: '25d0cb359ef347c69ee1c044a4168efc', endTime: 1629820799000 },
   { actid: '0cdf614f95214c59b94697e3ed5ba37a', endTime: 1629799864000 },
-  { actid: 'aac7c63287b54081847a327ed4c73745', endTime: 1629475199000 },
   { actid: '4baf19fa3f454e6abf82be7d66605ab4', endTime: 1630425599000 },
   { actid: 'c75ae2afd7ff4aec9ed47008b08400f7', endTime: 1630288800000 },
   { actid: '3da50af9e8664746844c5456b8920b7d', endTime: 1630425599000 },
@@ -25,11 +23,9 @@ const activityList = [
   { actid: '58121dee0d84428bbdeb83934ffa1b80', endTime: 1630425599000 },
   { actid: '8afc9104d6444696b3f16ceb23a24536', endTime: 1630425599000 },
   { actid: 'f006443799d34b55b9061be7b765c3fa', endTime: 1630339200000 },
-  { actid: '4ee56f673e164305a527545efe566b20', endTime: 1630425599000 }, //需要入会
   { actid: 'c77e8342bca24d5f86d2a076b8f00860', endTime: 1629907199000 },
   { actid: '49d8035a8f294ac7893e814d2b8e79ed', endTime: 1629907199000 },
   { actid: 'f22809ea36b14411a625641ef9685e53', endTime: 1630339200000 },
-  { actid: '9bb5cb2801114f2981c183abbc2aa522', endTime: 1630425596000 }, //需要入会
   { actid: 'eff9c47393be446f9dd576e26d13dd9d', endTime: 1631635200000 },
   { actid: 'd6fe4bd6a34e4eb9b498932122453890', endTime: 1630548000000 },
   { actid: 'e4c6bdba323948ceb05e4122acd97fba', endTime: 1629648000000 },
@@ -44,7 +40,7 @@ if ($.isNode()) {
   });
   if (process.env.JD_DEBUG && process.env.JD_DEBUG === 'false') console.log = () => {};
 } else {
-  cookiesArr = [$.getdata('CookieJD'), $.getdata('CookieJD2'), ...jd_helpers.jsonParse($.getdata('CookiesJD') || '[]').map((item) => item.cookie)].filter((item) => !!item);
+  cookiesArr = [$.getdata('CookieJD'), $.getdata('CookieJD2'), ...$.toObj($.getdata('CookiesJD') || '[]').map((item) => item.cookie)].filter((item) => !!item);
 }
 !(async () => {
   if (!cookiesArr[0]) {
@@ -76,8 +72,9 @@ if ($.isNode()) {
       $.activityID = $.activityInfo.actid;
       $.skuIds = [];
       console.log(`互动ID：${JSON.stringify($.activityInfo)}`);
+      console.log(`活动地址：https://lzkjdz-isv.isvjcloud.com/wxFansInterActionActivity/activity/${$.activityID}?activityId=${$.activityID}`);
       if ($.activityInfo.endTime && Date.now() > $.activityInfo.endTime) {
-        console.log(`活动已结束`);
+        console.log(`活动已结束\n`);
         continue;
       }
       await main();
@@ -137,7 +134,7 @@ async function main() {
   let endtime = date.getFullYear() + '-' + (date.getMonth() < 10 ? '0' + (date.getMonth() + 1) : date.getMonth() + 1) + '-' + (date.getDate() < 10 ? '0' + date.getDate() : date.getDate());
   console.log(`${$.actinfo.actName},${$.actinfo.shopName},当前积分：${$.nowUseValue},结束时间：${endtime}，${$.activityData.actInfo.endTime}`);
   if ($.actorInfo.prizeOneStatus && $.actorInfo.prizeTwoStatus && $.actorInfo.prizeThreeStatus) {
-    console.log(`已完成抽奖`);
+    console.log(`已抽过所有奖品`);
     return;
   }
   await $.wait(1000);
@@ -180,7 +177,15 @@ async function luckDraw() {
 }
 async function doTask() {
   $.runFalag = true;
-  if ($.activityData.task1Sign && $.activityData.task1Sign.finishedCount === 0) {
+  if ($.activityData.actorInfo && !$.activityData.actorInfo.follow) {
+    console.log(`关注店铺`);
+    await takePostRequest('followShop');
+    await $.wait(2000);
+    $.upFlag = true;
+  } else {
+    console.log('已关注');
+  }
+  if ($.activityData.task1Sign && $.activityData.task1Sign.finishedCount === 0 && $.runFalag) {
     console.log(`执行每日签到`);
     await takePostRequest('doSign');
     await $.wait(2000);
@@ -305,15 +310,13 @@ async function takePostRequest(type) {
       url = 'https://lzkjdz-isv.isvjcloud.com/wxCommonInfo/getActMemberInfo';
       body = `venderId=${$.shopid}&activityId=${$.activityID}&pin=${encodeURIComponent($.pin)}`;
       break;
-    case 'doSign':
-      url = 'https://lzkjdz-isv.isvjcloud.com/wxFansInterActionActivity/doSign';
-      body = `activityId=${$.activityID}&uuid=${$.activityData.actorInfo.uuid}`;
-      break;
     case 'doBrowGoodsTask':
     case 'doAddGoodsTask':
       url = `https://lzkjdz-isv.isvjcloud.com/wxFansInterActionActivity/${type}`;
       body = `activityId=${$.activityID}&uuid=${$.activityData.actorInfo.uuid}&skuId=${$.oneGoodInfo.skuId}`;
       break;
+    case 'doSign':
+    case 'followShop':
     case 'doShareTask':
     case 'doRemindTask':
     case 'doMeetingTask':
@@ -390,6 +393,7 @@ function dealReturn(type, data) {
         console.log(data.errorMessage);
       }
       break;
+    case 'followShop':
     case 'doBrowGoodsTask':
     case 'doAddGoodsTask':
     case 'doShareTask':
