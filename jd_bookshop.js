@@ -327,7 +327,7 @@ function getActContent(info = false, shareUuid = "") {
                       }
                     }
                   } else if (ADD_CART && ["加购商品"].includes(task.title)) {
-                    $.skuIds = task.settings.map(current_task => current_task.value);
+                    $.skuIds = task.settings.map((current_task) => current_task.value);
                     if (task.okNum < task.dayMaxNum) {
                       console.log(`去做${task.title}任务`);
                       await doTask(task.settings[0].type, task.settings[0].value);
