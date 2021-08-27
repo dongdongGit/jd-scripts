@@ -126,7 +126,7 @@ async function interactTemplateGetHomeData() {
       if (![14, 21].includes(task.taskType)) {
         for (let k = task.times; k < task.maxTimes; k++) {
           let list = task.productInfoVos || task.followShopVo || task.shoppingActivityVos || task.browseShopVo;
-          
+
           if (list.length != task.maxTimes) {
             await getActivityConfig();
             task = $.taskVos[i];
@@ -146,7 +146,6 @@ async function interactTemplateGetHomeData() {
             }
           }
         }
-
       }
       i++;
     }
@@ -173,7 +172,7 @@ function getActivityConfig() {
       },
       body: `functionId=${homeDataFunPrefix}_getHomeData&body={"appId":"${appId}","taskToken":""}&client=wh5&clientVersion=1.0.0`,
     };
-  
+
     $.post(url, async (err, resp, data) => {
       try {
         data = JSON.parse(data);
@@ -183,10 +182,10 @@ function getActivityConfig() {
           merge.jdBeans.notify = `${data.data.bizMsg}`;
           return;
         }
-  
+
         $.taskVos = data.data.result.taskVos;
         $.scorePerLottery = data.data.result.userInfo.scorePerLottery || data.data.result.userInfo.lotteryMinusScore;
-  
+
         if (data.data.result.raiseInfo && data.data.result.raiseInfo.levelList) {
           $.scorePerLottery = data.data.result.raiseInfo.levelList[data.data.result.raiseInfo.scoreLevel];
         }
@@ -196,7 +195,7 @@ function getActivityConfig() {
         resolve();
       }
     });
-  })
+  });
 }
 //做任务
 function harmonyCollectScore(taskToken, taskId, itemId = '', actionType = 0, timeout = 0) {

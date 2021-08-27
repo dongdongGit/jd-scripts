@@ -14,81 +14,59 @@ cron "13 1,22,23 * * *" script-path=jd_daily_lottery.js, tag=每日抽奖
 ============小火箭=========
 每日抽奖 = type=cron,script-path=jd_daily_lottery.js, cronexpr="13 1,22,23 * * *", timeout=3600, enable=true
 */
-const jd_env = require("./utils/JDEnv.js");
-const $ = jd_env.env("小鸽有礼-每日抽奖");
-const notify = $.isNode() ? require("./sendNotify") : "";
-const jdCookieNode = $.isNode() ? require("./jdCookie.js") : "";
-let activityType = "";
-let activityCode = "";
+const jd_env = require('./utils/JDEnv.js');
+const $ = jd_env.env('小鸽有礼-每日抽奖');
+const notify = $.isNode() ? require('./sendNotify') : '';
+const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
+let activityType = '';
+let activityCode = '';
 const activityInfoList = [
   {
-    activityType: "WonderfulLuckDrawApi",
-    activityCode: "1410048365793640448",
-    title: "小哥有礼",
+    activityType: 'WonderfulLuckDrawApi',
+    activityCode: '1410048365793640448',
+    title: '小哥有礼',
   },
   {
-    activityType: "luckdraw",
-    activityCode: "1407251415377641472",
-    title: "每日转盘",
+    activityType: 'luckdraw',
+    activityCode: '1407251415377641472',
+    title: '每日转盘',
   },
 ];
 $.helpCodeList = [];
 //IOS等用户直接用NobyDa的jd cookie
 let cookiesArr = [],
-  cookie = "";
+  cookie = '';
 if ($.isNode()) {
   Object.keys(jdCookieNode).forEach((item) => {
     cookiesArr.push(jdCookieNode[item]);
   });
-  if (process.env.JD_DEBUG && process.env.JD_DEBUG === "false")
-    console.log = () => {};
+  if (process.env.JD_DEBUG && process.env.JD_DEBUG === 'false') console.log = () => {};
 } else {
-  cookiesArr = [
-    $.getdata("CookieJD"),
-    $.getdata("CookieJD2"),
-    ...$.toObj($.getdata("CookiesJD") || "[]").map((item) => item.cookie),
-  ].filter((item) => !!item);
+  cookiesArr = [$.getdata('CookieJD'), $.getdata('CookieJD2'), ...$.toObj($.getdata('CookiesJD') || '[]').map((item) => item.cookie)].filter((item) => !!item);
 }
-let allMessage = "";
+let allMessage = '';
 !(async () => {
   if (!cookiesArr[0]) {
-    $.msg(
-      $.name,
-      "【提示】请先获取京东账号一cookie\n直接使用NobyDa的京东签到获取",
-      "https://bean.m.jd.com/bean/signIndex.action",
-      { "open-url": "https://bean.m.jd.com/bean/signIndex.action" }
-    );
+    $.msg($.name, '【提示】请先获取京东账号一cookie\n直接使用NobyDa的京东签到获取', 'https://bean.m.jd.com/bean/signIndex.action', { 'open-url': 'https://bean.m.jd.com/bean/signIndex.action' });
     return;
   }
   for (let i = 0; i < cookiesArr.length; i++) {
     if (cookiesArr[i]) {
       cookie = cookiesArr[i];
-      $.UserName = decodeURIComponent(
-        cookie.match(/pt_pin=([^; ]+)(?=;?)/) &&
-          cookie.match(/pt_pin=([^; ]+)(?=;?)/)[1]
-      );
+      $.UserName = decodeURIComponent(cookie.match(/pt_pin=([^; ]+)(?=;?)/) && cookie.match(/pt_pin=([^; ]+)(?=;?)/)[1]);
       $.index = i + 1;
       $.isLogin = true;
-      $.nickName = "";
+      $.nickName = '';
+      $.skuIds = [];
       await TotalBean();
-      console.log(
-        `\n*****开始【京东账号${$.index}】${$.nickName || $.UserName}*****\n`
-      );
+      console.log(`\n*****开始【京东账号${$.index}】${$.nickName || $.UserName}*****\n`);
       if (!$.isLogin) {
-        $.msg(
-          $.name,
-          `【提示】cookie已失效`,
-          `京东账号${$.index} ${
-            $.nickName || $.UserName
-          }\n请重新登录获取\nhttps://bean.m.jd.com/bean/signIndex.action`,
-          { "open-url": "https://bean.m.jd.com/bean/signIndex.action" }
-        );
+        $.msg($.name, `【提示】cookie已失效`, `京东账号${$.index} ${$.nickName || $.UserName}\n请重新登录获取\nhttps://bean.m.jd.com/bean/signIndex.action`, {
+          'open-url': 'https://bean.m.jd.com/bean/signIndex.action',
+        });
 
         if ($.isNode()) {
-          await notify.sendNotify(
-            `${$.name}cookie已失效 - ${$.UserName}`,
-            `京东账号${$.index} ${$.UserName}\n请重新登录获取cookie`
-          );
+          await notify.sendNotify(`${$.name}cookie已失效 - ${$.UserName}`, `京东账号${$.index} ${$.UserName}\n请重新登录获取cookie`);
         }
         continue;
       }
@@ -127,11 +105,11 @@ let allMessage = "";
   //   }
   // }
   if (allMessage) {
-    notify.sendNotify("小哥有礼-每日抽奖", allMessage);
+    notify.sendNotify('小哥有礼-每日抽奖', allMessage);
   }
 })()
   .catch((e) => {
-    $.log("", `❌ ${$.name}, 失败! 原因: ${e}!`, "");
+    $.log('', `❌ ${$.name}, 失败! 原因: ${e}!`, '');
   })
   .finally(() => {
     $.done();
@@ -140,10 +118,7 @@ let allMessage = "";
 async function dailyLottery() {
   $.lotteryInfo = {};
   $.missionList = [];
-  await Promise.all([
-    takePosttRequest("queryActivityBaseInfo"),
-    takePosttRequest("queryMissionList"),
-  ]);
+  await Promise.all([takePosttRequest('queryActivityBaseInfo'), takePosttRequest('queryMissionList')]);
   console.log(`初始化`);
   if ($.lotteryInfo.success !== true) {
     console.log(`${$.UserName}数据异常，执行失败`);
@@ -166,37 +141,35 @@ async function dailyLottery() {
     $.drawNumber = i + 1;
     await $.wait(1000);
     //执行抽奖
-    await takePosttRequest("draw");
+    await takePosttRequest('draw');
   }
   await $.wait(1000);
   //奖励列表
-  await takePosttRequest("queryWinFlowList");
+  await takePosttRequest('queryWinFlowList');
 }
 
 async function takePosttRequest(functionId) {
   let myRequest = ``;
   let body = ``;
   switch (functionId) {
-    case "queryActivityBaseInfo":
-    case "queryMissionList":
-    case "draw":
-    case "queryWinFlowList":
-    case "createInvitation":
+    case 'queryActivityBaseInfo':
+    case 'queryMissionList':
+    case 'draw':
+    case 'queryWinFlowList':
+    case 'createInvitation':
       body = `[{"userNo":"$cooMrdGatewayUid$","activityCode":"${activityCode}"}]`;
       break;
-    case "completeMission":
+    case 'completeMission':
       if ($.oneMission.params) {
-        body = `[{"userNo":"$cooMrdGatewayUid$","activityCode":"${activityCode}","missionNo":"${
-          $.oneMission.missionNo
-        }","params":${JSON.stringify($.oneMission.params)}}]`;
+        body = `[{"userNo":"$cooMrdGatewayUid$","activityCode":"${activityCode}","missionNo":"${$.oneMission.missionNo}","params":${JSON.stringify($.oneMission.params)}}]`;
       } else {
         body = `[{"userNo":"$cooMrdGatewayUid$","activityCode":"${activityCode}","missionNo":"${$.oneMission.missionNo}"}]`;
       }
       break;
-    case "getDrawChance":
+    case 'getDrawChance':
       body = `[{"userNo":"$cooMrdGatewayUid$","activityCode":"${activityCode}","getCode":"${$.oneRewardNos}"}]`;
       break;
-    case "helpFriend":
+    case 'helpFriend':
       body = `[{"userNo":"$cooMrdGatewayUid$","missionNo":"${$.oneCode}"}]`;
       break;
     default:
@@ -225,15 +198,15 @@ function dealReturn(functionId, data) {
     return;
   }
   switch (functionId) {
-    case "queryActivityBaseInfo":
+    case 'queryActivityBaseInfo':
       $.lotteryInfo = data;
       break;
-    case "queryMissionList":
+    case 'queryMissionList':
       if (data.success === true) {
         $.missionList = data.content.missionList;
       }
       break;
-    case "completeMission":
+    case 'completeMission':
       if (data.success === true) {
         console.log(`${$.oneMission.title}，任务执行成功`);
         $.runFlag = true;
@@ -242,7 +215,7 @@ function dealReturn(functionId, data) {
         console.log(`${$.oneMission.title}，任务执行失败`);
       }
       break;
-    case "getDrawChance":
+    case 'getDrawChance':
       if (data.success === true) {
         console.log(`${$.oneMission.title}，领取任务奖励成功`);
       } else {
@@ -250,18 +223,14 @@ function dealReturn(functionId, data) {
         console.log(`${$.oneMission.title}，领取任务执行失败`);
       }
       break;
-    case "draw":
+    case 'draw':
       if (data.success === true) {
-        console.log(
-          `${$.name}第${$.drawNumber}次抽奖，获得：${
-            data.content.rewardDTO.title || " "
-          }`
-        );
+        console.log(`${$.name}第${$.drawNumber}次抽奖，获得：${data.content.rewardDTO.title || ' '}`);
       } else {
         console.log(`${$.name}第${$.drawNumber}次抽奖失败`);
       }
       break;
-    case "queryWinFlowList":
+    case 'queryWinFlowList':
       if (data.success === true) {
         let contentList = data.content;
         let bean = 0;
@@ -285,17 +254,17 @@ function dealReturn(functionId, data) {
         console.log(`获取奖品列表失败`);
       }
       break;
-    case "createInvitation":
+    case 'createInvitation':
       if (data.success === true) {
         $.helpCodeList.push({
           use: $.UserName,
           helpCpde: data.data,
-          needHelp: missionInfo["totalNum"] - missionInfo["completeNum"],
+          needHelp: missionInfo['totalNum'] - missionInfo['completeNum'],
         });
         console.log(`互助码(内部多账号自己互助)：${data.data}`);
       }
       break;
-    case "helpFriend":
+    case 'helpFriend':
       console.log(`助力结果:${JSON.stringify(data)}`);
       if (data.success === true && data.content === true) {
         console.log(`助力成功`);
@@ -316,31 +285,21 @@ async function doMission() {
     if ($.missionList[i].status !== 1) {
       continue;
     }
-    if (
-      $.missionList[i].jumpType === 135 ||
-      $.missionList[i].jumpType === 136 ||
-      $.missionList[i].jumpType === 137 ||
-      $.missionList[i].jumpType === 45 ||
-      $.missionList[i].jumpType === 31
-    ) {
+    $allowJumpTypes = [135, 136, 137, 45, 31];
+    if ($allowJumpTypes.includes($.missionList[i].jumpType)) {
       $.oneMission = $.missionList[i];
-      console.log(
-        `开始执行任务:${$.oneMission.title}  ${$.oneMission.desc || ""}`
-      );
-      await takePosttRequest("completeMission");
+      console.log(`开始执行任务:${$.oneMission.title}  ${$.oneMission.desc || ''}`);
+      await takePosttRequest('completeMission');
       await $.wait(1000);
       flag = true;
     } else if ($.missionList[i].jumpType === 1) {
-      await takePosttRequest("createInvitation");
+      await takePosttRequest('createInvitation');
       await $.wait(1000);
     }
   }
   if (flag) {
     await $.wait(1000);
-    await Promise.all([
-      takePosttRequest("queryActivityBaseInfo"),
-      takePosttRequest("queryMissionList"),
-    ]);
+    await Promise.all([takePosttRequest('queryActivityBaseInfo'), takePosttRequest('queryMissionList')]);
     await $.wait(1000);
   }
 }
@@ -351,11 +310,11 @@ async function collectionTimes() {
   for (let i = 0; i < $.missionList.length; i++) {
     if ($.missionList[i].status === 11) {
       $.oneMission = $.missionList[i];
-      console.log(`领取奖励:${$.oneMission.title}  ${$.oneMission.desc || ""}`);
+      console.log(`领取奖励:${$.oneMission.title}  ${$.oneMission.desc || ''}`);
       let getRewardNos = $.oneMission.getRewardNos;
       for (let j = 0; j < getRewardNos.length; j++) {
         $.oneRewardNos = getRewardNos[j];
-        await takePosttRequest("getDrawChance");
+        await takePosttRequest('getDrawChance');
         await $.wait(1000);
         flag = true;
       }
@@ -363,10 +322,7 @@ async function collectionTimes() {
   }
   if (flag) {
     await $.wait(1000);
-    await Promise.all([
-      takePosttRequest("queryActivityBaseInfo"),
-      takePosttRequest("queryMissionList"),
-    ]);
+    await Promise.all([takePosttRequest('queryActivityBaseInfo'), takePosttRequest('queryMissionList')]);
     await $.wait(1000);
   }
 }
@@ -375,54 +331,54 @@ function getPostRequest(functionId, body) {
   const url = `https://lop-proxy.jd.com/${activityType}/${functionId}`;
   const method = `POST`;
   const headers = {
-    "Accept-Encoding": `gzip, deflate, br`,
+    'Accept-Encoding': `gzip, deflate, br`,
     Host: `lop-proxy.jd.com`,
     Origin: `https://jingcai-h5.jd.com`,
     Connection: `keep-alive`,
-    "biz-type": `service-monitor`,
-    "Accept-Language": `zh-cn`,
+    'biz-type': `service-monitor`,
+    'Accept-Language': `zh-cn`,
     version: `1.0.0`,
-    "Content-Type": `application/json;charset=utf-8`,
-    "User-Agent": $.isNode()
+    'Content-Type': `application/json;charset=utf-8`,
+    'User-Agent': $.isNode()
       ? process.env.JD_USER_AGENT
         ? process.env.JD_USER_AGENT
-        : require("./USER_AGENTS").USER_AGENT
-      : $.getdata("JDUA")
-      ? $.getdata("JDUA")
-      : "jdapp;iPhone;9.2.2;14.2;%E4%BA%AC%E4%B8%9C/9.2.2 CFNetwork/1206 Darwin/20.1.0",
+        : require('./USER_AGENTS').USER_AGENT
+      : $.getdata('JDUA')
+      ? $.getdata('JDUA')
+      : 'jdapp;iPhone;9.2.2;14.2;%E4%BA%AC%E4%B8%9C/9.2.2 CFNetwork/1206 Darwin/20.1.0',
     Referer: `https://jingcai-h5.jd.com`,
     ClientInfo: `{"appName":"jingcai","client":"m"}`,
     access: `H5`,
     Accept: `application/json, text/plain, */*`,
-    "jexpress-report-time": `${new Date().getTime()}`,
-    "source-client": `2`,
-    "X-Requested-With": `XMLHttpRequest`,
+    'jexpress-report-time': `${new Date().getTime()}`,
+    'source-client': `2`,
+    'X-Requested-With': `XMLHttpRequest`,
     Cookie: cookie,
-    "LOP-DN": `jingcai.jd.com`,
+    'LOP-DN': `jingcai.jd.com`,
     AppParams: `{"appid":158,"ticket_type":"m"}`,
-    "app-key": `jexpress`,
+    'app-key': `jexpress`,
   };
   return { url: url, method: method, headers: headers, body: body };
 }
 function TotalBean() {
   return new Promise(async (resolve) => {
     const options = {
-      url: "https://wq.jd.com/user_new/info/GetJDUserInfoUnion?sceneval=2",
+      url: 'https://wq.jd.com/user_new/info/GetJDUserInfoUnion?sceneval=2',
       headers: {
-        Host: "wq.jd.com",
-        Accept: "*/*",
-        Connection: "keep-alive",
+        Host: 'wq.jd.com',
+        Accept: '*/*',
+        Connection: 'keep-alive',
         Cookie: cookie,
-        "User-Agent": $.isNode()
+        'User-Agent': $.isNode()
           ? process.env.JD_USER_AGENT
             ? process.env.JD_USER_AGENT
-            : require("./USER_AGENTS").USER_AGENT
-          : $.getdata("JDUA")
-          ? $.getdata("JDUA")
-          : "jdapp;iPhone;9.4.4;14.3;network/4g;Mozilla/5.0 (iPhone; CPU iPhone OS 14_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148;supportJDSHWK/1",
-        "Accept-Language": "zh-cn",
-        Referer: "https://home.m.jd.com/myJd/newhome.action?sceneval=2&ufc=&",
-        "Accept-Encoding": "gzip, deflate, br",
+            : require('./USER_AGENTS').USER_AGENT
+          : $.getdata('JDUA')
+          ? $.getdata('JDUA')
+          : 'jdapp;iPhone;9.4.4;14.3;network/4g;Mozilla/5.0 (iPhone; CPU iPhone OS 14_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148;supportJDSHWK/1',
+        'Accept-Language': 'zh-cn',
+        Referer: 'https://home.m.jd.com/myJd/newhome.action?sceneval=2&ufc=&',
+        'Accept-Encoding': 'gzip, deflate, br',
       },
     };
     $.get(options, (err, resp, data) => {
@@ -432,19 +388,15 @@ function TotalBean() {
         } else {
           if (data) {
             data = JSON.parse(data);
-            if (data["retcode"] === 1001) {
+            if (data['retcode'] === 1001) {
               $.isLogin = false; //cookie过期
               return;
             }
-            if (
-              data["retcode"] === 0 &&
-              data.data &&
-              data.data.hasOwnProperty("userInfo")
-            ) {
+            if (data['retcode'] === 0 && data.data && data.data.hasOwnProperty('userInfo')) {
               $.nickName = data.data.userInfo.baseInfo.nickname;
             }
           } else {
-            console.log("京东服务器返回空数据");
+            console.log('京东服务器返回空数据');
           }
         }
       } catch (e) {
@@ -455,4 +407,3 @@ function TotalBean() {
     });
   });
 }
-

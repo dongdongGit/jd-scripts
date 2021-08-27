@@ -23,36 +23,36 @@ cron "8 0-23/3 * * *" script-path=https://gitee.com/lxk0301/jd_scripts/raw/maste
 ==============小火箭=============
 天天加速 = type=cron,script-path=https://gitee.com/lxk0301/jd_scripts/raw/master/jd_speed.js, cronexpr="11 0-23/3 * * *", timeout=3600, enable=true
 */
-const jd_helpers = require("./utils/JDHelpers.js");
-const jd_env = require("./utils/JDEnv.js");
-const $ = jd_env.env("天天加速");
-const notify = $.isNode() ? require("./sendNotify") : "";
+const jd_helpers = require('./utils/JDHelpers.js');
+const jd_env = require('./utils/JDEnv.js');
+const $ = jd_env.env('天天加速');
+const notify = $.isNode() ? require('./sendNotify') : '';
 //Node.js用户请在jdCookie.js处填写京东ck;
-const jdCookieNode = $.isNode() ? require("./jdCookie.js") : "";
+const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
 
 //IOS等用户直接用NobyDa的jd cookie
 let cookiesArr = [],
-  cookie = "";
+  cookie = '';
 if ($.isNode()) {
   Object.keys(jdCookieNode).forEach((item) => {
     cookiesArr.push(jdCookieNode[item]);
   });
-  if (process.env.JD_DEBUG && process.env.JD_DEBUG === "false") console.log = () => {};
+  if (process.env.JD_DEBUG && process.env.JD_DEBUG === 'false') console.log = () => {};
 } else {
-  cookiesArr = [$.getdata("CookieJD"), $.getdata("CookieJD2"), ...jd_helpers.jsonParse($.getdata("CookiesJD") || "[]").map((item) => item.cookie)].filter((item) => !!item);
+  cookiesArr = [$.getdata('CookieJD'), $.getdata('CookieJD2'), ...jd_helpers.jsonParse($.getdata('CookiesJD') || '[]').map((item) => item.cookie)].filter((item) => !!item);
 }
 let jdNotify = true; //是否开启静默运行。默认true开启
-let message = "",
-  subTitle = "";
-const JD_API_HOST = "https://api.m.jd.com/";
+let message = '',
+  subTitle = '';
+const JD_API_HOST = 'https://api.m.jd.com/';
 
 !(async () => {
-  if ($.time("yyyy-MM-dd") === "2021-04-21") {
+  if ($.time('yyyy-MM-dd') === '2021-04-21') {
     //$.msg($.name, '2021-04-21 0点已停止运营', `请禁用或删除脚本(jd_speed.js)`);
     //return
   }
   if (!cookiesArr[0]) {
-    $.msg($.name, "【提示】请先获取京东账号一cookie\n直接使用NobyDa的京东签到获取", "https://bean.m.jd.com/bean/signIndex.action", { "open-url": "https://bean.m.jd.com/bean/signIndex.action" });
+    $.msg($.name, '【提示】请先获取京东账号一cookie\n直接使用NobyDa的京东签到获取', 'https://bean.m.jd.com/bean/signIndex.action', { 'open-url': 'https://bean.m.jd.com/bean/signIndex.action' });
     return;
   }
   for (let i = 0; i < cookiesArr.length; i++) {
@@ -61,12 +61,12 @@ const JD_API_HOST = "https://api.m.jd.com/";
       $.UserName = decodeURIComponent(cookie.match(/pt_pin=([^; ]+)(?=;?)/) && cookie.match(/pt_pin=([^; ]+)(?=;?)/)[1]);
       $.index = i + 1;
       $.isLogin = true;
-      $.nickName = "";
+      $.nickName = '';
       await TotalBean();
       console.log(`\n开始【京东账号${$.index}】${$.nickName || $.UserName}\n`);
       if (!$.isLogin) {
         $.msg($.name, `【提示】cookie已失效`, `京东账号${$.index} ${$.nickName || $.UserName}\n请重新登录获取\nhttps://bean.m.jd.com/bean/signIndex.action`, {
-          "open-url": "https://bean.m.jd.com/bean/signIndex.action",
+          'open-url': 'https://bean.m.jd.com/bean/signIndex.action',
         });
 
         if ($.isNode()) {
@@ -74,8 +74,8 @@ const JD_API_HOST = "https://api.m.jd.com/";
         }
         continue;
       }
-      message = "";
-      subTitle = "";
+      message = '';
+      subTitle = '';
       await jDSpeedUp();
       await getMemBerList();
       await showMsg();
@@ -83,14 +83,14 @@ const JD_API_HOST = "https://api.m.jd.com/";
   }
 })()
   .catch((e) => {
-    $.log("", `❌ ${$.name}, 失败! 原因: ${e}!`, "");
+    $.log('', `❌ ${$.name}, 失败! 原因: ${e}!`, '');
   })
   .finally(() => {
     $.done();
   });
 function showMsg() {
-  jdNotify = $.getdata("jdSpeedNotify") ? $.getdata("jdSpeedNotify") : jdNotify;
-  if (!jdNotify || jdNotify === "false") {
+  jdNotify = $.getdata('jdSpeedNotify') ? $.getdata('jdSpeedNotify') : jdNotify;
+  if (!jdNotify || jdNotify === 'false') {
     $.msg($.name, subTitle, `【京东账号${$.index}】${$.nickName}\n` + message);
   } else {
     $.log(`\n${message}\n`);
@@ -98,34 +98,34 @@ function showMsg() {
 }
 function jDSpeedUp(sourceId) {
   return new Promise((resolve) => {
-    let body = { source: "game" };
+    let body = { source: 'game' };
     if (sourceId) {
       body.source_id = sourceId;
     }
     const url = {
       // url: JD_API_HOST + '?appid=memberTaskCenter&functionId=flyTask_' + (sourceId ? 'start&body=%7B%22source%22%3A%22game%22%2C%22source_id%22%3A' + sourceId + '%7D' : 'state&body=%7B%22source%22%3A%22game%22%7D'),
-      url: `${JD_API_HOST}?appid=memberTaskCenter&functionId=flyTask_${sourceId ? "start" : "state"}&body=${escape(JSON.stringify(body))}`,
+      url: `${JD_API_HOST}?appid=memberTaskCenter&functionId=flyTask_${sourceId ? 'start' : 'state'}&body=${escape(JSON.stringify(body))}`,
       headers: {
         Cookie: cookie,
-        Host: "api.m.jd.com",
-        Accept: "*/*",
-        Connection: "keep-alive",
-        "User-Agent": $.isNode()
+        Host: 'api.m.jd.com',
+        Accept: '*/*',
+        Connection: 'keep-alive',
+        'User-Agent': $.isNode()
           ? process.env.JD_USER_AGENT
             ? process.env.JD_USER_AGENT
-            : require("./USER_AGENTS").USER_AGENT
-          : $.getdata("JDUA")
-          ? $.getdata("JDUA")
-          : "jdapp;iPhone;9.4.4;14.3;network/4g;Mozilla/5.0 (iPhone; CPU iPhone OS 14_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148;supportJDSHWK/1",
-        "Accept-Language": "zh-cn",
-        Referer: "https://h5.m.jd.com/babelDiy/Zeus/6yCQo2eDJPbyPXrC3eMCtMWZ9ey/index.html?lng=116.845095&lat=39.957701&sid=ea687233c5e7d226b30940ed7382c5cw&un_area=5_274_49707_49973",
-        "Accept-Encoding": "gzip, deflate, br",
+            : require('./USER_AGENTS').USER_AGENT
+          : $.getdata('JDUA')
+          ? $.getdata('JDUA')
+          : 'jdapp;iPhone;9.4.4;14.3;network/4g;Mozilla/5.0 (iPhone; CPU iPhone OS 14_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148;supportJDSHWK/1',
+        'Accept-Language': 'zh-cn',
+        Referer: 'https://h5.m.jd.com/babelDiy/Zeus/6yCQo2eDJPbyPXrC3eMCtMWZ9ey/index.html?lng=116.845095&lat=39.957701&sid=ea687233c5e7d226b30940ed7382c5cw&un_area=5_274_49707_49973',
+        'Accept-Encoding': 'gzip, deflate, br',
       },
     };
     $.get(url, async (err, resp, data) => {
       try {
         if (err) {
-          console.log("京东天天-加速: 签到接口请求失败 ‼️‼️");
+          console.log('京东天天-加速: 签到接口请求失败 ‼️‼️');
           console.log(`${JSON.stringify(err)}`);
         } else {
           if (data) {
@@ -133,7 +133,7 @@ function jDSpeedUp(sourceId) {
             if (!sourceId) {
               console.log(`\n天天加速任务进行中`);
             } else {
-              console.log("\n" + "天天加速-开始本次任务 ");
+              console.log('\n' + '天天加速-开始本次任务 ');
             }
             if (res.code === 0 && res.success) {
               subTitle = `【奖励】${res.data.beans_num}京豆`;
@@ -141,8 +141,8 @@ function jDSpeedUp(sourceId) {
                 const taskID = res.data.source_id;
                 await jDSpeedUp(taskID);
               } else if (res.data.task_status === 1) {
-                const EndTime = res.data.end_time ? res.data.end_time : "";
-                console.log("\n天天加速进行中-结束时间: \n" + EndTime);
+                const EndTime = res.data.end_time ? res.data.end_time : '';
+                console.log('\n天天加速进行中-结束时间: \n' + EndTime);
                 const space = await spaceEventList();
                 const HandleEvent = await spaceEventHandleEvent(space);
                 const step1 = await energyPropList(); //检查燃料
@@ -154,21 +154,21 @@ function jDSpeedUp(sourceId) {
                 } else {
                   message += `【空间站】 ${res.data.destination}\n`;
                   message += `【结束时间】 ${res.data.end_time}\n`;
-                  message += `【进度】 ${((res.data["done_distance"] / res.data.distance) * 100).toFixed(2)}%\n`;
+                  message += `【进度】 ${((res.data['done_distance'] / res.data.distance) * 100).toFixed(2)}%\n`;
                 }
               } else if (res.data.task_status === 2) {
                 if (data.match(/\"beans_num\":\d+/)) {
                   //message += "【上轮奖励】成功领取" + data.match(/\"beans_num\":(\d+)/)[1] + "京豆 🐶";
-                  if (!jdNotify || jdNotify === "false") {
-                    $.msg($.name, "", `【京东账号${$.index}】${$.nickName}\n` + "【上轮太空旅行】成功领取" + data.match(/\"beans_num\":(\d+)/)[1] + "京豆 🐶");
+                  if (!jdNotify || jdNotify === 'false') {
+                    $.msg($.name, '', `【京东账号${$.index}】${$.nickName}\n` + '【上轮太空旅行】成功领取' + data.match(/\"beans_num\":(\d+)/)[1] + '京豆 🐶');
                   }
                 } else {
-                  console.log("京东天天-加速: 成功, 明细: 无京豆 🐶");
+                  console.log('京东天天-加速: 成功, 明细: 无京豆 🐶');
                 }
-                console.log("\n天天加速-领取上次奖励成功");
+                console.log('\n天天加速-领取上次奖励成功');
                 await jDSpeedUp(null);
               } else {
-                console.log("\n" + "天天加速-判断状态码失败");
+                console.log('\n' + '天天加速-判断状态码失败');
               }
             }
           } else {
@@ -189,23 +189,23 @@ function jDSpeedUp(sourceId) {
 function spaceEventList() {
   return new Promise((resolve) => {
     let spaceEvents = [];
-    const body = { source: "game" };
+    const body = { source: 'game' };
     const spaceEventUrl = {
       url: `${JD_API_HOST}?appid=memberTaskCenter&functionId=spaceEvent_list&body=${escape(JSON.stringify(body))}`,
       headers: {
-        Referer: "https://h5.m.jd.com/babelDiy/Zeus/6yCQo2eDJPbyPXrC3eMCtMWZ9ey/index.html",
+        Referer: 'https://h5.m.jd.com/babelDiy/Zeus/6yCQo2eDJPbyPXrC3eMCtMWZ9ey/index.html',
         Cookie: cookie,
       },
     };
     $.get(spaceEventUrl, async (err, resp, data) => {
       try {
         if (err) {
-          console.log("\n京东天天-加速: 查询太空特殊事件请求失败 ‼️‼️");
+          console.log('\n京东天天-加速: 查询太空特殊事件请求失败 ‼️‼️');
           console.log(`${JSON.stringify(err)}`);
         } else {
           if (data) {
             const cc = JSON.parse(data);
-            if (cc.message === "success" && cc.data.length > 0) {
+            if (cc.message === 'success' && cc.data.length > 0) {
               for (let item of cc.data) {
                 if (item.status === 1) {
                   for (let j of item.options) {
@@ -219,12 +219,12 @@ function spaceEventList() {
                 }
               }
               if (spaceEvents && spaceEvents.length > 0) {
-                console.log("\n天天加速-查询到" + spaceEvents.length + "个太空特殊事件");
+                console.log('\n天天加速-查询到' + spaceEvents.length + '个太空特殊事件');
               } else {
-                console.log("\n天天加速-暂无太空特殊事件");
+                console.log('\n天天加速-暂无太空特殊事件');
               }
             } else {
-              console.log("\n天天加速-查询无太空特殊事件");
+              console.log('\n天天加速-查询无太空特殊事件');
             }
           } else {
             console.log(`京豆api返回数据为空，请检查自身原因`);
@@ -248,14 +248,14 @@ function spaceEventHandleEvent(spaceEventList) {
         spaceNumTask = 0;
       for (let item of spaceEventList) {
         let body = {
-          source: "game",
+          source: 'game',
           eventId: item.id,
           option: item.value,
         };
         const spaceHandleUrl = {
           url: `${JD_API_HOST}?appid=memberTaskCenter&functionId=spaceEvent_handleEvent&body=${escape(JSON.stringify(body))}`,
           headers: {
-            Referer: "https://h5.m.jd.com/babelDiy/Zeus/6yCQo2eDJPbyPXrC3eMCtMWZ9ey/index.html",
+            Referer: 'https://h5.m.jd.com/babelDiy/Zeus/6yCQo2eDJPbyPXrC3eMCtMWZ9ey/index.html',
             Cookie: cookie,
           },
         };
@@ -263,17 +263,17 @@ function spaceEventHandleEvent(spaceEventList) {
         $.get(spaceHandleUrl, (err, resp, data) => {
           try {
             if (err) {
-              console.log("\n京东天天-加速: 处理太空特殊事件请求失败 ‼️‼️");
+              console.log('\n京东天天-加速: 处理太空特殊事件请求失败 ‼️‼️');
               console.log(`${JSON.stringify(err)}`);
             } else {
               if (data) {
                 const cc = JSON.parse(data);
                 // console.log(`处理特殊事件的结果：：${JSON.stringify(cc)}`);
-                console.log("\n天天加速-尝试处理第" + spaceEventCount + "个太空特殊事件");
-                if (cc.message === "success" && cc.success) {
+                console.log('\n天天加速-尝试处理第' + spaceEventCount + '个太空特殊事件');
+                if (cc.message === 'success' && cc.success) {
                   spaceNumTask += 1;
                 } else {
-                  console.log("\n天天加速-处理太空特殊事件失败");
+                  console.log('\n天天加速-处理太空特殊事件失败');
                 }
               } else {
                 console.log(`京豆api返回数据为空，请检查自身原因`);
@@ -284,7 +284,7 @@ function spaceEventHandleEvent(spaceEventList) {
             $.logErr(e, resp);
           } finally {
             if (spaceEventList.length === spaceNumTask) {
-              console.log("\n天天加速-已成功处理" + spaceNumTask + "个太空特殊事件");
+              console.log('\n天天加速-已成功处理' + spaceNumTask + '个太空特殊事件');
               resolve();
             }
           }
@@ -299,38 +299,38 @@ function spaceEventHandleEvent(spaceEventList) {
 //检查燃料
 function energyPropList() {
   return new Promise((resolve) => {
-    let TaskID = "";
-    const body = { source: "game" };
+    let TaskID = '';
+    const body = { source: 'game' };
     const QueryUrl = {
       // url: JD_API_HOST + '?appid=memberTaskCenter&functionId=energyProp_list&body=%7B%22source%22%3A%22game%22%7D',
       url: `${JD_API_HOST}?appid=memberTaskCenter&functionId=energyProp_list&body=${escape(JSON.stringify(body))}`,
       headers: {
-        Referer: "https://h5.m.jd.com/babelDiy/Zeus/6yCQo2eDJPbyPXrC3eMCtMWZ9ey/index.html",
+        Referer: 'https://h5.m.jd.com/babelDiy/Zeus/6yCQo2eDJPbyPXrC3eMCtMWZ9ey/index.html',
         Cookie: cookie,
       },
     };
     $.get(QueryUrl, async (err, resp, data) => {
       try {
         if (err) {
-          console.log("\n京东天天-加速: 查询道具请求失败 ‼️‼️");
+          console.log('\n京东天天-加速: 查询道具请求失败 ‼️‼️');
           console.log(`${JSON.stringify(err)}`);
         } else {
           if (data) {
             const cc = JSON.parse(data);
-            if (cc.message === "success" && cc.data.length > 0) {
+            if (cc.message === 'success' && cc.data.length > 0) {
               for (let i = 0; i < cc.data.length; i++) {
                 if (cc.data[i].thaw_time === 0) {
-                  TaskID += cc.data[i].id + ",";
+                  TaskID += cc.data[i].id + ',';
                 }
               }
               if (TaskID.length > 0) {
-                TaskID = TaskID.substr(0, TaskID.length - 1).split(",");
-                console.log("\n天天加速-查询到" + TaskID.length + "个可用燃料");
+                TaskID = TaskID.substr(0, TaskID.length - 1).split(',');
+                console.log('\n天天加速-查询到' + TaskID.length + '个可用燃料');
               } else {
-                console.log("\n天天加速-检查燃料-暂无可用燃料");
+                console.log('\n天天加速-检查燃料-暂无可用燃料');
               }
             } else {
-              console.log("\n天天加速-查询无燃料");
+              console.log('\n天天加速-查询无燃料');
             }
           } else {
             console.log(`京豆api返回数据为空，请检查自身原因`);
@@ -354,14 +354,14 @@ function receiveEnergyProp(CID) {
       let count = 0;
       for (let i = 0; i < CID.length; i++) {
         let body = {
-          source: "game",
+          source: 'game',
           energy_id: CID[i],
         };
         const TUrl = {
           // url: JD_API_HOST + '?appid=memberTaskCenter&functionId=energyProp_gain&body=%7B%22source%22%3A%22game%22%2C%22energy_id%22%3A' + CID[i] + '%7D',
           url: `${JD_API_HOST}?appid=memberTaskCenter&functionId=energyProp_gain&body=${escape(JSON.stringify(body))}`,
           headers: {
-            Referer: "https://h5.m.jd.com/babelDiy/Zeus/6yCQo2eDJPbyPXrC3eMCtMWZ9ey/index.html",
+            Referer: 'https://h5.m.jd.com/babelDiy/Zeus/6yCQo2eDJPbyPXrC3eMCtMWZ9ey/index.html',
             Cookie: cookie,
           },
         };
@@ -369,13 +369,13 @@ function receiveEnergyProp(CID) {
         $.get(TUrl, (error, response, data) => {
           try {
             if (error) {
-              console.log("\n天天加速-领取道具请求失败 ‼️‼️");
+              console.log('\n天天加速-领取道具请求失败 ‼️‼️');
               console.log(`${JSON.stringify(error)}`);
             } else {
               if (data) {
                 const cc = JSON.parse(data);
-                console.log("\n天天加速-尝试领取第" + count + "个可用燃料");
-                if (cc.message === "success") {
+                console.log('\n天天加速-尝试领取第' + count + '个可用燃料');
+                if (cc.message === 'success') {
                   NumTask += 1;
                 }
               } else {
@@ -387,7 +387,7 @@ function receiveEnergyProp(CID) {
             $.logErr(e, resp);
           } finally {
             if (CID.length === count) {
-              console.log("\n天天加速-已成功领取" + NumTask + "个可用燃料");
+              console.log('\n天天加速-已成功领取' + NumTask + '个可用燃料');
               resolve(NumTask);
             }
           }
@@ -402,20 +402,20 @@ function receiveEnergyProp(CID) {
 //检查剩余燃料
 function energyPropUsaleList(EID) {
   return new Promise((resolve) => {
-    let TaskCID = "";
-    const body = { source: "game" };
+    let TaskCID = '';
+    const body = { source: 'game' };
     const EUrl = {
       // url: JD_API_HOST + '?appid=memberTaskCenter&functionId=energyProp_usalbeList&body=%7B%22source%22%3A%22game%22%7D',
       url: `${JD_API_HOST}?appid=memberTaskCenter&functionId=energyProp_usalbeList&body=${escape(JSON.stringify(body))}`,
       headers: {
-        Referer: "https://h5.m.jd.com/babelDiy/Zeus/6yCQo2eDJPbyPXrC3eMCtMWZ9ey/index.html",
+        Referer: 'https://h5.m.jd.com/babelDiy/Zeus/6yCQo2eDJPbyPXrC3eMCtMWZ9ey/index.html',
         Cookie: cookie,
       },
     };
     $.get(EUrl, (error, response, data) => {
       try {
         if (error) {
-          console.log("\n天天加速-查询道具ID请求失败 ‼️‼️");
+          console.log('\n天天加速-查询道具ID请求失败 ‼️‼️');
           console.log(`${JSON.stringify(error)}`);
         } else {
           if (data) {
@@ -424,17 +424,17 @@ function energyPropUsaleList(EID) {
               if (cc.data.length > 0) {
                 for (let i = 0; i < cc.data.length; i++) {
                   if (cc.data[i].id) {
-                    TaskCID += cc.data[i].id + ",";
+                    TaskCID += cc.data[i].id + ',';
                   }
                 }
                 if (TaskCID.length > 0) {
-                  TaskCID = TaskCID.substr(0, TaskCID.length - 1).split(",");
-                  console.log("\n天天加速-查询成功" + TaskCID.length + "个燃料ID");
+                  TaskCID = TaskCID.substr(0, TaskCID.length - 1).split(',');
+                  console.log('\n天天加速-查询成功' + TaskCID.length + '个燃料ID');
                 } else {
-                  console.log("\n天天加速-暂无有效燃料ID");
+                  console.log('\n天天加速-暂无有效燃料ID');
                 }
               } else {
-                console.log("\n天天加速-查询无燃料ID");
+                console.log('\n天天加速-查询无燃料ID');
               }
             }
           } else {
@@ -464,14 +464,14 @@ function useEnergy(PropID) {
     if (PropID) {
       for (let i = 0; i < PropID.length; i++) {
         let body = {
-          source: "game",
+          source: 'game',
           energy_id: PropID[i],
         };
         const PropUrl = {
           // url: JD_API_HOST + '?appid=memberTaskCenter&functionId=energyProp_use&body=%7B%22source%22%3A%22game%22%2C%22energy_id%22%3A%22' + PropID[i] + '%22%7D',
           url: `${JD_API_HOST}?appid=memberTaskCenter&functionId=energyProp_use&body=${escape(JSON.stringify(body))}`,
           headers: {
-            Referer: "https://h5.m.jd.com/babelDiy/Zeus/6yCQo2eDJPbyPXrC3eMCtMWZ9ey/index.html",
+            Referer: 'https://h5.m.jd.com/babelDiy/Zeus/6yCQo2eDJPbyPXrC3eMCtMWZ9ey/index.html',
             Cookie: cookie,
           },
         };
@@ -479,13 +479,13 @@ function useEnergy(PropID) {
         $.get(PropUrl, (error, response, data) => {
           try {
             if (error) {
-              console.log("\n天天加速-使用燃料请求失败 ‼️‼️");
+              console.log('\n天天加速-使用燃料请求失败 ‼️‼️');
               console.log(`${JSON.stringify(error)}`);
             } else {
               if (data) {
                 const cc = JSON.parse(data);
-                console.log("\n天天加速-尝试使用第" + PropCount + "个燃料");
-                if (cc.message === "success" && cc.success === true) {
+                console.log('\n天天加速-尝试使用第' + PropCount + '个燃料');
+                if (cc.message === 'success' && cc.success === true) {
                   PropNumTask += 1;
                 }
               } else {
@@ -497,7 +497,7 @@ function useEnergy(PropID) {
             $.logErr(e, resp);
           } finally {
             if (PropID.length === PropCount) {
-              console.log("\n天天加速-已成功使用" + PropNumTask + "个燃料");
+              console.log('\n天天加速-已成功使用' + PropNumTask + '个燃料');
               resolve(PropNumTask);
             }
           }
@@ -511,19 +511,19 @@ function useEnergy(PropID) {
 //虫洞
 function getMemBerList() {
   return new Promise((resolve) => {
-    const body = { source: "game", status: 0 };
+    const body = { source: 'game', status: 0 };
     const spaceEventUrl = {
       url: `${JD_API_HOST}?appid=memberTaskCenter&functionId=member_list&body=${escape(JSON.stringify(body))}&_t=${Date.now()}`,
       headers: {
-        Referer: "https://h5.m.jd.com/babelDiy/Zeus/6yCQo2eDJPbyPXrC3eMCtMWZ9ey/index.html",
+        Referer: 'https://h5.m.jd.com/babelDiy/Zeus/6yCQo2eDJPbyPXrC3eMCtMWZ9ey/index.html',
         Cookie: cookie,
-        "User-Agent": $.isNode()
+        'User-Agent': $.isNode()
           ? process.env.JD_USER_AGENT
             ? process.env.JD_USER_AGENT
-            : require("./USER_AGENTS").USER_AGENT
-          : $.getdata("JDUA")
-          ? $.getdata("JDUA")
-          : "jdapp;iPhone;9.4.4;14.3;network/4g;Mozilla/5.0 (iPhone; CPU iPhone OS 14_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148;supportJDSHWK/1",
+            : require('./USER_AGENTS').USER_AGENT
+          : $.getdata('JDUA')
+          ? $.getdata('JDUA')
+          : 'jdapp;iPhone;9.4.4;14.3;network/4g;Mozilla/5.0 (iPhone; CPU iPhone OS 14_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148;supportJDSHWK/1',
       },
     };
     $.get(spaceEventUrl, async (err, resp, data) => {
@@ -536,20 +536,20 @@ function getMemBerList() {
             data = JSON.parse(data);
             if (data && data.success) {
               for (let item of data.data) {
-                if (item["taskStatus"] === 0) {
-                  $.log(`去领取【${item["title"]}】任务\n`);
-                  await getMemBerGetTask(item["sourceId"]);
+                if (item['taskStatus'] === 0) {
+                  $.log(`去领取【${item['title']}】任务\n`);
+                  await getMemBerGetTask(item['sourceId']);
                 }
               }
               $.getRewardBeans = 0;
               console.log(`\n检查是否可领虫洞京豆奖励`);
-              $.memBerList = data.data.filter((item) => item["taskStatus"] === 2);
+              $.memBerList = data.data.filter((item) => item['taskStatus'] === 2);
               if ($.memBerList && $.memBerList.length > 0) {
                 for (let uuids of $.memBerList) {
-                  await getReward(uuids["uuid"]);
+                  await getReward(uuids['uuid']);
                 }
                 if ($.getRewardBeans > 0) {
-                  $.msg(`${$.name}`, "", `京东账号${$.index}  ${$.nickName}\n虫洞任务：获得${$.getRewardBeans}京豆`);
+                  $.msg(`${$.name}`, '', `京东账号${$.index}  ${$.nickName}\n虫洞任务：获得${$.getRewardBeans}京豆`);
                   if ($.isNode()) await notify.sendNotify(`${$.name} - 账号${$.index} - ${$.nickName}`, `京东账号${$.index}  ${$.nickName}\n虫洞任务：获得${$.getRewardBeans}京豆`);
                 }
               } else {
@@ -570,19 +570,19 @@ function getMemBerList() {
 //领取虫洞任务API
 function getMemBerGetTask(sourceId) {
   return new Promise((resolve) => {
-    const body = { source: "game", sourceId };
+    const body = { source: 'game', sourceId };
     const options = {
       url: `${JD_API_HOST}?appid=memberTaskCenter&functionId=member_getTask&body=${escape(JSON.stringify(body))}&_t=${Date.now()}`,
       headers: {
-        Referer: "https://h5.m.jd.com/babelDiy/Zeus/6yCQo2eDJPbyPXrC3eMCtMWZ9ey/index.html",
+        Referer: 'https://h5.m.jd.com/babelDiy/Zeus/6yCQo2eDJPbyPXrC3eMCtMWZ9ey/index.html',
         Cookie: cookie,
-        "User-Agent": $.isNode()
+        'User-Agent': $.isNode()
           ? process.env.JD_USER_AGENT
             ? process.env.JD_USER_AGENT
-            : require("./USER_AGENTS").USER_AGENT
-          : $.getdata("JDUA")
-          ? $.getdata("JDUA")
-          : "jdapp;iPhone;9.4.4;14.3;network/4g;Mozilla/5.0 (iPhone; CPU iPhone OS 14_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148;supportJDSHWK/1",
+            : require('./USER_AGENTS').USER_AGENT
+          : $.getdata('JDUA')
+          ? $.getdata('JDUA')
+          : 'jdapp;iPhone;9.4.4;14.3;network/4g;Mozilla/5.0 (iPhone; CPU iPhone OS 14_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148;supportJDSHWK/1',
       },
     };
     $.get(options, async (err, resp, data) => {
@@ -608,19 +608,19 @@ function getMemBerGetTask(sourceId) {
 }
 function getReward(uuid) {
   return new Promise((resolve) => {
-    const body = { source: "game", uuid };
+    const body = { source: 'game', uuid };
     const options = {
       url: `${JD_API_HOST}?appid=memberTaskCenter&functionId=member_getReward&body=${escape(JSON.stringify(body))}&_t=${Date.now()}`,
       headers: {
-        Referer: "https://h5.m.jd.com/babelDiy/Zeus/6yCQo2eDJPbyPXrC3eMCtMWZ9ey/index.html",
+        Referer: 'https://h5.m.jd.com/babelDiy/Zeus/6yCQo2eDJPbyPXrC3eMCtMWZ9ey/index.html',
         Cookie: cookie,
-        "User-Agent": $.isNode()
+        'User-Agent': $.isNode()
           ? process.env.JD_USER_AGENT
             ? process.env.JD_USER_AGENT
-            : require("./USER_AGENTS").USER_AGENT
-          : $.getdata("JDUA")
-          ? $.getdata("JDUA")
-          : "jdapp;iPhone;9.4.4;14.3;network/4g;Mozilla/5.0 (iPhone; CPU iPhone OS 14_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148;supportJDSHWK/1",
+            : require('./USER_AGENTS').USER_AGENT
+          : $.getdata('JDUA')
+          ? $.getdata('JDUA')
+          : 'jdapp;iPhone;9.4.4;14.3;network/4g;Mozilla/5.0 (iPhone; CPU iPhone OS 14_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148;supportJDSHWK/1',
       },
     };
     $.get(options, async (err, resp, data) => {
@@ -649,20 +649,20 @@ function TotalBean() {
     const options = {
       url: `https://wq.jd.com/user/info/QueryJDUserInfo?sceneval=2`,
       headers: {
-        Accept: "application/json,text/plain, */*",
-        "Content-Type": "application/x-www-form-urlencoded",
-        "Accept-Encoding": "gzip, deflate, br",
-        "Accept-Language": "zh-cn",
-        Connection: "keep-alive",
+        Accept: 'application/json,text/plain, */*',
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'Accept-Encoding': 'gzip, deflate, br',
+        'Accept-Language': 'zh-cn',
+        Connection: 'keep-alive',
         Cookie: cookie,
-        Referer: "https://wqs.jd.com/my/jingdou/my.shtml?sceneval=2",
-        "User-Agent": $.isNode()
+        Referer: 'https://wqs.jd.com/my/jingdou/my.shtml?sceneval=2',
+        'User-Agent': $.isNode()
           ? process.env.JD_USER_AGENT
             ? process.env.JD_USER_AGENT
-            : require("./USER_AGENTS").USER_AGENT
-          : $.getdata("JDUA")
-          ? $.getdata("JDUA")
-          : "jdapp;iPhone;9.4.4;14.3;network/4g;Mozilla/5.0 (iPhone; CPU iPhone OS 14_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148;supportJDSHWK/1",
+            : require('./USER_AGENTS').USER_AGENT
+          : $.getdata('JDUA')
+          ? $.getdata('JDUA')
+          : 'jdapp;iPhone;9.4.4;14.3;network/4g;Mozilla/5.0 (iPhone; CPU iPhone OS 14_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148;supportJDSHWK/1',
       },
     };
     $.post(options, (err, resp, data) => {
@@ -673,12 +673,12 @@ function TotalBean() {
         } else {
           if (data) {
             data = JSON.parse(data);
-            if (data["retcode"] === 13) {
+            if (data['retcode'] === 13) {
               $.isLogin = false; //cookie过期
               return;
             }
-            if (data["retcode"] === 0) {
-              $.nickName = (data["base"] && data["base"].nickname) || $.UserName;
+            if (data['retcode'] === 0) {
+              $.nickName = (data['base'] && data['base'].nickname) || $.UserName;
             } else {
               $.nickName = $.UserName;
             }

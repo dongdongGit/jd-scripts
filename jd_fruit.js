@@ -23,37 +23,37 @@ cron "5 6-18/6 * * *" script-path=jd_fruit.js,tag=东东农场
 
 jd免费水果 搬的https://github.com/liuxiaoyucc/jd-helper/blob/a6f275d9785748014fc6cca821e58427162e9336/fruit/fruit.js
 */
-const jd_helpers = require("./utils/JDHelpers.js");
-const jd_env = require("./utils/JDEnv.js");
-const $ = jd_env.env("东东农场");
+const jd_helpers = require('./utils/JDHelpers.js');
+const jd_env = require('./utils/JDEnv.js');
+const $ = jd_env.env('东东农场');
 let cookiesArr = [],
-  cookie = "",
+  cookie = '',
   jdFruitShareArr = [],
   isBox = false,
   notify,
   newShareCodes,
-  allMessage = "";
+  allMessage = '';
 //助力好友分享码(最多3个,否则后面的助力失败),原因:京东农场每人每天只有3次助力机会
 //此此内容是IOS用户下载脚本到本地使用，填写互助码的地方，同一京东账号的好友互助码请使用@符号隔开。
 //下面给出两个账号的填写示例（iOS只支持2个京东账号）
 let shareCodes = [
   // 这个列表填入你要助力的好友的shareCode
-  "",
+  '',
 ];
-let message = "",
-  subTitle = "",
+let message = '',
+  subTitle = '',
   option = {},
   isFruitFinished = false;
 const retainWater = 100; //保留水滴大于多少g,默认100g;
 let jdNotify = false; //是否关闭通知，false打开通知推送，true关闭通知推送
 let jdFruitBeanCard = false; //农场使用水滴换豆卡(如果出现限时活动时100g水换20豆,此时比浇水划算,推荐换豆),true表示换豆(不浇水),false表示不换豆(继续浇水),脚本默认是浇水
 let randomCount = $.isNode() ? 20 : 5;
-const JD_API_HOST = "https://api.m.jd.com/client.action";
+const JD_API_HOST = 'https://api.m.jd.com/client.action';
 const urlSchema = `openjd://virtual?params=%7B%20%22category%22:%20%22jump%22,%20%22des%22:%20%22m%22,%20%22url%22:%20%22https://h5.m.jd.com/babelDiy/Zeus/3KSjXqQabiTuD1cJ28QskrpWoBKT/index.html%22%20%7D`;
 !(async () => {
   await requireConfig();
   if (!cookiesArr[0]) {
-    $.msg($.name, "【提示】请先获取京东账号一cookie\n直接使用NobyDa的京东签到获取", "https://bean.m.jd.com/bean/signIndex.action", { "open-url": "https://bean.m.jd.com/bean/signIndex.action" });
+    $.msg($.name, '【提示】请先获取京东账号一cookie\n直接使用NobyDa的京东签到获取', 'https://bean.m.jd.com/bean/signIndex.action', { 'open-url': 'https://bean.m.jd.com/bean/signIndex.action' });
     return;
   }
   for (let i = 0; i < cookiesArr.length; i++) {
@@ -62,12 +62,12 @@ const urlSchema = `openjd://virtual?params=%7B%20%22category%22:%20%22jump%22,%2
       $.UserName = decodeURIComponent(cookie.match(/pt_pin=([^; ]+)(?=;?)/) && cookie.match(/pt_pin=([^; ]+)(?=;?)/)[1]);
       $.index = i + 1;
       $.isLogin = true;
-      $.nickName = "";
+      $.nickName = '';
       await TotalBean();
       console.log(`\n开始【京东账号${$.index}】${$.nickName || $.UserName}\n`);
       if (!$.isLogin) {
         $.msg($.name, `【提示】cookie已失效`, `京东账号${$.index} ${$.nickName || $.UserName}\n请重新登录获取\nhttps://bean.m.jd.com/bean/signIndex.action`, {
-          "open-url": "https://bean.m.jd.com/bean/signIndex.action",
+          'open-url': 'https://bean.m.jd.com/bean/signIndex.action',
         });
 
         if ($.isNode()) {
@@ -75,8 +75,8 @@ const urlSchema = `openjd://virtual?params=%7B%20%22category%22:%20%22jump%22,%2
         }
         continue;
       }
-      message = "";
-      subTitle = "";
+      message = '';
+      subTitle = '';
       option = {};
       await shareCodesFormat();
       await jdFruit();
@@ -85,13 +85,13 @@ const urlSchema = `openjd://virtual?params=%7B%20%22category%22:%20%22jump%22,%2
   if ($.isNode() && allMessage && $.ctrTemp) {
     await notify.sendNotify(`${$.name}`, `${allMessage}`);
   }
-})()
-  // .catch((e) => {
-  //   $.log("", `❌ ${$.name}, 失败! 原因: ${e}!`, "");
-  // })
-  // .finally(() => {
-  //   $.done();
-  // });
+})();
+// .catch((e) => {
+//   $.log("", `❌ ${$.name}, 失败! 原因: ${e}!`, "");
+// })
+// .finally(() => {
+//   $.done();
+// });
 async function jdFruit() {
   subTitle = `【京东账号${$.index}】${$.nickName}`;
   try {
@@ -105,7 +105,7 @@ async function jdFruit() {
       message += `【已兑换水果】${$.farmInfo.farmUserPro.winTimes}次\n`;
       await masterHelpShare(); //助力好友
       if ($.farmInfo.treeState === 2 || $.farmInfo.treeState === 3) {
-        option["open-url"] = urlSchema;
+        option['open-url'] = urlSchema;
         $.msg($.name, ``, `【京东账号${$.index}】${$.nickName || $.UserName}\n【提醒⏰】${$.farmInfo.farmUserPro.name}已可领取\n请去京东APP或微信小程序查看\n点击弹窗即达`, option);
         if ($.isNode()) {
           await notify.sendNotify(
@@ -118,7 +118,7 @@ async function jdFruit() {
         console.log(`\n${$.farmInfo.farmUserPro.name}种植中...\n`);
       } else if ($.farmInfo.treeState === 0) {
         //已下单购买, 但未开始种植新的水果
-        option["open-url"] = urlSchema;
+        option['open-url'] = urlSchema;
         $.msg($.name, ``, `【京东账号${$.index}】 ${$.nickName || $.UserName}\n【提醒⏰】您忘了种植新的水果\n请去京东APP或微信小程序选购并种植新的水果\n点击弹窗即达`, option);
         if ($.isNode()) {
           await notify.sendNotify(`${$.name} - 您忘了种植新的水果`, `京东账号${$.index} ${$.nickName}\n【提醒⏰】您忘了种植新的水果\n请去京东APP或微信小程序选购并种植新的水果`);
@@ -142,7 +142,7 @@ async function jdFruit() {
     $.logErr(e);
     const errMsg = `京东账号${$.index} ${$.nickName || $.UserName}\n任务执行异常，请检查执行日志 ‼️‼️`;
     if ($.isNode()) await notify.sendNotify(`${$.name}`, errMsg);
-    $.msg($.name, "", `${errMsg}`);
+    $.msg($.name, '', `${errMsg}`);
   }
   await showMsg();
 }
@@ -151,7 +151,7 @@ async function doDailyTask() {
   console.log(`开始签到`);
   if (!$.farmTask.signInit.todaySigned) {
     await signForFarm(); //签到
-    if ($.signResult.code === "0") {
+    if ($.signResult.code === '0') {
       console.log(`【签到成功】获得${$.signResult.amount}g💧\\n`);
       //message += `【签到成功】获得${$.signResult.amount}g💧\n`//连续签到${signResult.signDay}天
     } else {
@@ -162,10 +162,10 @@ async function doDailyTask() {
     console.log(`今天已签到,连续签到${$.farmTask.signInit.totalSigned},下次签到可得${$.farmTask.signInit.signEnergyEachAmount}g\n`);
   }
   // 被水滴砸中
-  console.log(`被水滴砸中： ${$.farmInfo.todayGotWaterGoalTask.canPop ? "是" : "否"}`);
+  console.log(`被水滴砸中： ${$.farmInfo.todayGotWaterGoalTask.canPop ? '是' : '否'}`);
   if ($.farmInfo.todayGotWaterGoalTask.canPop) {
     await gotWaterGoalTaskForFarm();
-    if ($.goalResult.code === "0") {
+    if ($.goalResult.code === '0') {
       console.log(`【被水滴砸中】获得${$.goalResult.addEnergy}g💧\\n`);
       // message += `【被水滴砸中】获得${$.goalResult.addEnergy}g💧\n`
     }
@@ -183,13 +183,13 @@ async function doDailyTask() {
         console.log(`${advert.mainTitle}+ ' 已完成`); //,获得${advert.reward}g
         continue;
       }
-      console.log("正在进行广告浏览任务: " + advert.mainTitle);
+      console.log('正在进行广告浏览任务: ' + advert.mainTitle);
       await browseAdTaskForFarm(advert.advertId, 0);
-      if ($.browseResult.code === "0") {
+      if ($.browseResult.code === '0') {
         console.log(`${advert.mainTitle}浏览任务完成`);
         //领取奖励
         await browseAdTaskForFarm(advert.advertId, 1);
-        if ($.browseRwardResult.code === "0") {
+        if ($.browseRwardResult.code === '0') {
           console.log(`领取浏览${advert.mainTitle}广告奖励成功,获得${$.browseRwardResult.amount}g`);
           browseReward += $.browseRwardResult.amount;
           browseSuccess++;
@@ -216,7 +216,7 @@ async function doDailyTask() {
   if (!$.farmTask.gotThreeMealInit.f) {
     //
     await gotThreeMealForFarm();
-    if ($.threeMeal.code === "0") {
+    if ($.threeMeal.code === '0') {
       console.log(`【定时领水】获得${$.threeMeal.amount}g💧\n`);
       // message += `【定时领水】获得${$.threeMeal.amount}g💧\n`;
     } else {
@@ -224,7 +224,7 @@ async function doDailyTask() {
       console.log(`定时领水成功结果:  ${JSON.stringify($.threeMeal)}`);
     }
   } else {
-    console.log("当前不在定时领水时间断或者已经领过\n");
+    console.log('当前不在定时领水时间断或者已经领过\n');
   }
   //给好友浇水
   if (!$.farmTask.waterFriendTaskInit.f) {
@@ -248,7 +248,7 @@ async function doDailyTask() {
   await turntableFarm(); //天天抽奖得好礼
 }
 async function predictionFruit() {
-  console.log("开始预测水果成熟时间\n");
+  console.log('开始预测水果成熟时间\n');
   await initForFarm();
   await taskInitForFarm();
   let waterEveryDayT = $.farmTask.totalWaterTaskInit.totalWaterTaskTimes; //今天到到目前为止，浇了多少次水
@@ -267,17 +267,17 @@ async function predictionFruit() {
 
   let waterD = Math.ceil(waterTotalT / waterEveryDayT);
 
-  message += `【预测】${waterD === 1 ? "明天" : waterD === 2 ? "后天" : waterD + "天之后"}(${timeFormat(24 * 60 * 60 * 1000 * waterD + Date.now())}日)可兑换水果🍉`;
+  message += `【预测】${waterD === 1 ? '明天' : waterD === 2 ? '后天' : waterD + '天之后'}(${timeFormat(24 * 60 * 60 * 1000 * waterD + Date.now())}日)可兑换水果🍉`;
 }
 //浇水十次
 async function doTenWater() {
-  jdFruitBeanCard = $.getdata("jdFruitBeanCard") ? $.getdata("jdFruitBeanCard") : jdFruitBeanCard;
+  jdFruitBeanCard = $.getdata('jdFruitBeanCard') ? $.getdata('jdFruitBeanCard') : jdFruitBeanCard;
   if ($.isNode() && process.env.FRUIT_BEAN_CARD) {
     jdFruitBeanCard = process.env.FRUIT_BEAN_CARD;
   }
   await myCardInfoForFarm();
   const { fastCard, doubleCard, beanCard, signCard } = $.myCardInfoRes;
-  if (`${jdFruitBeanCard}` === "true" && JSON.stringify($.myCardInfoRes).match(`限时翻倍`) && beanCard > 0) {
+  if (`${jdFruitBeanCard}` === 'true' && JSON.stringify($.myCardInfoRes).match(`限时翻倍`) && beanCard > 0) {
     console.log(`您设置的是使用水滴换豆卡，且背包有水滴换豆卡${beanCard}张, 跳过10次浇水任务`);
     return;
   }
@@ -289,7 +289,7 @@ async function doTenWater() {
       console.log(`第${waterCount + 1}次浇水`);
       await waterGoodForFarm();
       console.log(`本次浇水结果:   ${JSON.stringify($.waterResult)}`);
-      if ($.waterResult.code === "0") {
+      if ($.waterResult.code === '0') {
         console.log(`剩余水滴${$.waterResult.totalEnergy}g`);
         if ($.waterResult.finished) {
           // 已证实，waterResult.finished为true，表示水果可以去领取兑换了
@@ -303,12 +303,12 @@ async function doTenWater() {
           await gotStageAward(); //领取阶段性水滴奖励
         }
       } else {
-        console.log("浇水出现失败异常,跳出不在继续浇水");
+        console.log('浇水出现失败异常,跳出不在继续浇水');
         break;
       }
     }
     if (isFruitFinished) {
-      option["open-url"] = urlSchema;
+      option['open-url'] = urlSchema;
       $.msg($.name, ``, `【京东账号${$.index}】${$.nickName || $.UserName}\n【提醒⏰】${$.farmInfo.farmUserPro.name}已可领取\n请去京东APP或微信小程序查看\n点击弹窗即达`, option);
       $.done();
       if ($.isNode()) {
@@ -316,7 +316,7 @@ async function doTenWater() {
       }
     }
   } else {
-    console.log("\n今日已完成10次浇水任务\n");
+    console.log('\n今日已完成10次浇水任务\n');
   }
 }
 //领取首次浇水奖励
@@ -325,7 +325,7 @@ async function getFirstWaterAward() {
   //领取首次浇水奖励
   if (!$.farmTask.firstWaterInit.f && $.farmTask.firstWaterInit.totalWaterTimes > 0) {
     await firstWaterTaskForFarm();
-    if ($.firstWaterReward.code === "0") {
+    if ($.firstWaterReward.code === '0') {
       console.log(`【首次浇水奖励】获得${$.firstWaterReward.amount}g💧\n`);
       // message += `【首次浇水奖励】获得${$.firstWaterReward.amount}g💧\n`;
     } else {
@@ -333,7 +333,7 @@ async function getFirstWaterAward() {
       console.log(`领取首次浇水奖励结果:  ${JSON.stringify($.firstWaterReward)}`);
     }
   } else {
-    console.log("首次浇水奖励已领取\n");
+    console.log('首次浇水奖励已领取\n');
   }
 }
 //领取十次浇水奖励
@@ -341,7 +341,7 @@ async function getTenWaterAward() {
   //领取10次浇水奖励
   if (!$.farmTask.totalWaterTaskInit.f && $.farmTask.totalWaterTaskInit.totalWaterTaskTimes >= $.farmTask.totalWaterTaskInit.totalWaterTaskLimit) {
     await totalWaterTaskForFarm();
-    if ($.totalWaterReward.code === "0") {
+    if ($.totalWaterReward.code === '0') {
       console.log(`【十次浇水奖励】获得${$.totalWaterReward.totalWaterTaskEnergy}g💧\n`);
       // message += `【十次浇水奖励】获得${$.totalWaterReward.totalWaterTaskEnergy}g💧\n`;
     } else {
@@ -352,25 +352,25 @@ async function getTenWaterAward() {
     // message += `【十次浇水奖励】任务未完成，今日浇水${$.farmTask.totalWaterTaskInit.totalWaterTaskTimes}次\n`;
     console.log(`【十次浇水奖励】任务未完成，今日浇水${$.farmTask.totalWaterTaskInit.totalWaterTaskTimes}次\n`);
   }
-  console.log("finished 水果任务完成!");
+  console.log('finished 水果任务完成!');
 }
 //再次浇水
 async function doTenWaterAgain() {
-  console.log("开始检查剩余水滴能否再次浇水再次浇水\n");
+  console.log('开始检查剩余水滴能否再次浇水再次浇水\n');
   await initForFarm();
   let totalEnergy = $.farmInfo.farmUserPro.totalEnergy;
   console.log(`剩余水滴${totalEnergy}g\n`);
   await myCardInfoForFarm();
   const { fastCard, doubleCard, beanCard, signCard } = $.myCardInfoRes;
   console.log(
-    `背包已有道具:\n快速浇水卡:${fastCard === -1 ? "未解锁" : fastCard + "张"}\n水滴翻倍卡:${doubleCard === -1 ? "未解锁" : doubleCard + "张"}\n水滴换京豆卡:${
-      beanCard === -1 ? "未解锁" : beanCard + "张"
-    }\n加签卡:${signCard === -1 ? "未解锁" : signCard + "张"}\n`
+    `背包已有道具:\n快速浇水卡:${fastCard === -1 ? '未解锁' : fastCard + '张'}\n水滴翻倍卡:${doubleCard === -1 ? '未解锁' : doubleCard + '张'}\n水滴换京豆卡:${
+      beanCard === -1 ? '未解锁' : beanCard + '张'
+    }\n加签卡:${signCard === -1 ? '未解锁' : signCard + '张'}\n`
   );
   if (totalEnergy >= 100 && doubleCard > 0) {
     //使用翻倍水滴卡
-    for (let i = 0; i < new Array(doubleCard).fill("").length; i++) {
-      await userMyCardForFarm("doubleCard");
+    for (let i = 0; i < new Array(doubleCard).fill('').length; i++) {
+      await userMyCardForFarm('doubleCard');
       console.log(`使用翻倍水滴卡结果:${JSON.stringify($.userMyCardRes)}`);
     }
     await initForFarm();
@@ -378,24 +378,24 @@ async function doTenWaterAgain() {
   }
   if (signCard > 0) {
     //使用加签卡
-    for (let i = 0; i < new Array(signCard).fill("").length; i++) {
-      await userMyCardForFarm("signCard");
+    for (let i = 0; i < new Array(signCard).fill('').length; i++) {
+      await userMyCardForFarm('signCard');
       console.log(`使用加签卡结果:${JSON.stringify($.userMyCardRes)}`);
     }
     await initForFarm();
     totalEnergy = $.farmInfo.farmUserPro.totalEnergy;
   }
-  jdFruitBeanCard = $.getdata("jdFruitBeanCard") ? $.getdata("jdFruitBeanCard") : jdFruitBeanCard;
+  jdFruitBeanCard = $.getdata('jdFruitBeanCard') ? $.getdata('jdFruitBeanCard') : jdFruitBeanCard;
   if ($.isNode() && process.env.FRUIT_BEAN_CARD) {
     jdFruitBeanCard = process.env.FRUIT_BEAN_CARD;
   }
-  if (`${jdFruitBeanCard}` === "true" && JSON.stringify($.myCardInfoRes).match("限时翻倍")) {
+  if (`${jdFruitBeanCard}` === 'true' && JSON.stringify($.myCardInfoRes).match('限时翻倍')) {
     console.log(`\n您设置的是水滴换豆功能,现在为您换豆`);
     if (totalEnergy >= 100 && $.myCardInfoRes.beanCard > 0) {
       //使用水滴换豆卡
-      await userMyCardForFarm("beanCard");
+      await userMyCardForFarm('beanCard');
       console.log(`使用水滴换豆卡结果:${JSON.stringify($.userMyCardRes)}`);
-      if ($.userMyCardRes.code === "0") {
+      if ($.userMyCardRes.code === '0') {
         message += `【水滴换豆卡】获得${$.userMyCardRes.beanCount}个京豆\n`;
         return;
       }
@@ -421,8 +421,8 @@ async function doTenWaterAgain() {
     for (let i = 0; i < ($.farmInfo.farmUserPro.treeTotalEnergy - $.farmInfo.farmUserPro.treeEnergy) / 10; i++) {
       await waterGoodForFarm();
       console.log(`本次浇水结果(水果马上就可兑换了):   ${JSON.stringify($.waterResult)}`);
-      if ($.waterResult.code === "0") {
-        console.log("\n浇水10g成功\n");
+      if ($.waterResult.code === '0') {
+        console.log('\n浇水10g成功\n');
         if ($.waterResult.finished) {
           // 已证实，waterResult.finished为true，表示水果可以去领取兑换了
           isFruitFinished = true;
@@ -431,12 +431,12 @@ async function doTenWaterAgain() {
           console.log(`目前水滴【${$.waterResult.totalEnergy}】g,继续浇水，水果马上就可以兑换了`);
         }
       } else {
-        console.log("浇水出现失败异常,跳出不在继续浇水");
+        console.log('浇水出现失败异常,跳出不在继续浇水');
         break;
       }
     }
     if (isFruitFinished) {
-      option["open-url"] = urlSchema;
+      option['open-url'] = urlSchema;
       $.msg($.name, ``, `【京东账号${$.index}】${$.nickName || $.UserName}\n【提醒⏰】${$.farmInfo.farmUserPro.name}已可领取\n请去京东APP或微信小程序查看\n点击弹窗即达`, option);
       $.done();
       if ($.isNode()) {
@@ -444,12 +444,12 @@ async function doTenWaterAgain() {
       }
     }
   } else if (overageEnergy >= 10) {
-    console.log("目前剩余水滴：【" + totalEnergy + "】g，可继续浇水");
+    console.log('目前剩余水滴：【' + totalEnergy + '】g，可继续浇水');
     isFruitFinished = false;
     for (let i = 0; i < parseInt(overageEnergy / 10); i++) {
       await waterGoodForFarm();
       console.log(`本次浇水结果:   ${JSON.stringify($.waterResult)}`);
-      if ($.waterResult.code === "0") {
+      if ($.waterResult.code === '0') {
         console.log(`\n浇水10g成功,剩余${$.waterResult.totalEnergy}\n`);
         if ($.waterResult.finished) {
           // 已证实，waterResult.finished为true，表示水果可以去领取兑换了
@@ -459,12 +459,12 @@ async function doTenWaterAgain() {
           await gotStageAward();
         }
       } else {
-        console.log("浇水出现失败异常,跳出不在继续浇水");
+        console.log('浇水出现失败异常,跳出不在继续浇水');
         break;
       }
     }
     if (isFruitFinished) {
-      option["open-url"] = urlSchema;
+      option['open-url'] = urlSchema;
       $.msg($.name, ``, `【京东账号${$.index}】${$.nickName || $.UserName}\n【提醒⏰】${$.farmInfo.farmUserPro.name}已可领取\n请去京东APP或微信小程序查看\n点击弹窗即达`, option);
       $.done();
       if ($.isNode()) {
@@ -472,33 +472,33 @@ async function doTenWaterAgain() {
       }
     }
   } else {
-    console.log("目前剩余水滴：【" + totalEnergy + "】g,不再继续浇水,保留部分水滴用于完成第二天【十次浇水得水滴】任务");
+    console.log('目前剩余水滴：【' + totalEnergy + '】g,不再继续浇水,保留部分水滴用于完成第二天【十次浇水得水滴】任务');
   }
 }
 //领取阶段性水滴奖励
 function gotStageAward() {
   return new Promise(async (resolve) => {
     if ($.waterResult.waterStatus === 0 && $.waterResult.treeEnergy === 10) {
-      console.log("果树发芽了,奖励30g水滴");
-      await gotStageAwardForFarm("1");
+      console.log('果树发芽了,奖励30g水滴');
+      await gotStageAwardForFarm('1');
       console.log(`浇水阶段奖励1领取结果 ${JSON.stringify($.gotStageAwardForFarmRes)}`);
-      if ($.gotStageAwardForFarmRes.code === "0") {
+      if ($.gotStageAwardForFarmRes.code === '0') {
         // message += `【果树发芽了】奖励${$.gotStageAwardForFarmRes.addEnergy}\n`;
         console.log(`【果树发芽了】奖励${$.gotStageAwardForFarmRes.addEnergy}\n`);
       }
     } else if ($.waterResult.waterStatus === 1) {
-      console.log("果树开花了,奖励40g水滴");
-      await gotStageAwardForFarm("2");
+      console.log('果树开花了,奖励40g水滴');
+      await gotStageAwardForFarm('2');
       console.log(`浇水阶段奖励2领取结果 ${JSON.stringify($.gotStageAwardForFarmRes)}`);
-      if ($.gotStageAwardForFarmRes.code === "0") {
+      if ($.gotStageAwardForFarmRes.code === '0') {
         // message += `【果树开花了】奖励${$.gotStageAwardForFarmRes.addEnergy}g💧\n`;
         console.log(`【果树开花了】奖励${$.gotStageAwardForFarmRes.addEnergy}g💧\n`);
       }
     } else if ($.waterResult.waterStatus === 2) {
-      console.log("果树长出小果子啦, 奖励50g水滴");
-      await gotStageAwardForFarm("3");
+      console.log('果树长出小果子啦, 奖励50g水滴');
+      await gotStageAwardForFarm('3');
       console.log(`浇水阶段奖励3领取结果 ${JSON.stringify($.gotStageAwardForFarmRes)}`);
-      if ($.gotStageAwardForFarmRes.code === "0") {
+      if ($.gotStageAwardForFarmRes.code === '0') {
         // message += `【果树结果了】奖励${$.gotStageAwardForFarmRes.addEnergy}g💧\n`;
         console.log(`【果树结果了】奖励${$.gotStageAwardForFarmRes.addEnergy}g💧\n`);
       }
@@ -509,7 +509,7 @@ function gotStageAward() {
 //天天抽奖活动
 async function turntableFarm() {
   await initForTurntableFarm();
-  if ($.initForTurntableFarmRes.code === "0") {
+  if ($.initForTurntableFarmRes.code === '0') {
     //领取定时奖励 //4小时一次
     let { timingIntervalHours, timingLastSysTime, sysTime, timingGotStatus, remainLotteryTimes, turntableInfos } = $.initForTurntableFarmRes;
 
@@ -524,17 +524,17 @@ async function turntableFarm() {
         console.log(`免费赠送的抽奖机会未到时间`);
       }
     } else {
-      console.log("4小时候免费赠送的抽奖机会已领取");
+      console.log('4小时候免费赠送的抽奖机会已领取');
     }
     if ($.initForTurntableFarmRes.turntableBrowserAds && $.initForTurntableFarmRes.turntableBrowserAds.length > 0) {
       for (let index = 0; index < $.initForTurntableFarmRes.turntableBrowserAds.length; index++) {
         if (!$.initForTurntableFarmRes.turntableBrowserAds[index].status) {
           console.log(`开始浏览天天抽奖的第${index + 1}个逛会场任务`);
           await browserForTurntableFarm(1, $.initForTurntableFarmRes.turntableBrowserAds[index].adId);
-          if ($.browserForTurntableFarmRes.code === "0" && $.browserForTurntableFarmRes.status) {
+          if ($.browserForTurntableFarmRes.code === '0' && $.browserForTurntableFarmRes.status) {
             console.log(`第${index + 1}个逛会场任务完成，开始领取水滴奖励\n`);
             await browserForTurntableFarm(2, $.initForTurntableFarmRes.turntableBrowserAds[index].adId);
-            if ($.browserForTurntableFarmRes.code === "0") {
+            if ($.browserForTurntableFarmRes.code === '0') {
               console.log(`第${index + 1}个逛会场任务领取水滴奖励完成\n`);
               await initForTurntableFarm();
               remainLotteryTimes = $.initForTurntableFarmRes.remainLotteryTimes;
@@ -546,19 +546,19 @@ async function turntableFarm() {
       }
     }
     //天天抽奖助力
-    console.log("开始天天抽奖--好友助力--每人每天只有三次助力机会.");
+    console.log('开始天天抽奖--好友助力--每人每天只有三次助力机会.');
     for (let code of newShareCodes) {
       if (code === $.farmInfo.farmUserPro.shareCode) {
-        console.log("天天抽奖-不能自己给自己助力\n");
+        console.log('天天抽奖-不能自己给自己助力\n');
         continue;
       }
       await lotteryMasterHelp(code);
       // console.log('天天抽奖助力结果',lotteryMasterHelpRes.helpResult)
-      if ($.lotteryMasterHelpRes.helpResult.code === "0") {
+      if ($.lotteryMasterHelpRes.helpResult.code === '0') {
         console.log(`天天抽奖-助力${$.lotteryMasterHelpRes.helpResult.masterUserInfo.nickName}成功\n`);
-      } else if ($.lotteryMasterHelpRes.helpResult.code === "11") {
+      } else if ($.lotteryMasterHelpRes.helpResult.code === '11') {
         console.log(`天天抽奖-不要重复助力${$.lotteryMasterHelpRes.helpResult.masterUserInfo.nickName}\n`);
-      } else if ($.lotteryMasterHelpRes.helpResult.code === "13") {
+      } else if ($.lotteryMasterHelpRes.helpResult.code === '13') {
         console.log(`天天抽奖-助力${$.lotteryMasterHelpRes.helpResult.masterUserInfo.nickName}失败,助力次数耗尽\n`);
         break;
       }
@@ -566,18 +566,18 @@ async function turntableFarm() {
     console.log(`---天天抽奖次数remainLotteryTimes----${remainLotteryTimes}次`);
     //抽奖
     if (remainLotteryTimes > 0) {
-      console.log("开始抽奖");
-      let lotteryResult = "";
-      for (let i = 0; i < new Array(remainLotteryTimes).fill("").length; i++) {
+      console.log('开始抽奖');
+      let lotteryResult = '';
+      for (let i = 0; i < new Array(remainLotteryTimes).fill('').length; i++) {
         await lotteryForTurntableFarm();
         console.log(`第${i + 1}次抽奖结果${JSON.stringify($.lotteryRes)}`);
-        if ($.lotteryRes.code === "0") {
+        if ($.lotteryRes.code === '0') {
           turntableInfos.map((item) => {
             if (item.type === $.lotteryRes.type) {
               console.log(`lotteryRes.type${$.lotteryRes.type}`);
-              if ($.lotteryRes.type.match(/bean/g) && $.lotteryRes.type.match(/bean/g)[0] === "bean") {
+              if ($.lotteryRes.type.match(/bean/g) && $.lotteryRes.type.match(/bean/g)[0] === 'bean') {
                 lotteryResult += `${item.name}个，`;
-              } else if ($.lotteryRes.type.match(/water/g) && $.lotteryRes.type.match(/water/g)[0] === "water") {
+              } else if ($.lotteryRes.type.match(/water/g) && $.lotteryRes.type.match(/water/g)[0] === 'water') {
                 lotteryResult += `${item.name}，`;
               } else {
                 lotteryResult += `${item.name}，`;
@@ -595,77 +595,77 @@ async function turntableFarm() {
         // message += `【天天抽奖】${lotteryResult.substr(0, lotteryResult.length - 1)}\n`;
       }
     } else {
-      console.log("天天抽奖--抽奖机会为0次");
+      console.log('天天抽奖--抽奖机会为0次');
     }
   } else {
-    console.log("初始化天天抽奖得好礼失败");
+    console.log('初始化天天抽奖得好礼失败');
   }
 }
 //领取额外奖励水滴
 async function getExtraAward() {
   await masterHelpTaskInitForFarm();
-  if ($.masterHelpResult.code === "0") {
+  if ($.masterHelpResult.code === '0') {
     if ($.masterHelpResult.masterHelpPeoples && $.masterHelpResult.masterHelpPeoples.length >= 5) {
       // 已有五人助力。领取助力后的奖励
       if (!$.masterHelpResult.masterGotFinal) {
         await masterGotFinishedTaskForFarm();
-        if ($.masterGotFinished.code === "0") {
+        if ($.masterGotFinished.code === '0') {
           console.log(`已成功领取好友助力奖励：【${$.masterGotFinished.amount}】g水`);
           message += `【额外奖励】${$.masterGotFinished.amount}g水领取成功\n`;
         }
       } else {
-        console.log("已经领取过5好友助力额外奖励");
+        console.log('已经领取过5好友助力额外奖励');
         message += `【额外奖励】已被领取过\n`;
       }
     } else {
-      console.log("助力好友未达到5个");
+      console.log('助力好友未达到5个');
       message += `【额外奖励】领取失败,原因：给您助力的人未达5个\n`;
     }
     if ($.masterHelpResult.masterHelpPeoples && $.masterHelpResult.masterHelpPeoples.length > 0) {
-      let str = "";
+      let str = '';
       $.masterHelpResult.masterHelpPeoples.map((item, index) => {
         if (index === $.masterHelpResult.masterHelpPeoples.length - 1) {
-          str += item.nickName || "匿名用户";
+          str += item.nickName || '匿名用户';
         } else {
-          str += (item.nickName || "匿名用户") + ",";
+          str += (item.nickName || '匿名用户') + ',';
         }
         let date = new Date(item.time);
-        let time = date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate() + " " + date.getHours() + ":" + date.getMinutes() + ":" + date.getMinutes();
-        console.log(`\n京东昵称【${item.nickName || "匿名用户"}】 在 ${time} 给您助过力\n`);
+        let time = date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate() + ' ' + date.getHours() + ':' + date.getMinutes() + ':' + date.getMinutes();
+        console.log(`\n京东昵称【${item.nickName || '匿名用户'}】 在 ${time} 给您助过力\n`);
       });
       message += `【助力您的好友】${str}\n`;
     }
-    console.log("领取额外奖励水滴结束\n");
+    console.log('领取额外奖励水滴结束\n');
   }
 }
 //助力好友
 async function masterHelpShare() {
-  console.log("开始助力好友");
+  console.log('开始助力好友');
   let salveHelpAddWater = 0;
   let remainTimes = 3; //今日剩余助力次数,默认3次（京东农场每人每天3次助力机会）。
-  let helpSuccessPeoples = ""; //成功助力好友
+  let helpSuccessPeoples = ''; //成功助力好友
   console.log(`格式化后的助力码::${JSON.stringify(newShareCodes)}\n`);
 
   for (let code of newShareCodes) {
     console.log(`开始助力京东账号${$.index} - ${$.nickName}的好友: ${code}`);
     if (!code) continue;
     if (code === $.farmInfo.farmUserPro.shareCode) {
-      console.log("不能为自己助力哦，跳过自己的shareCode\n");
+      console.log('不能为自己助力哦，跳过自己的shareCode\n');
       continue;
     }
     await masterHelp(code);
-    if ($.helpResult.code === "0") {
-      if ($.helpResult.helpResult.code === "0") {
+    if ($.helpResult.code === '0') {
+      if ($.helpResult.helpResult.code === '0') {
         //助力成功
         salveHelpAddWater += $.helpResult.helpResult.salveHelpAddWater;
         console.log(`【助力好友结果】: 已成功给【${$.helpResult.helpResult.masterUserInfo.nickName}】助力`);
         console.log(`给好友【${$.helpResult.helpResult.masterUserInfo.nickName}】助力获得${$.helpResult.helpResult.salveHelpAddWater}g水滴`);
-        helpSuccessPeoples += ($.helpResult.helpResult.masterUserInfo.nickName || "匿名用户") + ",";
-      } else if ($.helpResult.helpResult.code === "8") {
+        helpSuccessPeoples += ($.helpResult.helpResult.masterUserInfo.nickName || '匿名用户') + ',';
+      } else if ($.helpResult.helpResult.code === '8') {
         console.log(`【助力好友结果】: 助力【${$.helpResult.helpResult.masterUserInfo.nickName}】失败，您今天助力次数已耗尽`);
-      } else if ($.helpResult.helpResult.code === "9") {
+      } else if ($.helpResult.helpResult.code === '9') {
         console.log(`【助力好友结果】: 之前给【${$.helpResult.helpResult.masterUserInfo.nickName}】助力过了`);
-      } else if ($.helpResult.helpResult.code === "10") {
+      } else if ($.helpResult.helpResult.code === '10') {
         console.log(`【助力好友结果】: 好友【${$.helpResult.helpResult.masterUserInfo.nickName}】已满五人助力`);
       } else {
         console.log(`助力其他情况：${JSON.stringify($.helpResult.helpResult)}`);
@@ -684,12 +684,12 @@ async function masterHelpShare() {
     let helpSuccessPeoplesKey = timeFormat() + $.farmInfo.farmUserPro.shareCode;
     if (!$.getdata(helpSuccessPeoplesKey)) {
       //把前一天的清除
-      $.setdata("", timeFormat(Date.now() - 24 * 60 * 60 * 1000) + $.farmInfo.farmUserPro.shareCode);
-      $.setdata("", helpSuccessPeoplesKey);
+      $.setdata('', timeFormat(Date.now() - 24 * 60 * 60 * 1000) + $.farmInfo.farmUserPro.shareCode);
+      $.setdata('', helpSuccessPeoplesKey);
     }
     if (helpSuccessPeoples) {
       if ($.getdata(helpSuccessPeoplesKey)) {
-        $.setdata($.getdata(helpSuccessPeoplesKey) + "," + helpSuccessPeoples, helpSuccessPeoplesKey);
+        $.setdata($.getdata(helpSuccessPeoplesKey) + ',' + helpSuccessPeoples, helpSuccessPeoplesKey);
       } else {
         $.setdata(helpSuccessPeoples, helpSuccessPeoplesKey);
       }
@@ -704,14 +704,14 @@ async function masterHelpShare() {
     console.log(`【助力好友👬】获得${salveHelpAddWater}g💧\n`);
   }
   message += `【今日剩余助力👬】${remainTimes}次\n`;
-  console.log("助力好友结束，即将开始领取额外水滴奖励\n");
+  console.log('助力好友结束，即将开始领取额外水滴奖励\n');
 }
 //水滴雨
 async function executeWaterRains() {
   let executeWaterRain = !$.farmTask.waterRainInit.f;
   if (executeWaterRain) {
     console.log(`水滴雨任务，每天两次，最多可得10g水滴`);
-    console.log(`两次水滴雨任务是否全部完成：${$.farmTask.waterRainInit.f ? "是" : "否"}`);
+    console.log(`两次水滴雨任务是否全部完成：${$.farmTask.waterRainInit.f ? '是' : '否'}`);
     if ($.farmTask.waterRainInit.lastTime) {
       if (Date.now() < $.farmTask.waterRainInit.lastTime + 3 * 60 * 60 * 1000) {
         executeWaterRain = false;
@@ -722,9 +722,9 @@ async function executeWaterRains() {
     if (executeWaterRain) {
       console.log(`开始水滴雨任务,这是第${$.farmTask.waterRainInit.winTimes + 1}次，剩余${2 - ($.farmTask.waterRainInit.winTimes + 1)}次`);
       await waterRainForFarm();
-      console.log("水滴雨waterRain");
-      if ($.waterRain.code === "0") {
-        console.log("水滴雨任务执行成功，获得水滴：" + $.waterRain.addEnergy + "g");
+      console.log('水滴雨waterRain');
+      if ($.waterRain.code === '0') {
+        console.log('水滴雨任务执行成功，获得水滴：' + $.waterRain.addEnergy + 'g');
         console.log(`【第${$.farmTask.waterRainInit.winTimes + 1}次水滴雨】获得${$.waterRain.addEnergy}g水滴\n`);
         // message += `【第${$.farmTask.waterRainInit.winTimes + 1}次水滴雨】获得${$.waterRain.addEnergy}g水滴\n`;
       }
@@ -735,22 +735,22 @@ async function executeWaterRains() {
 }
 //打卡领水活动
 async function clockInIn() {
-  console.log("开始打卡领水活动（签到，关注，领券）");
+  console.log('开始打卡领水活动（签到，关注，领券）');
   await clockInInitForFarm();
-  if ($.clockInInit.code === "0") {
+  if ($.clockInInit.code === '0') {
     // 签到得水滴
     if (!$.clockInInit.todaySigned) {
-      console.log("开始今日签到");
+      console.log('开始今日签到');
       await clockInForFarm();
       console.log(`打卡结果${JSON.stringify($.clockInForFarmRes)}`);
-      if ($.clockInForFarmRes.code === "0") {
+      if ($.clockInForFarmRes.code === '0') {
         // message += `【第${$.clockInForFarmRes.signDay}天签到】获得${$.clockInForFarmRes.amount}g💧\n`;
         console.log(`【第${$.clockInForFarmRes.signDay}天签到】获得${$.clockInForFarmRes.amount}g💧\n`);
         if ($.clockInForFarmRes.signDay === 7) {
           //可以领取惊喜礼包
-          console.log("开始领取--惊喜礼包38g水滴");
+          console.log('开始领取--惊喜礼包38g水滴');
           await gotClockInGift();
-          if ($.gotClockInGiftRes.code === "0") {
+          if ($.gotClockInGiftRes.code === '0') {
             // message += `【惊喜礼包】获得${$.gotClockInGiftRes.amount}g💧\n`;
             console.log(`【惊喜礼包】获得${$.gotClockInGiftRes.amount}g💧\n`);
           }
@@ -758,9 +758,9 @@ async function clockInIn() {
       }
     }
     if ($.clockInInit.todaySigned && $.clockInInit.totalSigned === 7) {
-      console.log("开始领取--惊喜礼包38g水滴");
+      console.log('开始领取--惊喜礼包38g水滴');
       await gotClockInGift();
-      if ($.gotClockInGiftRes.code === "0") {
+      if ($.gotClockInGiftRes.code === '0') {
         // message += `【惊喜礼包】获得${$.gotClockInGiftRes.amount}g💧\n`;
         console.log(`【惊喜礼包】获得${$.gotClockInGiftRes.amount}g💧\n`);
       }
@@ -770,12 +770,12 @@ async function clockInIn() {
       for (let item of $.clockInInit.themes) {
         if (!item.hadGot) {
           console.log(`关注ID${item.id}`);
-          await clockInFollowForFarm(item.id, "theme", "1");
+          await clockInFollowForFarm(item.id, 'theme', '1');
           console.log(`themeStep1--结果${JSON.stringify($.themeStep1)}`);
-          if ($.themeStep1.code === "0") {
-            await clockInFollowForFarm(item.id, "theme", "2");
+          if ($.themeStep1.code === '0') {
+            await clockInFollowForFarm(item.id, 'theme', '2');
             console.log(`themeStep2--结果${JSON.stringify($.themeStep2)}`);
-            if ($.themeStep2.code === "0") {
+            if ($.themeStep2.code === '0') {
               console.log(`关注${item.name}，获得水滴${$.themeStep2.amount}g`);
             }
           }
@@ -787,11 +787,11 @@ async function clockInIn() {
       for (let item of $.clockInInit.venderCoupons) {
         if (!item.hadGot) {
           console.log(`领券的ID${item.id}`);
-          await clockInFollowForFarm(item.id, "venderCoupon", "1");
+          await clockInFollowForFarm(item.id, 'venderCoupon', '1');
           console.log(`venderCouponStep1--结果${JSON.stringify($.venderCouponStep1)}`);
-          if ($.venderCouponStep1.code === "0") {
-            await clockInFollowForFarm(item.id, "venderCoupon", "2");
-            if ($.venderCouponStep2.code === "0") {
+          if ($.venderCouponStep1.code === '0') {
+            await clockInFollowForFarm(item.id, 'venderCoupon', '2');
+            if ($.venderCouponStep2.code === '0') {
               console.log(`venderCouponStep2--结果${JSON.stringify($.venderCouponStep2)}`);
               console.log(`从${item.name}领券，获得水滴${$.venderCouponStep2.amount}g`);
             }
@@ -800,7 +800,7 @@ async function clockInIn() {
       }
     }
   }
-  console.log("开始打卡领水活动（签到，关注，领券）结束\n");
+  console.log('开始打卡领水活动（签到，关注，领券）结束\n');
 }
 //
 async function getAwardInviteFriend() {
@@ -812,8 +812,8 @@ async function getAwardInviteFriend() {
     if ($.friendList.friends && $.friendList.friends.length > 0) {
       for (let friend of $.friendList.friends) {
         console.log(`\n开始删除好友 [${friend.shareCode}]`);
-        const deleteFriendForFarm = await request("deleteFriendForFarm", { shareCode: `${friend.shareCode}`, version: 8, channel: 1 });
-        if (deleteFriendForFarm && deleteFriendForFarm.code === "0") {
+        const deleteFriendForFarm = await request('deleteFriendForFarm', { shareCode: `${friend.shareCode}`, version: 8, channel: 1 });
+        if (deleteFriendForFarm && deleteFriendForFarm.code === '0') {
           console.log(`删除好友 [${friend.shareCode}] 成功\n`);
         }
       }
@@ -821,12 +821,12 @@ async function getAwardInviteFriend() {
     await receiveFriendInvite(); //为他人助力,接受邀请成为别人的好友
     if ($.friendList.inviteFriendCount > 0) {
       if ($.friendList.inviteFriendCount > $.friendList.inviteFriendGotAwardCount) {
-        console.log("开始领取邀请好友的奖励");
+        console.log('开始领取邀请好友的奖励');
         await awardInviteFriendForFarm();
         console.log(`领取邀请好友的奖励结果：：${JSON.stringify($.awardInviteFriendRes)}`);
       }
     } else {
-      console.log("今日未邀请过好友");
+      console.log('今日未邀请过好友');
     }
   } else {
     console.log(`查询好友列表失败\n`);
@@ -835,7 +835,7 @@ async function getAwardInviteFriend() {
 //给好友浇水
 async function doFriendsWater() {
   await friendListInitForFarm();
-  console.log("开始给好友浇水...");
+  console.log('开始给好友浇水...');
   await taskInitForFarm();
   const { waterFriendCountKey, waterFriendMax } = $.farmTask.waterFriendTaskInit;
   console.log(`今日已给${waterFriendCountKey}个好友浇水`);
@@ -851,30 +851,30 @@ async function doFriendsWater() {
       });
       console.log(`需要浇水的好友列表shareCodes:${JSON.stringify(needWaterFriends)}`);
       let waterFriendsCount = 0,
-        cardInfoStr = "";
+        cardInfoStr = '';
       for (let index = 0; index < needWaterFriends.length; index++) {
         await waterFriendForFarm(needWaterFriends[index]);
         console.log(`为第${index + 1}个好友浇水结果:${JSON.stringify($.waterFriendForFarmRes)}\n`);
-        if ($.waterFriendForFarmRes.code === "0") {
+        if ($.waterFriendForFarmRes.code === '0') {
           waterFriendsCount++;
           if ($.waterFriendForFarmRes.cardInfo) {
-            console.log("为好友浇水获得道具了");
-            if ($.waterFriendForFarmRes.cardInfo.type === "beanCard") {
+            console.log('为好友浇水获得道具了');
+            if ($.waterFriendForFarmRes.cardInfo.type === 'beanCard') {
               console.log(`获取道具卡:${$.waterFriendForFarmRes.cardInfo.rule}`);
               cardInfoStr += `水滴换豆卡,`;
-            } else if ($.waterFriendForFarmRes.cardInfo.type === "fastCard") {
+            } else if ($.waterFriendForFarmRes.cardInfo.type === 'fastCard') {
               console.log(`获取道具卡:${$.waterFriendForFarmRes.cardInfo.rule}`);
               cardInfoStr += `快速浇水卡,`;
-            } else if ($.waterFriendForFarmRes.cardInfo.type === "doubleCard") {
+            } else if ($.waterFriendForFarmRes.cardInfo.type === 'doubleCard') {
               console.log(`获取道具卡:${$.waterFriendForFarmRes.cardInfo.rule}`);
               cardInfoStr += `水滴翻倍卡,`;
-            } else if ($.waterFriendForFarmRes.cardInfo.type === "signCard") {
+            } else if ($.waterFriendForFarmRes.cardInfo.type === 'signCard') {
               console.log(`获取道具卡:${$.waterFriendForFarmRes.cardInfo.rule}`);
               cardInfoStr += `加签卡,`;
             }
           }
-        } else if ($.waterFriendForFarmRes.code === "11") {
-          console.log("水滴不够,跳出浇水");
+        } else if ($.waterFriendForFarmRes.code === '11') {
+          console.log('水滴不够,跳出浇水');
         }
       }
       // message += `【好友浇水】已给${waterFriendsCount}个好友浇水,消耗${waterFriendsCount * 10}g水\n`;
@@ -884,7 +884,7 @@ async function doFriendsWater() {
         console.log(`【好友浇水奖励】${cardInfoStr.substr(0, cardInfoStr.length - 1)}\n`);
       }
     } else {
-      console.log("您的好友列表暂无好友,快去邀请您的好友吧!");
+      console.log('您的好友列表暂无好友,快去邀请您的好友吧!');
     }
   } else {
     console.log(`今日已为好友浇水量已达${waterFriendMax}个`);
@@ -898,7 +898,7 @@ async function getWaterFriendGotAward() {
     if (!waterFriendGotAward) {
       await waterFriendGotAwardForFarm();
       console.log(`领取给${waterFriendMax}个好友浇水后的奖励水滴::${JSON.stringify($.waterFriendGotAwardRes)}`);
-      if ($.waterFriendGotAwardRes.code === "0") {
+      if ($.waterFriendGotAwardRes.code === '0') {
         // message += `【给${waterFriendMax}好友浇水】奖励${$.waterFriendGotAwardRes.addWater}g水滴\n`;
         console.log(`【给${waterFriendMax}好友浇水】奖励${$.waterFriendGotAwardRes.addWater}g水滴\n`);
       }
@@ -914,14 +914,14 @@ async function getWaterFriendGotAward() {
 async function receiveFriendInvite() {
   for (let code of newShareCodes) {
     if (code === $.farmInfo.farmUserPro.shareCode) {
-      console.log("自己不能邀请自己成为好友噢\n");
+      console.log('自己不能邀请自己成为好友噢\n');
       continue;
     }
     await inviteFriend(code);
     // console.log(`接收邀请成为好友结果:${JSON.stringify($.inviteFriendRes)}`)
-    if ($.inviteFriendRes && $.inviteFriendRes.helpResult && $.inviteFriendRes.helpResult.code === "0") {
+    if ($.inviteFriendRes && $.inviteFriendRes.helpResult && $.inviteFriendRes.helpResult.code === '0') {
       console.log(`接收邀请成为好友结果成功,您已成为${$.inviteFriendRes.helpResult.masterUserInfo.nickName}的好友`);
-    } else if ($.inviteFriendRes && $.inviteFriendRes.helpResult && $.inviteFriendRes.helpResult.code === "17") {
+    } else if ($.inviteFriendRes && $.inviteFriendRes.helpResult && $.inviteFriendRes.helpResult.code === '17') {
       console.log(`接收邀请成为好友结果失败,对方已是您的好友`);
     }
   }
@@ -938,7 +938,7 @@ async function duck() {
   for (let i = 0; i < 10; i++) {
     //这里循环十次
     await getFullCollectionReward();
-    if ($.duckRes.code === "0") {
+    if ($.duckRes.code === '0') {
       if (!$.duckRes.hasLimit) {
         console.log(`小鸭子游戏:${$.duckRes.title}`);
         // if ($.duckRes.type !== 3) {
@@ -953,7 +953,7 @@ async function duck() {
         console.log(`${$.duckRes.title}`);
         break;
       }
-    } else if ($.duckRes.code === "10") {
+    } else if ($.duckRes.code === '10') {
       console.log(`小鸭子游戏达到上限`);
       break;
     }
@@ -964,10 +964,10 @@ async function duck() {
 async function getFullCollectionReward() {
   return new Promise((resolve) => {
     const body = { type: 2, version: 6, channel: 2 };
-    $.post(taskUrl("getFullCollectionReward", body), (err, resp, data) => {
+    $.post(taskUrl('getFullCollectionReward', body), (err, resp, data) => {
       try {
         if (err) {
-          console.log("\n东东农场: API查询请求失败 ‼️‼️");
+          console.log('\n东东农场: API查询请求失败 ‼️‼️');
           console.log(JSON.stringify(err));
           $.logErr(err);
         } else {
@@ -1022,7 +1022,7 @@ async function gotStageAwardForFarm(type) {
 //浇水API
 async function waterGoodForFarm() {
   await $.wait(1000);
-  console.log("等待了1秒");
+  console.log('等待了1秒');
 
   const functionId = arguments.callee.name.toString();
   $.waterResult = await request(functionId);
@@ -1033,7 +1033,7 @@ async function initForTurntableFarm() {
 }
 async function lotteryForTurntableFarm() {
   await $.wait(2000);
-  console.log("等待了2秒");
+  console.log('等待了2秒');
   $.lotteryRes = await request(arguments.callee.name.toString(), { type: 1, version: 4, channel: 1 });
 }
 
@@ -1043,10 +1043,10 @@ async function timingAwardForTurntableFarm() {
 
 async function browserForTurntableFarm(type, adId) {
   if (type === 1) {
-    console.log("浏览爆品会场");
+    console.log('浏览爆品会场');
   }
   if (type === 2) {
-    console.log("天天抽奖浏览任务领取水滴");
+    console.log('天天抽奖浏览任务领取水滴');
   }
   const body = { type: type, adId: adId, version: 4, channel: 1 };
   $.browserForTurntableFarmRes = await request(arguments.callee.name.toString(), body);
@@ -1055,17 +1055,17 @@ async function browserForTurntableFarm(type, adId) {
 //天天抽奖浏览任务领取水滴API
 async function browserForTurntableFarm2(type) {
   const body = { type: 2, adId: type, version: 4, channel: 1 };
-  $.browserForTurntableFarm2Res = await request("browserForTurntableFarm", body);
+  $.browserForTurntableFarm2Res = await request('browserForTurntableFarm', body);
 }
 /**
  * 天天抽奖拿好礼-助力API(每人每天三次助力机会)
  */
 async function lotteryMasterHelp() {
   $.lotteryMasterHelpRes = await request(`initForFarm`, {
-    imageUrl: "",
-    nickName: "",
-    shareCode: arguments[0] + "-3",
-    babelChannel: "3",
+    imageUrl: '',
+    nickName: '',
+    shareCode: arguments[0] + '-3',
+    babelChannel: '3',
     version: 4,
     channel: 1,
   });
@@ -1084,9 +1084,9 @@ async function masterHelpTaskInitForFarm() {
 //接受对方邀请,成为对方好友的API
 async function inviteFriend() {
   $.inviteFriendRes = await request(`initForFarm`, {
-    imageUrl: "",
-    nickName: "",
-    shareCode: arguments[0] + "-inviteFriend",
+    imageUrl: '',
+    nickName: '',
+    shareCode: arguments[0] + '-inviteFriend',
     version: 4,
     channel: 2,
   });
@@ -1094,10 +1094,10 @@ async function inviteFriend() {
 // 助力好友API
 async function masterHelp() {
   $.helpResult = await request(`initForFarm`, {
-    imageUrl: "",
-    nickName: "",
+    imageUrl: '',
+    nickName: '',
     shareCode: arguments[0],
-    babelChannel: "3",
+    babelChannel: '3',
     version: 2,
     channel: 1,
   });
@@ -1132,16 +1132,16 @@ async function clockInFollowForFarm(id, type, step) {
     type,
     step,
   };
-  if (type === "theme") {
-    if (step === "1") {
+  if (type === 'theme') {
+    if (step === '1') {
       $.themeStep1 = await request(functionId, body);
-    } else if (step === "2") {
+    } else if (step === '2') {
       $.themeStep2 = await request(functionId, body);
     }
-  } else if (type === "venderCoupon") {
-    if (step === "1") {
+  } else if (type === 'venderCoupon') {
+    if (step === '1') {
       $.venderCouponStep1 = await request(functionId, body);
-    } else if (step === "2") {
+    } else if (step === '2') {
       $.venderCouponStep2 = await request(functionId, body);
     }
   }
@@ -1149,7 +1149,7 @@ async function clockInFollowForFarm(id, type, step) {
 
 // 领取连续签到7天的惊喜礼包API
 async function gotClockInGift() {
-  $.gotClockInGiftRes = await request("clockInForFarm", { type: 2 });
+  $.gotClockInGiftRes = await request('clockInForFarm', { type: 2 });
 }
 
 //定时领水API
@@ -1165,9 +1165,9 @@ async function gotThreeMealForFarm() {
 async function browseAdTaskForFarm(advertId, type) {
   const functionId = arguments.callee.name.toString();
   if (type === 0) {
-    $.browseResult = await request(functionId, { advertId, type, version: 14, channel: 1, babelChannel: "45" });
+    $.browseResult = await request(functionId, { advertId, type, version: 14, channel: 1, babelChannel: '45' });
   } else if (type === 1) {
-    $.browseRwardResult = await request(functionId, { advertId, type, version: 14, channel: 1, babelChannel: "45" });
+    $.browseRwardResult = await request(functionId, { advertId, type, version: 14, channel: 1, babelChannel: '45' });
   }
 }
 // 被水滴砸中API
@@ -1188,32 +1188,32 @@ async function initForFarm() {
       url: `${JD_API_HOST}?functionId=initForFarm`,
       body: `body=${escape(JSON.stringify({ version: 14 }))}&appid=wh5&clientVersion=9.1.0`,
       headers: {
-        accept: "*/*",
-        "accept-encoding": "gzip, deflate, br",
-        "accept-language": "zh-CN,zh;q=0.9",
-        "cache-control": "no-cache",
+        accept: '*/*',
+        'accept-encoding': 'gzip, deflate, br',
+        'accept-language': 'zh-CN,zh;q=0.9',
+        'cache-control': 'no-cache',
         cookie: cookie,
-        origin: "https://home.m.jd.com",
-        pragma: "no-cache",
-        referer: "https://home.m.jd.com/myJd/newhome.action",
-        "sec-fetch-dest": "empty",
-        "sec-fetch-mode": "cors",
-        "sec-fetch-site": "same-site",
-        "User-Agent": $.isNode()
+        origin: 'https://home.m.jd.com',
+        pragma: 'no-cache',
+        referer: 'https://home.m.jd.com/myJd/newhome.action',
+        'sec-fetch-dest': 'empty',
+        'sec-fetch-mode': 'cors',
+        'sec-fetch-site': 'same-site',
+        'User-Agent': $.isNode()
           ? process.env.JD_USER_AGENT
             ? process.env.JD_USER_AGENT
-            : require("./USER_AGENTS").USER_AGENT
-          : $.getdata("JDUA")
-          ? $.getdata("JDUA")
-          : "jdapp;iPhone;9.4.4;14.3;network/4g;Mozilla/5.0 (iPhone; CPU iPhone OS 14_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148;supportJDSHWK/1",
-        "Content-Type": "application/x-www-form-urlencoded",
+            : require('./USER_AGENTS').USER_AGENT
+          : $.getdata('JDUA')
+          ? $.getdata('JDUA')
+          : 'jdapp;iPhone;9.4.4;14.3;network/4g;Mozilla/5.0 (iPhone; CPU iPhone OS 14_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148;supportJDSHWK/1',
+        'Content-Type': 'application/x-www-form-urlencoded',
       },
       timeout: 10000,
     };
     $.post(option, (err, resp, data) => {
       try {
         if (err) {
-          console.log("\n东东农场: API查询请求失败 ‼️‼️");
+          console.log('\n东东农场: API查询请求失败 ‼️‼️');
           console.log(JSON.stringify(err));
           $.logErr(err);
         } else {
@@ -1232,36 +1232,36 @@ async function initForFarm() {
 
 // 初始化任务列表API
 async function taskInitForFarm() {
-  console.log("\n初始化任务列表");
+  console.log('\n初始化任务列表');
   const functionId = arguments.callee.name.toString();
-  $.farmTask = await request(functionId, {"version":14,"channel":1,"babelChannel":"120"});
+  $.farmTask = await request(functionId, { version: 14, channel: 1, babelChannel: '120' });
 }
 //获取好友列表API
 async function friendListInitForFarm() {
-  $.friendList = await request("friendListInitForFarm", { version: 4, channel: 1 });
+  $.friendList = await request('friendListInitForFarm', { version: 4, channel: 1 });
   // console.log('aa', aa);
 }
 // 领取邀请好友的奖励API
 async function awardInviteFriendForFarm() {
-  $.awardInviteFriendRes = await request("awardInviteFriendForFarm");
+  $.awardInviteFriendRes = await request('awardInviteFriendForFarm');
 }
 //为好友浇水API
 async function waterFriendForFarm(shareCode) {
   const body = { shareCode: shareCode, version: 6, channel: 1 };
-  $.waterFriendForFarmRes = await request("waterFriendForFarm", body);
+  $.waterFriendForFarmRes = await request('waterFriendForFarm', body);
 }
 async function showMsg() {
   if ($.isNode() && process.env.FRUIT_NOTIFY_CONTROL) {
-    $.ctrTemp = `${process.env.FRUIT_NOTIFY_CONTROL}` === "false";
-  } else if ($.getdata("jdFruitNotify")) {
-    $.ctrTemp = $.getdata("jdFruitNotify") === "false";
+    $.ctrTemp = `${process.env.FRUIT_NOTIFY_CONTROL}` === 'false';
+  } else if ($.getdata('jdFruitNotify')) {
+    $.ctrTemp = $.getdata('jdFruitNotify') === 'false';
   } else {
-    $.ctrTemp = `${jdNotify}` === "false";
+    $.ctrTemp = `${jdNotify}` === 'false';
   }
   if ($.ctrTemp) {
     $.msg($.name, subTitle, message, option);
     if ($.isNode()) {
-      allMessage += `${subTitle}\n${message}${$.index !== cookiesArr.length ? "\n\n" : ""}`;
+      allMessage += `${subTitle}\n${message}${$.index !== cookiesArr.length ? '\n\n' : ''}`;
       // await notify.sendNotify(`${$.name} - 账号${$.index} - ${$.nickName}`, `${subTitle}\n${message}`);
     }
   } else {
@@ -1276,7 +1276,7 @@ function timeFormat(time) {
   } else {
     date = new Date();
   }
-  return date.getFullYear() + "-" + (date.getMonth() + 1 >= 10 ? date.getMonth() + 1 : "0" + (date.getMonth() + 1)) + "-" + (date.getDate() >= 10 ? date.getDate() : "0" + date.getDate());
+  return date.getFullYear() + '-' + (date.getMonth() + 1 >= 10 ? date.getMonth() + 1 : '0' + (date.getMonth() + 1)) + '-' + (date.getDate() >= 10 ? date.getDate() : '0' + date.getDate());
 }
 
 function shareCodesFormat() {
@@ -1284,11 +1284,11 @@ function shareCodesFormat() {
     // console.log(`第${$.index}个京东账号的助力码:::${$.shareCodesArr[$.index - 1]}`)
     newShareCodes = [];
     if ($.shareCodesArr[$.index - 1]) {
-      newShareCodes = $.shareCodesArr[$.index - 1].split("@");
+      newShareCodes = $.shareCodesArr[$.index - 1].split('@');
     } else {
       console.log(`由于您第${$.index}个京东账号未提供shareCode,将采纳本脚本自带的助力码\n`);
       const tempIndex = $.index > shareCodes.length ? shareCodes.length - 1 : $.index - 1;
-      newShareCodes = shareCodes[tempIndex].split("@");
+      newShareCodes = shareCodes[tempIndex].split('@');
     }
     //const readShareCodeRes = await readShareCode();
     //if (readShareCodeRes && readShareCodeRes.code === 200) {
@@ -1301,11 +1301,11 @@ function shareCodesFormat() {
 }
 function requireConfig() {
   return new Promise((resolve) => {
-    console.log("开始获取配置文件\n");
-    notify = $.isNode() ? require("./sendNotify") : "";
+    console.log('开始获取配置文件\n');
+    notify = $.isNode() ? require('./sendNotify') : '';
     //Node.js用户请在jdCookie.js处填写京东ck;
-    const jdCookieNode = $.isNode() ? require("./jdCookie.js") : "";
-    const jdFruitShareCodes = $.isNode() ? require("./jdFruitShareCodes.js") : "";
+    const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
+    const jdFruitShareCodes = $.isNode() ? require('./jdFruitShareCodes.js') : '';
     //IOS等用户直接用NobyDa的jd cookie
     if ($.isNode()) {
       Object.keys(jdCookieNode).forEach((item) => {
@@ -1313,9 +1313,9 @@ function requireConfig() {
           cookiesArr.push(jdCookieNode[item]);
         }
       });
-      if (process.env.JD_DEBUG && process.env.JD_DEBUG === "false") console.log = () => {};
+      if (process.env.JD_DEBUG && process.env.JD_DEBUG === 'false') console.log = () => {};
     } else {
-      cookiesArr = [$.getdata("CookieJD"), $.getdata("CookieJD2"), ...jd_helpers.jsonParse($.getdata("CookiesJD") || "[]").map((item) => item.cookie)].filter((item) => !!item);
+      cookiesArr = [$.getdata('CookieJD'), $.getdata('CookieJD2'), ...jd_helpers.jsonParse($.getdata('CookiesJD') || '[]').map((item) => item.cookie)].filter((item) => !!item);
     }
     console.log(`共${cookiesArr.length}个京东账号\n`);
     $.shareCodesArr = [];
@@ -1326,11 +1326,11 @@ function requireConfig() {
         }
       });
     } else {
-      if ($.getdata("jd_fruit_inviter"))
-        $.shareCodesArr = $.getdata("jd_fruit_inviter")
-          .split("\n")
+      if ($.getdata('jd_fruit_inviter'))
+        $.shareCodesArr = $.getdata('jd_fruit_inviter')
+          .split('\n')
           .filter((item) => !!item);
-      console.log(`\nBoxJs设置的${$.name}好友邀请码:${$.getdata("jd_fruit_inviter") ? $.getdata("jd_fruit_inviter") : "暂无"}\n`);
+      console.log(`\nBoxJs设置的${$.name}好友邀请码:${$.getdata('jd_fruit_inviter') ? $.getdata('jd_fruit_inviter') : '暂无'}\n`);
     }
     // console.log(`$.shareCodesArr::${JSON.stringify($.shareCodesArr)}`)
     // console.log(`jdFruitShareArr账号长度::${$.shareCodesArr.length}`)
@@ -1341,22 +1341,22 @@ function requireConfig() {
 function TotalBean() {
   return new Promise(async (resolve) => {
     const options = {
-      url: "https://me-api.jd.com/user_new/info/GetJDUserInfoUnion",
+      url: 'https://me-api.jd.com/user_new/info/GetJDUserInfoUnion',
       headers: {
-        Host: "me-api.jd.com",
-        Accept: "*/*",
-        Connection: "keep-alive",
+        Host: 'me-api.jd.com',
+        Accept: '*/*',
+        Connection: 'keep-alive',
         Cookie: cookie,
-        "User-Agent": $.isNode()
+        'User-Agent': $.isNode()
           ? process.env.JD_USER_AGENT
             ? process.env.JD_USER_AGENT
-            : require("./USER_AGENTS").USER_AGENT
-          : $.getdata("JDUA")
-          ? $.getdata("JDUA")
-          : "jdapp;iPhone;9.4.4;14.3;network/4g;Mozilla/5.0 (iPhone; CPU iPhone OS 14_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148;supportJDSHWK/1",
-        "Accept-Language": "zh-cn",
-        Referer: "https://home.m.jd.com/myJd/newhome.action?sceneval=2&ufc=&",
-        "Accept-Encoding": "gzip, deflate, br",
+            : require('./USER_AGENTS').USER_AGENT
+          : $.getdata('JDUA')
+          ? $.getdata('JDUA')
+          : 'jdapp;iPhone;9.4.4;14.3;network/4g;Mozilla/5.0 (iPhone; CPU iPhone OS 14_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148;supportJDSHWK/1',
+        'Accept-Language': 'zh-cn',
+        Referer: 'https://home.m.jd.com/myJd/newhome.action?sceneval=2&ufc=&',
+        'Accept-Encoding': 'gzip, deflate, br',
       },
     };
     $.get(options, (err, resp, data) => {
@@ -1366,15 +1366,15 @@ function TotalBean() {
         } else {
           if (data) {
             data = JSON.parse(data);
-            if (data["retcode"] === "1001") {
+            if (data['retcode'] === '1001') {
               $.isLogin = false; //cookie过期
               return;
             }
-            if (data["retcode"] === "0" && data.data && data.data.hasOwnProperty("userInfo")) {
+            if (data['retcode'] === '0' && data.data && data.data.hasOwnProperty('userInfo')) {
               $.nickName = data.data.userInfo.baseInfo.nickname;
             }
           } else {
-            $.log("京东服务器返回空数据");
+            $.log('京东服务器返回空数据');
           }
         }
       } catch (e) {
@@ -1391,7 +1391,7 @@ function request(function_id, body = {}, timeout = 1000) {
       $.get(taskUrl(function_id, body), (err, resp, data) => {
         try {
           if (err) {
-            console.log("\n东东农场: API查询请求失败 ‼️‼️");
+            console.log('\n东东农场: API查询请求失败 ‼️‼️');
             console.log(JSON.stringify(err));
             console.log(`function_id:${function_id}`);
             $.logErr(err);
@@ -1417,10 +1417,10 @@ function taskUrl(function_id, body = {}) {
       UserAgent: $.isNode()
         ? process.env.JD_USER_AGENT
           ? process.env.JD_USER_AGENT
-          : require("./USER_AGENTS").USER_AGENT
-        : $.getdata("JDUA")
-        ? $.getdata("JDUA")
-        : "jdapp;iPhone;9.4.4;14.3;network/4g;Mozilla/5.0 (iPhone; CPU iPhone OS 14_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148;supportJDSHWK/1",
+          : require('./USER_AGENTS').USER_AGENT
+        : $.getdata('JDUA')
+        ? $.getdata('JDUA')
+        : 'jdapp;iPhone;9.4.4;14.3;network/4g;Mozilla/5.0 (iPhone; CPU iPhone OS 14_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148;supportJDSHWK/1',
     },
     timeout: 10000,
   };

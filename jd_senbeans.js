@@ -15,10 +15,10 @@ cron "45 1,12 * * *" script-path=jd_sendBeans.js,tag=送豆得豆
 ============小火箭=========
 送豆得豆 = type=cron,script-path=jd_sendBeans.js, cronexpr="45 1,12 * * *", timeout=3600, enable=true
  */
-const jd_env = require("./utils/JDEnv.js");
-const $ = jd_env.env("送豆得豆");
-const notify = $.isNode() ? require("./sendNotify") : "";
-const jdCookieNode = $.isNode() ? require("./jdCookie.js") : "";
+const jd_env = require('./utils/JDEnv.js');
+const $ = jd_env.env('送豆得豆');
+const notify = $.isNode() ? require('./sendNotify') : '';
+const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
 //IOS等用户直接用NobyDa的jd cookie
 let cookiesArr = [];
 if ($.isNode()) {

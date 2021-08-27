@@ -17,9 +17,9 @@ cron "15 7 * * *" script-path=https://raw.githubusercontent.com/yongyuanlin/jd_s
 ============小火箭=========
 领券中心签到 = type=cron,script-path=https://raw.githubusercontent.com/yongyuanlin/jd_scripts/master/jd_ccSign.js, cronexpr="15 7 * * *", timeout=3600, enable=true
  */
-const jd_helpers = require("./utils/JDHelpers.js");
-const jd_env = require("./utils/JDEnv.js");
-const $ = jd_env.env("领券中心签到");
+const jd_helpers = require('./utils/JDHelpers.js');
+const jd_env = require('./utils/JDEnv.js');
+const $ = jd_env.env('领券中心签到');
 const notify = $.isNode() ? require('./sendNotify') : '';
 //Node.js用户请在jdCookie.js处填写京东ck;
 const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';

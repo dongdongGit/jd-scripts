@@ -3,36 +3,36 @@
 活动路径：边玩边赚-》京小鸽吾悦寄
 很小的几率能抽到实物。
 */
-const jd_helpers = require("./utils/JDHelpers.js");
-const jd_env = require("./utils/JDEnv.js");
-const $ = jd_env.env("京小鸽吾悦寄");
-const notify = $.isNode() ? require("./sendNotify") : "";
-const jdCookieNode = $.isNode() ? require("./jdCookie.js") : "";
+const jd_helpers = require('./utils/JDHelpers.js');
+const jd_env = require('./utils/JDEnv.js');
+const $ = jd_env.env('京小鸽吾悦寄');
+const notify = $.isNode() ? require('./sendNotify') : '';
+const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
 $.helpCodeList = {};
 $.sendCardList = [];
-$.message = "";
+$.message = '';
 //IOS等用户直接用NobyDa的jd cookie
 let cookiesArr = [],
-  cookie = "";
+  cookie = '';
 if ($.isNode()) {
   Object.keys(jdCookieNode).forEach((item) => {
     cookiesArr.push(jdCookieNode[item]);
   });
-  if (process.env.JD_DEBUG && process.env.JD_DEBUG === "false") console.log = () => {};
+  if (process.env.JD_DEBUG && process.env.JD_DEBUG === 'false') console.log = () => {};
 } else {
-  let cookiesData = $.getdata("CookiesJD") || "[]";
+  let cookiesData = $.getdata('CookiesJD') || '[]';
   cookiesData = jd_helpers.jsonParse(cookiesData);
   cookiesArr = cookiesData.map((item) => item.cookie);
   cookiesArr.reverse();
-  cookiesArr.push(...[$.getdata("CookieJD2"), $.getdata("CookieJD")]);
+  cookiesArr.push(...[$.getdata('CookieJD2'), $.getdata('CookieJD')]);
   cookiesArr.reverse();
-  cookiesArr = cookiesArr.filter((item) => item !== "" && item !== null && item !== undefined);
+  cookiesArr = cookiesArr.filter((item) => item !== '' && item !== null && item !== undefined);
 }
 
 !(async () => {
   if (!cookiesArr[0]) {
-    $.msg($.name, "【提示】请先获取京东账号一cookie\n直接使用NobyDa的京东签到获取", "https://bean.m.jd.com/bean/signIndex.action", {
-      "open-url": "https://bean.m.jd.com/bean/signIndex.action",
+    $.msg($.name, '【提示】请先获取京东账号一cookie\n直接使用NobyDa的京东签到获取', 'https://bean.m.jd.com/bean/signIndex.action', {
+      'open-url': 'https://bean.m.jd.com/bean/signIndex.action',
     });
     return;
   }
@@ -48,7 +48,7 @@ if ($.isNode()) {
       console.log(`\n开始【京东账号${$.index}】${$.nickName || $.UserName}\n`);
       if (!$.isLogin) {
         $.msg($.name, `【提示】cookie已失效`, `京东账号${$.index} ${$.nickName || $.UserName}\n请重新登录获取\nhttps://bean.m.jd.com/bean/signIndex.action`, {
-          "open-url": "https://bean.m.jd.com/bean/signIndex.action",
+          'open-url': 'https://bean.m.jd.com/bean/signIndex.action',
         });
 
         if ($.isNode()) {
@@ -109,7 +109,7 @@ if ($.isNode()) {
   }
 })()
   .catch((e) => {
-    $.log("", `❌ ${$.name}, 失败! 原因: ${e}!`, "");
+    $.log('', `❌ ${$.name}, 失败! 原因: ${e}!`, '');
   })
   .finally(() => {
     $.done();
@@ -119,7 +119,7 @@ async function jxg() {
   $.userInfo = {};
   $.cardList = [];
   $.missionList = [];
-  $.shareCode = "";
+  $.shareCode = '';
   console.log(`初始化`);
   await Promise.all([getBoxUserRewardWinners(), getCardInfo(), getQueryRuleInfo(), getNewShare()]);
   if ($.userInfo.code !== 1 || $.userInfo.success !== true) {
@@ -141,16 +141,16 @@ async function jxg() {
     }
   }
   if ($.synthesisType) {
-    console.log("开始合成卡片");
+    console.log('开始合成卡片');
     await synthesize();
     await $.wait(3000);
-    console.log("抽奖");
+    console.log('抽奖');
     await getBigReward();
   } else {
-    console.log("卡片不足，不能合成");
+    console.log('卡片不足，不能合成');
   }
   if ($.index > cookiesArr.length - cookiesArr.length / 3) {
-    console.log("开始赠送卡片");
+    console.log('开始赠送卡片');
     for (let i = 0; i < $.cardList.length; i++) {
       if ($.cardList[i].num > 0) {
         //获取卡片详情
@@ -174,7 +174,7 @@ function randomsort(a, b) {
 
 async function getFlowList() {
   const body = `[{"userNo":"$cooMrdGatewayUid$","activityNo":""}]`;
-  const myRequest = getPostRequest("MangHeApi/getFlowList", body);
+  const myRequest = getPostRequest('MangHeApi/getFlowList', body);
   return new Promise(async (resolve) => {
     $.post(myRequest, (err, resp, data) => {
       try {
@@ -208,7 +208,7 @@ async function getFlowList() {
 //领取
 async function transferBoxCard(cordId) {
   const body = `[{"userNo":"$cooMrdGatewayUid$","flowNo":"${cordId}"}]`;
-  const myRequest = getPostRequest("MangHeApi/transferBoxCard", body);
+  const myRequest = getPostRequest('MangHeApi/transferBoxCard', body);
   return new Promise(async (resolve) => {
     $.post(myRequest, (err, resp, data) => {
       try {
@@ -218,7 +218,7 @@ async function transferBoxCard(cordId) {
           console.log(`接口调用失败，${data?.error_response?.zh_desc}`);
         }
         if (data.success === true && data.code === 1) {
-          console.log(`${$.UserName}领取卡片成功，获得${data.content.card.name || "未知"}`);
+          console.log(`${$.UserName}领取卡片成功，获得${data.content.card.name || '未知'}`);
           $.sendCode = $.sendCardList.shift();
         } else if (data.success === false && data.code === -1004) {
           $.getCodeFlag = false;
@@ -226,7 +226,7 @@ async function transferBoxCard(cordId) {
         }
       } catch (e) {
         $.getCodeFlag = false;
-        $.sendCode = "";
+        $.sendCode = '';
         $.logErr(e, resp);
       } finally {
         resolve();
@@ -238,7 +238,7 @@ async function transferBoxCard(cordId) {
 //赠送卡片
 async function sendBoxCard(userCardId) {
   const body = `[{"userNo":"$cooMrdGatewayUid$","sendType":1,"cardId":${userCardId}}]`;
-  const myRequest = getPostRequest("MangHeApi/sendBoxCard", body);
+  const myRequest = getPostRequest('MangHeApi/sendBoxCard', body);
   return new Promise(async (resolve) => {
     $.post(myRequest, (err, resp, data) => {
       try {
@@ -259,7 +259,7 @@ async function sendBoxCard(userCardId) {
 //获取卡片详情
 async function getCardDetail(type) {
   const body = `[{"userNo":"$cooMrdGatewayUid$","cardType":${type}}]`;
-  const myRequest = getPostRequest("MangHeApi/getCardDetail", body);
+  const myRequest = getPostRequest('MangHeApi/getCardDetail', body);
   return new Promise(async (resolve) => {
     $.post(myRequest, (err, resp, data) => {
       try {
@@ -279,7 +279,7 @@ async function getCardDetail(type) {
 //抽奖
 async function getBigReward() {
   const body = `[{"userNo":"$cooMrdGatewayUid$"}]`;
-  const myRequest = getPostRequest("MangHeApi/getBigReward", body);
+  const myRequest = getPostRequest('MangHeApi/getBigReward', body);
   return new Promise(async (resolve) => {
     $.post(myRequest, (err, resp, data) => {
       try {
@@ -287,7 +287,7 @@ async function getBigReward() {
         data = JSON.parse(data);
         if (data.success === true && data.code === 1) {
           if (data && data.content && data.content.rewardDTO) {
-            console.log(`抽奖成功，获得：${data.content.rewardDTO.title || "未知内容"}`);
+            console.log(`抽奖成功，获得：${data.content.rewardDTO.title || '未知内容'}`);
             //$.message += `第${$.index}个${$.UserName}获得${data.content.rewardDTO.title || '未知内容'}\n`
           } else {
             console.log(`抽奖成功，获得：未知内容,${JSON.stringify(data)}`);
@@ -306,7 +306,7 @@ async function getBigReward() {
 //合成
 async function synthesize() {
   const body = `[{"userNo":"$cooMrdGatewayUid$"}]`;
-  const myRequest = getPostRequest("MangHeApi/synthesize", body);
+  const myRequest = getPostRequest('MangHeApi/synthesize', body);
   return new Promise(async (resolve) => {
     $.post(myRequest, (err, resp, data) => {
       try {
@@ -360,7 +360,7 @@ async function doMission() {
 
 async function getCard(code) {
   const body = `[{"userNo":"$cooMrdGatewayUid$","getCode":"${code}"}]`;
-  const myRequest = getPostRequest("MangHeApi/getCard", body);
+  const myRequest = getPostRequest('MangHeApi/getCard', body);
   return new Promise(async (resolve) => {
     $.post(myRequest, (err, resp, data) => {
       try {
@@ -379,7 +379,7 @@ async function getCard(code) {
 
 async function setUserHasView() {
   const body = `[{"userNo":"$cooMrdGatewayUid$"}]`;
-  const myRequest = getPostRequest("mangHeApi/setUserHasView", body);
+  const myRequest = getPostRequest('mangHeApi/setUserHasView', body);
   return new Promise(async (resolve) => {
     $.post(myRequest, (err, resp, data) => {
       try {
@@ -399,7 +399,7 @@ async function setUserHasView() {
 //签到
 async function signIn() {
   const body = `[{"userNo":"$cooMrdGatewayUid$"}]`;
-  const myRequest = getPostRequest("mangHeApi/signIn", body);
+  const myRequest = getPostRequest('mangHeApi/signIn', body);
   return new Promise(async (resolve) => {
     $.post(myRequest, (err, resp, data) => {
       try {
@@ -419,7 +419,7 @@ async function signIn() {
 //获取互助码
 async function getNewShare() {
   const body = `[{"userNo":"$cooMrdGatewayUid$"}]`;
-  const myRequest = getPostRequest("MangHeApi/newShare", body);
+  const myRequest = getPostRequest('MangHeApi/newShare', body);
   return new Promise(async (resolve) => {
     $.post(myRequest, (err, resp, data) => {
       try {
@@ -440,7 +440,7 @@ async function getNewShare() {
 //获取任务列表
 async function getQueryRuleInfo() {
   const body = `[{"userNo":"$cooMrdGatewayUid$"}]`;
-  const myRequest = getPostRequest("MangHeApi/queryRuleInfo", body);
+  const myRequest = getPostRequest('MangHeApi/queryRuleInfo', body);
   return new Promise(async (resolve) => {
     $.post(myRequest, (err, resp, data) => {
       try {
@@ -459,7 +459,7 @@ async function getQueryRuleInfo() {
 
 async function getCardInfo() {
   const body = `[{"userNo":"$cooMrdGatewayUid$"}]`;
-  const myRequest = getPostRequest("MangHeApi/getCardInfo", body);
+  const myRequest = getPostRequest('MangHeApi/getCardInfo', body);
   return new Promise(async (resolve) => {
     $.post(myRequest, (err, resp, data) => {
       try {
@@ -479,7 +479,7 @@ async function getCardInfo() {
 //获取用户信息
 async function getBoxUserRewardWinners() {
   const body = `[{"userNo":"$cooMrdGatewayUid$"}]`;
-  const myRequest = getPostRequest("MangHeApi/boxUserRewardWinners", body);
+  const myRequest = getPostRequest('MangHeApi/boxUserRewardWinners', body);
   return new Promise(async (resolve) => {
     $.post(myRequest, (err, resp, data) => {
       try {
@@ -498,7 +498,7 @@ async function getBoxUserRewardWinners() {
 //助力
 async function helpFriend(helpCode) {
   const body = `[{"userNo":"$cooMrdGatewayUid$","missionNo":"${helpCode}"}]`;
-  const myRequest = getPostRequest("MangHeApi/helpFriend", body);
+  const myRequest = getPostRequest('MangHeApi/helpFriend', body);
   return new Promise(async (resolve) => {
     $.post(myRequest, (err, resp, data) => {
       try {
@@ -526,32 +526,32 @@ function getPostRequest(type, body) {
   const url = `https://lop-proxy.jd.com/${type}`;
   const method = `POST`;
   const headers = {
-    "Accept-Encoding": `gzip, deflate, br`,
+    'Accept-Encoding': `gzip, deflate, br`,
     Host: `lop-proxy.jd.com`,
     Origin: `https://jingcai-h5.jd.com`,
     Connection: `keep-alive`,
-    "biz-type": `service-monitor`,
-    "Accept-Language": `zh-cn`,
+    'biz-type': `service-monitor`,
+    'Accept-Language': `zh-cn`,
     version: `1.0.0`,
-    "Content-Type": `application/json;charset=utf-8`,
-    "User-Agent": $.isNode()
+    'Content-Type': `application/json;charset=utf-8`,
+    'User-Agent': $.isNode()
       ? process.env.JD_USER_AGENT
         ? process.env.JD_USER_AGENT
-        : require("./USER_AGENTS").USER_AGENT
-      : $.getdata("JDUA")
-      ? $.getdata("JDUA")
-      : "jdapp;iPhone;9.2.2;14.2;%E4%BA%AC%E4%B8%9C/9.2.2 CFNetwork/1206 Darwin/20.1.0",
+        : require('./USER_AGENTS').USER_AGENT
+      : $.getdata('JDUA')
+      ? $.getdata('JDUA')
+      : 'jdapp;iPhone;9.2.2;14.2;%E4%BA%AC%E4%B8%9C/9.2.2 CFNetwork/1206 Darwin/20.1.0',
     Referer: `https://jingcai-h5.jd.com`,
     ClientInfo: `{"appName":"jingcai","client":"m"}`,
     access: `H5`,
     Accept: `application/json, text/plain, */*`,
-    "jexpress-report-time": `${new Date().getTime()}`,
-    "source-client": `2`,
-    "X-Requested-With": `XMLHttpRequest`,
+    'jexpress-report-time': `${new Date().getTime()}`,
+    'source-client': `2`,
+    'X-Requested-With': `XMLHttpRequest`,
     Cookie: cookie,
-    "LOP-DN": `jingcai.jd.com`,
+    'LOP-DN': `jingcai.jd.com`,
     AppParams: `{"appid":158,"ticket_type":"m"}`,
-    "app-key": `jexpress`,
+    'app-key': `jexpress`,
   };
   return {
     url: url,
@@ -566,20 +566,20 @@ function TotalBean() {
     const options = {
       url: `https://wq.jd.com/user/info/QueryJDUserInfo?sceneval=2`,
       headers: {
-        Accept: "application/json,text/plain, */*",
-        "Content-Type": "application/x-www-form-urlencoded",
-        "Accept-Encoding": "gzip, deflate, br",
-        "Accept-Language": "zh-cn",
-        Connection: "keep-alive",
+        Accept: 'application/json,text/plain, */*',
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'Accept-Encoding': 'gzip, deflate, br',
+        'Accept-Language': 'zh-cn',
+        Connection: 'keep-alive',
         Cookie: cookie,
-        Referer: "https://wqs.jd.com/my/jingdou/my.shtml?sceneval=2",
-        "User-Agent": $.isNode()
+        Referer: 'https://wqs.jd.com/my/jingdou/my.shtml?sceneval=2',
+        'User-Agent': $.isNode()
           ? process.env.JD_USER_AGENT
             ? process.env.JD_USER_AGENT
-            : require("./USER_AGENTS").USER_AGENT
-          : $.getdata("JDUA")
-          ? $.getdata("JDUA")
-          : "jdapp;iPhone;9.2.2;14.2;%E4%BA%AC%E4%B8%9C/9.2.2 CFNetwork/1206 Darwin/20.1.0",
+            : require('./USER_AGENTS').USER_AGENT
+          : $.getdata('JDUA')
+          ? $.getdata('JDUA')
+          : 'jdapp;iPhone;9.2.2;14.2;%E4%BA%AC%E4%B8%9C/9.2.2 CFNetwork/1206 Darwin/20.1.0',
       },
     };
     $.post(options, (err, resp, data) => {
@@ -590,7 +590,7 @@ function TotalBean() {
         } else {
           if (data) {
             data = JSON.parse(data);
-            if (data["retcode"] === 13) {
+            if (data['retcode'] === 13) {
               $.isLogin = false; //cookie过期
               return;
             }

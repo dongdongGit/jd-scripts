@@ -9,94 +9,94 @@ npm i png-js 或者 npm i png-js -S
 修改域名 https://jdjoy.jd.com 可以改成ip https://49.7.27.236
 */
 
-const jd_env = require("./utils/JDEnv.js");
-const $ = jd_env.env("京东签到图形验证");
-const validator = require("./utils/JDJRValidator_Pure.js");
-const Faker = require("./utils/sign_graphics_validate.js");
-const notify = $.isNode() ? require("./sendNotify") : "";
+const jd_env = require('./utils/JDEnv.js');
+const $ = jd_env.env('京东签到图形验证');
+const validator = require('./utils/JDJRValidator_Pure.js');
+const Faker = require('./utils/sign_graphics_validate.js');
+const notify = $.isNode() ? require('./sendNotify') : '';
 //Node.js用户请在jdCookie.js处填写京东ck;
-const jdCookieNode = $.isNode() ? require("./jdCookie.js") : "";
+const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
 let cookiesArr = [],
-  cookie = "";
+  cookie = '';
 if ($.isNode()) {
   Object.keys(jdCookieNode).forEach((item) => {
     cookiesArr.push(jdCookieNode[item]);
   });
-  if (process.env.JD_DEBUG && process.env.JD_DEBUG === "false") console.log = () => {};
+  if (process.env.JD_DEBUG && process.env.JD_DEBUG === 'false') console.log = () => {};
 } else {
-  cookiesArr = [$.getdata("CookieJD"), $.getdata("CookieJD2"), ...jsonParse($.getdata("CookiesJD") || "[]").map((item) => item.cookie)].filter((item) => !!item);
+  cookiesArr = [$.getdata('CookieJD'), $.getdata('CookieJD2'), ...jsonParse($.getdata('CookiesJD') || '[]').map((item) => item.cookie)].filter((item) => !!item);
 }
-let message = "",
-  subTitle = "",
+let message = '',
+  subTitle = '',
   beanNum = 0;
-let fp = "";
-let eid = "";
-let UA = "";
+let fp = '';
+let eid = '';
+let UA = '';
 let signFlag = false;
 let successNum = 0;
 let errorNum = 0;
-let JD_API_HOST = "https://jdjoy.jd.com";
-$.invokeKey = "ztmFUCxcPMNyUq0P"
+let JD_API_HOST = 'https://jdjoy.jd.com';
+$.invokeKey = 'ztmFUCxcPMNyUq0P';
 if (process.env.JOY_HOST) {
   JD_API_HOST = process.env.JOY_HOST;
 }
 
 const turnTableId = [
   {
-    name: "京东商城-内衣",
+    name: '京东商城-内衣',
     id: 1071,
-    url: "https://prodev.m.jd.com/mall/active/4PgpL1xqPSW1sVXCJ3xopDbB1f69/index.html",
+    url: 'https://prodev.m.jd.com/mall/active/4PgpL1xqPSW1sVXCJ3xopDbB1f69/index.html',
   },
   {
-    name: "京东商城-健康",
+    name: '京东商城-健康',
     id: 527,
-    url: "https://prodev.m.jd.com/mall/active/w2oeK5yLdHqHvwef7SMMy4PL8LF/index.html",
+    url: 'https://prodev.m.jd.com/mall/active/w2oeK5yLdHqHvwef7SMMy4PL8LF/index.html',
   },
   {
-    name: "京东商城-清洁",
+    name: '京东商城-清洁',
     id: 446,
-    url: "https://prodev.m.jd.com/mall/active/2Tjm6ay1ZbZ3v7UbriTj6kHy9dn6/index.html",
+    url: 'https://prodev.m.jd.com/mall/active/2Tjm6ay1ZbZ3v7UbriTj6kHy9dn6/index.html',
   },
   {
-    name: "京东商城-个护",
+    name: '京东商城-个护',
     id: 336,
-    url: "https://prodev.m.jd.com/mall/active/2tZssTgnQsiUqhmg5ooLSHY9XSeN/index.html",
+    url: 'https://prodev.m.jd.com/mall/active/2tZssTgnQsiUqhmg5ooLSHY9XSeN/index.html',
   },
   {
-    name: "京东商城-童装",
+    name: '京东商城-童装',
     id: 511,
-    url: "https://prodev.m.jd.com/mall/active/3Af6mZNcf5m795T8dtDVfDwWVNhJ/index.html",
+    url: 'https://prodev.m.jd.com/mall/active/3Af6mZNcf5m795T8dtDVfDwWVNhJ/index.html',
   },
   {
-    name: "京东商城-母婴",
+    name: '京东商城-母婴',
     id: 458,
-    url: "https://prodev.m.jd.com/mall/active/3BbAVGQPDd6vTyHYjmAutXrKAos6/index.html",
+    url: 'https://prodev.m.jd.com/mall/active/3BbAVGQPDd6vTyHYjmAutXrKAos6/index.html',
   },
   {
-    name: "京东商城-数码",
+    name: '京东商城-数码',
     id: 347,
-    url: "https://prodev.m.jd.com/mall/active/4SWjnZSCTHPYjE5T7j35rxxuMTb6/index.html",
+    url: 'https://prodev.m.jd.com/mall/active/4SWjnZSCTHPYjE5T7j35rxxuMTb6/index.html',
   },
   {
-    name: "京东超市",
+    name: '京东超市',
     id: 1204,
-    url: "https://pro.m.jd.com/mall/active/QPwDgLSops2bcsYqQ57hENGrjgj/index.html",
+    url: 'https://pro.m.jd.com/mall/active/QPwDgLSops2bcsYqQ57hENGrjgj/index.html',
   },
 ];
 $.UA = $.isNode()
   ? process.env.JD_USER_AGENT
     ? process.env.JD_USER_AGENT
-    : require("./USER_AGENTS").USER_AGENT
-  : $.getdata("JDUA")
-  ? $.getdata("JDUA")
-  : "Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1";
-$.get = validator.injectToRequest2($.get.bind($), "channelSign", $.UA);
-$.post = validator.injectToRequest2($.post.bind($), "channelSign", $.UA);
+    : require('./USER_AGENTS').USER_AGENT
+  : $.getdata('JDUA')
+  ? $.getdata('JDUA')
+  : 'Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1';
+$.get = validator.injectToRequest2($.get.bind($), 'channelSign', $.UA);
+$.post = validator.injectToRequest2($.post.bind($), 'channelSign', $.UA);
 
 !(async () => {
   if (!cookiesArr[0]) {
-    $.msg($.name, "【提示】请先获取京东账号一cookie\n直接使用NobyDa的京东签到获取", "https://bean.m.jd.com/bean/signIndex.action", {
-      "open-url": "https://bean.m.jd.com/bean/signIndex.action",
+    $.msg($.name, '【提示】请先获取京东账号一cookie\n直接使用NobyDa的京东签到获取', 'https://bean.m.jd.com/bean/signIndex.action', {
+      'open-url': 'https://bean.m.jd.com/bean/signIndex.action',
     });
     return;
   }
@@ -105,19 +105,19 @@ $.post = validator.injectToRequest2($.post.bind($), "channelSign", $.UA);
       cookie = cookiesArr[i];
       $.UserName = decodeURIComponent(cookie.match(/pt_pin=(.+?);/) && cookie.match(/pt_pin=(.+?);/)[1]);
       $.index = i + 1;
-      $.nickName = "";
+      $.nickName = '';
       console.log(`\n开始【京东账号${$.index}】${$.nickName || $.UserName}\n`);
       beanNum = 0;
       successNum = 0;
       errorNum = 0;
-      subTitle = "";
+      subTitle = '';
       await signRun();
       const UTC8 = new Date().getTime() + new Date().getTimezoneOffset() * 60000 + 28800000;
-      $.beanSignTime = new Date(UTC8).toLocaleString("zh", {
+      $.beanSignTime = new Date(UTC8).toLocaleString('zh', {
         hour12: false,
       });
       let msg = `【京东账号${$.index}】${$.nickName || $.UserName}\n【签到时间】:  ${$.beanSignTime}\n【签到概览】:  成功${successNum}个, 失败${errorNum}个\n【签到奖励】:  ${beanNum}京豆\n`;
-      message += msg + "\n";
+      message += msg + '\n';
       $.msg($.name, msg);
       // break
     }
@@ -125,7 +125,7 @@ $.post = validator.injectToRequest2($.post.bind($), "channelSign", $.UA);
   await showMsg();
 })()
   .catch((e) => {
-    $.log("", `❌ ${$.name}, 失败! 原因: ${e}!`, "");
+    $.log('', `❌ ${$.name}, 失败! 原因: ${e}!`, '');
   })
   .finally(() => {
     $.done();
@@ -165,7 +165,7 @@ function Sign(i) {
               console.log(`${turnTableId[i].name} 签到成功:获得 ${Number(data.jdBeanQuantity)}京豆`);
             } else {
               if (data.errorMessage) {
-                if (data.errorMessage.indexOf("已签到") > -1 || data.errorMessage.indexOf("今天已经签到") > -1) {
+                if (data.errorMessage.indexOf('已签到') > -1 || data.errorMessage.indexOf('今天已经签到') > -1) {
                   signFlag = true;
                 }
                 console.log(`${turnTableId[i].name} ${data.errorMessage}`);
@@ -220,7 +220,7 @@ function Login(i) {
               }
             } else {
               if (data.errorMessage) {
-                if (data.errorMessage.indexOf("已签到") > -1 || data.errorMessage.indexOf("今天已经签到") > -1) {
+                if (data.errorMessage.indexOf('已签到') > -1 || data.errorMessage.indexOf('今天已经签到') > -1) {
                   signFlag = true;
                 }
                 console.log(`${turnTableId[i].name} ${data.errorMessage}`);
@@ -247,8 +247,8 @@ function getEid(arr) {
       url: `https://gia.jd.com/fcf.html?a=${arr.a}`,
       body: `d=${arr.d}`,
       headers: {
-        "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
-        "User-Agent": $.UA,
+        'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
+        'User-Agent': $.UA,
       },
     };
     $.post(options, async (err, resp, data) => {
@@ -257,8 +257,8 @@ function getEid(arr) {
           console.log(`\n${turnTableId[i].name} 登录: API查询请求失败 ‼️‼️`);
           throw new Error(err);
         } else {
-          if (data.indexOf("*_*") > 0) {
-            data = data.split("*_*", 2);
+          if (data.indexOf('*_*') > 0) {
+            data = data.split('*_*', 2);
             data = JSON.parse(data[1]);
             eid = data.eid;
           } else {
@@ -279,15 +279,15 @@ function taskUrl(turnTableId) {
   return {
     url,
     headers: {
-      Accept: "application/json, text/plain, */*",
-      "Accept-Encoding": "gzip, deflate, br",
-      "Accept-Language": "zh-cn",
-      Connection: "keep-alive",
+      Accept: 'application/json, text/plain, */*',
+      'Accept-Encoding': 'gzip, deflate, br',
+      'Accept-Language': 'zh-cn',
+      Connection: 'keep-alive',
       Cookie: cookie,
       Host: `jdjoy.jd.com`,
-      Origin: "https://prodev.m.jd.com",
-      Referer: "https://prodev.m.jd.com/",
-      "User-Agent": $.UA,
+      Origin: 'https://prodev.m.jd.com',
+      Referer: 'https://prodev.m.jd.com/',
+      'User-Agent': $.UA,
     },
   };
 }
@@ -297,16 +297,16 @@ function tasPostkUrl(turnTableId) {
   return {
     url,
     headers: {
-      Accept: "application/json, text/plain, */*",
-      "Accept-Encoding": "gzip, deflate, br",
-      "Accept-Language": "zh-CN,zh;q=0.9,en;q=0.8",
-      Connection: "keep-alive",
-      "Content-Type": "application/x-www-form-urlencoded",
+      Accept: 'application/json, text/plain, */*',
+      'Accept-Encoding': 'gzip, deflate, br',
+      'Accept-Language': 'zh-CN,zh;q=0.9,en;q=0.8',
+      Connection: 'keep-alive',
+      'Content-Type': 'application/x-www-form-urlencoded',
       Cookie: cookie,
       Host: `jdjoy.jd.com`,
-      Origin: "https://prodev.m.jd.com",
-      Referer: "https://prodev.m.jd.com/",
-      "User-Agent": $.UA,
+      Origin: 'https://prodev.m.jd.com',
+      Referer: 'https://prodev.m.jd.com/',
+      'User-Agent': $.UA,
     },
   };
 }

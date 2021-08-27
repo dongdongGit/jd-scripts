@@ -12,8 +12,8 @@ https:\/\/api\.m.jd.com\/api\?appid=siteppM&functionId=siteppM_priceskusPull url
 5 0 * * * https://raw.githubusercontent.com/LingFeng0918/jd_scripts/master/jd_priceProtect.js, tag=京东价格保护, img-url=https://raw.githubusercontent.com/ZCY01/img/master/pricev1.png, enabled=true
 */
 
-const jd_env = require("./utils/JDEnv.js");
-const $ = jd_env.env("京东价格保护");
+const jd_env = require('./utils/JDEnv.js');
+const $ = jd_env.env('京东价格保护');
 let jsdom = require('jsdom');
 const unifiedGatewayName = 'https://api.m.jd.com';
 

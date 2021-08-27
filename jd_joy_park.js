@@ -9,22 +9,22 @@ export joyinviterPin=""
 // [task_local]
 // #汪汪乐园
 // 30 2,20 * * * node /scripts/jd_joy_park.js >> /scripts/logs/jd_joy_park.log 2>&1
-const jd_helpers = require("./utils/JDHelpers.js");
-const jd_env = require("./utils/JDEnv.js");
-const $ = jd_env.env("汪汪乐园");
-const notify = $.isNode() ? require("./sendNotify") : "";
+const jd_helpers = require('./utils/JDHelpers.js');
+const jd_env = require('./utils/JDEnv.js');
+const $ = jd_env.env('汪汪乐园');
+const notify = $.isNode() ? require('./sendNotify') : '';
 //Node.js用户请在jdCookie.js处填写京东ck;
-const jdCookieNode = $.isNode() ? require("./jdCookie.js") : "";
+const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
 
 //IOS等用户直接用NobyDa的jd cookie
 let cookiesArr = [],
-  cookie = "",
+  cookie = '',
   message;
 
 let codeList = [];
 let codeList1 = [];
 
-let joyinviterPin = "";
+let joyinviterPin = '';
 if (process.env.joyinviterPin) {
   joyinviterPin = process.env.joyinviterPin;
 }
@@ -33,15 +33,15 @@ if ($.isNode()) {
   Object.keys(jdCookieNode).forEach((item) => {
     cookiesArr.push(jdCookieNode[item]);
   });
-  if (process.env.JD_DEBUG && process.env.JD_DEBUG === "false") console.log = () => {};
+  if (process.env.JD_DEBUG && process.env.JD_DEBUG === 'false') console.log = () => {};
 } else {
-  cookiesArr = [$.getdata("CookieJD"), $.getdata("CookieJD2"), ...jd_helpers.jsonParse($.getdata("CookiesJD") || "[]").map((item) => item.cookie)].filter((item) => !!item);
+  cookiesArr = [$.getdata('CookieJD'), $.getdata('CookieJD2'), ...jd_helpers.jsonParse($.getdata('CookiesJD') || '[]').map((item) => item.cookie)].filter((item) => !!item);
 }
-const JD_API_HOST = "https://api.m.jd.com/client.action";
+const JD_API_HOST = 'https://api.m.jd.com/client.action';
 
 !(async () => {
   if (!cookiesArr[0]) {
-    $.msg($.name, "【提示】请先获取京东账号一cookie\n直接使用NobyDa的京东签到获取", "https://bean.m.jd.com/bean/signIndex.action", { "open-url": "https://bean.m.jd.com/bean/signIndex.action" });
+    $.msg($.name, '【提示】请先获取京东账号一cookie\n直接使用NobyDa的京东签到获取', 'https://bean.m.jd.com/bean/signIndex.action', { 'open-url': 'https://bean.m.jd.com/bean/signIndex.action' });
     return;
   }
 
@@ -52,13 +52,13 @@ const JD_API_HOST = "https://api.m.jd.com/client.action";
       $.UserName = decodeURIComponent(cookie.match(/pt_pin=([^; ]+)(?=;?)/) && cookie.match(/pt_pin=([^; ]+)(?=;?)/)[1]);
       $.index = i + 1;
       $.isLogin = true;
-      $.nickName = "";
-      message = "";
+      $.nickName = '';
+      message = '';
       await TotalBean();
       console.log(`\n******开始【京东账号${$.index}】${$.nickName || $.UserName}*********\n`);
       if (!$.isLogin) {
         $.msg($.name, `【提示】cookie已失效`, `京东账号${$.index} ${$.nickName || $.UserName}\n请重新登录获取\nhttps://bean.m.jd.com/bean/signIndex.action`, {
-          "open-url": "https://bean.m.jd.com/bean/signIndex.action",
+          'open-url': 'https://bean.m.jd.com/bean/signIndex.action',
         });
 
         if ($.isNode()) {
@@ -75,7 +75,7 @@ const JD_API_HOST = "https://api.m.jd.com/client.action";
   }
 })()
   .catch((e) => {
-    $.log("", `❌ ${$.name}, 失败! 原因: ${e}!`, "");
+    $.log('', `❌ ${$.name}, 失败! 原因: ${e}!`, '');
   })
   .finally(() => {
     $.done();
@@ -87,9 +87,9 @@ function joyBaseInfo() {
 
       body: `functionId=joyBaseInfo&body={"taskId":"","inviteType":"","inviterPin":"","linkId":"LsQNxL7iWDlXUs6cFl-AAg"}&_t=1625484389026&appid=activities_platform`,
       headers: {
-        Origin: "https://joypark.jd.com",
-        Host: "api.m.jd.com",
-        "User-Agent": "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/48.0.2564.116 UBrowser/5.6.12150.8 Safari/537.36",
+        Origin: 'https://joypark.jd.com',
+        Host: 'api.m.jd.com',
+        'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/48.0.2564.116 UBrowser/5.6.12150.8 Safari/537.36',
         Cookie: cookie,
       },
     };
@@ -98,15 +98,15 @@ function joyBaseInfo() {
       try {
         data = JSON.parse(data);
 
-        if (data.errMsg == "success") {
+        if (data.errMsg == 'success') {
           dj = data.data.level;
           gmdj = data.data.fastBuyLevel;
           jb = data.data.joyCoin;
           yqm = data.data.invitePin;
           $.log(`\n===================================`);
           $.log(`🐶旺财等级:${dj}\n🐶购买旺财等级:${gmdj}\n🐶当前金币:${jb}\n🐶邀请码:${yqm}\n===================================\n`);
-        } else if (data.errMsg == "操作失败") {
-          console.log("操作失败");
+        } else if (data.errMsg == '操作失败') {
+          console.log('操作失败');
         }
       } catch (e) {
         $.logErr(e, resp);
@@ -122,9 +122,9 @@ function joyList() {
       url: `https://api.m.jd.com/?functionId=joyList&body={%22linkId%22:%22LsQNxL7iWDlXUs6cFl-AAg%22}&_t=1625484389027&appid=activities_platform`,
 
       headers: {
-        Origin: "https://joypark.jd.com",
-        Host: "api.m.jd.com",
-        "User-Agent": "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/48.0.2564.116 UBrowser/5.6.12150.8 Safari/537.36",
+        Origin: 'https://joypark.jd.com',
+        Host: 'api.m.jd.com',
+        'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/48.0.2564.116 UBrowser/5.6.12150.8 Safari/537.36',
         Cookie: cookie,
       },
     };
@@ -133,7 +133,7 @@ function joyList() {
       try {
         data = JSON.parse(data);
 
-        if (data.errMsg == "success") {
+        if (data.errMsg == 'success') {
           joyNumber = data.data.joyNumber;
           $.log(`\n===================================`);
           $.log(`总共养了:${joyNumber}🐶只旺财\n===================================\n`);
@@ -190,8 +190,8 @@ function joyList() {
 
             $.log(`🐶旺财:${wcname}\n🐶等级:${wcdj}\n🐶旺财ID:${wcid}\n🐶回收价格:${wchs}\n===================================\n`);
           }
-        } else if (data.errMsg == "操作失败") {
-          console.log("操作失败");
+        } else if (data.errMsg == '操作失败') {
+          console.log('操作失败');
         }
       } catch (e) {
         $.logErr(e, resp);
@@ -209,9 +209,9 @@ function joyMerge(a, b) {
 
       body: `functionId=joyMerge&body={"joyOneId":${a},"joyTwoId":${b},"linkId":"LsQNxL7iWDlXUs6cFl-AAg"}&_t=1625488466557&appid=activities_platform`,
       headers: {
-        Origin: "https://joypark.jd.com",
-        Host: "api.m.jd.com",
-        "User-Agent": "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/48.0.2564.116 UBrowser/5.6.12150.8 Safari/537.36",
+        Origin: 'https://joypark.jd.com',
+        Host: 'api.m.jd.com',
+        'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/48.0.2564.116 UBrowser/5.6.12150.8 Safari/537.36',
         Cookie: cookie,
       },
     };
@@ -220,7 +220,7 @@ function joyMerge(a, b) {
       try {
         data = JSON.parse(data);
 
-        if (data.errMsg == "success") {
+        if (data.errMsg == 'success') {
           hcid = data.data.joyVO.id;
           hcname = data.data.joyVO.name;
           hcdj = data.data.joyVO.level;
@@ -249,9 +249,9 @@ function joyBuy() {
 
       body: `functionId=joyBuy&body={"level":${gmdj},"linkId":"LsQNxL7iWDlXUs6cFl-AAg"}&_t=1625536191020&appid=activities_platform`,
       headers: {
-        Origin: "https://joypark.jd.com",
-        Host: "api.m.jd.com",
-        "User-Agent": "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/48.0.2564.116 UBrowser/5.6.12150.8 Safari/537.36",
+        Origin: 'https://joypark.jd.com',
+        Host: 'api.m.jd.com',
+        'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/48.0.2564.116 UBrowser/5.6.12150.8 Safari/537.36',
         Cookie: cookie,
       },
     };
@@ -260,15 +260,15 @@ function joyBuy() {
       try {
         data = JSON.parse(data);
 
-        if (data.errMsg == "success") {
+        if (data.errMsg == 'success') {
           buyid = data.data.id;
           buyname = data.data.name;
           buydj = data.data.level;
           buyhs = data.data.recoveryPrice;
           $.log(`\n===================================`);
           $.log(`🐶购买旺财:${buyname}\n🐶购买等级:${buydj}\n🐶购买旺财ID:${buyid}\n🐶购买回收价格:${buyhs}\n===================================\n`);
-        } else if (data.errMsg == "操作失败") {
-          console.log("操作失败");
+        } else if (data.errMsg == '操作失败') {
+          console.log('操作失败');
         }
       } catch (e) {
         $.logErr(e, resp);
@@ -286,9 +286,9 @@ function tasklist() {
 
       body: `functionId=apTaskList&body={"linkId":"LsQNxL7iWDlXUs6cFl-AAg"}&_t=1625536971467&appid=activities_platform`,
       headers: {
-        Origin: "https://joypark.jd.com",
-        Host: "api.m.jd.com",
-        "User-Agent": "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/48.0.2564.116 UBrowser/5.6.12150.8 Safari/537.36",
+        Origin: 'https://joypark.jd.com',
+        Host: 'api.m.jd.com',
+        'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/48.0.2564.116 UBrowser/5.6.12150.8 Safari/537.36',
         //"Cookie": cookie,
       },
     };
@@ -307,39 +307,39 @@ function tasklist() {
           $.log(`\n===============浏览===============`);
           lltaskType = task[3].taskType;
           llsigntaskid = task[3].id;
-          await dotask(lltaskType, llsigntaskid, "70409858773");
-          await apTaskDrawAward(lltaskType, llsigntaskid, "70409858773");
-          await dotask(lltaskType, llsigntaskid, "10029398355348");
-          await apTaskDrawAward(lltaskType, llsigntaskid, "10029398355348");
-          await dotask(lltaskType, llsigntaskid, "10026179886685");
-          await apTaskDrawAward(lltaskType, llsigntaskid, "10026179886685");
-          await dotask(lltaskType, llsigntaskid, "10032911040996");
-          await apTaskDrawAward(lltaskType, llsigntaskid, "10032911040996");
-          await dotask(lltaskType, llsigntaskid, "10033042710323");
-          await apTaskDrawAward(lltaskType, llsigntaskid, "10033042710323");
-          await dotask(lltaskType, llsigntaskid, "59304295243");
-          await apTaskDrawAward(lltaskType, llsigntaskid, "59304295243");
-          await dotask(lltaskType, llsigntaskid, "10029677756218");
-          await apTaskDrawAward(lltaskType, llsigntaskid, "10029677756218");
-          await dotask(lltaskType, llsigntaskid, "10032928241364");
-          await apTaskDrawAward(lltaskType, llsigntaskid, "10032928241364");
-          await dotask(lltaskType, llsigntaskid, "10032992559557");
-          await apTaskDrawAward(lltaskType, llsigntaskid, "10032992559557");
-          await dotask(lltaskType, llsigntaskid, "10028926270219");
-          await apTaskDrawAward(lltaskType, llsigntaskid, "10028926270219");
+          await dotask(lltaskType, llsigntaskid, '70409858773');
+          await apTaskDrawAward(lltaskType, llsigntaskid, '70409858773');
+          await dotask(lltaskType, llsigntaskid, '10029398355348');
+          await apTaskDrawAward(lltaskType, llsigntaskid, '10029398355348');
+          await dotask(lltaskType, llsigntaskid, '10026179886685');
+          await apTaskDrawAward(lltaskType, llsigntaskid, '10026179886685');
+          await dotask(lltaskType, llsigntaskid, '10032911040996');
+          await apTaskDrawAward(lltaskType, llsigntaskid, '10032911040996');
+          await dotask(lltaskType, llsigntaskid, '10033042710323');
+          await apTaskDrawAward(lltaskType, llsigntaskid, '10033042710323');
+          await dotask(lltaskType, llsigntaskid, '59304295243');
+          await apTaskDrawAward(lltaskType, llsigntaskid, '59304295243');
+          await dotask(lltaskType, llsigntaskid, '10029677756218');
+          await apTaskDrawAward(lltaskType, llsigntaskid, '10029677756218');
+          await dotask(lltaskType, llsigntaskid, '10032928241364');
+          await apTaskDrawAward(lltaskType, llsigntaskid, '10032928241364');
+          await dotask(lltaskType, llsigntaskid, '10032992559557');
+          await apTaskDrawAward(lltaskType, llsigntaskid, '10032992559557');
+          await dotask(lltaskType, llsigntaskid, '10028926270219');
+          await apTaskDrawAward(lltaskType, llsigntaskid, '10028926270219');
           $.log(`\n===============浏览会场===============`);
           ll1taskType = task[2].taskType;
           ll1signtaskid = task[2].id;
-          await dotask(ll1taskType, ll1signtaskid, "https://prodev.m.jd.com/jdlite/active/4SuoxWhFFp5P8SpYoMm6iFuFrXxC/index.html");
-          await apTaskDrawAward(ll1taskType, ll1signtaskid, "https://prodev.m.jd.com/jdlite/active/4SuoxWhFFp5P8SpYoMm6iFuFrXxC/index.html");
-          await dotask(ll1taskType, ll1signtaskid, "https://pro.m.jd.com/jdlite/active/BMvPWMK1RsN4PWh1JksQUnRCxPy/index.html");
-          await apTaskDrawAward(ll1taskType, ll1signtaskid, "https://pro.m.jd.com/jdlite/active/BMvPWMK1RsN4PWh1JksQUnRCxPy/index.html");
-          await dotask(ll1taskType, ll1signtaskid, "https://pro.m.jd.com/jdlite/active/3H885vA4sQj6ctYzzPVix4iiYN2P/index.html");
-          await apTaskDrawAward(ll1taskType, ll1signtaskid, "https://pro.m.jd.com/jdlite/active/3H885vA4sQj6ctYzzPVix4iiYN2P/index.html");
-          await dotask(ll1taskType, ll1signtaskid, "https://pro.m.jd.com/jdlite/active/vN4YuYXS1mPse7yeVPRq4TNvCMR/index.html");
-          await apTaskDrawAward(ll1taskType, ll1signtaskid, "https://pro.m.jd.com/jdlite/active/vN4YuYXS1mPse7yeVPRq4TNvCMR/index.html");
-          await dotask(ll1taskType, ll1signtaskid, "https://pro.m.jd.com/jdlite/active/4AMo3SQzbqAzJgowhXqvt8Dpo8iA/index.html");
-          await apTaskDrawAward(ll1taskType, ll1signtaskid, "https://pro.m.jd.com/jdlite/active/4AMo3SQzbqAzJgowhXqvt8Dpo8iA/index.html");
+          await dotask(ll1taskType, ll1signtaskid, 'https://prodev.m.jd.com/jdlite/active/4SuoxWhFFp5P8SpYoMm6iFuFrXxC/index.html');
+          await apTaskDrawAward(ll1taskType, ll1signtaskid, 'https://prodev.m.jd.com/jdlite/active/4SuoxWhFFp5P8SpYoMm6iFuFrXxC/index.html');
+          await dotask(ll1taskType, ll1signtaskid, 'https://pro.m.jd.com/jdlite/active/BMvPWMK1RsN4PWh1JksQUnRCxPy/index.html');
+          await apTaskDrawAward(ll1taskType, ll1signtaskid, 'https://pro.m.jd.com/jdlite/active/BMvPWMK1RsN4PWh1JksQUnRCxPy/index.html');
+          await dotask(ll1taskType, ll1signtaskid, 'https://pro.m.jd.com/jdlite/active/3H885vA4sQj6ctYzzPVix4iiYN2P/index.html');
+          await apTaskDrawAward(ll1taskType, ll1signtaskid, 'https://pro.m.jd.com/jdlite/active/3H885vA4sQj6ctYzzPVix4iiYN2P/index.html');
+          await dotask(ll1taskType, ll1signtaskid, 'https://pro.m.jd.com/jdlite/active/vN4YuYXS1mPse7yeVPRq4TNvCMR/index.html');
+          await apTaskDrawAward(ll1taskType, ll1signtaskid, 'https://pro.m.jd.com/jdlite/active/vN4YuYXS1mPse7yeVPRq4TNvCMR/index.html');
+          await dotask(ll1taskType, ll1signtaskid, 'https://pro.m.jd.com/jdlite/active/4AMo3SQzbqAzJgowhXqvt8Dpo8iA/index.html');
+          await apTaskDrawAward(ll1taskType, ll1signtaskid, 'https://pro.m.jd.com/jdlite/active/4AMo3SQzbqAzJgowhXqvt8Dpo8iA/index.html');
           $.log(`\n===============邀请任务===============`);
 
           await inviteType();
@@ -351,7 +351,7 @@ function tasklist() {
           //$.log(`\n===============升级奖励===============`)
           //await levelDrawAward()
 
-          console.log("操作失败");
+          console.log('操作失败');
         }
       } catch (e) {
         $.logErr(e, resp);
@@ -368,9 +368,9 @@ function openinvite() {
 
       body: `functionId=joyBaseInfo&body={"taskId":"","inviteType":"2","inviterPin":"${joyinviterPin}","linkId":"LsQNxL7iWDlXUs6cFl-AAg"}&_t=1625540360946&appid=activities_platform`,
       headers: {
-        Origin: "https://joypark.jd.com",
-        Host: "api.m.jd.com",
-        "User-Agent": "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/48.0.2564.116 UBrowser/5.6.12150.8 Safari/537.36",
+        Origin: 'https://joypark.jd.com',
+        Host: 'api.m.jd.com',
+        'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/48.0.2564.116 UBrowser/5.6.12150.8 Safari/537.36',
         Cookie: cookie,
       },
     };
@@ -383,7 +383,7 @@ function openinvite() {
         if (data.success == true) {
           $.log(data.errMsg);
         } else if (data.success == false) {
-          console.log(data.errMsg + "或者你的CK不足");
+          console.log(data.errMsg + '或者你的CK不足');
         }
       } catch (e) {
         $.logErr(e, resp);
@@ -400,9 +400,9 @@ function inviteType() {
 
       body: `functionId=joyBaseInfo&body={"taskId":"167","inviteType":"1","inviterPin":"${joyinviterPin}","linkId":"LsQNxL7iWDlXUs6cFl-AAg"}&_t=1625540360946&appid=activities_platform`,
       headers: {
-        Origin: "https://joypark.jd.com",
-        Host: "api.m.jd.com",
-        "User-Agent": "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/48.0.2564.116 UBrowser/5.6.12150.8 Safari/537.36",
+        Origin: 'https://joypark.jd.com',
+        Host: 'api.m.jd.com',
+        'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/48.0.2564.116 UBrowser/5.6.12150.8 Safari/537.36',
         Cookie: cookie,
       },
     };
@@ -415,7 +415,7 @@ function inviteType() {
         if (data.success == true) {
           $.log(data.errMsg);
         } else if (data.success == false) {
-          console.log(data.errMsg + "或者你的CK不足");
+          console.log(data.errMsg + '或者你的CK不足');
         }
       } catch (e) {
         $.logErr(e, resp);
@@ -432,9 +432,9 @@ function levelDrawAward() {
 
       body: `functionId=joyBaseInfo&body={"taskId":"167","inviteType":"1","inviterPin":"${yqm}","linkId":"LsQNxL7iWDlXUs6cFl-AAg"}&_t=1625545015696&appid=activities_platform`,
       headers: {
-        Origin: "https://joypark.jd.com",
-        Host: "api.m.jd.com",
-        "User-Agent": "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/48.0.2564.116 UBrowser/5.6.12150.8 Safari/537.36",
+        Origin: 'https://joypark.jd.com',
+        Host: 'api.m.jd.com',
+        'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/48.0.2564.116 UBrowser/5.6.12150.8 Safari/537.36',
         Cookie: cookie,
       },
     };
@@ -464,9 +464,9 @@ function dotask(taskType, taskid, itemId) {
 
       body: `functionId=apDoTask&body={"taskType":"${taskType}","taskId":${taskid},"channel":4,"linkId":"LsQNxL7iWDlXUs6cFl-AAg","itemId":"${itemId}"}&_t=1625537021966&appid=activities_platform`,
       headers: {
-        Origin: "https://joypark.jd.com",
-        Host: "api.m.jd.com",
-        "User-Agent": "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/48.0.2564.116 UBrowser/5.6.12150.8 Safari/537.36",
+        Origin: 'https://joypark.jd.com',
+        Host: 'api.m.jd.com',
+        'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/48.0.2564.116 UBrowser/5.6.12150.8 Safari/537.36',
         Cookie: cookie,
       },
     };
@@ -478,7 +478,7 @@ function dotask(taskType, taskid, itemId) {
 
         if (data.success == true) {
           if (data.data.finished == true) {
-            $.log("任务完成");
+            $.log('任务完成');
           } else if (data.data.finished == false) {
             $.log(data.errMsg);
           }
@@ -501,9 +501,9 @@ function apTaskinviter() {
 
       body: `functionId=joyBaseInfo&body={"taskId":"167","inviteType":"1","inviterPin":"${yqm}","linkId":"LsQNxL7iWDlXUs6cFl-AAg"}&_t=1625543629130&appid=activities_platform`,
       headers: {
-        Origin: "https://joypark.jd.com",
-        Host: "api.m.jd.com",
-        "User-Agent": "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/48.0.2564.116 UBrowser/5.6.12150.8 Safari/537.36",
+        Origin: 'https://joypark.jd.com',
+        Host: 'api.m.jd.com',
+        'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/48.0.2564.116 UBrowser/5.6.12150.8 Safari/537.36',
         Cookie: cookie,
       },
     };
@@ -533,9 +533,9 @@ function apTaskDrawAward(taskType, taskid) {
 
       body: `functionId=apTaskDrawAward&body={"taskType":"${taskType}","taskId":${taskid},"linkId":"LsQNxL7iWDlXUs6cFl-AAg"}&_t=1625537021966&appid=activities_platform`,
       headers: {
-        Origin: "https://joypark.jd.com",
-        Host: "api.m.jd.com",
-        "User-Agent": "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/48.0.2564.116 UBrowser/5.6.12150.8 Safari/537.36",
+        Origin: 'https://joypark.jd.com',
+        Host: 'api.m.jd.com',
+        'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/48.0.2564.116 UBrowser/5.6.12150.8 Safari/537.36',
         Cookie: cookie,
       },
     };
@@ -548,7 +548,7 @@ function apTaskDrawAward(taskType, taskid) {
           DrawAward = data.data;
 
           DrawAward = DrawAward[0].awardGivenNumber;
-          $.log("获得旺财币：" + DrawAward);
+          $.log('获得旺财币：' + DrawAward);
         } else if (data.success == false) {
           console.log(data.errMsg);
         }
@@ -567,18 +567,18 @@ async function taskPostUrl(functionId, body) {
     body: `functionId=${functionId}&body=${escape(JSON.stringify(body))}&client=wh5&clientVersion=1.0.0&appid=content_ecology&uuid=6898c30638c55142969304c8e2167997fa59eb54&t=1622588448365`,
     headers: {
       Cookie: cookie,
-      Host: "api.m.jd.com",
-      Connection: "keep-alive",
-      "Content-Type": "application/x-www-form-urlencoded",
-      "User-Agent": $.isNode()
+      Host: 'api.m.jd.com',
+      Connection: 'keep-alive',
+      'Content-Type': 'application/x-www-form-urlencoded',
+      'User-Agent': $.isNode()
         ? process.env.JD_USER_AGENT
           ? process.env.JD_USER_AGENT
-          : require("./USER_AGENTS").USER_AGENT
-        : $.getdata("JDUA")
-        ? $.getdata("JDUA")
-        : "jdapp;iPhone;9.4.4;14.3;network/4g;Mozilla/5.0 (iPhone; CPU iPhone OS 14_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148;supportJDSHWK/1",
-      "Accept-Language": "zh-cn",
-      "Accept-Encoding": "gzip, deflate, br",
+          : require('./USER_AGENTS').USER_AGENT
+        : $.getdata('JDUA')
+        ? $.getdata('JDUA')
+        : 'jdapp;iPhone;9.4.4;14.3;network/4g;Mozilla/5.0 (iPhone; CPU iPhone OS 14_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148;supportJDSHWK/1',
+      'Accept-Language': 'zh-cn',
+      'Accept-Encoding': 'gzip, deflate, br',
     },
   };
 }
@@ -588,20 +588,20 @@ async function TotalBean() {
     const options = {
       url: `https://wq.jd.com/user/info/QueryJDUserInfo?sceneval=2`,
       headers: {
-        Accept: "application/json,text/plain, */*",
-        "Content-Type": "application/x-www-form-urlencoded",
-        "Accept-Encoding": "gzip, deflate, br",
-        "Accept-Language": "zh-cn",
-        Connection: "keep-alive",
+        Accept: 'application/json,text/plain, */*',
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'Accept-Encoding': 'gzip, deflate, br',
+        'Accept-Language': 'zh-cn',
+        Connection: 'keep-alive',
         Cookie: cookie,
-        Referer: "https://wqs.jd.com/my/jingdou/my.shtml?sceneval=2",
-        "User-Agent": $.isNode()
+        Referer: 'https://wqs.jd.com/my/jingdou/my.shtml?sceneval=2',
+        'User-Agent': $.isNode()
           ? process.env.JD_USER_AGENT
             ? process.env.JD_USER_AGENT
-            : require("./USER_AGENTS").USER_AGENT
-          : $.getdata("JDUA")
-          ? $.getdata("JDUA")
-          : "jdapp;iPhone;9.4.4;14.3;network/4g;Mozilla/5.0 (iPhone; CPU iPhone OS 14_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148;supportJDSHWK/1",
+            : require('./USER_AGENTS').USER_AGENT
+          : $.getdata('JDUA')
+          ? $.getdata('JDUA')
+          : 'jdapp;iPhone;9.4.4;14.3;network/4g;Mozilla/5.0 (iPhone; CPU iPhone OS 14_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148;supportJDSHWK/1',
       },
     };
     $.post(options, (err, resp, data) => {
@@ -612,12 +612,12 @@ async function TotalBean() {
         } else {
           if (data) {
             data = JSON.parse(data);
-            if (data["retcode"] === 13) {
+            if (data['retcode'] === 13) {
               $.isLogin = false; //cookie过期
               return;
             }
-            if (data["retcode"] === 0) {
-              $.nickName = (data["base"] && data["base"].nickname) || $.UserName;
+            if (data['retcode'] === 0) {
+              $.nickName = (data['base'] && data['base'].nickname) || $.UserName;
             } else {
               $.nickName = $.UserName;
             }

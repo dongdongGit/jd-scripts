@@ -4,10 +4,10 @@
  * cron  5 6,8 12-24 8 *  jd_decompression.js
  */
 
-const jd_env = require("./utils/JDEnv.js");
-let $ = jd_env.env("热血心跳,狂解压");
-const jdCookieNode = $.isNode() ? require("./jdCookie.js") : "";
-const notify = $.isNode() ? require("./sendNotify") : "";
+const jd_env = require('./utils/JDEnv.js');
+let $ = jd_env.env('热血心跳,狂解压');
+const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
+const notify = $.isNode() ? require('./sendNotify') : '';
 let cookiesArr = [];
 $.activityID = 'dz2107100008586804';
 $.shopid = '1000085868';

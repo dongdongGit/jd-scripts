@@ -476,7 +476,7 @@ function getHotGoodsList() {
 
         if (result.errorCode == 200) {
           $.hotGoodsList = result.data.data;
-          $.skuIds = $.hotGoodsList.map(goods => goods.skuId);
+          $.skuIds = $.hotGoodsList.map((goods) => goods.skuId);
         } else if (result.errorCode == 500) {
           $.log(result.errorMessage);
         }
