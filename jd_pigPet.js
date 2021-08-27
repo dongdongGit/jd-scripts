@@ -23,29 +23,29 @@ cron "12 0-23/6 * * *" script-path=jd_pigPet.js, tag=京东金融养猪猪
 ============小火箭=========
 京东金融养猪猪 = type=cron,script-path=jd_pigPet.js, cronexpr="12 0-23/6 * * *", timeout=3600, enable=true
  */
-const url = require("url");
-const jd_helpers = require("./utils/JDHelpers.js");
-const jd_env = require("./utils/JDEnv.js");
-const $ = jd_env.env("金融养猪");
+const url = require('url');
+const jd_helpers = require('./utils/JDHelpers.js');
+const jd_env = require('./utils/JDEnv.js');
+const $ = jd_env.env('金融养猪');
 let cookiesArr = [],
-  cookie = "",
-  allMessage = "";
-const JD_API_HOST = "https://ms.jr.jd.com/gw/generic/uc/h5/m";
+  cookie = '',
+  allMessage = '';
+const JD_API_HOST = 'https://ms.jr.jd.com/gw/generic/uc/h5/m';
 const MISSION_BASE_API = `https://ms.jr.jd.com/gw/generic/mission/h5/m`;
-const notify = $.isNode() ? require("./sendNotify") : "";
+const notify = $.isNode() ? require('./sendNotify') : '';
 //Node.js用户请在jdCookie.js处填写京东ck;
-const jdCookieNode = $.isNode() ? require("./jdCookie.js") : "";
+const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
 if ($.isNode()) {
   Object.keys(jdCookieNode).forEach((item) => {
     cookiesArr.push(jdCookieNode[item]);
   });
-  if (process.env.JD_DEBUG && process.env.JD_DEBUG === "false") console.log = () => {};
+  if (process.env.JD_DEBUG && process.env.JD_DEBUG === 'false') console.log = () => {};
 } else {
-  cookiesArr = [$.getdata("CookieJD"), $.getdata("CookieJD2"), ...jd_helpers.jsonParse($.getdata("CookiesJD") || "[]").map((item) => item.cookie)].filter((item) => !!item);
+  cookiesArr = [$.getdata('CookieJD'), $.getdata('CookieJD2'), ...jd_helpers.jsonParse($.getdata('CookiesJD') || '[]').map((item) => item.cookie)].filter((item) => !!item);
 }
 !(async () => {
   if (!cookiesArr[0]) {
-    $.msg($.name, "【提示】请先获取京东账号一cookie\n直接使用NobyDa的京东签到获取", "https://bean.m.jd.com/bean/signIndex.action", { "open-url": "https://bean.m.jd.com/bean/signIndex.action" });
+    $.msg($.name, '【提示】请先获取京东账号一cookie\n直接使用NobyDa的京东签到获取', 'https://bean.m.jd.com/bean/signIndex.action', { 'open-url': 'https://bean.m.jd.com/bean/signIndex.action' });
     return;
   }
   for (let i = 0; i < cookiesArr.length; i++) {
@@ -54,12 +54,12 @@ if ($.isNode()) {
       $.UserName = decodeURIComponent(cookie.match(/pt_pin=([^; ]+)(?=;?)/) && cookie.match(/pt_pin=([^; ]+)(?=;?)/)[1]);
       $.index = i + 1;
       $.isLogin = true;
-      $.nickName = "";
+      $.nickName = '';
       await TotalBean();
       console.log(`\n开始【京东账号${$.index}】${$.nickName || $.UserName}\n`);
       if (!$.isLogin) {
         $.msg($.name, `【提示】cookie已失效`, `京东账号${$.index} ${$.nickName || $.UserName}\n请重新登录获取\nhttps://bean.m.jd.com/bean/signIndex.action`, {
-          "open-url": "https://bean.m.jd.com/bean/signIndex.action",
+          'open-url': 'https://bean.m.jd.com/bean/signIndex.action',
         });
         if ($.isNode()) {
           await notify.sendNotify(`${$.name}cookie已失效 - ${$.UserName}`, `京东账号${$.index} ${$.UserName}\n请重新登录获取cookie`);
@@ -71,11 +71,11 @@ if ($.isNode()) {
   }
   if (allMessage && new Date().getHours() % 6 === 0) {
     if ($.isNode()) await notify.sendNotify($.name, allMessage);
-    $.msg($.name, "", allMessage);
+    $.msg($.name, '', allMessage);
   }
 })()
   .catch((e) => {
-    $.log("", `❌ ${$.name}, 失败! 原因: ${e}!`, "");
+    $.log('', `❌ ${$.name}, 失败! 原因: ${e}!`, '');
   })
   .finally(() => {
     $.done();
@@ -114,18 +114,18 @@ function pigPetSignOne() {
   return new Promise(async (resolve) => {
     const body = {
       source: 2,
-      channelLV: "juheye",
-      riskDeviceParam: "{}",
+      channelLV: 'juheye',
+      riskDeviceParam: '{}',
       no: $.no,
     };
-    $.post(taskUrl("pigPetSignOne", body), (err, resp, data) => {
+    $.post(taskUrl('pigPetSignOne', body), (err, resp, data) => {
       try {
         if (err) {
           console.log(`${JSON.stringify(err)}`);
           console.log(`${$.name} API请求失败，请检查网路重试`);
         } else {
           if (data) {
-            console.log("签到结果", data);
+            console.log('签到结果', data);
             // data = JSON.parse(data);
             // if (data.resultCode === 0) {
             //   if (data.resultData.resultCode === 0) {
@@ -153,8 +153,8 @@ function pigPetSignOne() {
 //查询背包食物
 function pigPetUserBag() {
   return new Promise(async (resolve) => {
-    const body = { source: 2, channelLV: "yqs", riskDeviceParam: "{}", t: Date.now(), skuId: "1001003004", category: "1001" };
-    $.post(taskUrl("pigPetUserBag", body), async (err, resp, data) => {
+    const body = { source: 2, channelLV: 'yqs', riskDeviceParam: '{}', t: Date.now(), skuId: '1001003004', category: '1001' };
+    $.post(taskUrl('pigPetUserBag', body), async (err, resp, data) => {
       try {
         if (err) {
           console.log(`${JSON.stringify(err)}`);
@@ -201,10 +201,10 @@ function pigPetAddFood(skuId) {
     console.log(`skuId::::${skuId}`);
     const body = {
       source: 2,
-      channelLV: "yqs",
-      riskDeviceParam: "{}",
+      channelLV: 'yqs',
+      riskDeviceParam: '{}',
       skuId: skuId.toString(),
-      category: "1001",
+      category: '1001',
     };
     // const body = {
     //   "source": 2,
@@ -212,7 +212,7 @@ function pigPetAddFood(skuId) {
     //   "riskDeviceParam":"{}",
     //   "skuId": skuId.toString(),
     // }
-    $.post(taskUrl("pigPetAddFood", body), (err, resp, data) => {
+    $.post(taskUrl('pigPetAddFood', body), (err, resp, data) => {
       try {
         if (err) {
           console.log(`${JSON.stringify(err)}`);
@@ -237,10 +237,10 @@ function pigPetLogin() {
   return new Promise(async (resolve) => {
     const body = {
       source: 2,
-      channelLV: "juheye",
-      riskDeviceParam: "{}",
+      channelLV: 'juheye',
+      riskDeviceParam: '{}',
     };
-    $.post(taskUrl("pigPetLogin", body), async (err, resp, data) => {
+    $.post(taskUrl('pigPetLogin', body), async (err, resp, data) => {
       try {
         if (err) {
           console.log(`${JSON.stringify(err)}`);
@@ -257,7 +257,7 @@ function pigPetLogin() {
                 }
                 if (data.resultData.resultData.wished) {
                   if (data.resultData.resultData.wishAward) {
-                    allMessage += `京东账号${$.index} ${$.nickName || $.UserName}\n${data.resultData.resultData.wishAward.name}已可兑换${$.index !== cookiesArr.length ? "\n\n" : ""}`;
+                    allMessage += `京东账号${$.index} ${$.nickName || $.UserName}\n${data.resultData.resultData.wishAward.name}已可兑换${$.index !== cookiesArr.length ? '\n\n' : ''}`;
                   }
                 }
               } else {
@@ -279,8 +279,8 @@ function pigPetLogin() {
 //开宝箱
 function pigPetOpenBox() {
   return new Promise(async (resolve) => {
-    const body = { source: 2, channelLV: "yqs", riskDeviceParam: "{}", no: 5, category: "1001", t: Date.now() };
-    $.post(taskUrl("pigPetOpenBox", body), async (err, resp, data) => {
+    const body = { source: 2, channelLV: 'yqs', riskDeviceParam: '{}', no: 5, category: '1001', t: Date.now() };
+    $.post(taskUrl('pigPetOpenBox', body), async (err, resp, data) => {
       try {
         if (err) {
           console.log(`${JSON.stringify(err)}`);
@@ -322,10 +322,10 @@ function pigPetLotteryIndex() {
   return new Promise(async (resolve) => {
     const body = {
       source: 2,
-      channelLV: "juheye",
-      riskDeviceParam: "{}",
+      channelLV: 'juheye',
+      riskDeviceParam: '{}',
     };
-    $.post(taskUrl("pigPetLotteryIndex", body), (err, resp, data) => {
+    $.post(taskUrl('pigPetLotteryIndex', body), (err, resp, data) => {
       try {
         if (err) {
           console.log(`${JSON.stringify(err)}`);
@@ -362,10 +362,10 @@ function pigPetSignIndex() {
   return new Promise(async (resolve) => {
     const body = {
       source: 2,
-      channelLV: "juheye",
-      riskDeviceParam: "{}",
+      channelLV: 'juheye',
+      riskDeviceParam: '{}',
     };
-    $.post(taskUrl("pigPetSignIndex", body), (err, resp, data) => {
+    $.post(taskUrl('pigPetSignIndex', body), (err, resp, data) => {
       try {
         if (err) {
           console.log(`${JSON.stringify(err)}`);
@@ -401,12 +401,12 @@ function pigPetLotteryPlay() {
   return new Promise(async (resolve) => {
     const body = {
       source: 2,
-      channelLV: "juheye",
-      riskDeviceParam: "{}",
+      channelLV: 'juheye',
+      riskDeviceParam: '{}',
       t: Date.now(),
       type: 0,
     };
-    $.post(taskUrl("pigPetLotteryPlay", body), (err, resp, data) => {
+    $.post(taskUrl('pigPetLotteryPlay', body), (err, resp, data) => {
       try {
         if (err) {
           console.log(`${JSON.stringify(err)}`);
@@ -447,7 +447,7 @@ async function missions() {
       console.log(`\n${item.missionName}已领取`);
     } else if (item.status === 3) {
       console.log(`\n${item.missionName}未完成`);
-      if (item.mid === "CPD01") {
+      if (item.mid === 'CPD01') {
         await pigPetDoMission(item.mid);
       } else {
         await pigPetDoMission(item.mid);
@@ -475,18 +475,18 @@ function pigPetDoMission(mid) {
   return new Promise(async (resolve) => {
     const body = {
       source: 2,
-      channelLV: "",
-      riskDeviceParam: "{}",
+      channelLV: '',
+      riskDeviceParam: '{}',
       mid,
     };
-    $.post(taskUrl("pigPetDoMission", body), (err, resp, data) => {
+    $.post(taskUrl('pigPetDoMission', body), (err, resp, data) => {
       try {
         if (err) {
           console.log(`${JSON.stringify(err)}`);
           console.log(`${$.name} API请求失败，请检查网路重试`);
         } else {
           if (data) {
-            console.log("pigPetDoMission", data);
+            console.log('pigPetDoMission', data);
             data = JSON.parse(data);
             if (data.resultCode === 0) {
               if (data.resultData.resultCode === 0) {
@@ -516,10 +516,10 @@ function pigPetMissionList() {
   return new Promise(async (resolve) => {
     const body = {
       source: 2,
-      channelLV: "",
-      riskDeviceParam: "{}",
+      channelLV: '',
+      riskDeviceParam: '{}',
     };
-    $.post(taskUrl("pigPetMissionList", body), (err, resp, data) => {
+    $.post(taskUrl('pigPetMissionList', body), (err, resp, data) => {
       try {
         if (err) {
           console.log(`${JSON.stringify(err)}`);
@@ -555,16 +555,16 @@ function getJumpInfo(juid) {
     const options = {
       url: `${MISSION_BASE_API}/getJumpInfo?reqData=${escape(JSON.stringify(body))}`,
       headers: {
-        Host: "ms.jr.jd.com",
-        Origin: "https://active.jd.com",
-        Connection: "keep-alive",
-        Accept: "application/json",
+        Host: 'ms.jr.jd.com',
+        Origin: 'https://active.jd.com',
+        Connection: 'keep-alive',
+        Accept: 'application/json',
         Cookie: cookie,
-        "User-Agent":
-          "Mozilla/5.0 (iPhone; CPU iPhone OS 13_7 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148/application=JDJR-App&deviceId=1423833363730383d273532393d243445364-d224341443d2938333530323445433033353&eufv=1&clientType=ios&iosType=iphone&clientVersion=6.1.70&HiClVersion=6.1.70&isUpdate=0&osVersion=13.7&osName=iOS&platform=iPhone 6s (A1633/A1688/A1691/A1700)&screen=667*375&src=App Store&netWork=1&netWorkType=1&CpayJS=UnionPay/1.0 JDJR&stockSDK=stocksdk-iphone_3.5.0&sPoint=&jdPay=(*#@jdPaySDK*#@jdPayChannel=jdfinance&jdPayChannelVersion=6.1.70&jdPaySdkVersion=3.00.52.00&jdPayClientName=iOS*#@jdPaySDK*#@)",
-        "Accept-Language": "zh-cn",
-        Referer: "https://u1.jr.jd.com/uc-fe-wxgrowing/cloudpig/index/",
-        "Accept-Encoding": "gzip, deflate, br",
+        'User-Agent':
+          'Mozilla/5.0 (iPhone; CPU iPhone OS 13_7 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148/application=JDJR-App&deviceId=1423833363730383d273532393d243445364-d224341443d2938333530323445433033353&eufv=1&clientType=ios&iosType=iphone&clientVersion=6.1.70&HiClVersion=6.1.70&isUpdate=0&osVersion=13.7&osName=iOS&platform=iPhone 6s (A1633/A1688/A1691/A1700)&screen=667*375&src=App Store&netWork=1&netWorkType=1&CpayJS=UnionPay/1.0 JDJR&stockSDK=stocksdk-iphone_3.5.0&sPoint=&jdPay=(*#@jdPaySDK*#@jdPayChannel=jdfinance&jdPayChannelVersion=6.1.70&jdPaySdkVersion=3.00.52.00&jdPayClientName=iOS*#@jdPaySDK*#@)',
+        'Accept-Language': 'zh-cn',
+        Referer: 'https://u1.jr.jd.com/uc-fe-wxgrowing/cloudpig/index/',
+        'Accept-Encoding': 'gzip, deflate, br',
       },
     };
     $.get(options, (err, resp, data) => {
@@ -574,7 +574,7 @@ function getJumpInfo(juid) {
           console.log(`${$.name} API请求失败，请检查网路重试`);
         } else {
           if (data) {
-            console.log("getJumpInfo", data);
+            console.log('getJumpInfo', data);
           } else {
             console.log(`京东服务器返回空数据`);
           }
@@ -593,21 +593,21 @@ function queryMissionReceiveAfterStatus(missionId) {
     const options = {
       url: `${MISSION_BASE_API}/queryMissionReceiveAfterStatus?reqData=${escape(JSON.stringify(body))}`,
       headers: {
-        Accept: "*/*",
-        "Accept-Encoding": "gzip, deflate, br",
-        "Accept-Language": "zh-CN,zh;q=0.9",
-        Connection: "keep-alive",
-        Host: "ms.jr.jd.com",
+        Accept: '*/*',
+        'Accept-Encoding': 'gzip, deflate, br',
+        'Accept-Language': 'zh-CN,zh;q=0.9',
+        Connection: 'keep-alive',
+        Host: 'ms.jr.jd.com',
         Cookie: cookie,
-        Origin: "https://jdjoy.jd.com",
-        Referer: "https://jdjoy.jd.com/",
-        "User-Agent": $.isNode()
+        Origin: 'https://jdjoy.jd.com',
+        Referer: 'https://jdjoy.jd.com/',
+        'User-Agent': $.isNode()
           ? process.env.JD_USER_AGENT
             ? process.env.JD_USER_AGENT
-            : require("./USER_AGENTS").USER_AGENT
-          : $.getdata("JDUA")
-          ? $.getdata("JDUA")
-          : "jdapp;iPhone;9.4.4;14.3;network/4g;Mozilla/5.0 (iPhone; CPU iPhone OS 14_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148;supportJDSHWK/1",
+            : require('./USER_AGENTS').USER_AGENT
+          : $.getdata('JDUA')
+          ? $.getdata('JDUA')
+          : 'jdapp;iPhone;9.4.4;14.3;network/4g;Mozilla/5.0 (iPhone; CPU iPhone OS 14_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148;supportJDSHWK/1',
       },
     };
     $.get(options, (err, resp, data) => {
@@ -617,7 +617,7 @@ function queryMissionReceiveAfterStatus(missionId) {
           console.log(`${$.name} API请求失败，请检查网路重试`);
         } else {
           if (data) {
-            console.log("queryMissionReceiveAfterStatus", data);
+            console.log('queryMissionReceiveAfterStatus', data);
           } else {
             console.log(`京东服务器返回空数据`);
           }
@@ -637,21 +637,21 @@ function finishReadMission(missionId, readTime) {
     const options = {
       url: `${MISSION_BASE_API}/finishReadMission?reqData=${escape(JSON.stringify(body))}`,
       headers: {
-        Accept: "*/*",
-        "Accept-Encoding": "gzip, deflate, br",
-        "Accept-Language": "zh-CN,zh;q=0.9",
-        Connection: "keep-alive",
-        Host: "ms.jr.jd.com",
+        Accept: '*/*',
+        'Accept-Encoding': 'gzip, deflate, br',
+        'Accept-Language': 'zh-CN,zh;q=0.9',
+        Connection: 'keep-alive',
+        Host: 'ms.jr.jd.com',
         Cookie: cookie,
-        Origin: "https://jdjoy.jd.com",
-        Referer: "https://jdjoy.jd.com/",
-        "User-Agent": $.isNode()
+        Origin: 'https://jdjoy.jd.com',
+        Referer: 'https://jdjoy.jd.com/',
+        'User-Agent': $.isNode()
           ? process.env.JD_USER_AGENT
             ? process.env.JD_USER_AGENT
-            : require("./USER_AGENTS").USER_AGENT
-          : $.getdata("JDUA")
-          ? $.getdata("JDUA")
-          : "jdapp;iPhone;9.4.4;14.3;network/4g;Mozilla/5.0 (iPhone; CPU iPhone OS 14_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148;supportJDSHWK/1",
+            : require('./USER_AGENTS').USER_AGENT
+          : $.getdata('JDUA')
+          ? $.getdata('JDUA')
+          : 'jdapp;iPhone;9.4.4;14.3;network/4g;Mozilla/5.0 (iPhone; CPU iPhone OS 14_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148;supportJDSHWK/1',
       },
     };
     $.get(options, (err, resp, data) => {
@@ -661,7 +661,7 @@ function finishReadMission(missionId, readTime) {
           console.log(`${$.name} API请求失败，请检查网路重试`);
         } else {
           if (data) {
-            console.log("finishReadMission", data);
+            console.log('finishReadMission', data);
           } else {
             console.log(`京东服务器返回空数据`);
           }
@@ -679,20 +679,20 @@ function TotalBean() {
     const options = {
       url: `https://wq.jd.com/user/info/QueryJDUserInfo?sceneval=2`,
       headers: {
-        Accept: "application/json,text/plain, */*",
-        "Content-Type": "application/x-www-form-urlencoded",
-        "Accept-Encoding": "gzip, deflate, br",
-        "Accept-Language": "zh-cn",
-        Connection: "keep-alive",
+        Accept: 'application/json,text/plain, */*',
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'Accept-Encoding': 'gzip, deflate, br',
+        'Accept-Language': 'zh-cn',
+        Connection: 'keep-alive',
         Cookie: cookie,
-        Referer: "https://wqs.jd.com/my/jingdou/my.shtml?sceneval=2",
-        "User-Agent": $.isNode()
+        Referer: 'https://wqs.jd.com/my/jingdou/my.shtml?sceneval=2',
+        'User-Agent': $.isNode()
           ? process.env.JD_USER_AGENT
             ? process.env.JD_USER_AGENT
-            : require("./USER_AGENTS").USER_AGENT
-          : $.getdata("JDUA")
-          ? $.getdata("JDUA")
-          : "jdapp;iPhone;9.4.4;14.3;network/4g;Mozilla/5.0 (iPhone; CPU iPhone OS 14_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148;supportJDSHWK/1",
+            : require('./USER_AGENTS').USER_AGENT
+          : $.getdata('JDUA')
+          ? $.getdata('JDUA')
+          : 'jdapp;iPhone;9.4.4;14.3;network/4g;Mozilla/5.0 (iPhone; CPU iPhone OS 14_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148;supportJDSHWK/1',
       },
     };
     $.post(options, (err, resp, data) => {
@@ -703,12 +703,12 @@ function TotalBean() {
         } else {
           if (data) {
             data = JSON.parse(data);
-            if (data["retcode"] === 13) {
+            if (data['retcode'] === 13) {
               $.isLogin = false; //cookie过期
               return;
             }
-            if (data["retcode"] === 0) {
-              $.nickName = (data["base"] && data["base"].nickname) || $.UserName;
+            if (data['retcode'] === 0) {
+              $.nickName = (data['base'] && data['base'].nickname) || $.UserName;
             } else {
               $.nickName = $.UserName;
             }
@@ -731,14 +731,14 @@ function taskUrl(function_id, body) {
     headers: {
       Accept: `*/*`,
       Origin: `https://u.jr.jd.com`,
-      "Accept-Encoding": `gzip, deflate, br`,
+      'Accept-Encoding': `gzip, deflate, br`,
       Cookie: cookie,
-      "Content-Type": `application/x-www-form-urlencoded;charset=UTF-8`,
+      'Content-Type': `application/x-www-form-urlencoded;charset=UTF-8`,
       Host: `ms.jr.jd.com`,
       Connection: `keep-alive`,
-      "User-Agent": `jdapp;android;8.5.12;9;network/wifi;model/GM1910;addressid/1302541636;aid/ac31e03386ddbec6;oaid/;osVer/28;appBuild/73078;adk/;ads/;pap/JA2015_311210|8.5.12|ANDROID 9;osv/9;pv/117.24;jdv/0|kong|t_1000217905_|jingfen|644e9b005c8542c1ac273da7763971d8|1589905791552|1589905794;ref/com.jingdong.app.mall.WebActivity;partner/oppo;apprpd/Home_Main;Mozilla/5.0 (Linux; Android 9; GM1910 Build/PKQ1.190110.001; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/66.0.3359.126 MQQBrowser/6.2 TBS/044942 Mobile Safari/537.36 Edg/86.0.4240.111`,
+      'User-Agent': `jdapp;android;8.5.12;9;network/wifi;model/GM1910;addressid/1302541636;aid/ac31e03386ddbec6;oaid/;osVer/28;appBuild/73078;adk/;ads/;pap/JA2015_311210|8.5.12|ANDROID 9;osv/9;pv/117.24;jdv/0|kong|t_1000217905_|jingfen|644e9b005c8542c1ac273da7763971d8|1589905791552|1589905794;ref/com.jingdong.app.mall.WebActivity;partner/oppo;apprpd/Home_Main;Mozilla/5.0 (Linux; Android 9; GM1910 Build/PKQ1.190110.001; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/66.0.3359.126 MQQBrowser/6.2 TBS/044942 Mobile Safari/537.36 Edg/86.0.4240.111`,
       Referer: `https://u.jr.jd.com/`,
-      "Accept-Language": `zh-cn`,
+      'Accept-Language': `zh-cn`,
     },
   };
 }

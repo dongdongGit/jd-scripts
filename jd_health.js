@@ -15,10 +15,10 @@ cron "13 1,6,22 * * *" script-path=jd_health.js, tag=东东健康社区
 ============小火箭=========
 东东健康社区 = type=cron,script-path=jd_health.js, cronexpr="13 1,6,22 * * *", timeout=3600, enable=true
  */
-const jd_helpers = require("./utils/JDHelpers.js");
-const jd_env = require("./utils/JDEnv.js");
-const $ = jd_env.env("东东健康社区");
-const jdCookieNode = $.isNode() ? require("./jdCookie.js") : "";
+const jd_helpers = require('./utils/JDHelpers.js');
+const jd_env = require('./utils/JDEnv.js');
+const $ = jd_env.env('东东健康社区');
+const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
 let cookiesArr = [],
   cookie = '',
   allMessage = '',

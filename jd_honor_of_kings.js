@@ -4,8 +4,8 @@
  投票有几率获得豆子，没有抽中提示，没有推送，不要问我有没有抽到，反正很随缘。
  */
 
-const jd_env = require("./utils/JDEnv.js");
-const $ = jd_env.env("王者荣耀投票");
+const jd_env = require('./utils/JDEnv.js');
+const $ = jd_env.env('王者荣耀投票');
 const notify = $.isNode() ? require('./sendNotify') : '';
 const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
 let cookiesArr = [];
