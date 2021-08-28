@@ -85,7 +85,7 @@ async function execSign() {
     //   console.log('没有提供通知推送，则打印脚本执行日志')
     //   await exec(`${process.execPath} ${JD_DailyBonusPath}`, { stdio: "inherit" });
     // }
-    await exec(`${process.execPath} ${JD_DailyBonusPath} >> ${resultPath}`);
+    await exec(`node ${JD_DailyBonusPath} >> ${resultPath}`);
     const notifyContent = await fs.readFileSync(resultPath, "utf8");
     console.error(`👇👇👇👇👇👇👇👇👇👇👇签到详情👇👇👇👇👇👇👇👇👇👇👇\n${notifyContent}\n👆👆👆👆👆👆👆👆👆签到详情👆👆👆👆👆👆👆👆👆👆👆`);
     // await exec("node JD_DailyBonus.js", { stdio: "inherit" });
