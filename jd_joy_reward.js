@@ -21,7 +21,7 @@ cron "59 7,15,23 * * *" script-path=jd_joy_reward.js,tag=宠汪汪积分兑换�
 ===============小火箭==========
 宠汪汪积分兑换奖品 = type=cron,script-path=jd_joy_reward.js, cronexpr="59 7,15,23 * * *", timeout=3600, enable=true
  */
-
+const config = require('./utils/config.js');
 const jd_helpers = require('./utils/JDHelpers.js');
 const jd_env = require('./utils/JDEnv.js');
 const $ = jd_env.env('宠汪汪积分兑换奖品');
@@ -232,7 +232,7 @@ async function joyReward() {
 }
 function getExchangeRewards() {
   let opt = {
-    url: '//jdjoy.jd.com/common/gift/getBeanConfigs?reqSource=h5&invokeKey=ztmFUCxcPMNyUq0P',
+    url: `//jdjoy.jd.com/common/gift/getBeanConfigs?reqSource=h5&invokeKey=${config.invokeKey}`,
     method: 'GET',
     data: {},
     credentials: 'include',
@@ -240,7 +240,7 @@ function getExchangeRewards() {
   };
   return new Promise((resolve) => {
     let lkt = new Date().getTime();
-    let lks = $.md5('' + 'ztmFUCxcPMNyUq0P' + lkt).toString();
+    let lks = $.md5('' + `${config.invokeKey}` + lkt).toString();
     const option = {
       url: 'https:' + taroRequest(opt)['url'] + $.validate,
       headers: {
@@ -286,7 +286,7 @@ function getExchangeRewards() {
 function exchange(saleInfoId, orderSource) {
   let body = { buyParam: { orderSource: orderSource, saleInfoId: saleInfoId }, deviceInfo: {} };
   let opt = {
-    url: '//jdjoy.jd.com/common/gift/new/exchange?reqSource=h5&invokeKey=ztmFUCxcPMNyUq0P',
+    url: `//jdjoy.jd.com/common/gift/new/exchange?reqSource=h5&invokeKey=${config.invokeKey}`,
     data: body,
     credentials: 'include',
     method: 'POST',
@@ -294,7 +294,7 @@ function exchange(saleInfoId, orderSource) {
   };
   return new Promise((resolve) => {
     let lkt = new Date().getTime();
-    let lks = $.md5('' + 'ztmFUCxcPMNyUq0P' + lkt).toString();
+    let lks = $.md5('' + `${config.invokeKey}` + lkt).toString();
     const option = {
       url: 'https:' + taroRequest(opt)['url'] + $.validate,
       body: `${JSON.stringify(body)}`,

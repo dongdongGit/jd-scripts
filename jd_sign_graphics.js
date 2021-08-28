@@ -9,6 +9,8 @@ npm i png-js 或者 npm i png-js -S
 修改域名 https://jdjoy.jd.com 可以改成ip https://49.7.27.236
 */
 
+const config = require('./utils/config.js');
+const jd_helpers = require('./utils/JDHelpers.js');
 const jd_env = require('./utils/JDEnv.js');
 const $ = jd_env.env('京东签到图形验证');
 const validator = require('./utils/JDJRValidator_Pure.js');
@@ -24,7 +26,7 @@ if ($.isNode()) {
   });
   if (process.env.JD_DEBUG && process.env.JD_DEBUG === 'false') console.log = () => {};
 } else {
-  cookiesArr = [$.getdata('CookieJD'), $.getdata('CookieJD2'), ...jsonParse($.getdata('CookiesJD') || '[]').map((item) => item.cookie)].filter((item) => !!item);
+  cookiesArr = [$.getdata('CookieJD'), $.getdata('CookieJD2'), ...jd_helpers.jsonParse($.getdata('CookiesJD') || '[]').map((item) => item.cookie)].filter((item) => !!item);
 }
 let message = '',
   subTitle = '',
@@ -36,7 +38,7 @@ let signFlag = false;
 let successNum = 0;
 let errorNum = 0;
 let JD_API_HOST = 'https://jdjoy.jd.com';
-$.invokeKey = 'ztmFUCxcPMNyUq0P';
+$.invokeKey = config.invokeKey;
 if (process.env.JOY_HOST) {
   JD_API_HOST = process.env.JOY_HOST;
 }
@@ -156,7 +158,6 @@ function Sign(i) {
           throw new Error(err);
         } else {
           if (data) {
-            // console.log(data)
             data = JSON.parse(data);
             if (data.success && data.data) {
               data = data.data;
