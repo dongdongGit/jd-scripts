@@ -43,7 +43,7 @@ $.shareuuid = '303ec49849214adc95fc768683c1c9d6'; //
     return;
   }
   for (let i = 0; i < cookiesArr.length; i++) {
-    cookie = cookiesArr[i];
+    $.cookie = cookie = cookiesArr[i];
     cookie1 = cookiesArr[i];
     if (cookie) {
       $.UserName = decodeURIComponent(cookie.match(/pt_pin=([^; ]+)(?=;?)/) && cookie.match(/pt_pin=([^; ]+)(?=;?)/)[1]);
@@ -58,6 +58,7 @@ $.shareuuid = '303ec49849214adc95fc768683c1c9d6'; //
       $.nickName = '';
       $.drawresult = '';
       $.exchange = 0;
+      await $.totalBean();
       console.log(`\n******开始【京东账号${$.index}】${$.nickName || $.UserName}*********\n`);
       if (!$.isLogin) {
         $.msg($.name, `【提示】cookie已失效`, `京东账号${$.index} ${$.nickName || $.UserName}\n请重新登录获取\nhttps://bean.m.jd.com/bean/signIndex.action`, {

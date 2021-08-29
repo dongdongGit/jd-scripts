@@ -11,11 +11,7 @@ const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
 const notify = $.isNode() ? require('./sendNotify') : '';
 let cookiesArr = [];
 const activityList = [
-  { actid: '59564c90a57443deb40371c83332df27', endTime: 1629907199000 },
-  { actid: '61146464456f4e42927d067cfccdf579', endTime: 1629907200000 },
   { actid: '4a2eb0132725416fa2a3086018437594', endTime: 1630339200000 },
-  { actid: '25d0cb359ef347c69ee1c044a4168efc', endTime: 1629820799000 },
-  { actid: '0cdf614f95214c59b94697e3ed5ba37a', endTime: 1629799864000 },
   { actid: '4baf19fa3f454e6abf82be7d66605ab4', endTime: 1630425599000 },
   { actid: 'c75ae2afd7ff4aec9ed47008b08400f7', endTime: 1630288800000 },
   { actid: '3da50af9e8664746844c5456b8920b7d', endTime: 1630425599000 },
@@ -23,12 +19,9 @@ const activityList = [
   { actid: '58121dee0d84428bbdeb83934ffa1b80', endTime: 1630425599000 },
   { actid: '8afc9104d6444696b3f16ceb23a24536', endTime: 1630425599000 },
   { actid: 'f006443799d34b55b9061be7b765c3fa', endTime: 1630339200000 },
-  { actid: 'c77e8342bca24d5f86d2a076b8f00860', endTime: 1629907199000 },
-  { actid: '49d8035a8f294ac7893e814d2b8e79ed', endTime: 1629907199000 },
   { actid: 'f22809ea36b14411a625641ef9685e53', endTime: 1630339200000 },
   { actid: 'eff9c47393be446f9dd576e26d13dd9d', endTime: 1631635200000 },
   { actid: 'd6fe4bd6a34e4eb9b498932122453890', endTime: 1630548000000 },
-  { actid: 'e4c6bdba323948ceb05e4122acd97fba', endTime: 1629648000000 },
   { actid: '5622386323bb4a82a2ed4e0158f7c6a7', endTime: 1631289599000 },
   { actid: '4ee56f673e164305a527545efe566b20', endTime: 1630425599000 }, //需要入会
   { actid: '9bb5cb2801114f2981c183abbc2aa522', endTime: 1630425596000 }, //需要入会
@@ -54,7 +47,7 @@ if ($.isNode()) {
     $.oldcookie = cookiesArr[i];
     $.isLogin = true;
     $.nickName = '';
-    await TotalBean();
+    await $.totalBean();
     $.UserName = decodeURIComponent($.cookie.match(/pt_pin=([^; ]+)(?=;?)/) && $.cookie.match(/pt_pin=([^; ]+)(?=;?)/)[1]);
     console.log(`\n*****开始【京东账号${$.index}】${$.nickName || $.UserName}*****\n`);
     if (!$.isLogin) {
@@ -559,55 +552,4 @@ function randomString(e) {
     n = '';
   for (i = 0; i < e; i++) n += t.charAt(Math.floor(Math.random() * a));
   return n;
-}
-
-function TotalBean() {
-  return new Promise(async (resolve) => {
-    const options = {
-      url: `https://wq.jd.com/user/info/QueryJDUserInfo?sceneval=2`,
-      headers: {
-        Accept: 'application/json,text/plain, */*',
-        'Content-Type': 'application/x-www-form-urlencoded',
-        'Accept-Encoding': 'gzip, deflate, br',
-        'Accept-Language': 'zh-cn',
-        Connection: 'keep-alive',
-        Cookie: $.cookie,
-        Referer: 'https://wqs.jd.com/my/jingdou/my.shtml?sceneval=2',
-        'User-Agent': $.isNode()
-          ? process.env.JD_USER_AGENT
-            ? process.env.JD_USER_AGENT
-            : require('./USER_AGENTS').USER_AGENT
-          : $.getdata('JDUA')
-          ? $.getdata('JDUA')
-          : 'jdapp;iPhone;9.4.4;14.3;network/4g;Mozilla/5.0 (iPhone; CPU iPhone OS 14_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148;supportJDSHWK/1',
-      },
-    };
-    $.post(options, (err, resp, data) => {
-      try {
-        if (err) {
-          console.log(`${JSON.stringify(err)}`);
-          console.log(`${$.name} API请求失败，请检查网路重试`);
-        } else {
-          if (data) {
-            data = JSON.parse(data);
-            if (data['retcode'] === 13) {
-              $.isLogin = false; //cookie过期
-              return;
-            }
-            if (data['retcode'] === 0) {
-              $.nickName = (data['base'] && data['base'].nickname) || $.UserName;
-            } else {
-              $.nickName = $.UserName;
-            }
-          } else {
-            console.log(`京东服务器返回空数据`);
-          }
-        }
-      } catch (e) {
-        $.logErr(e, resp);
-      } finally {
-        resolve();
-      }
-    });
-  });
 }

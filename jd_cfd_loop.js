@@ -51,19 +51,17 @@ $.appId = 10028;
     console.log(`============开始第${count}次挂机=============`);
     for (let i = 0; i < cookiesArr.length; i++) {
       if (cookiesArr[i]) {
-        cookie = cookiesArr[i];
+        $.cookie = cookie = cookiesArr[i];
         $.UserName = decodeURIComponent(cookie.match(/pt_pin=([^; ]+)(?=;?)/) && cookie.match(/pt_pin=([^; ]+)(?=;?)/)[1]);
         $.index = i + 1;
         $.nickName = '';
         $.isLogin = true;
-        await TotalBean();
+        await $.totalBean();
         console.log(`\n******开始【京东账号${$.index}】${$.nickName || $.UserName}*********\n`);
         if (!$.isLogin) {
-          // $.msg($.name, `【提示】cookie已失效`, `京东账号${$.index} ${$.nickName || $.UserName}\n请重新登录获取\nhttps://bean.m.jd.com/bean/signIndex.action`, {"open-url": "https://bean.m.jd.com/bean/signIndex.action"});
-
-          // if ($.isNode()) {
-          //   await notify.sendNotify(`${$.name}cookie已失效 - ${$.UserName}`, `京东账号${$.index} ${$.UserName}\n请重新登录获取cookie`);
-          // }
+          if ($.isNode()) {
+            await notify.sendNotify(`${$.name}cookie已失效 - ${$.UserName}`, `京东账号${$.index} ${$.UserName}\n请重新登录获取cookie`);
+          }
           continue;
         }
 
@@ -86,7 +84,7 @@ $.appId = 10028;
 async function cfd(i) {
   try {
     const beginInfo = await getUserInfo(false, i);
-    if (beginInfo.Fund.ddwFundTargTm === 0) {
+    if (beginInfo.dwIsNeedGuideNew == 1) {
       console.log(`还未开通活动，请先开通\n`);
       return;
     }
@@ -275,7 +273,7 @@ function getUserInfo(showInvite = true, i) {
           console.log(`${$.name} QueryUserInfo API请求失败，请检查网路重试`);
         } else {
           data = JSON.parse(data);
-          const { iret, buildInfo = {}, ddwRichBalance, ddwCoinBalance, JxUserWelfare, sErrMsg, strMyShareId, strNickName, dwLandLvl, Fund = {} } = data;
+          const { iret, buildInfo = {}, ddwRichBalance, ddwCoinBalance, JxUserWelfare, sErrMsg, strMyShareId, strNickName, dwLandLvl, dwIsNeedGuideNew, Fund = {} } = data;
           const dwIsJxNewUser = JxUserWelfare['dwIsJxNewUser'];
           if (showInvite) {
             console.log(`\n获取用户信息：${sErrMsg}\n${$.showLog ? data : ''}`);
@@ -295,6 +293,7 @@ function getUserInfo(showInvite = true, i) {
             strMyShareId,
             strNickName,
             dwLandLvl,
+            dwIsNeedGuideNew,
             Fund,
           };
           resolve({
@@ -304,6 +303,7 @@ function getUserInfo(showInvite = true, i) {
             dwIsJxNewUser,
             strMyShareId,
             strNickName,
+            dwIsNeedGuideNew,
             Fund,
           });
         }
@@ -374,54 +374,6 @@ function showMsg() {
       if ($.isNode() && process.env.CFD_NOTIFY_CONTROL) await notify.sendNotify(`${$.name} - 账号${$.index} - ${$.nickName}`, `${$.result.join('\n')}`);
     }
     resolve();
-  });
-}
-
-function TotalBean() {
-  return new Promise(async (resolve) => {
-    const options = {
-      url: 'https://me-api.jd.com/user_new/info/GetJDUserInfoUnion',
-      headers: {
-        Host: 'me-api.jd.com',
-        Accept: '*/*',
-        Connection: 'keep-alive',
-        Cookie: cookie,
-        'User-Agent': $.isNode()
-          ? process.env.JD_USER_AGENT
-            ? process.env.JD_USER_AGENT
-            : require('./USER_AGENTS').USER_AGENT
-          : $.getdata('JDUA')
-          ? $.getdata('JDUA')
-          : 'jdapp;iPhone;9.4.4;14.3;network/4g;Mozilla/5.0 (iPhone; CPU iPhone OS 14_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148;supportJDSHWK/1',
-        'Accept-Language': 'zh-cn',
-        Referer: 'https://home.m.jd.com/myJd/newhome.action?sceneval=2&ufc=&',
-        'Accept-Encoding': 'gzip, deflate, br',
-      },
-    };
-    $.get(options, (err, resp, data) => {
-      try {
-        if (err) {
-          $.logErr(err);
-        } else {
-          if (data) {
-            data = JSON.parse(data);
-            if (data['retcode'] === '1001') {
-              $.isLogin = false; //cookie过期
-              return;
-            }
-            if (data['retcode'] === '0' && data.data && data.data.hasOwnProperty('userInfo')) {
-              $.nickName = data.data.userInfo.baseInfo.nickname;
-            }
-          } else {
-            console.log('京东服务器返回空数据');
-          }
-        }
-      } catch (e) {
-        $.logErr(e);
-      } finally {
-        resolve();
-      }
-    });
   });
 }
 
