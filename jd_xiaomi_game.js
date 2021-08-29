@@ -61,13 +61,24 @@ message = '';
   console.log(`入口:\nhttps://lzdz1-isv.isvjcloud.com/dingzhi/xiaomi/gameupd/activity/1272964?activityId=${$.activityId}&shareUuid=${$.shareUuid}`);
   console.log(`设置第${stopIndex}个账号停止\n`);
   for (let i = 0; i < cookiesArr.length; i++) {
-    cookie = cookiesArr[i];
+    $.cookie = cookie = cookiesArr[i];
     if (cookie) {
       $.UserName = decodeURIComponent(cookie.match(/pt_pin=([^; ]+)(?=;?)/) && cookie.match(/pt_pin=([^; ]+)(?=;?)/)[1]);
       $.index = i + 1;
       getUA();
       $.nickName = '';
-      console.log(`\n\n******开始【京东账号${$.index}】${$.nickName || $.UserName}*********\n`);
+      $.isLogin = true;
+      await $.totalBean();
+      console.log(`\n开始【京东账号${$.index}】${$.nickName || $.UserName}\n`);
+      if (!$.isLogin) {
+        $.msg($.name, `【提示】cookie已失效`, `京东账号${$.index} ${$.nickName || $.UserName}\n请重新登录获取\nhttps://bean.m.jd.com/bean/signIndex.action`, {
+          'open-url': 'https://bean.m.jd.com/bean/signIndex.action',
+        });
+        if ($.isNode()) {
+          await notify.sendNotify(`${$.name}cookie已失效 - ${$.UserName}`, `京东账号${$.index} ${$.UserName}\n请重新登录获取cookie`);
+        }
+        continue;
+      }
       await run();
       if (i == 0 && !$.actorUuid) break;
       if ($.index >= Number(stopIndex)) break;

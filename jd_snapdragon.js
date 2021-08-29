@@ -60,13 +60,24 @@ message = '';
   $.activityId = '901080701';
   console.log(`入口:\nhttps://lzdz4-isv.isvjcloud.com/dingzhi/xiaolong/collectcard/activity/1441690?activityId=${$.activityId}&shareUuid=${$.shareUuid}`);
   for (let i = 0; i < cookiesArr.length; i++) {
-    cookie = cookiesArr[i];
+    $.cookie = cookie = cookiesArr[i];
     if (cookie) {
+      $.isLogin = true;
       $.UserName = decodeURIComponent(cookie.match(/pt_pin=([^; ]+)(?=;?)/) && cookie.match(/pt_pin=([^; ]+)(?=;?)/)[1]);
+      await $.totalBean();
+      console.log(`\n开始【京东账号${$.index}】${$.nickName || $.UserName}\n`);
+      if (!$.isLogin) {
+        $.msg($.name, `【提示】cookie已失效`, `京东账号${$.index} ${$.nickName || $.UserName}\n请重新登录获取\nhttps://bean.m.jd.com/bean/signIndex.action`, {
+          'open-url': 'https://bean.m.jd.com/bean/signIndex.action',
+        });
+        if ($.isNode()) {
+          await notify.sendNotify(`${$.name}cookie已失效 - ${$.UserName}`, `京东账号${$.index} ${$.UserName}\n请重新登录获取cookie`);
+        }
+        continue;
+      }
       $.index = i + 1;
       getUA();
       $.nickName = '';
-      console.log(`\n\n******开始【京东账号${$.index}】${$.nickName || $.UserName}*********\n`);
       await run();
       if (i == 0 && !$.actorUuid) return;
     }

@@ -60,10 +60,10 @@ if ($.isNode()) {
   }
   for (let i = 0; i < cookiesArr.length; i++) {
     if (cookiesArr[i]) {
-      cookie = cookiesArr[i];
+      $.cookie = cookie = cookiesArr[i];
       $.UserName = decodeURIComponent(cookie.match(/pt_pin=([^; ]+)(?=;?)/) && cookie.match(/pt_pin=([^; ]+)(?=;?)/)[1]);
       $.isLogin = true;
-      await TotalBean();
+      await $.totalBean();
       if (!$.isLogin) {
         continue;
       }
@@ -78,7 +78,7 @@ if ($.isNode()) {
   }
   for (let i = 0; i < cookiesArr.length; i++) {
     if (cookiesArr[i]) {
-      cookie = cookiesArr[i];
+      $.cookie = cookie = cookiesArr[i];
       $.UserName = decodeURIComponent(cookie.match(/pt_pin=([^; ]+)(?=;?)/) && cookie.match(/pt_pin=([^; ]+)(?=;?)/)[1]);
       $.index = i + 1;
       $.isLogin = true;
@@ -88,7 +88,7 @@ if ($.isNode()) {
       $.bxNum = [];
       $.black = false;
       $.canHelp = true;
-      await TotalBean();
+      await $.totalBean();
       console.log(`\n******开始【京东账号${$.index}】${$.nickName || $.UserName}*********\n`);
       if (!$.isLogin) {
         $.msg($.name, `【提示】cookie已失效`, `京东账号${$.index} ${$.nickName || $.UserName}\n请重新登录获取\nhttps://bean.m.jd.com/bean/signIndex.action`, {
@@ -374,54 +374,6 @@ function randomString() {
     Math.random().toString(16).slice(2, 10) +
     Math.random().toString(16).slice(2, 10)
   );
-}
-
-function TotalBean() {
-  return new Promise(async (resolve) => {
-    const options = {
-      url: 'https://wq.jd.com/user_new/info/GetJDUserInfoUnion?sceneval=2',
-      headers: {
-        Host: 'wq.jd.com',
-        Accept: '*/*',
-        Connection: 'keep-alive',
-        Cookie: cookie,
-        'User-Agent': $.isNode()
-          ? process.env.JD_USER_AGENT
-            ? process.env.JD_USER_AGENT
-            : require('./USER_AGENTS').USER_AGENT
-          : $.getdata('JDUA')
-          ? $.getdata('JDUA')
-          : 'jdapp;iPhone;9.4.4;14.3;network/4g;Mozilla/5.0 (iPhone; CPU iPhone OS 14_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148;supportJDSHWK/1',
-        'Accept-Language': 'zh-cn',
-        Referer: 'https://home.m.jd.com/myJd/newhome.action?sceneval=2&ufc=&',
-        'Accept-Encoding': 'gzip, deflate, br',
-      },
-    };
-    $.get(options, (err, resp, data) => {
-      try {
-        if (err) {
-          $.logErr(err);
-        } else {
-          if (data) {
-            data = JSON.parse(data);
-            if (data['retcode'] === 1001) {
-              $.isLogin = false; //cookie过期
-              return;
-            }
-            if (data['retcode'] === 0 && data.data && data.data.hasOwnProperty('userInfo')) {
-              $.nickName = data.data.userInfo.baseInfo.nickname;
-            }
-          } else {
-            console.log('京东服务器返回空数据');
-          }
-        }
-      } catch (e) {
-        $.logErr(e);
-      } finally {
-        resolve();
-      }
-    });
-  });
 }
 
 /*

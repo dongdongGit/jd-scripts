@@ -57,7 +57,7 @@ const JD_API_HOST = `https://api.m.jd.com/client.action`;
   const signenpid = 'uK2fYitTgioETuevoY88bGEts3U';
   const signdataeid = '47E6skJcyZx7GSUFXyomLgF1FLCA';
   for (let i = 0; i < cookiesArr.length; i++) {
-    cookie = cookiesArr[i];
+    $.cookie = cookie = cookiesArr[i];
     if (cookie) {
       $.UserName = decodeURIComponent(cookie.match(/pt_pin=([^; ]+)(?=;?)/) && cookie.match(/pt_pin=([^; ]+)(?=;?)/)[1]);
       $.index = i + 1;
@@ -66,6 +66,7 @@ const JD_API_HOST = `https://api.m.jd.com/client.action`;
       $.beans = 0;
       message = '';
       $.cando = true;
+      await $.totalBean();
       //   await shareCodesFormat();
       console.log(`\n******开始【京东账号${$.index}】${$.nickName || $.UserName}*********\n`);
       if (!$.isLogin) {
@@ -111,7 +112,7 @@ const JD_API_HOST = `https://api.m.jd.com/client.action`;
     }
   }
   for (let i = 0; i < cookiesArr.length; i++) {
-    cookie = cookiesArr[i];
+    $.cookie = cookie = cookiesArr[i];
     if (cookie) {
       $.UserName = decodeURIComponent(cookie.match(/pt_pin=([^; ]+)(?=;?)/) && cookie.match(/pt_pin=([^; ]+)(?=;?)/)[1]);
       $.index = i + 1;
@@ -131,7 +132,7 @@ const JD_API_HOST = `https://api.m.jd.com/client.action`;
     }
   }
   for (let i = 0; i < cookiesArr.length; i++) {
-    cookie = cookiesArr[i];
+    $.cookie = cookie = cookiesArr[i];
     if (cookie) {
       $.UserName = decodeURIComponent(cookie.match(/pt_pin=([^; ]+)(?=;?)/) && cookie.match(/pt_pin=([^; ]+)(?=;?)/)[1]);
       $.index = i + 1;

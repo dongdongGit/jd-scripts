@@ -62,7 +62,7 @@ if ($.isNode()) {
   await getActiveId(); //自动获取每期拼团活动ID
   for (let i = 0; i < cookiesArr.length; i++) {
     if (cookiesArr[i]) {
-      cookie = cookiesArr[i];
+      $.cookie = cookie = cookiesArr[i];
       $.UserName = decodeURIComponent(cookie.match(/pt_pin=([^; ]+)(?=;?)/) && cookie.match(/pt_pin=([^; ]+)(?=;?)/)[1]);
       $.index = i + 1;
       $.isLogin = true;
@@ -75,6 +75,7 @@ if ($.isNode()) {
       $.canHelpFlag = true; //能否助力朋友(招工)
       $.tuanNum = 0; //成团人数
       console.log(`\n******开始【京东账号${$.index}】${$.nickName || $.UserName}*********\n`);
+      await $.totalBean();
       if (!$.isLogin) {
         $.msg($.name, `【提示】cookie已失效`, `京东账号${$.index} ${$.nickName || $.UserName}\n请重新登录获取\nhttps://bean.m.jd.com/bean/signIndex.action`, {
           'open-url': 'https://bean.m.jd.com/bean/signIndex.action',
@@ -91,7 +92,7 @@ if ($.isNode()) {
   if (tuanActiveId) {
     for (let i = 0; i < cookiesArr.length; i++) {
       if (cookiesArr[i]) {
-        cookie = cookiesArr[i];
+        $.cookie = cookie = cookiesArr[i];
         $.isLogin = true;
         $.canHelp = true; //能否参团
         $.UserName = decodeURIComponent(cookie.match(/pt_pin=([^; ]+)(?=;?)/) && cookie.match(/pt_pin=([^; ]+)(?=;?)/)[1]);
@@ -209,7 +210,7 @@ function collectElectricity(facId = $.factoryId, help = false, master) {
           console.log(`${JSON.stringify(err)}`);
           console.log(`${$.name} API请求失败，请检查网路重试`);
         } else {
-          if (safeGet(data)) {
+          if (jd_helpers.safeGet(data)) {
             data = JSON.parse(data);
             if (data['ret'] === 0) {
               if (help) {
@@ -249,7 +250,7 @@ function investElectric() {
           console.log(`${JSON.stringify(err)}`);
           console.log(`${$.name} API请求失败，请检查网路重试`);
         } else {
-          if (safeGet(data)) {
+          if (jd_helpers.safeGet(data)) {
             data = JSON.parse(data);
             if (data.ret === 0) {
               console.log(`成功投入电力${data.data.investElectric}电力`);
@@ -279,7 +280,7 @@ function taskList() {
           console.log(`${JSON.stringify(err)}`);
           console.log(`${$.name} API请求失败，请检查网路重试`);
         } else {
-          if (safeGet(data)) {
+          if (jd_helpers.safeGet(data)) {
             data = JSON.parse(data);
             let userTaskStatusList = data['data']['userTaskStatusList'];
             for (let i = 0; i < userTaskStatusList.length; i++) {
@@ -336,7 +337,7 @@ function getUserElectricity() {
           console.log(`${JSON.stringify(err)}`);
           console.log(`${$.name} API请求失败，请检查网路重试`);
         } else {
-          if (safeGet(data)) {
+          if (jd_helpers.safeGet(data)) {
             data = JSON.parse(data);
             if (data['ret'] === 0) {
               console.log(`发电机：当前 ${data.data.currentElectricityQuantity} 电力，最大值 ${data.data.maxElectricityQuantity} 电力`);
@@ -379,7 +380,7 @@ function QueryHireReward() {
           console.log(`${JSON.stringify(err)}`);
           console.log(`${$.name} API请求失败，请检查网路重试`);
         } else {
-          if (safeGet(data)) {
+          if (jd_helpers.safeGet(data)) {
             data = JSON.parse(data);
             if (data['ret'] === 0) {
               for (let item of data['data']['hireReward']) {
@@ -411,7 +412,7 @@ function hireAward(date, type = 0) {
           console.log(`${JSON.stringify(err)}`);
           console.log(`${$.name} API请求失败，请检查网路重试`);
         } else {
-          if (safeGet(data)) {
+          if (jd_helpers.safeGet(data)) {
             data = JSON.parse(data);
             if (data['ret'] === 0) {
               console.log(`打工电力：收取成功`);
@@ -486,7 +487,7 @@ function assistFriend(sharepin) {
           console.log(`${JSON.stringify(err)}`);
           console.log(`${$.name} API请求失败，请检查网路重试`);
         } else {
-          if (safeGet(data)) {
+          if (jd_helpers.safeGet(data)) {
             data = JSON.parse(data);
             // if (data['ret'] === 0) {
             //   console.log(`助力朋友：${sharepin}成功`)
@@ -513,7 +514,7 @@ function QueryFriendList() {
           console.log(`${JSON.stringify(err)}`);
           console.log(`${$.name} API请求失败，请检查网路重试`);
         } else {
-          if (safeGet(data)) {
+          if (jd_helpers.safeGet(data)) {
             data = JSON.parse(data);
             if (data['ret'] === 0) {
               data = data['data'];
@@ -548,7 +549,7 @@ function completeTask(taskId, taskName) {
           console.log(`${JSON.stringify(err)}`);
           console.log(`${$.name} API请求失败，请检查网路重试`);
         } else {
-          if (safeGet(data)) {
+          if (jd_helpers.safeGet(data)) {
             data = JSON.parse(data);
             switch (data['data']['awardStatus']) {
               case 1:
@@ -589,7 +590,7 @@ function doTask(taskId) {
           console.log(`${JSON.stringify(err)}`);
           console.log(`${$.name} API请求失败，请检查网路重试`);
         } else {
-          if (safeGet(data)) {
+          if (jd_helpers.safeGet(data)) {
             data = JSON.parse(data);
             if (data['ret'] === 0) {
               console.log('做任务完成！');
@@ -618,7 +619,7 @@ function userInfo() {
             console.log(`${JSON.stringify(err)}`);
             console.log(`${$.name} API请求失败，请检查网路重试`);
           } else {
-            if (safeGet(data)) {
+            if (jd_helpers.safeGet(data)) {
               data = JSON.parse(data);
               if (data['ret'] === 0) {
                 data = data['data'];
@@ -735,7 +736,7 @@ function GetCommodityDetails() {
           console.log(`${JSON.stringify(err)}`);
           console.log(`${$.name} API请求失败，请检查网路重试`);
         } else {
-          if (safeGet(data)) {
+          if (jd_helpers.safeGet(data)) {
             data = JSON.parse(data);
             if (data['ret'] === 0) {
               data = data['data'];
@@ -763,7 +764,7 @@ function GetShelvesList(pageNo = 1) {
           console.log(`${JSON.stringify(err)}`);
           console.log(`${$.name} API请求失败，请检查网路重试`);
         } else {
-          if (safeGet(data)) {
+          if (jd_helpers.safeGet(data)) {
             data = JSON.parse(data);
             if (data['ret'] === 0) {
               data = data['data'];
@@ -798,7 +799,7 @@ function DrawProductionStagePrize() {
           console.log(`${$.name} API请求失败，请检查网路重试`);
         } else {
           console.log(`开幸运红包：${data}`);
-          // if (safeGet(data)) {
+          // if (jd_helpers.safeGet(data)) {
           //   data = JSON.parse(data);
           //   if (data['ret'] === 0) {
           //
@@ -865,7 +866,7 @@ function GetUserComponent(pin = $.encryptPin, timeout = 0) {
             console.log(`${JSON.stringify(err)}`);
             console.log(`${$.name} API请求失败，请检查网路重试`);
           } else {
-            if (safeGet(data)) {
+            if (jd_helpers.safeGet(data)) {
               data = JSON.parse(data);
               if (data['ret'] === 0) {
               } else {
@@ -893,7 +894,7 @@ function PickUpComponent(index, encryptPin) {
           console.log(`${JSON.stringify(err)}`);
           console.log(`${$.name} API请求失败，请检查网路重试`);
         } else {
-          if (safeGet(data)) {
+          if (jd_helpers.safeGet(data)) {
             data = JSON.parse(data);
             // if (data['ret'] === 0) {
             //   data = data['data'];
@@ -950,7 +951,7 @@ function getFriendList(sort = 0) {
           console.log(`${JSON.stringify(err)}`);
           console.log(`${$.name} API请求失败，请检查网路重试`);
         } else {
-          if (safeGet(data)) {
+          if (jd_helpers.safeGet(data)) {
             data = JSON.parse(data);
             if (data['ret'] === 0) {
               data = data['data'];
@@ -988,7 +989,7 @@ function getFactoryIdByPin(pin) {
           console.log(`${JSON.stringify(err)}`);
           console.log(`${$.name} API请求失败，请检查网路重试`);
         } else {
-          if (safeGet(data)) {
+          if (jd_helpers.safeGet(data)) {
             data = JSON.parse(data);
             if (data['ret'] === 0) {
               if (data.data.factoryList) {
@@ -1068,7 +1069,7 @@ function QueryActiveConfig() {
           console.log(`${JSON.stringify(err)}`);
           console.log(`${$.name} API请求失败，请检查网路重试`);
         } else {
-          if (safeGet(data)) {
+          if (jd_helpers.safeGet(data)) {
             data = JSON.parse(data);
             if (data['ret'] === 0) {
               const { userTuanInfo } = data['data'];
@@ -1098,7 +1099,7 @@ function QueryTuan(activeId, tuanId) {
           console.log(`${JSON.stringify(err)}`);
           console.log(`${$.name} API请求失败，请检查网路重试`);
         } else {
-          if (safeGet(data)) {
+          if (jd_helpers.safeGet(data)) {
             data = JSON.parse(data);
             if (data['ret'] === 0) {
               // $.log(`\n开团情况:${data.data.tuanInfo.realTuanNum}/${data.data.tuanInfo.tuanNum}\n`)
@@ -1127,7 +1128,7 @@ function CreateTuan() {
           console.log(`${JSON.stringify(err)}`);
           console.log(`${$.name} API请求失败，请检查网路重试`);
         } else {
-          if (safeGet(data)) {
+          if (jd_helpers.safeGet(data)) {
             data = JSON.parse(data);
             if (data['ret'] === 0) {
               console.log(`【开团成功】tuanId为 ${data.data['tuanId']}`);
@@ -1162,7 +1163,7 @@ function JoinTuan(tuanId, stk = '_time,activeId,tuanId') {
           console.log(`${JSON.stringify(err)}`);
           console.log(`${$.name} API请求失败，请检查网路重试`);
         } else {
-          if (safeGet(data)) {
+          if (jd_helpers.safeGet(data)) {
             data = JSON.parse(data);
             if (data['ret'] === 0) {
               console.log(`参团成功：${JSON.stringify(data)}\n`);
@@ -1195,7 +1196,7 @@ function QueryAllTuan() {
           console.log(`${JSON.stringify(err)}`);
           console.log(`${$.name} API请求失败，请检查网路重试`);
         } else {
-          if (safeGet(data)) {
+          if (jd_helpers.safeGet(data)) {
             data = JSON.parse(data);
             if (data['ret'] === 0) {
               const { tuanInfo } = data;
@@ -1242,7 +1243,7 @@ function tuanAward(activeId, tuanId, isTuanLeader = true) {
           console.log(`${JSON.stringify(err)}`);
           console.log(`${$.name} API请求失败，请检查网路重试`);
         } else {
-          if (safeGet(data)) {
+          if (jd_helpers.safeGet(data)) {
             data = JSON.parse(data);
             if (data['ret'] === 0) {
               if (isTuanLeader) {
@@ -1303,7 +1304,7 @@ function updateTuanIdsCDN(url) {
         if (err) {
           // console.log(`${JSON.stringify(err)}`)
         } else {
-          if (safeGet(data)) {
+          if (jd_helpers.safeGet(data)) {
             $.tuanConfigs = data = JSON.parse(data);
           }
         }
@@ -1434,18 +1435,6 @@ function requireConfig() {
     console.log(`您提供了${$.shareCodesArr.length}个账号的${$.name}助力码\n`);
     resolve();
   });
-}
-
-function safeGet(data) {
-  try {
-    if (typeof JSON.parse(data) == 'object') {
-      return true;
-    }
-  } catch (e) {
-    console.log(e);
-    console.log(`京东服务器访问数据为空，请检查自身设备网络情况`);
-    return false;
-  }
 }
 
 function taskTuanUrl(functionId, body = '', stk) {
