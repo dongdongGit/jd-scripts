@@ -36,6 +36,7 @@ const JD_API_HOST = 'https://api.m.jd.com/client.action';
       ck2 = cookiesArr[Math.round(Math.random() * 5)];
       $.UserName = decodeURIComponent(cookie.match(/pt_pin=([^; ]+)(?=;?)/) && cookie.match(/pt_pin=([^; ]+)(?=;?)/)[1]);
       $.index = i + 1;
+      $.isLogin = true;
       message = '';
       await $.totalBean();
       if (!$.isLogin) {
