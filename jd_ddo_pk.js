@@ -86,6 +86,7 @@ $.helpAuthor = true;
       $.cookie = cookie = cookiesArr[i];
       $.UserName = decodeURIComponent(cookie.match(/pt_pin=([^; ]+)(?=;?)/) && cookie.match(/pt_pin=([^; ]+)(?=;?)/)[1]);
       $.index = i + 1;
+      $.isLogin = true;
       message = '';
       await $.totalBean();
       if (!$.isLogin) {
@@ -106,12 +107,12 @@ $.helpAuthor = true;
     }
   }
 })()
-  .catch((e) => {
-    $.log('', `❌ ${$.name}, 失败! 原因: ${e}!`, '');
-  })
-  .finally(() => {
-    $.done();
-  });
+  // .catch((e) => {
+  //   $.log('', `❌ ${$.name}, 失败! 原因: ${e}!`, '');
+  // })
+  // .finally(() => {
+  //   $.done();
+  // });
 
 function showMsg() {
   return new Promise((resolve) => {
@@ -382,7 +383,7 @@ async function getFriendPinList() {
   let allFriends = [];
   for (let i = 0; i < 25; i++) {
     let friends = await getUserFriendsPage(i + 1);
-    if (friends.length === 0) {
+    if (typeof(friends) != Array || friends.length === 0) {
       break;
     }
     for (let j = 0; j < friends.length; j++) {
