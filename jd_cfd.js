@@ -15,7 +15,7 @@ cron 18 0-23/2 * * * jd_cfd.js
 const jd_env = require('./utils/JDEnv.js');
 const $ = jd_env.env('京喜财富岛');
 const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
-// const notify = $.isNode() ? require('./sendNotify') : '';
+const notify = $.isNode() ? require('./sendNotify') : '';
 $.CryptoJS = $.isNode() ? require('crypto-js') : CryptoJS;
 let UA = `jdapp;iPhone;10.0.5;${Math.ceil(Math.random() * 2 + 12)}.${Math.ceil(Math.random() * 4)};${randomString(40)};`;
 function randomString(e) {
@@ -64,7 +64,18 @@ $.appId = 10032;
       $.UserName = decodeURIComponent($.cookie.match(/pt_pin=([^; ]+)(?=;?)/) && $.cookie.match(/pt_pin=([^; ]+)(?=;?)/)[1]);
       $.index = i + 1;
       $.isLogin = true;
+      await $.totalBean();
       console.log(`\n*****开始【京东账号${$.index}】${$.UserName}****\n`);
+      if (!$.isLogin) {
+        $.msg($.name, `【提示】cookie已失效`, `京东账号${$.index} ${$.nickName || $.UserName}\n请重新登录获取\nhttps://bean.m.jd.com/bean/signIndex.action`, {
+          'open-url': 'https://bean.m.jd.com/bean/signIndex.action',
+        });
+
+        if ($.isNode()) {
+          await notify.sendNotify(`${$.name}cookie已失效 - ${$.UserName}`, `京东账号${$.index} ${$.UserName}\n请重新登录获取cookie`);
+        }
+        continue;
+      }
       UA = `jdapp;iPhone;10.0.5;${Math.ceil(Math.random() * 2 + 12)}.${Math.ceil(Math.random() * 4)};${randomString(40)};`;
       await run();
     }
@@ -94,6 +105,19 @@ $.appId = 10032;
     $.canHelp = true;
     $.UserName = decodeURIComponent($.cookie.match(/pt_pin=([^; ]+)(?=;?)/) && $.cookie.match(/pt_pin=([^; ]+)(?=;?)/)[1]);
     $.index = i + 1;
+    $.isLogin = true;
+    await $.totalBean();
+    console.log(`\n*****开始【京东账号${$.index}】${$.UserName}****\n`);
+    if (!$.isLogin) {
+      $.msg($.name, `【提示】cookie已失效`, `京东账号${$.index} ${$.nickName || $.UserName}\n请重新登录获取\nhttps://bean.m.jd.com/bean/signIndex.action`, {
+        'open-url': 'https://bean.m.jd.com/bean/signIndex.action',
+      });
+
+      if ($.isNode()) {
+        await notify.sendNotify(`${$.name}cookie已失效 - ${$.UserName}`, `京东账号${$.index} ${$.UserName}\n请重新登录获取cookie`);
+      }
+      continue;
+    }
     if ($.InviteLists && $.InviteLists.length) console.log(`\n******开始【邀请好友助力】*********\n`);
     for (let j = 0; j < $.InviteLists.length && $.canHelp; j++) {
       $.inviteId = $.InviteLists[j];
