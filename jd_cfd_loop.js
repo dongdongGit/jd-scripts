@@ -46,6 +46,7 @@ $.appId = 10028;
   await requestAlgo();
   await $.wait(1000);
   console.log('\n');
+  expired_cookie_count = 0;
   while (true) {
     count++;
     console.log(`============开始第${count}次挂机=============`);
@@ -59,6 +60,10 @@ $.appId = 10028;
         await $.totalBean();
         console.log(`\n******开始【京东账号${$.index}】${$.nickName || $.UserName}*********\n`);
         if (!$.isLogin) {
+          $.msg($.name, `【提示】cookie已失效`, `京东账号${$.index} ${$.nickName || $.UserName}\n请重新登录获取\nhttps://bean.m.jd.com/bean/signIndex.action`, {
+            'open-url': 'https://bean.m.jd.com/bean/signIndex.action',
+          });
+          expired_cookie_count++;
           if ($.isNode()) {
             await notify.sendNotify(`${$.name}cookie已失效 - ${$.UserName}`, `京东账号${$.index} ${$.UserName}\n请重新登录获取cookie`);
           }
@@ -75,6 +80,10 @@ $.appId = 10028;
         let time = process.env.CFD_LOOP_SLEEPTIME ? process.env.CFD_LOOP_SLEEPTIME : 2000;
         await $.wait(time);
       }
+    }
+
+    if (expired_cookie_count >= cookiesArr.length) {
+      break;
     }
   }
 })()
@@ -214,6 +223,7 @@ async function pickshell(body) {
               dwName = '海星';
               break;
             default:
+              dwName = '未知'
               break;
           }
           if (data.iRet === 0) {
@@ -274,7 +284,7 @@ function getUserInfo(showInvite = true, i) {
         } else {
           data = JSON.parse(data);
           const { iret, buildInfo = {}, ddwRichBalance, ddwCoinBalance, JxUserWelfare, sErrMsg, strMyShareId, strNickName, dwLandLvl, dwIsNeedGuideNew, Fund = {} } = data;
-          const dwIsJxNewUser = JxUserWelfare['dwIsJxNewUser'];
+          const dwIsJxNewUser = JxUserWelfare?.dwIsJxNewUser;
           if (showInvite) {
             console.log(`\n获取用户信息：${sErrMsg}\n${$.showLog ? data : ''}`);
             console.log(`\n当前等级:${dwLandLvl},金币:${ddwCoinBalance},财富值:${ddwRichBalance}\n`);
