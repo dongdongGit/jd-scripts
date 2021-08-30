@@ -331,7 +331,8 @@ function env(t, e) {
           url: 'https://wq.jd.com/user_new/info/GetJDUserInfoUnion?sceneval=2',
           headers: {
             Cookie: this.cookie,
-            Referer: 'https://home.m.jd.com/',
+            "User-Agent": this.isNode() ? (process.env.JD_USER_AGENT ? process.env.JD_USER_AGENT : (require('../USER_AGENTS').USER_AGENT)) : (this.getdata('JDUA') ? this.getdata('JDUA') : "jdapp;iPhone;9.4.4;14.3;network/4g;Mozilla/5.0 (iPhone; CPU iPhone OS 14_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148;supportJDSHWK/1"),
+            Referer: 'https://home.m.jd.com/myJd/newhome.action?sceneval=2&ufc=&',
           },
         };
         this.get(options, (err, resp, data) => {
@@ -341,7 +342,7 @@ function env(t, e) {
             } else {
               if (data) {
                 let result = JSON.parse(data.replace(/\s/g, ''));
-  
+
                 if (result.retcode != 0) {
                   this.isLogin = false;
                   this.log(`获取用户信息失败，错误信息：${result.msg}`);
