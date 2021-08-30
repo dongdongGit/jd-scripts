@@ -229,7 +229,7 @@ async function mr() {
   client.onmessage = async function (e) {
     if (e.data !== 'pong' && e.data && jd_helpers.safeGet(e.data)) {
       let vo = JSON.parse(e.data);
-      await $.wait(Math.random() * 2000 + 500);
+      await $.wait((jd_helpers.randomNumber(2, 5)) * 1000 + jd_helpers.randomNumber(200, 500));
       console.log(`\n开始任务："${JSON.stringify(vo.action)}`);
       switch (vo.action) {
         case 'get_ad':
