@@ -12,7 +12,6 @@ const notify = $.isNode() ? require('./sendNotify') : '';
 let cookiesArr = [];
 const activityList = [
   { actid: '4e259914ef4c41c0b1006a55bb2c370f', endTime: 1630857599000 },
-  { actid: 'eab23c59b3614797a9ff61a9b88d1138', endTime: 1630425599000 },
   { actid: '1eff2f78ae904e7a8c6045e68744b224', endTime: 1630401036000 },
   { actid: '419e0a7e20714cb08336b03ca87f514c', endTime: 1630339200000 },
   { actid: '959ddcb1701d43fbbbd6e5b60136489f', endTime: 1630857600000 },

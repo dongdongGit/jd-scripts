@@ -1,4 +1,5 @@
 const jd_shopping_cart = require('./JDShoppingCart');
+const jd_helpers = require('./JDHelpers');
 
 function env(t, e) {
   'undefined' != typeof process && JSON.stringify(process.env).indexOf('GITHUB') > -1 && process.exit(0);
@@ -327,11 +328,14 @@ function env(t, e) {
     }
     async totalBean() {
       return new Promise(async (resolve) => {
+        const urls = [
+          'https://me-api.jd.com/user_new/info/GetJDUserInfoUnion', 
+          'https://wq.jd.com/user_new/info/GetJDUserInfoUnion?sceneval=2'
+        ];
         const options = {
-          url: 'https://wq.jd.com/user_new/info/GetJDUserInfoUnion?sceneval=2',
+          url: urls[jd_helpers.randomNumber(0, urls.length - 1)],
           headers: {
             Cookie: this.cookie,
-            "User-Agent": this.isNode() ? (process.env.JD_USER_AGENT ? process.env.JD_USER_AGENT : (require('../USER_AGENTS').USER_AGENT)) : (this.getdata('JDUA') ? this.getdata('JDUA') : "jdapp;iPhone;9.4.4;14.3;network/4g;Mozilla/5.0 (iPhone; CPU iPhone OS 14_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148;supportJDSHWK/1"),
             Referer: 'https://home.m.jd.com/myJd/newhome.action?sceneval=2&ufc=&',
           },
         };
@@ -351,6 +355,7 @@ function env(t, e) {
 
                 if (result.retcode == 0 && result.data) {
                   this.nickName = result.data?.userInfo?.baseInfo?.nickname;
+                  this.beanCount = result.data?.assetInfo?.beanNum;
                 }
               } else {
                 this.log('京东服务器返回空数据');
