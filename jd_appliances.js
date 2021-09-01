@@ -3,23 +3,23 @@
  *   cron   54 5 9-15 8 *
  *   不要问我是哪个活动，问了我也不告诉你,我也找不到入口了
  */
-const jd_helpers = require("./utils/JDHelpers.js");
-const jd_env = require("./utils/JDEnv.js");
-const $ = jd_env.env("家电815周年庆礼包");
-const jdCookieNode = $.isNode() ? require("./jdCookie.js") : "";
-const notify = $.isNode() ? require("./sendNotify") : "";
+const jd_helpers = require('./utils/JDHelpers.js');
+const jd_env = require('./utils/JDEnv.js');
+const $ = jd_env.env('家电815周年庆礼包');
+const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
+const notify = $.isNode() ? require('./sendNotify') : '';
 let cookiesArr = [];
 if ($.isNode()) {
   Object.keys(jdCookieNode).forEach((item) => {
     cookiesArr.push(jdCookieNode[item]);
   });
-  if (process.env.JD_DEBUG && process.env.JD_DEBUG === "false") console.log = () => {};
+  if (process.env.JD_DEBUG && process.env.JD_DEBUG === 'false') console.log = () => {};
 } else {
-  cookiesArr = [$.getdata("CookieJD"), $.getdata("CookieJD2"), ...jd_helpers.jsonParse($.getdata("CookiesJD") || "[]").map((item) => item.cookie)].filter((item) => !!item);
+  cookiesArr = [$.getdata('CookieJD'), $.getdata('CookieJD2'), ...jd_helpers.jsonParse($.getdata('CookiesJD') || '[]').map((item) => item.cookie)].filter((item) => !!item);
 }
 !(async () => {
   if (!cookiesArr[0]) {
-    $.msg($.name, "【提示】请先获取京东账号一cookie\n直接使用NobyDa的京东签到获取", "https://bean.m.jd.com/bean/signIndex.action", { "open-url": "https://bean.m.jd.com/bean/signIndex.action" });
+    $.msg($.name, '【提示】请先获取京东账号一cookie\n直接使用NobyDa的京东签到获取', 'https://bean.m.jd.com/bean/signIndex.action', { 'open-url': 'https://bean.m.jd.com/bean/signIndex.action' });
     return;
   }
   for (let i = 0; i < cookiesArr.length; i++) {
@@ -27,13 +27,13 @@ if ($.isNode()) {
     $.index = i + 1;
     $.cookie = cookiesArr[i];
     $.isLogin = true;
-    $.nickName = "";
+    $.nickName = '';
     $.UserName = decodeURIComponent($.cookie.match(/pt_pin=([^; ]+)(?=;?)/) && $.cookie.match(/pt_pin=([^; ]+)(?=;?)/)[1]);
     await $.totalBean();
     console.log(`\n*****开始【京东账号${$.index}】${$.nickName || $.UserName}*****\n`);
     if (!$.isLogin) {
       $.msg($.name, `【提示】cookie已失效`, `京东账号${$.index} ${$.nickName || $.UserName}\n请重新登录获取\nhttps://bean.m.jd.com/bean/signIndex.action`, {
-        "open-url": "https://bean.m.jd.com/bean/signIndex.action",
+        'open-url': 'https://bean.m.jd.com/bean/signIndex.action',
       });
       if ($.isNode()) {
         await notify.sendNotify(`${$.name}cookie已失效 - ${$.UserName}`, `京东账号${$.index} ${$.UserName}\n请重新登录获取cookie`);
@@ -45,7 +45,7 @@ if ($.isNode()) {
   }
 })()
   .catch((e) => {
-    $.log("", `❌ ${$.name}, 失败! 原因: ${e}!`, "");
+    $.log('', `❌ ${$.name}, 失败! 原因: ${e}!`, '');
   })
   .finally(() => {
     $.done();
@@ -53,8 +53,8 @@ if ($.isNode()) {
 
 async function main() {
   $.activityInfo = {};
-  await takePostRequest("index");
-  if (JSON.stringify($.activityInfo) === "{}") {
+  await takePostRequest('index');
+  if (JSON.stringify($.activityInfo) === '{}') {
     console.log(`获取活动详情失败`);
     return;
   }
@@ -72,29 +72,29 @@ async function doTask() {
         continue;
       }
       console.log(`任务：${$.oneTask.taskName},去执行`);
-      await takePostRequest("doTask");
+      await takePostRequest('doTask');
       if ($.hotFlag) {
         break;
       }
       await $.wait(5000);
-      await takePostRequest("getReward");
+      await takePostRequest('getReward');
       await $.wait(500);
     }
   }
 }
 
 async function takePostRequest(type) {
-  let body = "";
+  let body = '';
   switch (type) {
-    case "index":
+    case 'index':
       body = `appid=anniversary-celebra&functionId=jd_interaction_prod&body={"apiMapping":"/api/index/index"}&t=${Date.now()}&loginType=2`;
       break;
-    case "doTask":
+    case 'doTask':
       body = `appid=anniversary-celebra&functionId=jd_interaction_prod&body={"parentId":"${$.oneTask.parentId}","taskId":"${
         $.oneTask.taskId
       }","apiMapping":"/api/task/doTask"}&t=${Date.now()}&loginType=2`;
       break;
-    case "getReward":
+    case 'getReward':
       body = `appid=anniversary-celebra&functionId=jd_interaction_prod&body={"parentId":"${$.oneTask.parentId}","taskId":"${$.oneTask.taskId}","timeStamp":${
         $.timeStamp
       },"apiMapping":"/api/task/getReward"}&t=${Date.now()}&loginType=2`;
@@ -129,12 +129,12 @@ function dealReturn(type, data) {
     $.runFalag = false;
   }
   switch (type) {
-    case "index":
+    case 'index':
       if (data && data.code === 200) {
         $.activityInfo = data.data;
       }
       break;
-    case "doTask":
+    case 'doTask':
       if (data && data.code === 200) {
         $.timeStamp = data.data.timeStamp;
       } else {
@@ -142,7 +142,7 @@ function dealReturn(type, data) {
         console.log(JSON.stringify(data));
       }
       break;
-    case "getReward":
+    case 'getReward':
       if (data && data.code === 200) {
         console.log(`执行成功，获得京豆:${data.data.jbean || 0}`);
       } else {
@@ -158,14 +158,14 @@ function getPostRequest(body) {
   const headers = {
     Accept: `application/json, text/plain, */*`,
     Origin: `https://welfare.m.jd.com`,
-    "Accept-Encoding": `gzip, deflate, br`,
+    'Accept-Encoding': `gzip, deflate, br`,
     Cookie: $.cookie,
-    "Content-Type": `application/x-www-form-urlencoded`,
+    'Content-Type': `application/x-www-form-urlencoded`,
     Host: `api.m.jd.com`,
     Connection: `keep-alive`,
-    "User-Agent": $.UA,
+    'User-Agent': $.UA,
     Referer: `https://welfare.m.jd.com/`,
-    "Accept-Language": `zh-cn`,
+    'Accept-Language': `zh-cn`,
   };
   return { url: url, headers: headers, body: body };
 }
@@ -176,9 +176,9 @@ async function getUA() {
 }
 function randomString(e) {
   e = e || 32;
-  let t = "abcdef0123456789",
+  let t = 'abcdef0123456789',
     a = t.length,
-    n = "";
+    n = '';
   for (i = 0; i < e; i++) n += t.charAt(Math.floor(Math.random() * a));
   return n;
 }
