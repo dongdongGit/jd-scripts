@@ -1,6 +1,6 @@
 function safeGet(data) {
   try {
-    if (typeof JSON.parse(data) == "object") {
+    if (typeof JSON.parse(data) == 'object') {
       return true;
     }
   } catch (e) {
@@ -10,12 +10,12 @@ function safeGet(data) {
   }
 }
 function jsonParse(str) {
-  if (typeof str == "string") {
+  if (typeof str == 'string') {
     try {
       return JSON.parse(str);
     } catch (e) {
       console.log(e);
-      $.msg($.name, '', '请勿随意在BoxJs输入框修改内容\n建议通过脚本去获取cookie')
+      $.msg($.name, '', '请勿随意在BoxJs输入框修改内容\n建议通过脚本去获取cookie');
       return [];
     }
   }
@@ -25,6 +25,29 @@ function randomNumber(min = 0, max = 100) {
   return Math.min(Math.floor(min + Math.random() * (max - min)), max);
 }
 
-module.exports = {
-  safeGet,jsonParse,randomNumber
+function fakeUuid() {
+  return (
+    Math.random().toString(16).slice(2, 10) +
+    Math.random().toString(16).slice(2, 10) +
+    Math.random().toString(16).slice(2, 10) +
+    Math.random().toString(16).slice(2, 10) +
+    Math.random().toString(16).slice(2, 10)
+  );
 }
+
+function serializeEncodeURI(obj) {
+  var str = [];
+  for (var p in obj)
+    if (obj.hasOwnProperty(p)) {
+      str.push(encodeURIComponent(p) + '=' + encodeURIComponent(obj[p]));
+    }
+  return str.join('&');
+};
+
+module.exports = {
+  safeGet,
+  jsonParse,
+  randomNumber,
+  fakeUuid,
+  serializeEncodeURI,
+};
