@@ -61,7 +61,7 @@ if ($.isNode()) {
         continue;
       }
       try {
-        await jdMh('https://anmp.jd.com/babelDiy/Zeus/3c3Bt7WEWr28mWZKXbTR7f881WHM/index.html');
+        await jdMh('https://anmp.jd.com/babelDiy/Zeus/2z9yVc6pg2Rixp4zdMEGi7GBBUqP/index.html');
       } catch (e) {
         $.logErr(e);
       }
