@@ -90,7 +90,7 @@ const tabIds = {
   }
 })()
   .catch((e) => {
-    console.log(`❗️ ${$.name} 运行错误！\n${e}`);
+    console.log(`${$.name} 运行错误！\n${e}`);
   })
   .finally(() => $.done());
 
@@ -143,7 +143,7 @@ async function getGoodsList() {
   keys = Object.keys(tabIds);
 
   for (key of keys) {
-    console.log(`⏰ 获取 ${key} 商品列表`);
+    console.log(`获取 ${key} 商品列表`);
     $.totalPages = 1;
     for (let page = 1; page <= $.totalPages; page++) {
       if (page > 1) {
@@ -196,7 +196,6 @@ async function filterGoodsList() {
     await getGoodsDetail(goods.trialActivityId).then(function (detail) {
       goodsDetail = detail;
     });
-    console.log(goodsDetail);
     // 1. goods 有问题
     // 2. goods 距离结束不到10min
     // 3. goods 的结束时间大于一天
