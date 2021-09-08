@@ -226,7 +226,7 @@ async function filterGoodsList() {
     }
 
     $.goodsList.push(goods);
-    $.trialActivityIds.push(goods);
+    $.trialActivityIds.push(goods.trialActivityId);
   }
 
   $.goodsList = $.goodsList.sort((a, b) => {
