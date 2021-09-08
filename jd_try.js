@@ -24,6 +24,7 @@ let allGoodsList = [];
 // default params
 const args = {
   jdNotify: process.env.TRY_NOTIFY_CONTROL,
+  page: 5,
   pageSize: 12,
   goodsFilters:
     '教程@流量@软件@英语@辅导@培训小靓美@脚气@文胸@卷尺@种子@档案袋@癣@中年@老太太@妇女@私处@孕妇@卫生巾@卫生条@课@培训@阴道@生殖器@肛门@狐臭@少女内衣@胸罩@洋娃娃@男孩玩具@女孩玩具@益智@少女@女性内衣@女性内裤@女内裤@女内衣@女孩@鱼饵@钓鱼@童装@吊带@黑丝@钢圈@婴儿@儿童@玩具@幼儿@娃娃@网课@网校@电商@手机壳@钢化膜@车载充电器@网络课程@女纯棉@三角裤@美少女@纸尿裤@英语@俄语@四级@六级@四六级@在线网络@在线@阴道炎@宫颈@糜烂@打底裤@手机膜@鱼@狗@看房游@手机卡'.split(
@@ -33,14 +34,44 @@ const args = {
   maxSupplyCount: 100,
 };
 
-const tabIds = process.env.JD_TRY_TABS ? JSON.parse(process.env.JD_TRY_TABS) : {
+const allTabIds = {
   精选: 1,
   闪电试: 2,
   家用电器: 3,
   手机数码: 4,
   电脑办公: 5,
   家居家装: 6,
-};
+  美妆护肤: 7,
+  服饰装包: 8,
+  母婴玩具: 9,
+  生鲜美食: 10,
+  图书影像: 11,
+  钟表奢品: 12,
+  个人护理: 13,
+  家庭清洁: 14,
+  食品饮料: 15,
+  更多惊喜: 16,
+}
+
+const tabDefaultRange = ['精选', '闪电试', '家用电器', '手机数码', '电脑办公', '家居家装'];
+method = process.env.TRY_TAB_RANGE_METHOD ?? 'append';
+envTabRange = process.env.TRY_TAB_RANGE ? process.env.TRY_TAB_RANGE.split(',') : [];
+
+let tabRange = [];
+
+if (method == 'overwrite') {
+  tabRange = envTabRange;
+} else {
+  tabRange = new Set(envTabRange.concat(tabDefaultRange));
+}
+
+let tabIds = {}
+
+for (tabId of tabRange) {
+  if (allTabIds.hasOwnProperty(tabId)) {
+    tabIds[tabId] = allTabIds[tabId]
+  }
+}
 
 !(async () => {
   await requireConfig();
@@ -146,7 +177,7 @@ async function getGoodsList() {
     console.log(`获取 ${key} 商品列表`);
     $.totalPages = 1;
     for (let page = 1; page <= $.totalPages; page++) {
-      if (page > 1) {
+      if (page > args.page) {
         break;
       }
       await getGoodsListByCond(key, tabIds[key], page);
