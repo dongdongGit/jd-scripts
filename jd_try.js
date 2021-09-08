@@ -33,14 +33,13 @@ const args = {
   maxSupplyCount: 100,
 };
 
-const tabIds = {
+const tabIds = process.env.JD_TRY_TABS ?? {
   精选: 1,
   闪电试: 2,
   家用电器: 3,
   手机数码: 4,
   电脑办公: 5,
   家居家装: 6,
-  更多惊喜: 16,
 };
 
 !(async () => {
@@ -69,6 +68,7 @@ const tabIds = {
       }
 
       $.goodsList = [];
+      $.trialActivityIds = [];
       $.successList = [];
       $.currentPageSuccessList = [];
       if (i == 0) {
@@ -202,7 +202,7 @@ async function filterGoodsList() {
     // 4. goods 的价格小于最小的限制
     // 5. goods 的试用数量大于 maxSupplyCount, 视为垃圾商品
     // 6. goods applyState == 1 为已申请
-    if (!goods || goods.applyState == 1 || !goodsDetail || goodsDetail.activityEndTime < now + 10 * 60 * 1000 || goodsDetail.activityEndTime > oneMoreDay || goodsDetail.price < args.minPrice) {
+    if (!goods || goods.applyState == 1 || !goodsDetail || goodsDetail.activityEndTime < now + 10 * 60 * 1000 || goodsDetail.activityEndTime > oneMoreDay || goodsDetail.price < args.minPrice || !$.trialActivityIds.includes(goods.trialActivityId)) {
       // console.log('goods', goods)
       // console.log('!goods', !goods);
       // console.log('goods.applyState == 1', goods.applyState == 1);
@@ -226,6 +226,7 @@ async function filterGoodsList() {
     }
 
     $.goodsList.push(goods);
+    $.trialActivityIds.push(goods);
   }
 
   $.goodsList = $.goodsList.sort((a, b) => {
