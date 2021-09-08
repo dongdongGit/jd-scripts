@@ -33,7 +33,7 @@ const args = {
   maxSupplyCount: 100,
 };
 
-const tabIds = process.env.JD_TRY_TABS ?? {
+const tabIds = process.env.JD_TRY_TABS ? JSON.parse(process.env.JD_TRY_TABS) : {
   精选: 1,
   闪电试: 2,
   家用电器: 3,
