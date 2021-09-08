@@ -1,6 +1,5 @@
 name: sync-danwangshi-scripts
 on:
-  schedule:
   workflow_dispatch:
   watch:
     types: started
