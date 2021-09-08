@@ -23,14 +23,6 @@
 4 2,10 * * * node /scripts/jd_jxlhb.js >> /scripts/logs/jd_jxlhb.log 2>&1
 # 省钱大赢家之翻翻乐
 10,40 * * * * node /scripts/jd_big_winner.js >> /scripts/logs/jd_big_winner.log 2>&1
-# 骁龙品牌日
-18 9,19 13-25 8 * node /scripts/jd_snapdragon.js >> /scripts/logs/jd_snapdragon.log 2>&1
-# 开学焕新加油站
-5 0,8 20-31, 8 * node /scripts/jd_start_school.js >> /scripts/logs/jd_start_school.log 2>&1
-# 王者荣耀投票
-23 8,9 22-31,1-5 8,9 * node /scripts/jd_honor_of_kings.js >> /scripts/logs/jd_honor_of_kings.log 2>&1
-# 热血心跳,狂解压
-5 6,18 * * * node /scripts/jd_decompression.js >> /scripts/logs/jd_decompression.log 2>&1
 ##############长期活动##############
 # 签到
 0 0,17 * * * cd /scripts && node jd_bean_sign.js >> /scripts/logs/jd_bean_sign.log 2>&1
