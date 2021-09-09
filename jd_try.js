@@ -244,11 +244,9 @@ async function filterGoodsList() {
       continue;
     }
 
-    for (let item of args.goodsFilters) {
-      if (goods.skuTitle.indexOf(item) != -1) {
-        // console.log('goods filters', goods)
-        continue;
-      }
+    if (args.goodsFilters.some((filter_word) => goods.skuTitle.includes(filter_word))) {
+      // console.log('goods filters', goods)
+      continue;
     }
 
     if (goods.supplyCount > args.maxSupplyCount) {
