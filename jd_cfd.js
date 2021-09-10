@@ -18,7 +18,9 @@ const $ = jd_env.env('京喜财富岛');
 const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
 const notify = $.isNode() ? require('./sendNotify') : '';
 $.CryptoJS = $.isNode() ? require('crypto-js') : CryptoJS;
-let UA = `jdpingou;iPhone;5.2.2;14.3;${randomString(40)};network/wifi;model/iPhone12,1;appBuild/100630;ADID/00000000-0000-0000-0000-000000000000;supportApplePay/1;hasUPPay/0;pushNoticeIsOpen/0;hasOCPay/0;supportBestPay/0;session/1;pap/JA2019_3111789;brand/apple;supportJDSHWK/1;Mozilla/5.0 (iPhone; CPU iPhone OS 14_6 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148`;
+let UA = `jdpingou;iPhone;5.2.2;14.3;${randomString(
+  40
+)};network/wifi;model/iPhone12,1;appBuild/100630;ADID/00000000-0000-0000-0000-000000000000;supportApplePay/1;hasUPPay/0;pushNoticeIsOpen/0;hasOCPay/0;supportBestPay/0;session/1;pap/JA2019_3111789;brand/apple;supportJDSHWK/1;Mozilla/5.0 (iPhone; CPU iPhone OS 14_6 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148`;
 function randomString(e) {
   e = e || 32;
   let t = 'abcdef0123456789',
@@ -77,7 +79,9 @@ $.appId = 10032;
         }
         continue;
       }
-      UA = `jdpingou;iPhone;5.2.2;14.3;${randomString(40)};network/wifi;model/iPhone12,1;appBuild/100630;ADID/00000000-0000-0000-0000-000000000000;supportApplePay/1;hasUPPay/0;pushNoticeIsOpen/0;hasOCPay/0;supportBestPay/0;session/1;pap/JA2019_3111789;brand/apple;supportJDSHWK/1;Mozilla/5.0 (iPhone; CPU iPhone OS 14_6 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148`;
+      UA = `jdpingou;iPhone;5.2.2;14.3;${randomString(
+        40
+      )};network/wifi;model/iPhone12,1;appBuild/100630;ADID/00000000-0000-0000-0000-000000000000;supportApplePay/1;hasUPPay/0;pushNoticeIsOpen/0;hasOCPay/0;supportBestPay/0;session/1;pap/JA2019_3111789;brand/apple;supportJDSHWK/1;Mozilla/5.0 (iPhone; CPU iPhone OS 14_6 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148`;
       await run();
     }
   }
@@ -597,11 +601,29 @@ async function Guide() {
 async function Pearl() {
   try {
     await $.wait(2000);
-    $.ComposeGameState = await taskGet(`user/ComposeGameState`, '', '');
-    console.log(`\n当前有${$.ComposeGameState.dwCurProgress}颗珍珠`);
-    if ($.ComposeGameState.dwCurProgress < 8 && $.ComposeGameState.strDT) {
+    $.ComposeGameState = await taskGet(`user/ComposePearlState`, '', '&dwGetType=0');
+    console.log(`\n当前有${$.ComposeGameState.dwCurProgress}个月饼${($.ComposeGameState.ddwVirHb && ' ' + $.ComposeGameState.ddwVirHb / 100 + '红包') || ''}`);
+    if ($.ComposeGameState.dayDrawInfo.dwIsDraw == 0) {
+      let res = '';
+      res = await taskGet(`user/GetPearlDailyReward`, '__t,strZone', ``);
+      if (res && res.iRet == 0 && res.strToken) {
+        res = await taskGet(`user/PearlDailyDraw`, '__t,ddwSeaonStart,strToken,strZone', `&ddwSeaonStart=${$.ComposeGameState.ddwSeasonStartTm}&strToken=${res.strToken}`);
+        if (res && res.iRet == 0) {
+          if (res.strPrizeName) {
+            console.log(`抽奖获得:${res.strPrizeName || $.toObj(res, res)}`);
+          } else {
+            console.log(`抽奖获得:${$.toObj(res, res)}`);
+          }
+        } else {
+          console.log('抽奖失败\n' + $.toObj(res, res));
+        }
+      } else {
+        console.log($.toObj(res, res));
+      }
+    }
+    if (($.ComposeGameState.dwCurProgress < 8 || true) && $.ComposeGameState.strDT) {
       let b = 1;
-      console.log(`合珍珠${b}次 `);
+      console.log(`合月饼${b}次 `);
       // b = 8-$.ComposeGameState.dwCurProgress
       for (i = 1; b--; i++) {
         let n = Math.ceil(Math.random() * 12 + 12);
@@ -609,23 +631,24 @@ async function Pearl() {
         for (m = 1; n--; m++) {
           console.log(`上报第${m}次`);
           await $.wait(5000);
-          await taskGet(`user/RealTmReport`, '', `&dwIdentityType=0&strBussKey=composegame&strMyShareId=${$.ComposeGameState.strMyShareId}&ddwCount=5`);
+          await taskGet(`user/RealTmReport`, '', `&dwIdentityType=0&strBussKey=composegame&strMyShareId=${$.ComposeGameState.strMyShareId}&ddwCount=10`);
         }
-        console.log('合成珍珠');
-        let res = await taskGet(`user/ComposeGameAddProcess`, '__t,strBT,strZone', `&strBT=${$.ComposeGameState.strDT}`);
+        console.log('合成月饼');
+        let strLT = ($.ComposeGameState.oPT || [])[$.ComposeGameState.ddwCurTime % ($.ComposeGameState.oPT || []).length];
+        let res = await taskGet(`user/ComposePearlAddProcess`, '__t,strBT,strLT,strZone', `&strBT=${$.ComposeGameState.strDT}&strLT=${strLT}`);
         if (res && res.iRet == 0) {
-          console.log(`合成成功:当前有${res.dwCurProgress}颗`);
+          console.log(`合成成功:${(res.ddwAwardHb && '获得' + res.ddwAwardHb / 100 + '红包 ') || ''}当前有${res.dwCurProgress}个月饼${(res.ddwVirHb && ' ' + res.ddwVirHb / 100 + '红包') || ''}`);
         } else {
           console.log(JSON.stringify(res));
         }
-        $.ComposeGameState = await taskGet(`user/ComposeGameState`, '', '');
+        $.ComposeGameState = await taskGet(`user/ComposePearlState`, '', '&dwGetType=0');
       }
     }
-    for (let i of $.ComposeGameState.stagelist) {
+    for (let i of $.ComposeGameState.stagelist || []) {
       if (i.dwIsAward == 0 && $.ComposeGameState.dwCurProgress >= i.dwCurStageEndCnt) {
         await $.wait(2000);
         let res = await taskGet(`user/ComposeGameAward`, '__t,dwCurStageEndCnt,strZone', `&dwCurStageEndCnt=${i.dwCurStageEndCnt}`);
-        await printRes(res, '珍珠领奖');
+        await printRes(res, '月饼领奖');
       }
     }
   } catch (e) {
