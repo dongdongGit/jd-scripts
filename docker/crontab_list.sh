@@ -175,4 +175,6 @@
 # 柠檬东东泡泡大战
 1 0 * * * node /scripts/jd_bubble_fight.js >> /scripts/logs/jd_bubble_fight.log 2>&1
 # 内容鉴赏官
-15 3,6 * * * node /scripts/jd_bubble_fight.js >> /scripts/logs/jd_bubble_fight.log 2>&1
+15 3,6 * * * node /scripts/jd_connoisseur.js >> /scripts/logs/jd_connoisseur.log 2>&1
+# 关注频道、抽奖
+0 6 * * * node /scripts/jd_connoisseur.js >> /scripts/logs/jd_connoisseur.log 2>&1
