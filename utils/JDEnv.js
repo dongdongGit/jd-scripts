@@ -559,7 +559,7 @@ function env(name, opts) {
           url: urls[jd_helpers.randomNumber(0, urls.length - 1)],
           headers: {
             Cookie: this.cookie,
-            Referer: 'https://home.m.jd.com/myJd/newhome.action?sceneval=2&ufc=&',
+            Referer: 'https://wqs.jd.com/my/jingdou/my.shtml?sceneval=2',
           },
         };
 
