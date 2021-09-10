@@ -54,8 +54,8 @@ const allTabIds = {
 }
 
 const tabDefaultRange = ['精选', '闪电试', '家用电器', '手机数码', '电脑办公', '家居家装'];
-method = process.env.TRY_TAB_RANGE_METHOD ?? 'append';
-envTabRange = process.env.TRY_TAB_RANGE ? process.env.TRY_TAB_RANGE.split(',') : [];
+method = process.env.JD_TRY_TAB_RANGE_METHOD ?? 'append';
+envTabRange = process.env.JD_TRY_TAB_RANGE ? process.env.TRY_TAB_RANGE.split(',') : [];
 
 let tabRange = [];
 
