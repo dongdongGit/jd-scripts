@@ -153,7 +153,7 @@
 # 柠檬特务Z行动-星小店
 20 1 * * *  node /scripts/jd_twz_star.js >> /scripts/logs/jd_twz_star.log 2>&1
 # 特务Zx佳沛
-23 8,9 * * * node /scripts/jd_superZ4Brand.js >> /scripts/logs/jd_superZ4Brand.log 2>&1
+23 0,9 * * * node /scripts/jd_superZ4Brand.js >> /scripts/logs/jd_superZ4Brand.log 2>&1
 # 天天优惠大乐透
 20 12,14 * * * node /scripts/jd_DrawEntrance.js >> /scripts/logs/jd_DrawEntrance.log 2>&1
 # 柠檬伊利养牛记
