@@ -127,11 +127,7 @@ const JD_API_HOST = 'https://api.m.jd.com/';
 async function jdBeanHome() {
   try {
     $.doneState = false;
-    // for (let i = 0; i < 3; ++i) {
-    //   await doTask2()
-    //   await $.wait(1000)
-    //   if ($.doneState) break
-    // }
+    // let num = 0;
     do {
       await doTask2();
       await $.wait(3000);
@@ -255,7 +251,7 @@ async function beanTaskList(type) {
                           },
                           vo.taskType
                         );
-                        if (vo.taskType === 9) {
+                        if (vo.taskType === 9 || vo.taskType === 8) {
                           await $.wait(3000);
                           await beanDoTask(
                             {
@@ -301,7 +297,7 @@ function beanDoTask(body, taskType) {
         } else {
           if (jd_helpers.safeGet(data)) {
             data = JSON.parse(data);
-            if (body.actionType === 1 && taskType !== 9) {
+            if (body.actionType === 1 && taskType !== 9 && taskType !== 8) {
               if (data.code === '0' && data.data.bizCode === '0') {
                 console.log(`完成任务，获得+${data.data.score}成长值`);
               } else {
