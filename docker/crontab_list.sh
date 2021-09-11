@@ -23,6 +23,12 @@
 4 2,10 * * * node /scripts/jd_jxlhb.js >> /scripts/logs/jd_jxlhb.log 2>&1
 # 省钱大赢家之翻翻乐
 10,40 * * * * node /scripts/jd_big_winner.js >> /scripts/logs/jd_big_winner.log 2>&1
+#明星小店
+12 19 10-17 9 * node /scripts/jd_star_shop.js >> /scripts/logs/jd_star_shop.log 2>&1
+#浮窗集卡
+30 9,21 1-12 9 *  node /scripts/jd_necklace_card.js >> /scripts/logs/jd_necklace_card.log 2>&1
+# 内容鉴赏官
+15 3,6 * * * node /scripts/jd_connoisseur.js >> /scripts/logs/jd_connoisseur.log 2>&1
 ##############长期活动##############
 # 签到
 0 0,17 * * * cd /scripts && node jd_bean_sign.js >> /scripts/logs/jd_bean_sign.log 2>&1
@@ -174,7 +180,5 @@
 13 3 * * * node /scripts/jd_pigeon.js >> /scripts/logs/jd_pigeon.log 2>&1
 # 柠檬东东泡泡大战
 1 0 * * * node /scripts/jd_bubble_fight.js >> /scripts/logs/jd_bubble_fight.log 2>&1
-# 内容鉴赏官
-15 3,6 * * * node /scripts/jd_connoisseur.js >> /scripts/logs/jd_connoisseur.log 2>&1
 # 关注频道、抽奖
-0 6 * * * node /scripts/jd_connoisseur.js >> /scripts/logs/jd_connoisseur.log 2>&1
+0 6 * * * node /scripts/jd_focus.js >> /scripts/logs/jd_focus.log 2>&1
