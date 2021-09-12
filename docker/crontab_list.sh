@@ -24,7 +24,7 @@
 # 省钱大赢家之翻翻乐
 10,40 * * * * node /scripts/jd_big_winner.js >> /scripts/logs/jd_big_winner.log 2>&1
 #明星小店
-12 19 10-17 9 * node /scripts/jd_star_shop.js >> /scripts/logs/jd_star_shop.log 2>&1
+12 11 10-17 9 * node /scripts/jd_star_shop.js >> /scripts/logs/jd_star_shop.log 2>&1
 #浮窗集卡
 30 9,21 1-12 9 *  node /scripts/jd_necklace_card.js >> /scripts/logs/jd_necklace_card.log 2>&1
 # 内容鉴赏官
@@ -126,6 +126,8 @@
 10 12 * * * node /scripts/jd_crazy_joy_bonus.js >> /scripts/logs/jd_crazy_joy_bonus.log 2>&1
 # 京喜财富岛
 0 * * * * node /scripts/jd_cfd.js >> /scripts/logs/jd_cfd.log 2>&1
+#京喜财富岛合成月饼
+10 * * * * node /scripts/jd_cfd_mooncake.js >> /scripts/logs/jd_cfd_mooncake.log 2>&1
 # 京喜财富岛提现
 59 11,12,23 * * * node /scripts/jd_cfd_withdraw.js >> /scripts/logs/jd_cfd_withdraw.log 2>&1
 # 删除优惠券(默认注释，如需要自己开启，如有误删，已删除的券可以在回收站中还原，慎用)
