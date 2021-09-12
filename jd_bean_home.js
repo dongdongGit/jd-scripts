@@ -127,11 +127,12 @@ const JD_API_HOST = 'https://api.m.jd.com/';
 async function jdBeanHome() {
   try {
     $.doneState = false;
-    // let num = 0;
+    let num = 0;
     do {
       await doTask2();
-      await $.wait(3000);
-    } while (!$.doneState);
+      // await $.wait(3000);
+      num++;
+    } while (!$.doneState && num < 5);
     await $.wait(1000);
     await award('feeds');
     await $.wait(1000);
