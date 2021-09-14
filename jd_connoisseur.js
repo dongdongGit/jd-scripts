@@ -6,17 +6,14 @@
 ============Quantumultx===============
 [task_local]
 #内容鉴赏官
-15 3,6 * * * jd_connoisseur.js, tag=内容鉴赏官, img-url=https://raw.githubusercontent.com/Orz-3/mini/master/Color/jd.png, enabled=true
-
+15 3,6 * * * https://raw.githubusercontent.com/yongyuanlin/jd_scripts/master/jd_connoisseur.js, tag=内容鉴赏官, img-url=https://raw.githubusercontent.com/Orz-3/mini/master/Color/jd.png, enabled=true
 ================Loon==============
 [Script]
-cron "15 3,6 * * *" script-path=jd_connoisseur.js,tag=内容鉴赏官
-
+cron "15 3,6 * * *" script-path=https://raw.githubusercontent.com/yongyuanlin/jd_scripts/master/jd_connoisseur.js,tag=内容鉴赏官
 ===============Surge=================
-内容鉴赏官 = type=cron,cronexp="15 3,6 * * *",wake-system=1,timeout=3600,script-path=jd_connoisseur.js
-
+内容鉴赏官 = type=cron,cronexp="15 3,6 * * *",wake-system=1,timeout=3600,script-path=https://raw.githubusercontent.com/yongyuanlin/jd_scripts/master/jd_connoisseur.js
 ============小火箭=========
-内容鉴赏官 = type=cron,script-path=jd_connoisseur.js, cronexpr="15 3,6 * * *", timeout=3600, enable=true
+内容鉴赏官 = type=cron,script-path=https://raw.githubusercontent.com/yongyuanlin/jd_scripts/master/jd_connoisseur.js, cronexpr="15 3,6 * * *", timeout=3600, enable=true
  */
 
 const jd_helpers = require('./utils/JDHelpers.js');
@@ -52,18 +49,10 @@ let allMessage = '';
     $.msg($.name, '【提示】请先获取京东账号一cookie\n直接使用NobyDa的京东签到获取', 'https://bean.m.jd.com/bean/signIndex.action', { 'open-url': 'https://bean.m.jd.com/bean/signIndex.action' });
     return;
   }
-  let res = [
-    { use: '18237091240_p', code: 'Sv_VxQxkZ_FXVJBqb1A' },
-    { use: 'pluto.5218_m', code: 'S_qE2BEEH8FbWKHWp' },
-    { use: 'jd_50f2be46743fc', code: 'S5KkcRR5P9waCJBzzkPRcJw' },
-    { use: '15082992273_p', code: 'Sv_hzSBwQ_FbVJxmb1A' },
-    { use: 'jd_680c996309fbf', code: 'S5KkcRhYZpl3eJhn0naFYIg' },
-    { use: 'jd_5cd15c4b0807c', code: 'S5KkcRU1N9FGEJEj0nPcNJw' },
-    { use: 'jd_TTcYfwuzDbnh', code: 'S5KkcJHpKnAKQZVCAxqlS' },
-    { use: '%E6%B8%B8%E6%9E%97yl', code: 'SaHX7lrC-vAg' },
-    { use: 'jd_544cacc7b14ef', code: 'S5KkcRRodpgWEcx2mlfNfIg' },
-    { use: '313333079-954679', code: 'SvfxwQx0a9VPePRPxkPENfQ' },
-  ];
+  let res = await getAuthorShareCode('https://raw.githubusercontent.com/yongyuanlin/cast/main/mast/connoisseur.json');
+  if (!res) {
+    res = await getAuthorShareCode('https://cdn.jsdelivr.net/gh/yongyuanlin/cast@main/mast/connoisseur.json');
+  }
   for (let i = 0; i < cookiesArr.length; i++) {
     if (cookiesArr[i]) {
       $.cookie = cookie = cookiesArr[i];
@@ -91,7 +80,7 @@ let allMessage = '';
   $.shareCodes = [...$.shareCodes, ...(res || [])];
   for (let i = 0; i < cookiesArr.length; i++) {
     if (cookiesArr[i]) {
-      $.cookie = cookie = cookiesArr[i];
+      cookie = cookiesArr[i];
       $.UserName = decodeURIComponent(cookie.match(/pt_pin=([^; ]+)(?=;?)/) && cookie.match(/pt_pin=([^; ]+)(?=;?)/)[1]);
       if (!isLoginInfo[$.UserName]) continue;
       $.canHelp = true;
@@ -104,7 +93,7 @@ let allMessage = '';
             continue;
           }
           $.delcode = false;
-          await getTaskInfo('2', $.projectCode, $.taskCode, '24', '2', $.shareCodes[j].code);
+          await getTaskInfo('2', $.projectCode, $.taskCode, $.helpType, '2', $.shareCodes[j].code);
           await $.wait(2000);
           if ($.delcode) {
             $.shareCodes.splice(j, 1);
@@ -190,7 +179,7 @@ async function getActiveInfo(url = 'https://prodev.m.jd.com/mall/active/2y1S9xVY
 }
 async function getTaskInfo(type, projectId, assignmentId, ofn, helpType = '1', itemId = '') {
   let body = { type: type, projectId: projectId, assignmentId: assignmentId, doneHide: false };
-  if (ofn === '24') body['itemId'] = itemId;
+  if (ofn === $.helpType) body['itemId'] = itemId;
   body['helpType'] = helpType;
   return new Promise(async (resolve) => {
     $.post(taskUrl('interactive_info', body), async (err, resp, data) => {
@@ -201,8 +190,7 @@ async function getTaskInfo(type, projectId, assignmentId, ofn, helpType = '1', i
         } else {
           if (data) {
             data = JSON.parse(data);
-            allow_values = ['3', '10', '14', '16', '18', '20'];
-            if (allow_values.includes(ofn)) {
+            if (ofn === '3' || ofn === '10' || ofn === '14' || ofn === '16' || ofn === '18' || ofn === '20') {
               if (ofn !== '3') console.log(`去做【${data.data[0].title}】`);
               if (data.code === '0' && data.data) {
                 if (data.data[0].status !== '2') {
@@ -231,7 +219,7 @@ async function getTaskInfo(type, projectId, assignmentId, ofn, helpType = '1', i
                 console.log(`去做【${data.data[0].title}】`);
                 if (data.data[0].status !== '2') {
                   await interactive_accept(type, data.data[0].projectId, data.data[0].assignmentId, data.data[0].itemId);
-                  await $.wait(2000);
+                  await $.wait(10000);
                   await qryViewkitCallbackResult(data.data[0].projectId, data.data[0].assignmentId, data.data[0].itemId);
                 } else {
                   console.log(`任务已完成`);
@@ -239,7 +227,7 @@ async function getTaskInfo(type, projectId, assignmentId, ofn, helpType = '1', i
               } else {
                 console.log(data.message);
               }
-            } else if (ofn === '24') {
+            } else if (ofn === $.helpType) {
               if (helpType === '1') {
                 if (data.code === '0' && data.data) {
                   if (data.data[0].status !== '2') {
@@ -466,7 +454,16 @@ async function getshareCode() {
       'Content-Type': 'application/x-www-form-urlencoded',
       Origin: 'https://prodev.m.jd.com',
       'Accept-Language': 'zh-cn',
+      'User-Agent': $.isNode()
+        ? process.env.JD_USER_AGENT
+          ? process.env.JD_USER_AGENT
+          : require('./USER_AGENTS').USER_AGENT
+        : $.getdata('JDUA')
+        ? $.getdata('JDUA')
+        : 'jdapp;iPhone;9.4.4;14.3;network/4g;Mozilla/5.0 (iPhone; CPU iPhone OS 14_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148;supportJDSHWK/1',
+      Referer: 'https://prodev.m.jd.com/mall/active/2y1S9xVYdTud2VmFqhHbkcoAYhJT/index.html',
       'Accept-Encoding': 'gzip, deflate, br',
+      Cookie: cookie,
     },
   };
   return new Promise(async (resolve) => {
@@ -480,15 +477,16 @@ async function getshareCode() {
             data = JSON.parse(data);
             for (let key of Object.keys(data.floorList)) {
               let vo = data.floorList[key];
-              if (vo.ofn && vo.ofn === '22') {
+              if (vo.ofn && vo.ofn === '20' && vo.template === 'customcode') {
                 await getTaskInfo('1', vo.boardParams.projectCode, vo.boardParams.taskCode, vo.ofn);
                 await $.wait(2000);
-              } else if (vo.ofn && vo.ofn === '24') {
+              } else if (vo.ofn && (vo.ofn === '22' || vo.ofn === '24') && vo.template === 'customcode') {
                 $.projectCode = vo.boardParams.projectCode;
                 $.taskCode = vo.boardParams.taskCode;
+                $.helpType = vo.ofn;
               }
             }
-            await getTaskInfo('2', $.projectCode, $.taskCode, '22');
+            await getTaskInfo('2', $.projectCode, $.taskCode, $.helpType);
           }
         }
       } catch (e) {
