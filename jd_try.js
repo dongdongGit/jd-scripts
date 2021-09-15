@@ -46,6 +46,10 @@ let args_xh = {
   tabId: (process.env.JD_TRY_TABID &&
     process.env.JD_TRY_TABID.split("@").map(Number)) || [1, 2, 3, 4, 5],
   /*
+   * 单tab 最大page
+   * */
+  tabPageLimit: process.env.JD_TAB_PAGE_LIMIT * 1 || 5,
+  /*
    * 试用商品标题过滤，黑名单，当标题存在关键词时，则不加入试用组
    * 可设置环境变量：JD_TRY_TITLEFILTERS，关键词与关键词之间用@分隔
    * */
@@ -274,10 +278,13 @@ function try_feedsList(tabId, page) {
     if (page > $.totalPages) {
       console.log("请求页数错误");
       return;
+    } else if (page > args_xh.tabPageLimit) {
+      console.log(`请求页数超过${args_xh.tabPageLimit},跳过该tab进行下一个`)
+      return;
     } else if ($.nowTabIdIndex > args_xh.tabId.length) {
       console.log(`不再获取商品，边缘越界，提交试用中...`);
       return;
-    }
+    } 
     const body = JSON.stringify({
       tabId: `${tabId}`,
       page: page,
