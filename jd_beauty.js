@@ -25,8 +25,19 @@ let cookiesArr = [],
   cookie = '',
   message,
   helpInfo,
-  ADD_CART = process.env.PURCHASE_SHOPS ||false;
-
+  ADD_CART = process.env.PURCHASE_SHOPS || false;
+/**
+ * 兑换京豆的数量
+ */
+let beansCount = process.env.JD_BEAUTY_BEANS_COUNT || 10;
+/**
+ * 如果兑换类型为2、3需要填上兑换的物品名称
+ */
+let benefitName = process.env.JD_BEAUTY_BENEFIT_NAME || '';
+/**
+ * 兑换物品的类型 1-京豆 2、3-物品
+ */
+let benefitType = process.env.JD_BEAUTY_BENEFITTYPE || 1;
 if ($.isNode()) {
   Object.keys(jdCookieNode).forEach((item) => {
     cookiesArr.push(jdCookieNode[item]);
@@ -212,7 +223,7 @@ async function mr() {
     client.send(getMsg('get_user', { source: 1 }));
     await $.wait(1000);
     // 获得福利中心
-    // client.send(getMsg('get_benefit'));
+    client.send(getMsg('get_benefit'));
     client.send(getMsg('collect_coins'));
   };
 
@@ -260,10 +271,6 @@ async function mr() {
           console.log(`当前美妆币${$.total}，用户等级${$.level}`);
           break;
         case 'shop_products':
-          // $.shops = vo.data.shops;
-          // $.open_card_shops = vo.data.open_card_shops;
-          // $.products = vo.data.shops;
-
           for (let i = 0; i < vo.data.shops.length && i < 5; i++) {
             const shop = vo.data.shops[i];
             console.log(`去做关注店铺【${shop.name}】`);
@@ -279,7 +286,7 @@ async function mr() {
             client.send(getMsg('add_product_view', { add_product_id: product.id }));
             client.send(getMsg('write', { action_type: 9, channel: 2, source_app: 2, vender: product.id }));
             client.send(getMsg('write', { action_type: 5, channel: 2, source_app: 2, vender: product.id }));
-            $.skuIds.push(product.id);
+            $.skuIds.push(product.jd_product_id);
             await $.wait(1000);
           }
           for (let i = 0; i < 15; i++) {
@@ -459,28 +466,24 @@ async function mr() {
           break;
         case 'get_benefit':
           for (let benefit of vo.data) {
-            if (benefit.type === 1) {
-              //type 1 是京豆
-              console.log(`benefit:${JSON.stringify(benefit)}`);
-              if (
-                benefit.description === '1 京豆' && //500颗京豆打包兑换
-                parseInt(benefit.day_exchange_count) < 10 &&
-                $.total > benefit.coins
-              ) {
-                for (let i = benefit.day_exchange_count; i < 10; i++) {
-                  // console.log(`开始兑换`)
-                  client.send(getMsg('to_exchange', { benefit_id: benefit.id }));
-                  await $.wait(3500);
-                }
+            console.log(`benefit:${JSON.stringify(benefit)}`);
+            if (benefit.type != benefitType) {
+              continue;
+            }
+
+            if (benefit.stock <= 0) {
+              console.log(`${benefit.name} 库存不足，数量:${benefit.stock}`);
+              continue;
+            }
+            console.log(`开始兑换`)
+            if (benefitType == 1 && benefit?.setting?.beans_count * benefit.day_limit == beansCount) {
+              for (let i = benefit.day_exchange_count == 0 ? 1 : benefit.day_exchange_count; i <= benefit.day_limit; i++) {
+                client.send(`{"msg":{"type":"action","args":{"benefit_id":${benefit.id}},"action":"to_exchange"}}`);
               }
-              // console.log(`物品【${benefit.description}】需要${benefit.coins}美妆币，库存${benefit.stock}份`)
-              // if (parseInt(benefit.setting.beans_count) === bean && //兑换多少豆 bean500就500豆
-              //   $.total > benefit.coins &&
-              //   parseInt(benefit.day_exchange_count) < benefit.day_limit) {
-              //   console.log(`满足条件，去兑换`)
-              //   client.send(`{"msg":{"type":"action","args":{"benefit_id":${benefit.id}},"action":"to_exchange"}}`)
-              //   await $.wait(1000)
-              // }
+              break;
+            } else if ([2, 3].includes(benefitType) && benefit.name.includes(benefitName) && benefit.day_exchange_count < benefit.day_limit) {
+              client.send(`{"msg":{"type":"action","args":{"benefit_id":${benefit.id}},"action":"to_exchange"}}`);
+              break;
             }
           }
           break;
