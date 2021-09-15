@@ -9,7 +9,7 @@ cron 1 7,12,19 * * * jd_beauty.js
 
 const jd_helpers = require('./utils/JDHelpers.js');
 const jd_env = require('./utils/JDEnv.js');
-let $ = jd_env.env('美丽研究院');
+let $ = jd_env.env('美丽研究院兑换');
 const notify = $.isNode() ? require('./sendNotify') : '';
 //Node.js用户请在jdCookie.js处填写京东ck;
 const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
@@ -24,12 +24,11 @@ $.init = false;
 let cookiesArr = [],
   cookie = '',
   message,
-  helpInfo,
-  ADD_CART = process.env.PURCHASE_SHOPS || false;
+  helpInfo;
 /**
  * 兑换京豆的数量
  */
-let beansCount = process.env.JD_BEAUTY_BEANS_COUNT || 10;
+let beansCount = process.env.JD_BEAUTY_BEANS_COUNT || 500;
 /**
  * 如果兑换类型为2、3需要填上兑换的物品名称
  */
@@ -64,7 +63,6 @@ const JD_API_HOST = 'https://api.m.jd.com/client.action';
       $.index = i + 1;
       $.isLogin = true;
       $.nickName = '';
-      $.skuIds = [];
       message = '';
       await $.totalBean();
       console.log(`\n******开始【京东账号${$.index}】${$.nickName || $.UserName}*********\n`);
@@ -82,7 +80,6 @@ const JD_API_HOST = 'https://api.m.jd.com/client.action';
       }
       if ($.accountCheck) {
         await jdBeauty();
-        await $.clearShoppingCart();
       }
       if ($.accountCheck) {
         helpInfo = $.helpInfo;
@@ -154,13 +151,6 @@ async function accountCheck() {
 
 async function jdBeauty() {
   $.hasDone = false;
-  // await getIsvToken()
-  // await getIsvToken2()
-  // await getToken()
-  // if (!$.token) {
-  //   console.log(`\n\n提示：请尝试换服务器ip或者设置"xinruimz-isv.isvjcloud.com"域名直连，或者自定义UA再次尝试(环境变量JD_USER_AGENT)\n\n`)
-  //   return
-  // }
   await mr();
   while (!$.hasDone) {
     await $.wait(1000);
@@ -170,7 +160,6 @@ async function jdBeauty() {
 
 async function mr() {
   $.coins = 0;
-  let positionList = ['b1', 'h1', 's1', 'b2', 'h2', 's2'];
   $.tokens = [];
   $.pos = [];
   $.helpInfo = [];
@@ -195,35 +184,12 @@ async function mr() {
       client.send(`ping`);
       await $.wait(1000);
     }
-    console.log('helpInfo', helpInfo);
-    for (let help of helpInfo) {
-      client.send(help);
-    }
-    await $.wait(1000);
-    client.send(getMsg('shop_products'));
-    // 获得可生产的原料列表
-    client.send(getMsg('get_produce_material'));
-    await $.wait(1000);
-    // 获得正在生产的商品信息
-    client.send(getMsg('product_producing'));
-    await $.wait(1000);
-    // 获得库存
-    client.send(getMsg('get_package'));
-    // 获得可生成的商品列表
-    client.send(getMsg('product_lists', { page: 1, num: 10 }));
-    await $.wait(1000);
-    // 获得原料生产列表
-    console.log(`========原料生产信息========`);
-    for (let pos of positionList) {
-      client.send(getMsg('produce_position_info_v2', { position: pos }));
-      // await $.wait(500)
-    }
-
+   
     // 获取个人信息
     client.send(getMsg('get_user', { source: 1 }));
     await $.wait(1000);
     // 获得福利中心
-    // client.send(getMsg('get_benefit'));
+    client.send(getMsg('get_benefit'));
     client.send(getMsg('collect_coins'));
   };
 
@@ -248,15 +214,6 @@ async function mr() {
       }
 
       switch (vo.action) {
-        case 'get_ad':
-          console.log(`当期活动：${vo.data.screen.name}`);
-          if (vo.data.check_sign_in === 1) {
-            // 去签到
-            console.log(`去做签到任务`);
-            client.send(getMsg('sign_in'));
-            client.send(getMsg('write', { action_type: 1, channel: 2, source_app: 2 }));
-          }
-          break;
         case 'get_user':
           $.userInfo = vo.data;
           $.total = vo.data.coins;
@@ -270,203 +227,20 @@ async function mr() {
           $.level = $.userInfo.level;
           console.log(`当前美妆币${$.total}，用户等级${$.level}`);
           break;
-        case 'shop_products':
-          for (let i = 0; i < vo.data.shops.length && i < 5; i++) {
-            const shop = vo.data.shops[i];
-            console.log(`去做关注店铺【${shop.name}】`);
-            client.send(getMsg('shop_view', { shop_id: shop.id }));
-            client.send(getMsg('write', { action_type: 6, channel: 2, source_app: 2, vender: shop.vender_id }));
-            await $.wait(1000);
-          }
-
-          if (ADD_CART) console.log(`去做浏览并加购任务`);
-          for (let i = 0; i < vo.data.products.length && i < 5 && ADD_CART; i++) {
-            const product = vo.data.products[i];
-            console.log(`去加购商品【${product.name}】`);
-            client.send(getMsg('add_product_view', { add_product_id: product.id }));
-            client.send(getMsg('write', { action_type: 9, channel: 2, source_app: 2, vender: product.id }));
-            client.send(getMsg('write', { action_type: 5, channel: 2, source_app: 2, vender: product.id }));
-            $.skuIds.push(product.jd_product_id);
-            await $.wait(1000);
-          }
-          for (let i = 0; i < 15; i++) {
-            console.log(`去做第${i + 1}次浏览会场任务`);
-            client.send(getMsg('meetingplace_view', { source: 1 }));
-            await $.wait(2000);
-          }
-
-          client.send(getMsg('get_question', { source: 1 }));
-          break;
-        case 'check_up':
-          console.log(`vo.data`, vo.data);
-          // $.taskState = vo.data;
-          // 6-9点签到
-          for (let check_up of vo.data.check_up) {
-            if (check_up['receive_status'] !== 1) {
-              console.log(`去领取第${check_up.times}次签到奖励`);
-              client.send(getMsg('check_up_receive', { check_up_id: check_up.id }));
-            } else {
-              console.log(`第${check_up.times}次签到奖励已领取`);
-            }
-          }
-          break;
-        case 'newcomer_update':
-          console.log(`第${vo.data.step}步新手任务完成成功，获得${vo.data.coins}美妆币`);
-          if (vo.data.step === 15) $.init = true;
-          if (vo.data.coins) $.coins += vo.data.coins;
-
-          break;
-        case 'get_question':
-          const questions = vo.data;
-          let commit = {};
-          for (let i = 0; i < questions.length; ++i) {
-            const ques = questions[i];
-            commit[`${ques.id}`] = parseInt(ques.answers);
-          }
-          await $.wait(5000);
-          client.send(getMsg('submit_answer', { commit: JSON.stringify(commit), correct: questions.length }));
-          break;
         case 'complete_task':
         case 'action':
         case 'submit_answer':
         case 'check_up_receive':
-        case 'shop_view':
-        case 'add_product_view':
-        case 'meetingplace_view':
           console.log(`任务完成成功，获得${vo.data.coins}美妆币`);
           if (vo.data.coins) $.coins += vo.data.coins;
           $.total = vo.data.user_coins;
           break;
-        case 'produce_position_info_v2':
-          // console.log(`${Boolean(vo?.data)};${vo?.data?.material_name !== ''}`);
-          if (vo.data && vo.data.material_name !== '') {
-            console.log(`【${vo?.data?.position}】上正在生产【${vo?.data?.material_name}】，可收取 ${vo.data.produce_num} 份`);
-            if (new Date().getTime() > vo.data.procedure.end_at) {
-              console.log(`去收取${vo?.data?.material_name}`);
-              client.send(getMsg('material_fetch_v2', { position: vo?.data?.position, replace_material: false }));
-              client.send(getMsg('to_employee'));
-              $.pos.push(vo?.data?.position);
-            }
-          } else {
-            if (vo?.data && vo.data.valid_electric > 0) {
-              console.log(`【${vo.data.position}】上尚未开始生产`);
-              let ma;
-              console.log(`$.needs:${JSON.stringify($.needs)}`);
-              if ($.needs.length) {
-                ma = $.needs.pop();
-                console.log(`ma:${JSON.stringify(ma)}`);
-              } else {
-                ma = $.material.base[0]['items'][positionList.indexOf(vo.data.position)];
-                console.log(`elsema:${JSON.stringify(ma)}`);
-              }
-              console.log(`ma booleam${Boolean(ma)}`);
-              if (ma) {
-                console.log(`去生产${ma.name}`);
-                client.send(getMsg('material_produce_v2', { position: vo.data.position, material_id: ma.id }));
-              } else {
-                ma = $.material.base[1]['items'][positionList.indexOf(vo.data.position)];
-                if (ma) {
-                  console.log(`else去生产${ma.name}`);
-                  client.send(getMsg('material_produce_v2', { position: vo.data.position, material_id: ma.id }));
-                }
-              }
-            } else {
-              console.log(`【${vo.data.position}】电力不足`);
-            }
-          }
-          break;
-        case 'material_produce_v2':
-          console.log(`【${vo?.data?.position}】上开始生产${vo?.data?.material_name}`);
-          client.send(getMsg('to_employee'));
-          $.pos.push(vo.data.position);
-          break;
-        case 'material_fetch_v2':
-          console.log(`【${vo.data.position}】收取成功，获得${vo.data.procedure.produce_num}份${vo.data.material_name}\n`);
-          break;
-        case 'get_package':
-          // $.products = vo.data.product
-          $.materials = vo.data.material;
-          let msg = `仓库信息:`;
-          for (let material of $.materials) {
-            msg += `【${material.material.name}】${material.num}份 `;
-          }
-          console.log(msg);
-          break;
-        case 'product_lists':
-          let need_material = [];
-          $.products = vo.data.filter((vo) => vo.level === $.level);
-          console.log(`========可生产商品信息========`);
-          for (let product of $.products) {
-            let num = Infinity;
-            let msg = '';
-            msg += `生产【${product.name}】`;
-            for (let material of product.product_materials) {
-              msg += `需要原料“${material.material.name}${material.num} 份” `; //material.num 需要材料数量
-              const ma = $.materials.filter((vo) => vo.item_id === material.material_id)[0]; //仓库里对应的材料信息
-              // console.log(`ma:${JSON.stringify(ma)}`);
-              if (ma) {
-                msg += `（库存 ${ma.num} 份）`;
-                num = Math.min(num, Math.trunc(ma.num / material.num)); //Math.trunc 取整数部分
-                if (material.num > ma.num) {
-                  need_material.push(material.material);
-                }
-                // console.log(`num:${JSON.stringify(num)}`);
-              } else {
-                if (need_material.findIndex((vo) => vo.id === material.material.id) === -1) need_material.push(material.material);
-                console.log(`need_material:${JSON.stringify(need_material)}`);
-                msg += `(没有库存)`;
-                num = -1000;
-              }
-            }
-            if (num !== Infinity && num > 0) {
-              msg += `，可生产 ${num}份`;
-              console.log(msg);
-              console.log(`【${product.name}】可生产份数大于0，去生产`);
-              //product_produce 产品研发里的生产
-              client.send(getMsg('product_produce', { product_id: product_id, amount: num }));
-              await $.wait(500);
-            } else {
-              console.log(msg);
-              console.log(`【${product.name}】原料不足，无法生产`);
-            }
-          }
-          $.needs = need_material;
-          // console.log(`product_lists $.needs:${JSON.stringify($.needs)}`);
-          console.log(`=======================`);
-          // await $.wait(2000);
-          // client.close();
-          break;
-        case 'product_produce':
-          // console.log(`product_produce:${JSON.stringify(vo)}`)
-          console.log(`生产成功`);
-          break;
         case 'collect_coins':
-          // console.log(`product_produce:${JSON.stringify(vo)}`)
           console.log(`收取成功，获得${vo['data']['coins']}美妆币，当前总美妆币：${vo['data']['user_coins']}\n`);
-          break;
-        case 'product_producing':
-          // console.log('product_producing', vo);
-          for (let product of vo.data) {
-            if (product.num === product.produce_num) {
-              client.send(getMsg('new_product_fetch', { log_id: product.id }));
-            } else {
-              console.log(`产品【${product.product.id}】未生产完成，无法收取`);
-            }
-          }
-          break;
-        case 'new_product_fetch':
-          console.log(`收取产品【${vo.data.product.name}】${vo.data.num}份`);
-          break;
-        case 'get_task':
-          console.log(`当前任务【${vo.data.describe}】，需要【${vo.data.product.name}】${vo.data.package_stock}/${vo.data.num}份`);
-          if (vo.data.package_stock >= vo.data.num) {
-            console.log(`满足任务要求，去完成任务`);
-            client.send(getMsg('complete_task', { task_id: vo.data.id }));
-          }
           break;
         case 'get_benefit':
           for (let benefit of vo.data) {
-            console.log(`benefit:${JSON.stringify(benefit)}`);
+            // console.log(`benefit:${JSON.stringify(benefit)}`);
             if (benefit.type != benefitType) {
               continue;
             }
@@ -475,13 +249,14 @@ async function mr() {
               console.log(`${benefit.name} 库存不足，数量:${benefit.stock}`);
               continue;
             }
-            console.log(`开始兑换`)
             if (benefitType == 1 && benefit?.setting?.beans_count * benefit.day_limit == beansCount) {
+              console.log(`开始兑换${benefit.name}`)
               for (let i = benefit.day_exchange_count == 0 ? 1 : benefit.day_exchange_count; i <= benefit.day_limit; i++) {
                 client.send(`{"msg":{"type":"action","args":{"benefit_id":${benefit.id}},"action":"to_exchange"}}`);
               }
               break;
             } else if ([2, 3].includes(benefitType) && benefit.name.includes(benefitName) && benefit.day_exchange_count < benefit.day_limit) {
+              console.log(`开始兑换${benefit.name}`)
               client.send(`{"msg":{"type":"action","args":{"benefit_id":${benefit.id}},"action":"to_exchange"}}`);
               break;
             }
@@ -494,14 +269,6 @@ async function mr() {
             console.log(`兑换京豆失败：${JSON.stringify(vo)}`);
           }
           await $.wait(2000);
-          break;
-        case 'get_produce_material':
-          console.log('get_produce_material', vo?.msg);
-          $.material = vo.data;
-          break;
-        case 'to_employee':
-          console.log(`雇佣助力码【${vo.data.token}】`);
-          $.tokens.push(vo.data.token);
           break;
         case 'employee':
           console.log(`${vo.msg}`);
