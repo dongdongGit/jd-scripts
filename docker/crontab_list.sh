@@ -37,6 +37,8 @@
 17 10 * 9,10 *  node /scripts/jd_seagateBrand.js >> /scripts/logs/jd_seagateBrand.log 2>&1
 # 京喜购物返红包助力
 44 6-23 * * *  node /scripts/jd_jx_cashback.js >> /scripts/logs/jd_jx_cashback.log 2>&1
+# 企有此礼
+30 0 * * *  node /scripts/jd_corporate_gift.js >> /scripts/logs/jd_corporate_gift.log 2>&1
 ##############长期活动##############
 # 签到
 0 0,17 * * * cd /scripts && node jd_bean_sign.js >> /scripts/logs/jd_bean_sign.log 2>&1
