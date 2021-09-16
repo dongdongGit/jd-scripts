@@ -321,10 +321,10 @@ async function mr() {
           let commit = {};
           for (let i = 0; i < questions.length; ++i) {
             const ques = questions[i];
-            commit[`${ques.id}`] = parseInt(ques.answers);
+            commit[`${ques.id}`] = ques.answers * 1;
           }
           await $.wait(5000);
-          client.send(getMsg('submit_answer', { commit: JSON.stringify(commit), correct: questions.length }));
+          client.send(getMsg('submit_answer', { commit: commit, correct: questions.length }));
           break;
         case 'complete_task':
         case 'action':
