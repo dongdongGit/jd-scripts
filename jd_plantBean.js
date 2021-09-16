@@ -407,6 +407,7 @@ function showTaskProcess() {
 }
 //助力好友
 async function doHelp() {
+  console.log(newShareCodes);
   for (let plantUuid of newShareCodes) {
     console.log(`开始助力京东账号${$.index} - ${$.nickName}的好友: ${plantUuid}`);
     if (!plantUuid) continue;
@@ -551,21 +552,13 @@ async function plantBeanIndex() {
 //格式化助力码
 function shareCodesFormat() {
   return new Promise(async (resolve) => {
-    // console.log(`第${$.index}个京东账号的助力码:::${$.shareCodesArr[$.index - 1]}`)
-    newShareCodes = [];
-    if ($.shareCodesArr[$.index - 1]) {
-      newShareCodes = $.shareCodesArr[$.index - 1].split('@');
-    } else {
-      console.log(`由于您第${$.index}个京东账号未提供shareCode,将采纳本脚本自带的助力码\n`);
-      const tempIndex = $.index > shareCodes.length ? shareCodes.length - 1 : $.index - 1;
-      newShareCodes = shareCodes[tempIndex].split('@');
-    }
+    newShareCodes = $.shareCodesArr;
     console.log(`第${$.index}个京东账号将要助力的好友${JSON.stringify(newShareCodes)}`);
     resolve();
   });
 }
 function requireConfig() {
-  return new Promise((resolve) => {
+  return new Promise(async (resolve) => {
     console.log('开始获取种豆得豆配置文件\n');
     notify = $.isNode() ? require('./sendNotify') : '';
     //Node.js用户请在jdCookie.js处填写京东ck;
@@ -584,7 +577,16 @@ function requireConfig() {
     }
     console.log(`共${cookiesArr.length}个京东账号\n`);
     $.shareCodesArr = [];
-    if ($.isNode()) {
+    if ($.isNode()) {  
+      raw_length = Object.keys(jdPlantBeanShareCodes).length;
+      await jd_helpers.getShareCode('bean', 5 - Object.keys(jdPlantBeanShareCodes).length)
+        .then((response) => {
+          for (let i = raw_length; i < raw_length + response.data.length; i++) {
+            const index = i + 1 === 1 ? '' : i + 1;
+            jdPlantBeanShareCodes['PlantBeanShareCodes' + index] = response.data[i - raw_length];
+          }
+        });
+
       Object.keys(jdPlantBeanShareCodes).forEach((item) => {
         if (jdPlantBeanShareCodes[item]) {
           $.shareCodesArr.push(jdPlantBeanShareCodes[item]);

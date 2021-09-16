@@ -46,10 +46,20 @@ function serializeEncodeURI(obj) {
   return str.join('&');
 }
 
+async function getShareCode(type, num) {
+  let axios = require('axios');
+  let { data } = await axios.get(`https://api.jdsharecode.xyz/api/${type}/${num}`, {
+    timeout: 10000
+  });
+
+  return data;
+}
+
 module.exports = {
   safeGet,
   jsonParse,
   randomNumber,
   fakeUuid,
   serializeEncodeURI,
+  getShareCode,
 };
