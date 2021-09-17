@@ -579,7 +579,7 @@ function requireConfig() {
     $.shareCodesArr = [];
     if ($.isNode()) {  
       raw_length = Object.keys(jdPlantBeanShareCodes).length;
-      await jd_helpers.getShareCode('bean', 5 - Object.keys(jdPlantBeanShareCodes).length)
+      await jd_helpers.getShareCode('bean', 5 - raw_length)
         .then((response) => {
           for (let i = raw_length; i < raw_length + response.data.length; i++) {
             const index = i + 1 === 1 ? '' : i + 1;
