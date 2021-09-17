@@ -47,12 +47,16 @@ function serializeEncodeURI(obj) {
 }
 
 async function getShareCode(type, num) {
+  if (num <= 0) {
+    return { data: [] };
+  }
+
   let axios = require('axios');
-  let { data } = await axios.get(`https://api.jdsharecode.xyz/api/${type}/${num}`, {
-    timeout: 10000
+  let { response } = await axios.get(`https://api.jdsharecode.xyz/api/${type}/${num}`, {
+    timeout: 10000,
   });
 
-  return data;
+  return response;
 }
 
 module.exports = {
