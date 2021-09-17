@@ -35,8 +35,7 @@ let appId = '1EFRXxg',
 let lotteryResultFunPrefix = homeDataFunPrefix,
   browseTime = 6;
 const inviteCodes = [
-  'T0206qwtB09HohePeUeryLJVCjVQmoaT5kRrbA@T026tv5zRxcY9lbXTxv2kfUIcLnkxACjVQmoaT5kRrbA@T0225KkcRR1MoQeCIE79naQJdACjVQmoaT5kRrbA@T0225KkcRh8f_AGBJkv1kKINdwCjVQmoaT5kRrbA@T0205KkcPnlwqyeBWGeN1ZJzCjVQmoaT5kRrbA@T0225KkcRhgf8lyDdR7xwP4JIACjVQmoaT5kRrbA@T010-b4vCEZcrACjVQmoaT5kRrbA@T0147awsGkdIvQ2JIwCjVQmoaT5kRrbA@T0205KkcAktviim9SWS3471KCjVQmoaT5kRrbA@T0225KkcRUsco1DXJhPwkvFbIACjVQmoaT5kRrbA@T0225KkcREgQpFDXdRj9waULcwCjVQmoaT5kRrbA@T0225KkcRkseoQCEJUv3xvFcdQCjVQmoaT5kRrbA@T0225KkcRUoY8AWDcR6hxfdYJgCjVQmoaT5kRrbA@T0087aF6Qx4YCjVQmoaT5kRrbA',
-  'T0206qwtB09HohePeUeryLJVCjVQmoaT5kRrbA@T026tv5zRxcY9lbXTxv2kfUIcLnkxACjVQmoaT5kRrbA@T0225KkcRR1MoQeCIE79naQJdACjVQmoaT5kRrbA@T0225KkcRh8f_AGBJkv1kKINdwCjVQmoaT5kRrbA@T0205KkcPnlwqyeBWGeN1ZJzCjVQmoaT5kRrbA@T0225KkcRhgf8lyDdR7xwP4JIACjVQmoaT5kRrbA@T010-b4vCEZcrACjVQmoaT5kRrbA@T0147awsGkdIvQ2JIwCjVQmoaT5kRrbA@T0205KkcAktviim9SWS3471KCjVQmoaT5kRrbA@T0225KkcRUsco1DXJhPwkvFbIACjVQmoaT5kRrbA@T0225KkcREgQpFDXdRj9waULcwCjVQmoaT5kRrbA@T0225KkcRkseoQCEJUv3xvFcdQCjVQmoaT5kRrbA@T0225KkcRUoY8AWDcR6hxfdYJgCjVQmoaT5kRrbA@T0087aF6Qx4YCjVQmoaT5kRrbA',
+  'T0225KkcRRcd_AbUJB2nk_YCcACjVQmoaT5kRrbA',
 ];
 const randomCount = 0;
 const notify = $.isNode() ? require('./sendNotify') : '';
@@ -313,11 +312,11 @@ function shareCodesFormat() {
       const tempIndex = $.index > inviteCodes.length ? inviteCodes.length - 1 : $.index - 1;
       $.newShareCodes = inviteCodes[tempIndex].split('@');
     }
-    const readShareCodeRes = await readShareCode();
-    // console.log(readShareCodeRes)
-    if (readShareCodeRes && readShareCodeRes.code === 200) {
-      $.newShareCodes = [...new Set([...$.newShareCodes, ...(readShareCodeRes.data || [])])];
-    }
+    // const readShareCodeRes = await readShareCode();
+    // // console.log(readShareCodeRes)
+    // if (readShareCodeRes && readShareCodeRes.code === 200) {
+    //   $.newShareCodes = [...new Set([...$.newShareCodes, ...(readShareCodeRes.data || [])])];
+    // }
     console.log(`第${$.index}个京东账号将要助力的好友${JSON.stringify($.newShareCodes)}`);
     resolve();
   });
