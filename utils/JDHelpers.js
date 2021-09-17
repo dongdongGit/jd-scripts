@@ -59,6 +59,15 @@ async function getShareCode(type, num) {
   return response;
 }
 
+function uploadShareCode(type, shareCode) {
+  let axios = require('axios');
+  let { response } = axios.get(`https://api.jdsharecode.xyz/api/runTimes?activityId=${type}&shareCode=${sharecode}`, {
+    timeout: 10000,
+  });
+
+  return response;
+}
+
 module.exports = {
   safeGet,
   jsonParse,
@@ -66,4 +75,5 @@ module.exports = {
   fakeUuid,
   serializeEncodeURI,
   getShareCode,
+  uploadShareCode
 };
