@@ -2,6 +2,8 @@
 50 23 */3 * * find /scripts/logs -name '*.log' | grep -v 'sharecodeCollection' | xargs rm -rf
 # 收集助力码
 30 * * * * sh +x /scripts/docker/auto_help.sh collect >> /scripts/logs/auto_help_collect.log 2>&1
+# 更新joy invokekey 
+0 */6 * * * cd /scripts/utils && node JDJoyGetInvokeKey.js >> /scripts/logs/JDJoyGetInvokeKey.log 2>&1
 
 ##############短期活动##############
 # 女装盲盒 活动时间：2021-05-24到2021-06-22
@@ -39,6 +41,8 @@
 44 6-23 * * *  node /scripts/jd_jx_cashback.js >> /scripts/logs/jd_jx_cashback.log 2>&1
 # 企有此礼
 30 4 * * *  node /scripts/jd_corporate_gift.js >> /scripts/logs/jd_corporate_gift.log 2>&1
+# 动人影像馆
+23 15 13-26 9 * node /scripts/jd_film_museum.js >> /scripts/logs/jd_film_museum.log 2>&1
 ##############长期活动##############
 # 签到
 0 0,17 * * * cd /scripts && node jd_bean_sign.js >> /scripts/logs/jd_bean_sign.log 2>&1

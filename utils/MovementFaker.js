@@ -9,8 +9,8 @@ const URL = 'https://wbbny.m.jd.com/babelDiy/Zeus/2rtpffK8wqNyPBH6wyUDuBKoAbCt/i
 const SYNTAX_MODULE = '!function(n){var r={};function o(e){if(r[e])';
 const REG_SCRIPT = /<script type="text\/javascript" src="([^><]+\/(app\.\w+\.js))\">/gm;
 const REG_ENTRY = /(__webpack_require__\(__webpack_require__\.s=)(\d+)(?=\)})/;
-const needModuleId = 356
-const DATA = {appid:'50085',sceneid:'OY217hPageh5'};
+const needModuleId = 356;
+const DATA = { appid: '50085', sceneid: 'OY217hPageh5' };
 let smashUtils;
 
 class MoveMentFaker {
@@ -28,18 +28,18 @@ class MoveMentFaker {
     var e = smashUtils.get_risk_result({
       id: t,
       data: {
-        random: t
-      }
+        random: t,
+      },
     }).log;
     var o = JSON.stringify({
       extraData: {
         log: e || -1,
-          // log: encodeURIComponent(e),
-          sceneid: DATA.sceneid,
+        // log: encodeURIComponent(e),
+        sceneid: DATA.sceneid,
       },
       // secretp: this.secretp,
-      random: t
-    })
+      random: t,
+    });
 
     // console.log(o);
     return o;
@@ -55,15 +55,15 @@ class MoveMentFaker {
       if (script) {
         const [, scriptUrl, filename] = script;
         const jsContent = await this.getJSContent(filename, scriptUrl);
-        const fnMock = new Function;
+        const fnMock = new Function();
         const ctx = {
           window: { addEventListener: fnMock },
           document: {
             addEventListener: fnMock,
             removeEventListener: fnMock,
-            cookie: this.cookie
+            cookie: this.cookie,
           },
-          navigator: { userAgent: UA }
+          navigator: { userAgent: UA },
         };
 
         vm.createContext(ctx);
@@ -78,7 +78,7 @@ class MoveMentFaker {
       // console.log(script[1],script[2]);
       // console.timeEnd('MoveMentFaker');
     } catch (e) {
-      console.log(e)
+      console.log(e);
     }
   }
 
@@ -95,7 +95,7 @@ class MoveMentFaker {
       if (!(moduleIndex && findEntry)) {
         throw new Error('Module not found.');
       }
-        // const needModuleId = jsContent.substring(moduleIndex-20, moduleIndex).match(/(\d+):function/)[1]
+      // const needModuleId = jsContent.substring(moduleIndex-20, moduleIndex).match(/(\d+):function/)[1]
       jsContent = jsContent.replace(REG_ENTRY, `$1${needModuleId}`);
       fs.writeFile(cacheKey, jsContent);
       return jsContent;
@@ -117,7 +117,7 @@ class MoveMentFaker {
         let rawData = '';
 
         res.on('error', reject);
-        res.on('data', chunk => rawData += chunk);
+        res.on('data', (chunk) => (rawData += chunk));
         res.on('end', () => resolve(rawData));
       });
 
