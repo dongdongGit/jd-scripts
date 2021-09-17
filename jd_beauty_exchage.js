@@ -14,17 +14,13 @@ const notify = $.isNode() ? require('./sendNotify') : '';
 //Node.js用户请在jdCookie.js处填写京东ck;
 const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
 const WebSocket = require('ws');
-//const WebSocket = $.isNode() ? require('websocket').w3cwebsocket: SockJS;
-let jdNotify = true; //是否关闭通知，false打开通知推送，true关闭通知推送
 const randomCount = $.isNode() ? 20 : 5;
 $.accountCheck = true;
 $.init = false;
-// const bean = 1; //兑换多少豆，默认是500
 //IOS等用户直接用NobyDa的jd cookie
 let cookiesArr = [],
   cookie = '',
-  message,
-  helpInfo;
+  message;
 /**
  * 兑换京豆的数量
  */
@@ -55,7 +51,7 @@ const JD_API_HOST = 'https://api.m.jd.com/client.action';
     $.msg($.name, 'iOS端不支持websocket，暂不能使用此脚本', '');
     return;
   }
-  helpInfo = [];
+
   for (let i = 0; i < cookiesArr.length; i++) {
     if (cookiesArr[i]) {
       $.cookie = cookie = cookiesArr[i];
@@ -80,9 +76,6 @@ const JD_API_HOST = 'https://api.m.jd.com/client.action';
       }
       if ($.accountCheck) {
         await jdBeauty();
-      }
-      if ($.accountCheck) {
-        helpInfo = $.helpInfo;
       }
     }
   }
@@ -162,7 +155,6 @@ async function mr() {
   $.coins = 0;
   $.tokens = [];
   $.pos = [];
-  $.helpInfo = [];
   $.needs = [];
   let client = new WebSocket(`wss://xinruimz-isv.isvjcloud.com/wss/?token=${$.token}`, null, {
     headers: {
@@ -198,9 +190,6 @@ async function mr() {
     console.log('服务器连接关闭');
     $.init = true;
     $.hasDone = true;
-    for (let i = 0; i < $.pos.length && i < $.tokens.length; ++i) {
-      $.helpInfo.push(getMsg('employee', { inviter_id: $.userInfo.id, position: $.pos[i], token: $.tokens[i] }));
-    }
   };
   client.onmessage = async function (e) {
     if (e.data !== 'pong' && e.data && jd_helpers.safeGet(e.data)) {
@@ -348,49 +337,12 @@ function getIsvToken2() {
   });
 }
 
-function getToken() {
-  let config = {
-    url: 'https://xinruimz-isv.isvjcloud.com/api/auth',
-    body: JSON.stringify({ token: $.token2, source: '01' }),
-    headers: {
-      Host: 'xinruimz-isv.isvjcloud.com',
-      Accept: 'application/x.jd-school-island.v1+json',
-      Source: '02',
-      'Accept-Language': 'zh-cn',
-      'Content-Type': 'application/json;charset=utf-8',
-      Origin: 'https://xinruimz-isv.isvjcloud.com',
-      'User-Agent': $.isNode()
-        ? process.env.JD_USER_AGENT
-          ? process.env.JD_USER_AGENT
-          : require('./USER_AGENTS').USER_AGENT
-        : $.getdata('JDUA')
-        ? $.getdata('JDUA')
-        : 'jdapp;iPhone;10.0.2;14.3;network/4g;Mozilla/5.0 (iPhone; CPU iPhone OS 14_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148;supportJDSHWK/1',
-      Referer: 'https://xinruimz-isv.isvjcloud.com/logined_jd/',
-      Authorization: 'Bearer undefined',
-      Cookie: `IsvToken=${$.isvToken};`,
-    },
-  };
-  return new Promise((resolve) => {
-    $.post(config, async (err, resp, data) => {
-      try {
-        if (err) {
-          console.log(`${JSON.stringify(err)}`);
-          console.log(`${$.name} API请求失败，请检查网路重试`);
-        } else {
-          if (jd_helpers.safeGet(data)) {
-            data = JSON.parse(data);
-            $.token = data.access_token;
-            console.log(`【$.token】 ${$.token}`);
-          }
-        }
-      } catch (e) {
-        $.logErr(e, resp);
-      } finally {
-        resolve(data);
-      }
-    });
-  });
+async function getToken() {
+  let axios = require('axios');
+  await axios.post('https://xinruimz-isv.isvjcloud.com/api/auth', {
+    token: $.token2,
+    source: '01'
+  }).then((resp) => $.token = resp.data.access_token);
 }
 
 function showMsg() {

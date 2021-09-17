@@ -1,15 +1,14 @@
 /*
-cron 5 2 * * *
-update 2021/7/25
-京东价格保护：脚本更新地址 https://raw.githubusercontent.com/LingFeng0918/jd_scripts/master/jd_priceProtect.js
+cron 35 0 * * * jd_priceProtect.js
+京东价格保护：脚本更新地址 https://raw.githubusercontent.com/yongyuanlin/jd_scripts/master//jd_priceProtect.js
 脚本兼容: QuantumultX, Node.js
 ==========================Quantumultx=========================
 打开手机客户端，或者浏览器访问 https://msitepp-fm.jd.com/rest/priceprophone/priceProPhoneMenu
 [rewrite_local]
-https:\/\/api\.m.jd.com\/api\?appid=siteppM&functionId=siteppM_priceskusPull url script-request-body https://raw.githubusercontent.com/LingFeng0918/jd_scripts/master/jd_priceProtectRewrite.js
+https:\/\/api\.m.jd.com\/api\?appid=siteppM&functionId=siteppM_priceskusPull url script-request-body https://raw.githubusercontent.com/yongyuanlin/jd_scripts/master/jd_priceProtect.js
 [task_local]
 # 京东价格保护
-5 0 * * * https://raw.githubusercontent.com/LingFeng0918/jd_scripts/master/jd_priceProtect.js, tag=京东价格保护, img-url=https://raw.githubusercontent.com/ZCY01/img/master/pricev1.png, enabled=true
+5 1 * * * https://raw.githubusercontent.com/yongyuanlin/jd_scripts/master/jd_priceProtect.js, tag=京东价格保护, img-url=https://raw.githubusercontent.com/ZCY01/img/master/pricev1.png, enabled=true
 */
 
 const jd_env = require('./utils/JDEnv.js');
@@ -147,6 +146,7 @@ function checkOnceAppliedResult() {
     });
   });
 }
+
 function taskurl(functionid, body) {
   const urlStr = `${unifiedGatewayName}/api?appid=siteppM&functionId=${functionid}&forcebot=${$.HyperParam.forcebot}&t=${new Date().getTime()}`;
   return {
