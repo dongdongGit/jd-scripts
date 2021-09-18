@@ -153,7 +153,7 @@ const JD_API_HOST = 'https://api.m.jd.com/api';
       }
     }
   }
-  if (allMessage) {
+  if (allMessage && process.env.JD_LIVE_REDRAIN_NOTIFY) {
     if ($.isNode()) await notify.sendNotify(`${$.name}`, `${allMessage}`);
     $.msg($.name, '', allMessage);
   }
