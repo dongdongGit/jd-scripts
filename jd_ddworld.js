@@ -33,12 +33,14 @@ let invitelist = [];
     await $.totalBean();
     console.log(`\n*****开始【京东账号${$.index}】${$.nickName || $.UserName}*****\n`);
     if (!$.isLogin) {
-        $.msg($.name, `【提示】cookie已失效`, `京东账号${$.index} ${$.nickName || $.UserName}\n请重新登录获取\nhttps://bean.m.jd.com/bean/signIndex.action`, {"open-url": "https://bean.m.jd.com/bean/signIndex.action"});
-    
-        if ($.isNode()) {
-            await notify.sendNotify(`${$.name}cookie已失效 - ${$.UserName}`, `京东账号${$.index} ${$.UserName}\n请重新登录获取cookie`);
-        }
-        continue
+      $.msg($.name, `【提示】cookie已失效`, `京东账号${$.index} ${$.nickName || $.UserName}\n请重新登录获取\nhttps://bean.m.jd.com/bean/signIndex.action`, {
+        'open-url': 'https://bean.m.jd.com/bean/signIndex.action',
+      });
+
+      if ($.isNode()) {
+        await notify.sendNotify(`${$.name}cookie已失效 - ${$.UserName}`, `京东账号${$.index} ${$.UserName}\n请重新登录获取cookie`);
+      }
+      continue;
     }
     await main();
   }
@@ -124,6 +126,13 @@ async function doTask() {
         taskToken: $.taskDetailList.taskToken,
         needTime: Number($.oneTask.maxTimes) - Number($.oneTask.times),
       });
+      continue;
+    }
+    if ($.oneTask.taskType === 12) {
+      $.info = $.taskDetailList;
+      console.log(`任务：${$.oneTask.taskName} 去执行`);
+      await takePostRequest('do_task');
+      await $.wait(1000);
       continue;
     }
     for (let j = 0; j < $.taskDetailList.length; j++) {
