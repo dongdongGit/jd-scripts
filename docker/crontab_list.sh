@@ -2,6 +2,8 @@
 50 23 */3 * * find /scripts/logs -name '*.log' | grep -v 'sharecodeCollection' | xargs rm -rf
 # 收集助力码
 30 * * * * sh +x /scripts/docker/auto_help.sh collect >> /scripts/logs/auto_help_collect.log 2>&1
+# 上传助力码到JDHelloWord
+40 0 * * * cd /scripts/utils && node JDUploadShareCode.js 2>&1
 # 更新joy invokekey 
 0 */6 * * * cd /scripts/utils && node JDJoyGetInvokeKey.js >> /scripts/logs/JDJoyGetInvokeKey.log 2>&1
 
