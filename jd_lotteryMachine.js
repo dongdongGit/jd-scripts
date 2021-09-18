@@ -1,14 +1,17 @@
 /*
 京东抽奖机
-更新时间：2021-08-09 14:30
+更新时间：2021-08-26 09:29
 脚本说明：抽奖活动,有新活动可以@我或者提Issues
 脚本兼容: QuantumultX, Surge, Loon, JSBox, Node.js
 // quantumultx
 [task_local]
 #京东抽奖机
-cron "11 1 * * *" script-path=jd_lotteryMachine.js,tag=京东抽奖机
+11 10 * * * https://raw.githubusercontent.com/yongyuanlin/jd_scripts/master/jd_lotteryMachine.js, tag=京东抽奖机, img-url=https://raw.githubusercontent.com/yangtingxiao/QuantumultX/master/image/jdlottery.png, enabled=true
+// Loon
+[Script]
+cron "11 10 * * *" script-path=https://raw.githubusercontent.com/yongyuanlin/jd_scripts/master/jd_lotteryMachine.js,tag=京东抽奖机
 // Surge
-京东抽奖机 = type=cron,cronexp=11 1 * * *,wake-system=1,timeout=20,script-path=jd_lotteryMachine.js
+京东抽奖机 = type=cron,cronexp=11 10 * * *,wake-system=1,timeout=20,script-path=https://raw.githubusercontent.com/yongyuanlin/jd_scripts/master/jd_lotteryMachine.js
  */
 const jd_helpers = require('./utils/JDHelpers.js');
 const jd_env = require('./utils/JDEnv.js');
@@ -19,7 +22,7 @@ const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
 const STRSPLIT = '|';
 const needSum = false; //是否需要显示汇总
 const printDetail = false; //是否显示出参详情
-const appIdArr = ['1EFRRxA', '1EFRQwA', '1E1NYwqc', '1EFRXxg', '1EFVRxg', '1E1NYw6w', '1E1xRy6c', '1E1xVyqw'];
+const appIdArr = ['1EFRRxA', '1EFRQwA', '1E1NYwqc', '1EFRXxg', '1EFVRxg', '1E1NYw6w', '1E1xRy6c', '1E1xVyqw', '1E1NXxq0', '1ElBTx6o', '1ElJYxqY'];
 const shareCodeArr = [
   'T018v_VxQxkZ_FXVJBqb1ACjVWmIaW5kRrbA',
   'T018v_VxQxkZ_FXVJBqb1ACjVXnIaW5kRrbA',
@@ -67,16 +70,6 @@ if ($.isNode()) {
       $.index = i + 1;
       initial();
       await QueryJDUserInfo();
-      console.log(`\n***************开始京东账号${$.index} ${merge.nickname || $.UserName}***************`);
-      if (!merge.enabled) {
-        $.msg($.name, `【提示】cookie已失效`, `京东账号${$.index} ${$.nickName || $.UserName}\n请重新登录获取\nhttps://bean.m.jd.com/bean/signIndex.action`, {
-          'open-url': 'https://bean.m.jd.com/bean/signIndex.action',
-        });
-        if ($.isNode()) {
-          await notify.sendNotify(`${$.name}cookie已失效 - ${$.UserName}`, `京东账号${$.index} ${$.UserName}\n请重新登录获取cookie`);
-        }
-        continue;
-      }
       for (let j in appIdArr) {
         //j = appIdArr.length - 1
         //j = 5
@@ -198,7 +191,7 @@ function interact_template_getHomeData(timeout = 0) {
               await interact_template_getLotteryResult(data.data.result.taskVos[i].taskId);
               continue;
             }
-            if ([0, 13].includes(data.data.result.taskVos[i].taskType)) {
+            if ([0, 13, 12].includes(data.data.result.taskVos[i].taskType)) {
               if (data.data.result.taskVos[i].status === 1) {
                 await harmony_collectScore(data.data.result.taskVos[i].simpleRecordInfoVo.taskToken, data.data.result.taskVos[i].taskId);
               }
