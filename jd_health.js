@@ -367,7 +367,7 @@ function shareCodesFormat() {
 }
 
 function requireConfig() {
-  return new Promise((resolve) => {
+  return new Promise(async (resolve) => {
     console.log(`开始获取${$.name}配置文件\n`);
     //Node.js用户请在jdCookie.js处填写京东ck;
     let shareCodes = [];
@@ -383,6 +383,15 @@ function requireConfig() {
     console.log(`共${cookiesArr.length}个京东账号\n`);
     $.shareCodesArr = [];
     if ($.isNode()) {
+      raw_length = shareCodes.length;
+      await jd_helpers.getShareCode('health', 5 - raw_length)
+        .then((response) => {
+          data = response?.data;
+          for (let i = raw_length; i < raw_length + data?.data.length; i++) {
+            shareCodes.push(data?.data[i - raw_length]);
+          }
+        });
+
       Object.keys(shareCodes).forEach((item) => {
         if (shareCodes[item]) {
           $.shareCodesArr.push(shareCodes[item]);
