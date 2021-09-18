@@ -52,11 +52,9 @@ async function getShareCode(type, num) {
   }
 
   let axios = require('axios');
-  let { response } = await axios.get(`https://api.jdsharecode.xyz/api/${type}/${num}`, {
+  return await axios.get(`https://api.jdsharecode.xyz/api/${type}/${num}`, {
     timeout: 10000,
-  });
-
-  return response;
+  })
 }
 
 function uploadShareCode(type, shareCode) {
