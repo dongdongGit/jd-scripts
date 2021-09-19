@@ -8,7 +8,7 @@ const fs = require('fs');
   file = 'https:' + res.match(/src="([^"]*)/)[1]
   res = await api(file)
   invokeKey = res.match(/h=n\(\d+\),v="([^"]*)/)[1]
-  console.log('invokeKey:', file)
+  console.log('invokeKey:', invokeKey);
   configPath = './config.js';
 
   if (!(await fs.existsSync(configPath))) {
