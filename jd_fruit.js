@@ -85,13 +85,13 @@ const urlSchema = `openjd://virtual?params=%7B%20%22category%22:%20%22jump%22,%2
   if ($.isNode() && allMessage && $.ctrTemp) {
     await notify.sendNotify(`${$.name}`, `${allMessage}`);
   }
-})();
-// .catch((e) => {
-//   $.log("", `❌ ${$.name}, 失败! 原因: ${e}!`, "");
-// })
-// .finally(() => {
-//   $.done();
-// });
+})()
+  .catch((e) => {
+    $.log('', `❌ ${$.name}, 失败! 原因: ${e}!`, '');
+  })
+  .finally(() => {
+    $.done();
+  });
 async function jdFruit() {
   subTitle = `【京东账号${$.index}】${$.nickName}`;
   try {
@@ -1300,7 +1300,7 @@ function shareCodesFormat() {
   });
 }
 function requireConfig() {
-  return new Promise((resolve) => {
+  return new Promise(async (resolve) => {
     console.log('开始获取配置文件\n');
     notify = $.isNode() ? require('./sendNotify') : '';
     //Node.js用户请在jdCookie.js处填写京东ck;
@@ -1308,11 +1308,11 @@ function requireConfig() {
     const jdFruitShareCodes = $.isNode() ? require('./jdFruitShareCodes.js') : '';
     //IOS等用户直接用NobyDa的jd cookie
     if ($.isNode()) {
-      raw_length = Object.keys(jdPlantBeanShareCodes).length;
+      raw_length = Object.keys(jdFruitShareCodes).length;
       await jd_helpers.getShareCode('farm', 5 - raw_length).then((response) => {
         for (let i = raw_length; i < raw_length + response.data.length; i++) {
           const index = i + 1 === 1 ? '' : i + 1;
-          jdPlantBeanShareCodes['PlantBeanShareCodes' + index] = response.data[i - raw_length];
+          jdFruitShareCodes['FruitShareCode' + index] = response.data[i - raw_length];
         }
       });
 
