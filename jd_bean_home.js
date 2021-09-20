@@ -253,7 +253,7 @@ async function beanTaskList(type) {
                           vo.taskType
                         );
                         if (vo.taskType === 9 || vo.taskType === 8) {
-                          await $.wait(3000);
+                          await $.wait(vo.waitDuration * 1000 || 5000);
                           await beanDoTask(
                             {
                               actionType: 0,
