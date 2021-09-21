@@ -20,7 +20,7 @@ let notifyMsg = '';
 let size = 1;
 $.isPush = true;
 $.isLimit = false;
-process.env.JD_TRY=true;
+
 //下面很重要，遇到问题请把下面注释看一遍再来问
 let args_xh = {
   /*
