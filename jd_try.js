@@ -20,6 +20,7 @@ let notifyMsg = '';
 let size = 1;
 $.isPush = true;
 $.isLimit = false;
+
 //下面很重要，遇到问题请把下面注释看一遍再来问
 let args_xh = {
   /*
@@ -115,6 +116,10 @@ let args_xh = {
    * 可通过环境变量控制：JD_TRY_WHITELIST，用@分隔
    * */
   whiteListKeywords: (process.env.JD_TRY_WHITELIST && process.env.JD_TRY_WHITELIST.split('@')) || [],
+  /*
+   * 试用通知
+   * */
+  jdNotify: process.env.JD_TRY_NOTIFY || false
 };
 //上面很重要，遇到问题请把上面注释看一遍再来问
 !(async () => {
@@ -515,7 +520,7 @@ function taskurl_xh(appid, functionId, body = JSON.stringify({})) {
 
 async function showMsg() {
   let message = `京东账号${$.index} ${$.nickName || $.UserName}\n🎉 本次申请成功：${$.totalSuccess}/${$.totalTry}个商品🛒\n🎉 ${$.successList.length}个商品待领取`;
-  if (!args_xh.jdNotify || args_xh.jdNotify === 'false') {
+  if (args_xh.jdNotify || $.successList.length > 0) {
     $.msg($.name, ``, message, { 'open-url': 'https://try.m.jd.com/user' });
     if ($.isNode()) notifyMsg += `${message}\n\n`;
   } else {
