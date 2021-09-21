@@ -191,8 +191,8 @@ async function getTaskInfo(type, projectId, assignmentId, ofn, helpType = '1', i
           if (data) {
             data = JSON.parse(data);
             if (ofn === '3' || ofn === '10' || ofn === '14' || ofn === '16' || ofn === '18' || ofn === '20') {
-              if (ofn !== '3') console.log(`去做【${data.data[0].title}】`);
-              if (data.code === '0' && data.data) {
+              if (ofn !== '3') console.log(`去做【${data.data.length > 0 ? data?.data[0]?.title : '未知'}】`);
+              if (data.code === '0' && data.data && data.data.length > 0) {
                 if (data.data[0].status !== '2') {
                   await interactive_done(type, data.data[0].projectId, data.data[0].assignmentId, data.data[0].itemId);
                   await $.wait(2000);
