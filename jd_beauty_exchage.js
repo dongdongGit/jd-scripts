@@ -14,7 +14,7 @@ const notify = $.isNode() ? require('./sendNotify') : '';
 //Node.js用户请在jdCookie.js处填写京东ck;
 const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
 const WebSocket = require('ws');
-const randomCount = $.isNode() ? 20 : 5;
+
 $.accountCheck = true;
 $.init = false;
 //IOS等用户直接用NobyDa的jd cookie
@@ -24,7 +24,7 @@ let cookiesArr = [],
 /**
  * 兑换京豆的数量
  */
-let beansCount = process.env.JD_BEAUTY_BEANS_COUNT || 500;
+let beansCount = process.env.JD_BEAUTY_BEANS_COUNT || 10;
 /**
  * 如果兑换类型为2、3需要填上兑换的物品名称
  */
@@ -33,6 +33,7 @@ let benefitName = process.env.JD_BEAUTY_BENEFIT_NAME || '';
  * 兑换物品的类型 1-京豆 2、3-物品
  */
 let benefitType = process.env.JD_BEAUTY_BENEFITTYPE || 1;
+
 if ($.isNode()) {
   Object.keys(jdCookieNode).forEach((item) => {
     cookiesArr.push(jdCookieNode[item]);
@@ -41,7 +42,7 @@ if ($.isNode()) {
 } else {
   cookiesArr = [$.getdata('CookieJD'), $.getdata('CookieJD2'), ...jd_helpers.jsonParse($.getdata('CookiesJD') || '[]').map((item) => item.cookie)].filter((item) => !!item);
 }
-const JD_API_HOST = 'https://api.m.jd.com/client.action';
+
 !(async () => {
   if (!cookiesArr[0]) {
     $.msg($.name, '【提示】请先获取京东账号一cookie\n直接使用NobyDa的京东签到获取', 'https://bean.m.jd.com/', { 'open-url': 'https://bean.m.jd.com/' });
@@ -182,7 +183,7 @@ async function mr() {
     await $.wait(1000);
     // 获得福利中心
     client.send(getMsg('get_benefit'));
-    client.send(getMsg('collect_coins'));
+    client.close();
   };
 
   client.onclose = () => {
@@ -224,12 +225,8 @@ async function mr() {
           if (vo.data.coins) $.coins += vo.data.coins;
           $.total = vo.data.user_coins;
           break;
-        case 'collect_coins':
-          console.log(`收取成功，获得${vo['data']['coins']}美妆币，当前总美妆币：${vo['data']['user_coins']}\n`);
-          break;
         case 'get_benefit':
           for (let benefit of vo.data) {
-            // console.log(`benefit:${JSON.stringify(benefit)}`);
             if (benefit.type != benefitType) {
               continue;
             }
@@ -238,13 +235,17 @@ async function mr() {
               console.log(`${benefit.name} 库存不足，数量:${benefit.stock}`);
               continue;
             }
+
+            day_exchange_count = benefit.day_exchange_count * 1;
+
             if (benefitType == 1 && benefit?.setting?.beans_count * benefit.day_limit == beansCount) {
               console.log(`开始兑换${benefit.name}`)
-              for (let i = benefit.day_exchange_count == 0 ? 1 : benefit.day_exchange_count; i <= benefit.day_limit; i++) {
+              for (let i = day_exchange_count; i < benefit.day_limit; i++) {
+                await $.wait(3000);
                 client.send(`{"msg":{"type":"action","args":{"benefit_id":${benefit.id}},"action":"to_exchange"}}`);
               }
               break;
-            } else if ([2, 3].includes(benefitType) && benefit.name.includes(benefitName) && benefit.day_exchange_count < benefit.day_limit) {
+            } else if ([2, 3].includes(benefitType) && benefit.name.includes(benefitName) && day_exchange_count < benefit.day_limit) {
               console.log(`开始兑换${benefit.name}`)
               client.send(`{"msg":{"type":"action","args":{"benefit_id":${benefit.id}},"action":"to_exchange"}}`);
               break;
@@ -259,8 +260,7 @@ async function mr() {
           }
           await $.wait(2000);
           break;
-        case 'employee':
-          console.log(`${vo.msg}`);
+        default:
           break;
       }
     }
