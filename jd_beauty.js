@@ -226,6 +226,7 @@ async function mr() {
     // 获得福利中心
     // client.send(getMsg('get_benefit'));
     client.send(getMsg('collect_coins'));
+    client.close();
   };
 
   client.onclose = () => {
