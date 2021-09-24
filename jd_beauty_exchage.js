@@ -183,7 +183,7 @@ async function mr() {
     await $.wait(1000);
     // 获得福利中心
     client.send(getMsg('get_benefit'));
-    client.close();
+    // client.close();
   };
 
   client.onclose = () => {
