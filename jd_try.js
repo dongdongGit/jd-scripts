@@ -201,7 +201,10 @@ let args_xh = {
         await showMsg();
       }
     }
-    await $.notify.sendNotify(`${$.name}`, notifyMsg);
+
+    if (notifyMsg != '') {
+      await $.notify.sendNotify(`${$.name}`, notifyMsg);
+    }
   } else {
     console.log(`\n您未设置运行【京东试用】脚本，结束运行！\n`);
   }
