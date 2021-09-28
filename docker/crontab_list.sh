@@ -194,12 +194,8 @@
 4 12 * * * node /scripts/jd_yili_cattle.js >> /scripts/logs/jd_yili_cattle.log 2>&1
 # 京东众筹许愿
 8 0,8 * * * node /scripts/jd_crowdfunding_wish.js >> /scripts/logs/jd_crowdfunding_wish.log 2>&1
-# 来电好物季
-35 8 * * * node /scripts/jd_good_stuff_season.js >> /scripts/logs/jd_good_stuff_season.log 2>&1
 # 金机奖投票
 33 4,7 8-20 8 * node /scripts/jd_golden_machine.js >> /scripts/logs/jd_golden_machine.log 2>&1
-# 荣耀换新
-20 8 * * * node /scripts/jd_honor_renew.js >> /scripts/logs/jd_honor_renew.log 2>&1
 # 京享值PK
 15 0,6,13,19,21 * * * node /scripts/jd_ddo_pk.js >> /scripts/logs/jd_ddo_pk.log 2>&1
 # 京小兑
