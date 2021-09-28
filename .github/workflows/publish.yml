@@ -49,4 +49,16 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
 
+      - name: container pull
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
+          key: ${{ secrets.SSH_KEY }}
+          port: ${{ secrets.SSH_PORT }}
+          script: | 
+            cd jd_scripts
+            docker-compose pull
+            docker-compose restart
+
   
