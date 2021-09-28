@@ -34,7 +34,7 @@ if ($.isNode()) {
 
 const JD_API_HOST = `https://api.m.jd.com/client.action`;
 message = '';
-$.shareuuid = '303ec49849214adc95fc768683c1c9d6'; //
+$.shareuuid = ''; //
 !(async () => {
   if (!cookiesArr[0]) {
     $.msg($.name, '【提示】请先获取cookie\n直接使用NobyDa的京东签到获取', 'https://bean.m.jd.com/', {
@@ -176,7 +176,7 @@ function getActCk() {
     $.get(
       taskUrl(
         '/dingzhi/yili/yangniu/activity',
-        `activityId=dz2103100001340201&shareUuid=303ec49849214adc95fc768683c1c9d6&adsource=ziying&shareuserid4minipg=u/cWHIy7/x3Ij+HjfbnnePkaL5GGqMTUc8u/otw2E+a7Ak3lgFoFQlZmf45w8Jzw&shopid=1000013402&lng=114.062541&lat=29.541254&sid=eec1865d9c44c1070f3b5e6718c9ee1w&un_area=4_48201_54794_0`
+        `activityId=dz2103100001340201&adsource=ziying&shareuserid4minipg=u/cWHIy7/x3Ij+HjfbnnePkaL5GGqMTUc8u/otw2E+a7Ak3lgFoFQlZmf45w8Jzw&shopid=1000013402&lng=114.062541&lat=29.541254&sid=eec1865d9c44c1070f3b5e6718c9ee1w&un_area=4_48201_54794_0`
       ),
       (err, resp, data) => {
         try {
@@ -511,7 +511,7 @@ function taskUrl(url, body) {
       Accept: 'application/json',
       //     'X-Requested-With': 'XMLHttpRequest',
       Referer:
-        'https://lzdz-isv.isvjcloud.com/dingzhi/yili/yangniu/activity/4827909?activityId=dz2103100001340201&shareUuid=b44243656a694b6f94bb30a4a5f2a45d&adsource=ziying&shareuserid4minipg=5Iufa9rY657S3OP3PLSpK07oeVP9kq2pYSH90mYt4m3fwcJlClpxrfmVYaGKuquQkdK3rLBQpEQH9V4tdrrh0w==&shopid=1000013402&lng=114.062604&lat=29.541501&sid=6e9bfee3838075a72533536815d8f3ew&un_area=4_48201_54794_0',
+        'https://lzdz-isv.isvjcloud.com/dingzhi/yili/yangniu/activity/4827909?activityId=dz2103100001340201&adsource=ziying&shareuserid4minipg=5Iufa9rY657S3OP3PLSpK07oeVP9kq2pYSH90mYt4m3fwcJlClpxrfmVYaGKuquQkdK3rLBQpEQH9V4tdrrh0w==&shopid=1000013402&lng=114.062604&lat=29.541501&sid=6e9bfee3838075a72533536815d8f3ew&un_area=4_48201_54794_0',
       'user-agent':
         'jdapp;android;10.0.4;11;2393039353533623-7383235613364343;network/wifi;model/Redmi K30;addressid/138549750;aid/290955c2782e1c44;oaid/b30cf82cacfa8972;osVer/30;appBuild/88641;partner/xiaomi001;eufv/1;jdSupportDarkMode/0;Mozilla/5.0 (Linux; Android 11; Redmi K30 Build/RKQ1.200826.002; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/77.0.3865.120 MQQBrowser/6.2 TBS/045537 Mobile Safari/537.36',
       'content-type': 'application/x-www-form-urlencoded',
@@ -529,7 +529,7 @@ function taskPostUrl(url, body) {
       Accept: 'application/json',
       'X-Requested-With': 'XMLHttpRequest',
       Referer:
-        'https://lzdz-isv.isvjcloud.com/dingzhi/yili/yangniu/activity/4827909?activityId=dz2103100001340201&shareUuid=b44243656a694b6f94bb30a4a5f2a45d&adsource=ziying&shareuserid4minipg=5Iufa9rY657S3OP3PLSpK07oeVP9kq2pYSH90mYt4m3fwcJlClpxrfmVYaGKuquQkdK3rLBQpEQH9V4tdrrh0w==&shopid=1000013402&lng=114.062604&lat=29.541501&sid=6e9bfee3838075a72533536815d8f3ew&un_area=4_48201_54794_0',
+        'https://lzdz-isv.isvjcloud.com/dingzhi/yili/yangniu/activity/4827909?activityId=dz2103100001340201&adsource=ziying&shareuserid4minipg=5Iufa9rY657S3OP3PLSpK07oeVP9kq2pYSH90mYt4m3fwcJlClpxrfmVYaGKuquQkdK3rLBQpEQH9V4tdrrh0w==&shopid=1000013402&lng=114.062604&lat=29.541501&sid=6e9bfee3838075a72533536815d8f3ew&un_area=4_48201_54794_0',
       'user-agent':
         'jdapp;android;10.0.4;11;2393039353533623-7383235613364343;network/wifi;model/Redmi K30;addressid/138549750;aid/290955c2782e1c44;oaid/b30cf82cacfa8972;osVer/30;appBuild/88641;partner/xiaomi001;eufv/1;jdSupportDarkMode/0;Mozilla/5.0 (Linux; Android 11; Redmi K30 Build/RKQ1.200826.002; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/77.0.3865.120 MQQBrowser/6.2 TBS/045537 Mobile Safari/537.36',
       'content-type': 'application/x-www-form-urlencoded',
