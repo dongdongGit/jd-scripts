@@ -2,8 +2,6 @@ name: merge
 
 on:
   workflow_dispatch:
-  watch:
-    types: started
   repository_dispatch:
     types: merge
 jobs:
