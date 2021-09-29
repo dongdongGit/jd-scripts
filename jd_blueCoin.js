@@ -153,7 +153,7 @@ async function PrizeIndex() {
       if ($.totalBlue > $.blueCost) {
         for (let j = 0; j <= 10; j++) {
           await smtg_obtainPrize(prizeList[1].prizeId);
-          if ($.errBizCodeCount >= 20) break;
+          if ($.errBizCodeCount >= 3) break;
         }
       } else {
         console.log(`兑换失败,您目前蓝币${$.totalBlue}个,不足以兑换${$.title}所需的${$.blueCost}个`);
@@ -182,7 +182,7 @@ async function PrizeIndex() {
       if ($.totalBlue > $.blueCost) {
         for (let j = 0; j <= 10; j++) {
           await smtg_obtainPrize(prizeList[0].prizeId, 1000);
-          if ($.errBizCodeCount >= 3) break;
+          if ($.errBizCodeCount >= 20) break;
         }
       } else {
         console.log(`兑换失败,您目前蓝币${$.totalBlue}个,不足以兑换${$.title}所需的${$.blueCost}个`);
@@ -361,14 +361,15 @@ function smtg_obtainPrize(prizeId, timeout = 0, functionId = 'smt_exchangePrize'
           if (jd_helpers.safeGet(data)) {
             data = JSON.parse(data);
             $.data = data;
-            if ($.data.data.bizCode !== 0 && $.data.data.bizCode !== 400) {
+            if (![0, 106, 400].includes($.data.data.bizCode)) {
               $.beanerr = `${$.data.data.bizMsg}`;
               //console.log(`【京东账号${$.index}】${$.nickName} 换取京豆失败：${$.data.data.bizMsg}`)
               return;
             }
-            if ($.data.data.bizCode === 400) {
+            if ([400, 106].includes($.data.data.bizCode)) {
               $.errBizCodeCount++;
               console.log(`debug 兑换京豆活动火爆次数:${$.errBizCodeCount}`);
+              await smtg_obtainPrize(prizeId, 100);
               return;
             }
             if ($.data.data.bizCode === 0) {
