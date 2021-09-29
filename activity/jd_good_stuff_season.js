@@ -1,33 +1,33 @@
 /*
-荣耀换新
-活动日期：2021-08-07 00:00:00--2021-08-20 23:59:59
+来电好物季
+活动日期：2021-08-09 00:00:00--2021-08-25 23:59:59
 修改自 @yangtingxiao 抽奖机脚本
-活动入口：京东APP首页搜索-玩一玩-荣耀换新
-网页地址：https://h5.m.jd.com/babelDiy/Zeus/3RejAk5YXzhvxXiBR1tzWnUbwneW/index.html
+活动入口：京东APP首页搜索-玩一玩-来电好物季
+网页地址：https://h5.m.jd.com/babelDiy/Zeus/4BvJGuWhUZkGTF9Z2FryWtrLWbDm/index.html
 已支持IOS双京东账号, Node.js支持N个京东账号
 脚本兼容: QuantumultX, Surge, Loon, 小火箭，JSBox, Node.js
 ============Quantumultx===============
 [task_local]
-#荣耀换新
-20 8 * * * jd_ryhx.js, tag=荣耀换新, img-url=https://raw.githubusercontent.com/Orz-3/task/master/jd.png, enabled=true
+#来电好物季
+35 8 * * * jd_ldhwj, tag=来电好物季, img-url=https://raw.githubusercontent.com/Orz-3/task/master/jd.png, enabled=true
 
 ================Loon==============
 [Script]
-cron "20 8 * * *" script-path=jd_ryhx.js, tag=荣耀换新
+cron "35 8 * * *" script-path=jd_ldhwj, tag=来电好物季
 
 ===============Surge=================
-荣耀换新 = type=cron,cronexp="20 8 * * *",wake-system=1,timeout=3600,script-path=jd_ryhx.js
+来电好物季 = type=cron,cronexp="35 8 * * *",wake-system=1,timeout=3600,script-path=jd_ldhwj
 
 ============小火箭=========
-荣耀换新 = type=cron,script-path=jd_ryhx.js, cronexpr="20 8 * * *", timeout=3600, enable=true
+来电好物季 = type=cron,script-path=jd_ldhwj, cronexpr="35 8 * * *", timeout=3600, enable=true
 
  */
-const jd_helpers = require('./utils/JDHelpers.js');
-const jd_env = require('./utils/JDEnv.js');
-const $ = jd_env.env('荣耀换新');
+const jd_helpers = require('../utils/JDHelpers.js');
+const jd_env = require('../utils/JDEnv.js');
+const $ = jd_env.env('来电好物季');
 //Node.js用户请在jdCookie.js处填写京东ck;
-const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
-let appId = '1E1NYwqc',
+const jdCookieNode = $.isNode() ? require('../jdCookie.js') : '';
+let appId = '1E1NYw6w',
   homeDataFunPrefix = 'healthyDay',
   collectScoreFunPrefix = 'harmony',
   message = '';
@@ -35,7 +35,7 @@ let lotteryResultFunPrefix = 'interact_template';
 const inviteCodes = [''];
 $.newShareCodes = [];
 const randomCount = $.isNode() ? 20 : 5;
-const notify = $.isNode() ? require('./sendNotify') : '';
+const notify = $.isNode() ? require('../sendNotify') : '';
 let merge = {
   jdBeans: {}
 };
@@ -86,6 +86,7 @@ const JD_API_HOST = `https://api.m.jd.com/client.action`;
         continue;
       }
       await interact_template_getHomeData();
+      await interact_template_getHomeData();
       await showMsg();
     }
   }
@@ -115,7 +116,6 @@ function interact_template_getHomeData(timeout = 0) {
         try {
           data = JSON.parse(data);
           if (data.data.bizCode !== 0) {
-            console.log(data.data.bizMsg);
             merge.jdBeans.fail++;
             merge.jdBeans.notify = `${data.data.bizMsg}`;
             return;
@@ -155,7 +155,7 @@ function interact_template_getHomeData(timeout = 0) {
             } else if ([14, 6].includes(data.data.result.taskVos[i].taskType)) {
               //console.log(data.data.result.taskVos[i].assistTaskDetailVo.taskToken)
               for (let j = 0; j < (data.data.result.userInfo.lotteryNum || 0); j++) {
-                if (appId === '1E1NYwqc') {
+                if (appId === '1E1NYw6w') {
                   await ts_smashGoldenEggs();
                 } else {
                   await interact_template_getLotteryResult(data.data.result.taskVos[i].taskId);
@@ -214,7 +214,7 @@ function harmony_collectScore(taskToken, taskId, itemId = '', actionType = 0, ti
         },"actionType":${actionType}&client=wh5&clientVersion=1.0.0`,
       };
       //console.log(url.body)
-      //if (appId === "1E1NYwqc") url.body += "&appid=golden-egg"
+      //if (appId === "1E1NYw6w") url.body += "&appid=golden-egg"
       $.post(url, async (err, resp, data) => {
         try {
           data = JSON.parse(data);
@@ -251,7 +251,7 @@ function interact_template_getLotteryResult(taskId, timeout = 0) {
         body: `functionId=${lotteryResultFunPrefix}_getLotteryResult&body={"appId":"${appId}"${taskId ? ',"taskId":"' + taskId + '"' : ''}}&client=wh5&clientVersion=1.0.0`,
       };
       //console.log(url.body)
-      //if (appId === "1E1NYwqc") url.body = `functionId=ts_getLottery&body={"appId":"${appId}"${taskId ? ',"taskId":"'+taskId+'"' : ''}}&client=wh5&clientVersion=1.0.0&appid=golden-egg`
+      //if (appId === "1E1NYw6w") url.body = `functionId=ts_getLottery&body={"appId":"${appId}"${taskId ? ',"taskId":"'+taskId+'"' : ''}}&client=wh5&clientVersion=1.0.0&appid=golden-egg`
       $.post(url, async (err, resp, data) => {
         try {
           if (!timeout) console.log('\n抽奖结果');

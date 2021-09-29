@@ -425,7 +425,7 @@ async function mr() {
               console.log(msg);
               console.log(`【${product.name}】可生产份数大于0，去生产`);
               //product_produce 产品研发里的生产
-              client.send(getMsg('product_produce', { product_id: product_id, amount: num }));
+              client.send(getMsg('product_produce', { product_id: product.id, amount: num }));
               await $.wait(500);
             } else {
               console.log(msg);
