@@ -1,8 +1,6 @@
 name: sync-danwangshi-scripts
 on:
   workflow_dispatch:
-  watch:
-    types: started
   push:
     branches: [ master ]
   repository_dispatch:
