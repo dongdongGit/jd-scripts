@@ -28,7 +28,14 @@ const jd_helpers = require('./utils/JDHelpers.js');
 const jd_env = require('./utils/JDEnv.js');
 const $ = jd_env.env('签到领现金兑换');
 let cookiesArr = [];
-
+if ($.isNode()) {
+  Object.keys(jdCookieNode).forEach((item) => {
+    cookiesArr.push(jdCookieNode[item]);
+  });
+  if (process.env.JD_DEBUG && process.env.JD_DEBUG === 'false') console.log = () => {};
+} else {
+  cookiesArr = [$.getdata('CookieJD'), $.getdata('CookieJD2'), ...jd_helpers.jsonParse($.getdata('CookiesJD') || '[]').map((item) => item.cookie)].filter((item) => !!item);
+}
 !(async () => {
   if (!cookiesArr[0]) {
     $.msg($.name, '【提示】请先获取京东账号一cookie\n直接使用NobyDa的京东签到获取', 'https://bean.m.jd.com/bean/signIndex.action', { 'open-url': 'https://bean.m.jd.com/bean/signIndex.action' });
@@ -42,7 +49,18 @@ let cookiesArr = [];
       $.isLogin = true;
       $.nickName = '';
       message = '';
-      console.log(`=====京东账号${$.index} ${$.UserName}=====`);
+      await $.totalBean();
+      console.log(`\n开始【京东账号${$.index}】${$.nickName || $.UserName}\n`);
+      if (!$.isLogin) {
+        $.msg($.name, `【提示】cookie已失效`, `京东账号${$.index} ${$.nickName || $.UserName}\n请重新登录获取\nhttps://bean.m.jd.com/bean/signIndex.action`, {
+          'open-url': 'https://bean.m.jd.com/bean/signIndex.action',
+        });
+
+        if ($.isNode()) {
+          await notify.sendNotify(`${$.name}cookie已失效 - ${$.UserName}`, `京东账号${$.index} ${$.UserName}\n请重新登录获取cookie`);
+        }
+        continue;
+      }
       for (let j = 0; j < 10; ++j) {
         await exchange();
       }
