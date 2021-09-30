@@ -122,10 +122,12 @@ function userSignIn() {
   });
 }
 function taskUrl() {
+  let t = +new Date();
   return {
     url: `https://lop-proxy.jd.com/jiFenApi/signInAndGetReward`,
     body: '[{"userNo":"$cooMrdGatewayUid$"}]',
     headers: {
+      uuid: `${t}${t * 2}`,
       Host: 'lop-proxy.jd.com',
       'lop-dn': 'jingcai.jd.com',
       'biz-type': 'service-monitor',
