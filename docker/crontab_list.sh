@@ -55,6 +55,8 @@
 15 6,18 1-16,21-30 9,10 * node /scripts/jd_decompression.js >> /scripts/logs/jd_decompression.log 2>&1
 # 集魔方
 16 10,19 * * * node /scripts/jd_rubik_cube.js >> /scripts/logs/jd_rubik_cube.log 2>&1
+# 芥么签到
+11 7,15 * * * node /scripts/jd_rubik_cube.js >> /scripts/logs/jd_rubik_cube.log 2>&1
 ##############长期活动##############
 # 签到
 0 0,17 * * * cd /scripts && node jd_bean_sign.js >> /scripts/logs/jd_bean_sign.log 2>&1
