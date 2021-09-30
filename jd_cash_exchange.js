@@ -1,32 +1,31 @@
 /*
-京东汽车兑换，500赛点兑换500京豆
-长期活动
-
-活动入口：京东APP首页-京东汽车-屏幕右中部，车主福利
-活动网页地址：https://h5.m.jd.com/babelDiy/Zeus/44bjzCpzH9GpspWeBzYSqBA7jEtP/index.html#/journey
-
-更新地址：jd_car_exchange
-已支持IOS, Node.js支持N个京东账号
-脚本兼容: QuantumultX, Surge, Loon, 小火箭，JSBox, Node.js
-
-============Quantumultx===============
+*************************
 [task_local]
-#京东汽车兑换
-0 0 * * * jd_car_exchange.js, tag=京东汽车兑换, img-url=https://raw.githubusercontent.com/58xinian/icon/master/jd_redPacket.png, enabled=true
-
-================Loon==============
+0 0 * * * https://raw.githubusercontent.com/ddgksf2013/Cuttlefish/master/Jd/jd_cash_exchange.js, tag=领现金兑换红包
+*************************
+【Loon】 :
+*************************
 [Script]
-cron "0 0 * * *" script-path=jd_car_exchange.js, tag=京东汽车兑换
-
-===============Surge=================
-京东汽车兑换 = type=cron,cronexp="0 0 * * *",wake-system=1,timeout=3600,script-path=jd_car_exchange.js
-
-============小火箭=========
-京东汽车兑换 = type=cron,script-path=jd_car_exchange.js, cronexpr="0 0 * * *", timeout=3600, enable=true
- */
+cron "0 0 * * *" script-path=https://raw.githubusercontent.com/ddgksf2013/Cuttlefish/master/Jd/jd_cash_exchange.js,tag=领现金兑换红包
+*************************
+【Surge】 :
+*************************
+[Script]
+领现金兑换红包 = type=cron,cronexp="0 0 * * *",wake-system=1,timeout=120,script-path=https://raw.githubusercontent.com/ddgksf2013/Cuttlefish/master/Jd/jd_cash_exchange.js
+*************************
+【小火箭】 :
+*************************
+[Script]
+领现金兑换红包 = type=cron,script-path=https://raw.githubusercontent.com/ddgksf2013/Cuttlefish/master/Jd/jd_cash_exchange.js, cronexpr="0 0 * * *", timeout=500, enable=true
+*************************
+[mitm]
+hostname = api.m.jd.com
+*/
 const jd_helpers = require('./utils/JDHelpers.js');
 const jd_env = require('./utils/JDEnv.js');
 const $ = jd_env.env('签到领现金兑换');
+const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
+const JD_API_HOST = 'https://api.m.jd.com/client.action';
 let cookiesArr = [];
 if ($.isNode()) {
   Object.keys(jdCookieNode).forEach((item) => {
