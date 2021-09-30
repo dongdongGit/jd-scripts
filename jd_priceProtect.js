@@ -43,7 +43,7 @@ $.HyperParam = {
       console.log(`\n***********开始【X东账号${$.index}】${$.nickName || $.UserName}********\n`);
       await jstoken();
       $.refundtotalamount = 0;
-      console.log(`$.token\n'${$.token}`);
+      // console.log(`$.token\n'${$.token}`);
       //$.token = $.tokenList.length > i ? $.tokenList[i] : ($.token || '')
       $.feSt = $.token ? 's' : 'f';
 

@@ -10,7 +10,6 @@ let PlantBeanShareCodes = [
   //账号一的好友shareCode,不同好友的shareCode中间用@符号隔开
   'mlrdw3aw26j3wejouhucrpm267464b4qdjfvuny',
 ];
-let jd_helpers = require('./utils/JDHelpers');
 // 判断github action里面是否有种豆得豆互助码
 if (process.env.PLANT_BEAN_SHARECODES) {
   if (process.env.PLANT_BEAN_SHARECODES.indexOf('&') > -1) {

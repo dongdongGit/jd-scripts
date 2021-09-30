@@ -216,7 +216,7 @@ function brandTaskInfo(brandId) {
               console.log(`\n开始做 品牌手机 【${data['data']['brandName']}】 任务`);
               console.log(`开始浏览 1-F 单品区 任务 ${sku['name']}`);
               await doBrowse(sku['id'], brandId, 'brand', 'presell', 'browseSku');
-              await $.wait(1000 * 3);
+              await $.wait(6000);
               if ($.browseId) await getBrowsePrize($.browseId, brandId);
             }
             for (let sku of $.shopTask.filter((vo) => !!vo && vo['status'] !== '4')) {

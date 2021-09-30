@@ -9,15 +9,15 @@ npm i png-js 或者 npm i png-js -S
 修改域名 https://jdjoy.jd.com 可以改成ip https://49.7.27.236
 */
 
-const config = require('./utils/config.js');
-const jd_helpers = require('./utils/JDHelpers.js');
-const jd_env = require('./utils/JDEnv.js');
+const config = require('../utils/config.js');
+const jd_helpers = require('../utils/JDHelpers.js');
+const jd_env = require('../utils/JDEnv.js');
 const $ = jd_env.env('京东签到图形验证');
-const validator = require('./utils/JDJRValidator_Pure.js');
-const Faker = require('./utils/sign_graphics_validate.js');
-const notify = $.isNode() ? require('./sendNotify') : '';
+const validator = require('../utils/JDJRValidator_Pure.js');
+const Faker = require('../utils/sign_graphics_validate.js');
+const notify = $.isNode() ? require('../sendNotify') : '';
 //Node.js用户请在jdCookie.js处填写京东ck;
-const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
+const jdCookieNode = $.isNode() ? require('../jdCookie.js') : '';
 let cookiesArr = [],
   cookie = '';
 if ($.isNode()) {
@@ -88,7 +88,7 @@ const turnTableId = [
 $.UA = $.isNode()
   ? process.env.JD_USER_AGENT
     ? process.env.JD_USER_AGENT
-    : require('./USER_AGENTS').USER_AGENT
+    : require('../USER_AGENTS').USER_AGENT
   : $.getdata('JDUA')
   ? $.getdata('JDUA')
   : 'Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1';
