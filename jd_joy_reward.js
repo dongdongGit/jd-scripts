@@ -109,7 +109,7 @@ async function joyReward() {
       let nowtime = new Date().Format('s.S');
       let starttime = process.env.JOY_STARTTIME ? process.env.JOY_STARTTIME : 60;
       if (nowtime < 59) {
-        let sleeptime = (starttime - nowtime) * 1000;
+        let sleeptime = (starttime - nowtime) * 1000 + 10;
         console.log(`等待时间 ${sleeptime / 1000}`);
         await zooFaker.sleep(sleeptime);
       }

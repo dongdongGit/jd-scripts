@@ -37,8 +37,6 @@
 10 * * * * node /scripts/jd_cfd_mooncake.js >> /scripts/logs/jd_cfd_mooncake.log 2>&1
 # 母婴-跳跳乐
 1 0,11,21 * * * node /scripts/jd_jump.js >> /scripts/logs/jd_jump.log 2>&1
-# 希捷品牌日瓜分百万京豆
-17 10 * 9,10 *  node /scripts/jd_seagateBrand.js >> /scripts/logs/jd_seagateBrand.log 2>&1
 # 京喜购物返红包助力
 44 6-23 * * *  node /scripts/jd_jx_cashback.js >> /scripts/logs/jd_jx_cashback.log 2>&1
 # 企有此礼

@@ -18,10 +18,10 @@ cron "1 0,11,21 * * *" script-path=jd_jump.js, tag=跳跳乐瓜分京豆
 跳跳乐瓜分京豆 = type=cron,script-path=jd_jump.js, cronexpr="1 0,11,21 * * *", timeout=3600, enable=true
 */
 
-const jd_env = require('./utils/JDEnv.js');
-const $ = jd_env.env('跳跳乐瓜分京豆');
-const notify = $.isNode() ? require('./sendNotify') : '';
-const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
+const jd_env = require('../utils/JDEnv.js');
+let $ = jd_env.env('跳跳乐瓜分京豆');
+const notify = $.isNode() ? require('../sendNotify') : '';
+const jdCookieNode = $.isNode() ? require('../jdCookie.js') : '';
 // $.helpCodeList = [];
 //IOS等用户直接用NobyDa的jd cookie
 let cookiesArr = [],
@@ -425,7 +425,7 @@ function getGetRequest(type, body) {
     'User-Agent': $.isNode()
       ? process.env.JD_USER_AGENT
         ? process.env.JD_USER_AGENT
-        : require('./USER_AGENTS').USER_AGENT
+        : require('../USER_AGENTS').USER_AGENT
       : $.getdata('JDUA')
       ? $.getdata('JDUA')
       : 'jdapp;iPhone;9.4.4;14.3;network/4g;Mozilla/5.0 (iPhone; CPU iPhone OS 14_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148;supportJDSHWK/1',
@@ -448,7 +448,7 @@ function getPostRequest(type, body) {
     'User-Agent': $.isNode()
       ? process.env.JD_USER_AGENT
         ? process.env.JD_USER_AGENT
-        : require('./USER_AGENTS').USER_AGENT
+        : require('../USER_AGENTS').USER_AGENT
       : $.getdata('JDUA')
       ? $.getdata('JDUA')
       : 'jdapp;iPhone;9.4.4;14.3;network/4g;Mozilla/5.0 (iPhone; CPU iPhone OS 14_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148;supportJDSHWK/1',
