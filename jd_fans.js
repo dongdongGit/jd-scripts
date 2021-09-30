@@ -24,7 +24,6 @@ const activityList = [
   {"actid": "bde48555ac8b41669f516f892f95e21c", "endTime": 1633017599000},
   {"actid": "86eab05c547d4d28829d269e2a5c4f1e", "endTime": 1633017599000},
   {"actid": "73086c4fed7746e1b911a776d2e8662e", "endTime": 1633017599000},
-  {"actid": "179e156d768240db84393751fc9c427b", "endTime": 1633017599000},
   {"actid": "bed695cfc40941c0a641eba935f9601e", "endTime": 1633017599000},
 ];
 if ($.isNode()) {
