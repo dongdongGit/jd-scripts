@@ -136,7 +136,7 @@ function taskUrl() {
       'content-type': 'application/json;charset=utf-8',
       clientinfo: '{"appName":"jingcai","client":"m"}',
       accept: 'application/json, text/plain, */*',
-      'jexpress-report-time': '1607330170578',
+      'jexpress-report-time': t,
       'x-requested-with': 'XMLHttpRequest',
       'source-client': '2',
       appparams: '{"appid":158,"ticket_type":"m"}',

@@ -41,7 +41,7 @@ if ($.isNode()) {
     $.msg($.name, '【提示】请先获取京东账号一cookie\n直接使用NobyDa的京东签到获取', 'https://bean.m.jd.com/', { 'open-url': 'https://bean.m.jd.com/' });
     return;
   }
-  console.log('女装盲盒\n' + '活动时间：2021-8-5至2021-8-31\n' + '活动地址：https://anmp.jd.com/babelDiy/Zeus/3bMo2AgbRYYfZt83qHLZ3ruVtrtG/index.html');
+  console.log('女装盲盒\n' + '活动时间：2021-8-5至2021-8-31\n' + '活动地址：https://anmp.jd.com/babelDiy/Zeus/h5Mn8HfcGehjosBJWQJj4mzFWrF/index.html');
   for (let i = 0; i < cookiesArr.length; i++) {
     if (cookiesArr[i]) {
       $.cookie = cookie = cookiesArr[i];
@@ -61,7 +61,7 @@ if ($.isNode()) {
         continue;
       }
       try {
-        await jdMh('https://anmp.jd.com/babelDiy/Zeus/2z9yVc6pg2Rixp4zdMEGi7GBBUqP/index.html');
+        await jdMh('https://anmp.jd.com/babelDiy/Zeus/h5Mn8HfcGehjosBJWQJj4mzFWrF/index.html');
       } catch (e) {
         $.logErr(e);
       }
