@@ -77,7 +77,7 @@ let nowTimes = new Date(new Date().getTime() + new Date().getTimezoneOffset() * 
   }
   if (allMessage) {
     //NODE端,默认每月一日运行进行推送通知一次
-    if ($.isNode() && nowTimes.getDate() === 1 && (process.env.JDZZ_NOTIFY_CONTROL ? process.env.JDZZ_NOTIFY_CONTROL === 'false' : !!1)) {
+    if ($.isNode() && nowTimes.getDate() === 1 && (process.env.JDZZ_NOTIFY_CONTROL ? process.env.JDZZ_NOTIFY_CONTROL === 'false' : true)) {
       await notify.sendNotify($.name, allMessage);
     }
   }
