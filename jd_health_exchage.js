@@ -17,15 +17,15 @@ cron "13 1,6,22 * * *" script-path=jd_health.js, tag=东东健康社区
  */
 const jd_helpers = require('./utils/JDHelpers.js');
 const jd_env = require('./utils/JDEnv.js');
-const $ = jd_env.env('东东健康社区');
+const $ = jd_env.env('东东健康社区兑换');
 const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
 const notify = $.isNode() ? require('./sendNotify') : '';
 let cookiesArr = [],
   cookie = '',
   allMessage = '',
   message;
-const inviteCodes = [``];
-const randomCount = $.isNode() ? 20 : 5;
+process.env.JD_HEALTH_REWARD_NAME = '20';
+let reward = $.isNode() ? (process.env.JD_HEALTH_REWARD_NAME ? process.env.JD_HEALTH_REWARD_NAME : '') : $.getdata('JD_HEALTH_REWARD_NAME') ? $.getdata('JD_HEALTH_REWARD_NAME') : '';
 if ($.isNode()) {
   Object.keys(jdCookieNode).forEach((item) => {
     cookiesArr.push(jdCookieNode[item]);
@@ -41,7 +41,6 @@ const JD_API_HOST = 'https://api.m.jd.com/';
     $.msg($.name, '【提示】请先获取京东账号一cookie\n直接使用NobyDa的京东签到获取', 'https://bean.m.jd.com/', { 'open-url': 'https://bean.m.jd.com/' });
     return;
   }
-  await requireConfig();
   for (let i = 0; i < cookiesArr.length; i++) {
     if (cookiesArr[i]) {
       $.cookie = cookie = cookiesArr[i];
@@ -61,7 +60,6 @@ const JD_API_HOST = 'https://api.m.jd.com/';
         }
         continue;
       }
-      await shareCodesFormat();
       await main();
       await showMsg();
     }
@@ -82,33 +80,11 @@ async function main() {
     $.score = 0;
     $.earn = false;
     await getTaskDetail(-1);
-    await getTaskDetail(16);
-    await getTaskDetail(6);
-    for (let i = 0; i < 5; ++i) {
-      $.canDo = false;
-      await getTaskDetail();
-      if (!$.canDo) break;
-      await $.wait(1000);
+    if (reward) {
+      await getCommodities();
     }
-    await collectScore();
-    await helpFriends();
-    await getTaskDetail(22);
-    await getTaskDetail(-1);
   } catch (e) {
     $.logErr(e);
-  }
-}
-
-async function helpFriends() {
-  for (let code of $.newShareCodes) {
-    if (!code) continue;
-    console.log(`去助力好友${code}`);
-    let res = await doTask(code, 6);
-    if ([108, -1001].includes(res?.data?.bizCode)) {
-      console.log(`助力次数已满，跳出`);
-      break;
-    }
-    await $.wait(1000);
   }
 }
 
@@ -186,19 +162,24 @@ function getTaskDetail(taskId = '') {
     });
   });
 }
-function doTask(taskToken, taskId, actionType = 0) {
-  return new Promise((resolve) => {
-    const options = taskUrl('jdhealth_collectScore', { taskToken, taskId, actionType });
-    $.get(options, (err, resp, data) => {
+async function getCommodities() {
+  return new Promise(async (resolve) => {
+    const options = taskUrl('jdhealth_getCommodities');
+    $.post(options, async (err, resp, data) => {
       try {
         if (jd_helpers.safeGet(data)) {
           data = $.toObj(data);
-          if ([0, 1].includes(data?.data?.bizCode ?? -1)) {
-            $.canDo = true;
-            if (data?.data?.result?.score) console.log(`任务完成成功，获得：${data?.data?.result?.score ?? '未知'}能量`);
-            else console.log(`任务领取结果：${data?.data?.bizMsg ?? JSON.stringify(data)}`);
+          let beans = data.data.result.jBeans.filter((x) => x.status !== 1);
+          if (beans.length !== 0) {
+            for (let key of Object.keys(beans)) {
+              let vo = beans[key];
+              if (vo.title == reward && $.score >= vo.exchangePoints) {
+                await $.wait(1000);
+                await exchange(vo.type, vo.id);
+              }
+            }
           } else {
-            console.log(`任务完成失败：${data?.data?.bizMsg ?? JSON.stringify(data)}`);
+            console.log(`兑换京豆次数已达上限`);
           }
         }
       } catch (e) {
@@ -209,29 +190,32 @@ function doTask(taskToken, taskId, actionType = 0) {
     });
   });
 }
-
-function collectScore() {
+function exchange(commodityType, commodityId) {
   return new Promise((resolve) => {
-    $.get(taskUrl('jdhealth_collectProduceScore', {}), (err, resp, data) => {
+    const options = taskUrl('jdhealth_exchange', { commodityType, commodityId });
+    $.post(options, (err, resp, data) => {
       try {
         if (jd_helpers.safeGet(data)) {
           data = $.toObj(data);
-          if (data?.data?.bizCode === 0) {
-            if (data?.data?.result?.produceScore) console.log(`任务完成成功，获得：${data?.data?.result?.produceScore ?? '未知'}能量`);
-            else console.log(`任务领取结果：${data?.data?.bizMsg ?? JSON.stringify(data)}`);
+          if (data.data.bizCode === 0 || data.data.bizMsg === 'success') {
+            $.score = data.data.result.userScore;
+            console.log(`兑换${data.data.result.jingBeanNum}京豆成功`);
+            message += `兑换${data.data.result.jingBeanNum}京豆成功\n`;
+            if ($.isNode()) {
+              allMessage += `【京东账号${$.index}】 ${$.UserName}\n兑换${data.data.result.jingBeanNum}京豆成功🎉${$.index !== cookiesArr.length ? '\n\n' : ''}`;
+            }
           } else {
-            console.log(`任务完成失败：${data?.data?.bizMsg ?? JSON.stringify(data)}`);
+            console.log(data.data.bizMsg);
           }
         }
       } catch (e) {
         console.log(e);
       } finally {
-        resolve();
+        resolve(data);
       }
     });
   });
 }
-
 function taskUrl(function_id, body = {}) {
   return {
     url: `${JD_API_HOST}?functionId=${function_id}&body=${escape(JSON.stringify(body))}&client=wh5&clientVersion=1.0.0&uuid=`,
@@ -252,91 +236,4 @@ function taskUrl(function_id, body = {}) {
         : 'jdapp;iPhone;9.4.4;14.3;network/4g;Mozilla/5.0 (iPhone; CPU iPhone OS 14_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148;supportJDSHWK/1',
     },
   };
-}
-function readShareCode() {
-  console.log(`开始`);
-  return new Promise(async (resolve) => {
-    $.get(
-      {
-        url: `http://share.turinglabs.net/api/v3/health/query/${randomCount}/`,
-        timeout: 10000,
-      },
-      (err, resp, data) => {
-        try {
-          if (err) {
-            console.log(`${JSON.stringify(err)}`);
-            console.log(`${$.name} health/read API请求失败，请检查网路重试`);
-          } else {
-            if (data) {
-              console.log(`随机取${randomCount}个码放到您固定的互助码后面(不影响已有固定互助)`);
-              data = JSON.parse(data);
-            }
-          }
-        } catch (e) {
-          $.logErr(e, resp);
-        } finally {
-          resolve(data);
-        }
-      }
-    );
-    await $.wait(10000);
-    resolve();
-  });
-}
-//格式化助力码
-function shareCodesFormat() {
-  return new Promise(async (resolve) => {
-    // console.log(`第${$.index}个京东账号的助力码:::${$.shareCodesArr[$.index - 1]}`)
-    $.newShareCodes = [];
-    if ($.shareCodesArr[$.index - 1]) {
-      $.newShareCodes = $.shareCodesArr[$.index - 1].split('@');
-    } else {
-      console.log(`由于您第${$.index}个京东账号未提供shareCode,将采纳本脚本自带的助力码\n`);
-      const tempIndex = $.index > inviteCodes.length ? inviteCodes.length - 1 : $.index - 1;
-      $.newShareCodes = inviteCodes[tempIndex].split('@');
-    }
-    // const readShareCodeRes = await readShareCode();
-    // if (readShareCodeRes && readShareCodeRes.code === 200) {
-    //   $.newShareCodes = [...new Set([...$.newShareCodes, ...(readShareCodeRes.data || [])])];
-    // }
-    console.log(`第${$.index}个京东账号将要助力的好友${JSON.stringify($.newShareCodes)}`);
-    resolve();
-  });
-}
-
-function requireConfig() {
-  return new Promise(async (resolve) => {
-    console.log(`开始获取${$.name}配置文件\n`);
-    //Node.js用户请在jdCookie.js处填写京东ck;
-    let shareCodes = [];
-    if ($.isNode()) {
-      if (process.env.JDHEALTH_SHARECODES) {
-        if (process.env.JDHEALTH_SHARECODES.indexOf('\n') > -1) {
-          shareCodes = process.env.JDHEALTH_SHARECODES.split('\n');
-        } else {
-          shareCodes = process.env.JDHEALTH_SHARECODES.split('&');
-        }
-      }
-    }
-    console.log(`共${cookiesArr.length}个京东账号\n`);
-    $.shareCodesArr = [];
-    if ($.isNode()) {
-      raw_length = shareCodes.length;
-      await jd_helpers.getShareCode('health', 5 - raw_length)
-        .then((response) => {
-          data = response?.data;
-          for (let i = raw_length; i < raw_length + data?.data.length; i++) {
-            shareCodes.push(data?.data[i - raw_length]);
-          }
-        });
-
-      Object.keys(shareCodes).forEach((item) => {
-        if (shareCodes[item]) {
-          $.shareCodesArr.push(shareCodes[item]);
-        }
-      });
-    }
-    console.log(`您提供了${$.shareCodesArr.length}个账号的${$.name}助力码\n`);
-    resolve();
-  });
 }
