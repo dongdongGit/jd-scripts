@@ -51,6 +51,8 @@
 16 10,19 * * * node /scripts/jd_rubik_cube.js >> /scripts/logs/jd_rubik_cube.log 2>&1
 # 芥么签到
 11 7,15 * * * node /scripts/jd_zsign.js >> /scripts/logs/jd_zsign.log 2>&1
+# 芥么赚豪礼
+37 0,11 * * * node /scripts/jd_jmzhl.js >> /scripts/logs/jd_jmzhl.log 2>&1
 ##############长期活动##############
 # 签到
 0 0,17 * * * cd /scripts && node jd_bean_sign.js >> /scripts/logs/jd_bean_sign.log 2>&1
