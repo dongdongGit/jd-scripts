@@ -241,7 +241,7 @@ async function mr() {
             if (benefitType == 1 && benefit?.setting?.beans_count * benefit.day_limit == beansCount) {
               console.log(`开始兑换${benefit.name}`)
               for (let i = day_exchange_count; i < benefit.day_limit; i++) {
-                await $.wait(3000);
+                await $.wait(5000);
                 client.send(`{"msg":{"type":"action","args":{"benefit_id":${benefit.id}},"action":"to_exchange"}}`);
               }
               break;
