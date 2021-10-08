@@ -6,12 +6,12 @@
 * https://raw.githubusercontent.com/star261/jd/main/scripts/jd_film_museum.js
 * */
 
-const jd_helpers = require('./utils/JDHelpers.js');
-const jd_env = require('./utils/JDEnv.js');
+const jd_helpers = require('../utils/JDHelpers.js');
+const jd_env = require('../utils/JDEnv.js');
 let $ = jd_env.env('京影像馆东汽车');
 
-const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
-const notify = $.isNode() ? require('./sendNotify') : '';
+const jdCookieNode = $.isNode() ? require('../jdCookie.js') : '';
+const notify = $.isNode() ? require('../sendNotify') : '';
 let cookiesArr = [];
 if ($.isNode()) {
   Object.keys(jdCookieNode).forEach((item) => {
