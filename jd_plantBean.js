@@ -577,15 +577,19 @@ function requireConfig() {
     }
     console.log(`共${cookiesArr.length}个京东账号\n`);
     $.shareCodesArr = [];
-    if ($.isNode()) {  
-      raw_length = Object.keys(jdPlantBeanShareCodes).length;
-      await jd_helpers.getShareCode('bean', 5 - raw_length)
-        .then((response) => {
-          for (let i = raw_length; i < raw_length + response?.data?.data.length; i++) {
-            const index = i + 1 === 1 ? '' : i + 1;
-            jdPlantBeanShareCodes['PlantBeanShareCodes' + index] = response?.data?.data[i - raw_length];
-          }
-        });
+    if ($.isNode()) { 
+      try {
+        raw_length = Object.keys(jdPlantBeanShareCodes).length;
+        await jd_helpers.getShareCode('bean', 5 - raw_length)
+          .then((response) => {
+            for (let i = raw_length; i < raw_length + response?.data?.data.length; i++) {
+              const index = i + 1 === 1 ? '' : i + 1;
+              jdPlantBeanShareCodes['PlantBeanShareCodes' + index] = response?.data?.data[i - raw_length];
+            }
+          });
+      } catch (e) {
+        $.log('', `获取助力码失败! 原因: ${e}!`, '');
+      }
 
       Object.keys(jdPlantBeanShareCodes).forEach((item) => {
         if (jdPlantBeanShareCodes[item]) {
