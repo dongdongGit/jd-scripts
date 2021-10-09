@@ -321,14 +321,18 @@ function requireConfig() {
     console.log(`共${cookiesArr.length}个京东账号\n`);
     $.shareCodesArr = [];
     if ($.isNode()) {
-      raw_length = shareCodes.length;
-      await jd_helpers.getShareCode('health', 5 - raw_length)
-        .then((response) => {
-          data = response?.data;
-          for (let i = raw_length; i < raw_length + data?.data.length; i++) {
-            shareCodes.push(data?.data[i - raw_length]);
-          }
-        });
+      try {
+        raw_length = shareCodes.length;
+        await jd_helpers.getShareCode('health', 5 - raw_length)
+          .then((response) => {
+            data = response?.data;
+            for (let i = raw_length; i < raw_length + data?.data.length; i++) {
+              shareCodes.push(data?.data[i - raw_length]);
+            }
+          });
+      } catch (e) {
+        $.log('', `获取助力码失败! 原因: ${e}!`, '');
+      }
 
       Object.keys(shareCodes).forEach((item) => {
         if (shareCodes[item]) {
