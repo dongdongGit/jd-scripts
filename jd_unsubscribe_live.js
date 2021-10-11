@@ -100,7 +100,7 @@ if ($.isNode()) {
       allMessage += '\n';
     }
   }
-  if (allMessage) {
+  if (allMessage && !process.env.UNSUBSCRIBE_LIVE_NOTIFY_CONTROL) {
     allMessage = allMessage.substring(0, allMessage.length - 1);
     if ($.isNode() && (process.env.CASH_NOTIFY_CONTROL ? process.env.CASH_NOTIFY_CONTROL === 'false' : !!1)) await notify.sendNotify($.name, allMessage);
   }
