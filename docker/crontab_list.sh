@@ -156,8 +156,8 @@
 59 11,12,23 * * * node /scripts/jd_cfd_withdraw.js >> /scripts/logs/jd_cfd_withdraw.log 2>&1
 # 删除优惠券(默认注释，如需要自己开启，如有误删，已删除的券可以在回收站中还原，慎用)
 #20 9 * * 6 node /scripts/jd_delCoupon.js >> /scripts/logs/jd_delCoupon.log 2>&1
-# 家庭号
-10 3-9/4 * * * node /scripts/jd_family.js >> /scripts/logs/jd_family.log 2>&1
+# 家庭号(易黑号，默认注释)
+#10 3-9/4 * * * node /scripts/jd_family.js >> /scripts/logs/jd_family.log 2>&1
 # 京东直播（又回来了）
 50 12-14 * * * node /scripts/jd_live.js >> /scripts/logs/jd_live.log 2>&1
 # 京东健康社区
@@ -171,7 +171,7 @@
 # 领金贴
 5 0 * * * node /scripts/jd_jin_tie.js >> /scripts/logs/jd_jin_tie.log 2>&1
 # 京东试用（默认注释，请配合取关脚本使用
-10 0 * * *  node /scripts/jd_try.js >> /scripts/logs/jd_try.log 2>&1
+10 5 * * *  node /scripts/jd_try.js >> /scripts/logs/jd_try.log 2>&1
 # 京东零食街
 0 11 * * * node /scripts/jd_lsj.js >> /scripts/logs/jd_lsj.log 2>&1
 # 来客有礼小程序 送豆得豆
@@ -206,3 +206,7 @@
 1 0 * * * node /scripts/jd_bubble_fight.js >> /scripts/logs/jd_bubble_fight.log 2>&1
 # 关注频道、抽奖
 0 6 * * * node /scripts/jd_focus.js >> /scripts/logs/jd_focus.log 2>&1
+# 取关主播
+3 5 * * * node /scripts/jd_unsubscribe_live.js >> /scripts/logs/jd_unsubscribe_live.log 2>&1
+# 取关主播
+3 5 * * * node /scripts/jd_phone_bill.js >> /scripts/logs/jd_phone_bill.log 2>&1
