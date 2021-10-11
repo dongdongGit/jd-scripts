@@ -5,12 +5,12 @@
 [task_local]
 20 12,14 * * *
 */
-const jd_helpers = require('./utils/JDHelpers.js');
-const jd_env = require('./utils/JDEnv.js');
+const jd_helpers = require('../utils/JDHelpers.js');
+const jd_env = require('../utils/JDEnv.js');
 const $ = jd_env.env('京东众筹好物上新');
-const notify = $.isNode() ? require('./sendNotify') : '';
+const notify = $.isNode() ? require('../sendNotify') : '';
 //Node.js用户请在jdCookie.js处填写京东ck;
-const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
+const jdCookieNode = $.isNode() ? require('../jdCookie.js') : '';
 let jdNotify = true; //是否关闭通知，false打开通知推送，true关闭通知推送
 //IOS等用户直接用NobyDa的jd cookie
 let cookiesArr = [],
