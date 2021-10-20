@@ -1,6 +1,6 @@
 /**
 集魔方
-cron 11 10 * * * jd_mofang.js
+cron 11 10 * * * jd_rubik_cube.js
 */
 const jd_helpers = require('./utils/JDHelpers.js');
 const jd_env = require('./utils/JDEnv.js');

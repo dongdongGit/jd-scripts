@@ -51,6 +51,8 @@
 15 6,18 1-16,21-30 9,10 * node /scripts/jd_decompression.js >> /scripts/logs/jd_decompression.log 2>&1
 # 集魔方
 16 10,19 * * * node /scripts/jd_rubik_cube.js >> /scripts/logs/jd_rubik_cube.log 2>&1
+# 集魔方兑换
+0 0 * * * node /scripts/jd_rubik_cube_exchage.js >> /scripts/logs/jd_rubik_cube_exchage.log 2>&1
 # 芥么签到
 11 7,15 * * * node /scripts/jd_zsign.js >> /scripts/logs/jd_zsign.log 2>&1
 # 芥么赚豪礼
