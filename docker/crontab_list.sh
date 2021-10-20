@@ -45,6 +45,8 @@
 20 8 * * * node /scripts/jd_ddworld.js >> /scripts/logs/jd_ddworld.log 2>&1
 # 东东玩家
 40 0,19 * * * node /scripts/jd_dd_player.js >> /scripts/logs/jd_dd_player.log 2>&1
+# 城城分现金
+12 0-23/1 * * * node /scripts/jd_city.js >> /scripts/logs/jd_city.log 2>&1
 # 热血心跳,狂解压
 15 6,18 1-16,21-30 9,10 * node /scripts/jd_decompression.js >> /scripts/logs/jd_decompression.log 2>&1
 # 集魔方
@@ -70,6 +72,8 @@
 45 */3 * * * node /scripts/jd_joy.js >> /scripts/logs/jd_joy.log 2>&1
 # 宠汪汪积分兑换京豆
 59 7,15,23 * * * node /scripts/jd_joy_reward.js >> /scripts/logs/jd_joy_reward.log 2>&1
+# 宠汪汪积分兑换有就换版
+59 7,15,23 * * * node /scripts/jd_joy_reward_mod.js >> /scripts/logs/jd_joy_reward_mod.log 2>&1
 # 宠汪汪偷好友积分与狗粮,及给好友喂食
 6,10 0-21/3 * * * node /scripts/jd_joy_steal.js >> /scripts/logs/jd_joy_steal.log 2>&1
 # 摇钱树
