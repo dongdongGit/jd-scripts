@@ -1,20 +1,10 @@
-/*
-京喜牧场
-更新时间：2021-8-19
-活动入口：京喜APP-我的-京喜牧场
-温馨提示：请先手动完成【新手指导任务】再运行脚本
-脚本兼容: QuantumultX, Surge, Loon, JSBox, Node.js
-============Quantumultx===============
-[task_local]
-#京喜牧场
-20 0-23/3 * * * jd_jxmc.js, tag=京喜牧场, img-url=https://github.com/58xinian/icon/raw/master/jdgc.png, enabled=true
-================Loon==============
-[Script]
-cron "20 0-23/3 * * *" script-path=jd_jxmc.js,tag=京喜牧场
-===============Surge=================
-京喜牧场 = type=cron,cronexp="20 0-23/3 * * *",wake-system=1,timeout=3600,script-path=jd_jxmc.js
-============小火箭=========
-京喜牧场 = type=cron,script-path=jd_jxmc.js, cronexpr="20 0-23/3 * * *", timeout=3600, enable=true
+/**
+ 惊喜牧场
+ cron 23 0-23/3 * * * /jd_jxmc.js
+ 环境变量：JX_USER_AGENT, 惊喜APP的UA。领取助力任务奖励需要惊喜APP的UA,有能力的可以填上自己的UA,默认生成随机UA
+ 环境变量：BYTYPE,购买小鸡品种，默认不购买,(ps:暂时不知道买哪个好)
+ BYTYPE="1",购买小黄鸡，BYTYPE="2",购买辣子鸡，BYTYPE="3",购买椰子鸡,BYTYPE="4",购买猪肚鸡,BYTYPE="999",能买哪只买哪只,BYTYPE="888",不购买小鸡
+ 脚本9点-10点才会执行内部助力
  */
 // prettier-ignore
 !function (t, r) { "object" == typeof exports ? module.exports = exports = r() : "function" == typeof define && define.amd ? define([], r) : t.CryptoJS = r() }(this, function () {
@@ -24,19 +14,18 @@ cron "20 0-23/3 * * *" script-path=jd_jxmc.js,tag=京喜牧场
       } var i = t, n = i.lib, o = n.WordArray, s = n.BlockCipher, a = i.algo, c = [57, 49, 41, 33, 25, 17, 9, 1, 58, 50, 42, 34, 26, 18, 10, 2, 59, 51, 43, 35, 27, 19, 11, 3, 60, 52, 44, 36, 63, 55, 47, 39, 31, 23, 15, 7, 62, 54, 46, 38, 30, 22, 14, 6, 61, 53, 45, 37, 29, 21, 13, 5, 28, 20, 12, 4], h = [14, 17, 11, 24, 1, 5, 3, 28, 15, 6, 21, 10, 23, 19, 12, 4, 26, 8, 16, 7, 27, 20, 13, 2, 41, 52, 31, 37, 47, 55, 30, 40, 51, 45, 33, 48, 44, 49, 39, 56, 34, 53, 46, 42, 50, 36, 29, 32], l = [1, 2, 4, 6, 8, 10, 12, 14, 15, 17, 19, 21, 23, 25, 27, 28], f = [{ 0: 8421888, 268435456: 32768, 536870912: 8421378, 805306368: 2, 1073741824: 512, 1342177280: 8421890, 1610612736: 8389122, 1879048192: 8388608, 2147483648: 514, 2415919104: 8389120, 2684354560: 33280, 2952790016: 8421376, 3221225472: 32770, 3489660928: 8388610, 3758096384: 0, 4026531840: 33282, 134217728: 0, 402653184: 8421890, 671088640: 33282, 939524096: 32768, 1207959552: 8421888, 1476395008: 512, 1744830464: 8421378, 2013265920: 2, 2281701376: 8389120, 2550136832: 33280, 2818572288: 8421376, 3087007744: 8389122, 3355443200: 8388610, 3623878656: 32770, 3892314112: 514, 4160749568: 8388608, 1: 32768, 268435457: 2, 536870913: 8421888, 805306369: 8388608, 1073741825: 8421378, 1342177281: 33280, 1610612737: 512, 1879048193: 8389122, 2147483649: 8421890, 2415919105: 8421376, 2684354561: 8388610, 2952790017: 33282, 3221225473: 514, 3489660929: 8389120, 3758096385: 32770, 4026531841: 0, 134217729: 8421890, 402653185: 8421376, 671088641: 8388608, 939524097: 512, 1207959553: 32768, 1476395009: 8388610, 1744830465: 2, 2013265921: 33282, 2281701377: 32770, 2550136833: 8389122, 2818572289: 514, 3087007745: 8421888, 3355443201: 8389120, 3623878657: 0, 3892314113: 33280, 4160749569: 8421378 }, { 0: 1074282512, 16777216: 16384, 33554432: 524288, 50331648: 1074266128, 67108864: 1073741840, 83886080: 1074282496, 100663296: 1073758208, 117440512: 16, 134217728: 540672, 150994944: 1073758224, 167772160: 1073741824, 184549376: 540688, 201326592: 524304, 218103808: 0, 234881024: 16400, 251658240: 1074266112, 8388608: 1073758208, 25165824: 540688, 41943040: 16, 58720256: 1073758224, 75497472: 1074282512, 92274688: 1073741824, 109051904: 524288, 125829120: 1074266128, 142606336: 524304, 159383552: 0, 176160768: 16384, 192937984: 1074266112, 209715200: 1073741840, 226492416: 540672, 243269632: 1074282496, 260046848: 16400, 268435456: 0, 285212672: 1074266128, 301989888: 1073758224, 318767104: 1074282496, 335544320: 1074266112, 352321536: 16, 369098752: 540688, 385875968: 16384, 402653184: 16400, 419430400: 524288, 436207616: 524304, 452984832: 1073741840, 469762048: 540672, 486539264: 1073758208, 503316480: 1073741824, 520093696: 1074282512, 276824064: 540688, 293601280: 524288, 310378496: 1074266112, 327155712: 16384, 343932928: 1073758208, 360710144: 1074282512, 377487360: 16, 394264576: 1073741824, 411041792: 1074282496, 427819008: 1073741840, 444596224: 1073758224, 461373440: 524304, 478150656: 0, 494927872: 16400, 511705088: 1074266128, 528482304: 540672 }, { 0: 260, 1048576: 0, 2097152: 67109120, 3145728: 65796, 4194304: 65540, 5242880: 67108868, 6291456: 67174660, 7340032: 67174400, 8388608: 67108864, 9437184: 67174656, 10485760: 65792, 11534336: 67174404, 12582912: 67109124, 13631488: 65536, 14680064: 4, 15728640: 256, 524288: 67174656, 1572864: 67174404, 2621440: 0, 3670016: 67109120, 4718592: 67108868, 5767168: 65536, 6815744: 65540, 7864320: 260, 8912896: 4, 9961472: 256, 11010048: 67174400, 12058624: 65796, 13107200: 65792, 14155776: 67109124, 15204352: 67174660, 16252928: 67108864, 16777216: 67174656, 17825792: 65540, 18874368: 65536, 19922944: 67109120, 20971520: 256, 22020096: 67174660, 23068672: 67108868, 24117248: 0, 25165824: 67109124, 26214400: 67108864, 27262976: 4, 28311552: 65792, 29360128: 67174400, 30408704: 260, 31457280: 65796, 32505856: 67174404, 17301504: 67108864, 18350080: 260, 19398656: 67174656, 20447232: 0, 21495808: 65540, 22544384: 67109120, 23592960: 256, 24641536: 67174404, 25690112: 65536, 26738688: 67174660, 27787264: 65796, 28835840: 67108868, 29884416: 67109124, 30932992: 67174400, 31981568: 4, 33030144: 65792 }, { 0: 2151682048, 65536: 2147487808, 131072: 4198464, 196608: 2151677952, 262144: 0, 327680: 4198400, 393216: 2147483712, 458752: 4194368, 524288: 2147483648, 589824: 4194304, 655360: 64, 720896: 2147487744, 786432: 2151678016, 851968: 4160, 917504: 4096, 983040: 2151682112, 32768: 2147487808, 98304: 64, 163840: 2151678016, 229376: 2147487744, 294912: 4198400, 360448: 2151682112, 425984: 0, 491520: 2151677952, 557056: 4096, 622592: 2151682048, 688128: 4194304, 753664: 4160, 819200: 2147483648, 884736: 4194368, 950272: 4198464, 1015808: 2147483712, 1048576: 4194368, 1114112: 4198400, 1179648: 2147483712, 1245184: 0, 1310720: 4160, 1376256: 2151678016, 1441792: 2151682048, 1507328: 2147487808, 1572864: 2151682112, 1638400: 2147483648, 1703936: 2151677952, 1769472: 4198464, 1835008: 2147487744, 1900544: 4194304, 1966080: 64, 2031616: 4096, 1081344: 2151677952, 1146880: 2151682112, 1212416: 0, 1277952: 4198400, 1343488: 4194368, 1409024: 2147483648, 1474560: 2147487808, 1540096: 64, 1605632: 2147483712, 1671168: 4096, 1736704: 2147487744, 1802240: 2151678016, 1867776: 4160, 1933312: 2151682048, 1998848: 4194304, 2064384: 4198464 }, { 0: 128, 4096: 17039360, 8192: 262144, 12288: 536870912, 16384: 537133184, 20480: 16777344, 24576: 553648256, 28672: 262272, 32768: 16777216, 36864: 537133056, 40960: 536871040, 45056: 553910400, 49152: 553910272, 53248: 0, 57344: 17039488, 61440: 553648128, 2048: 17039488, 6144: 553648256, 10240: 128, 14336: 17039360, 18432: 262144, 22528: 537133184, 26624: 553910272, 30720: 536870912, 34816: 537133056, 38912: 0, 43008: 553910400, 47104: 16777344, 51200: 536871040, 55296: 553648128, 59392: 16777216, 63488: 262272, 65536: 262144, 69632: 128, 73728: 536870912, 77824: 553648256, 81920: 16777344, 86016: 553910272, 90112: 537133184, 94208: 16777216, 98304: 553910400, 102400: 553648128, 106496: 17039360, 110592: 537133056, 114688: 262272, 118784: 536871040, 122880: 0, 126976: 17039488, 67584: 553648256, 71680: 16777216, 75776: 17039360, 79872: 537133184, 83968: 536870912, 88064: 17039488, 92160: 128, 96256: 553910272, 100352: 262272, 104448: 553910400, 108544: 0, 112640: 553648128, 116736: 16777344, 120832: 262144, 124928: 537133056, 129024: 536871040 }, { 0: 268435464, 256: 8192, 512: 270532608, 768: 270540808, 1024: 268443648, 1280: 2097152, 1536: 2097160, 1792: 268435456, 2048: 0, 2304: 268443656, 2560: 2105344, 2816: 8, 3072: 270532616, 3328: 2105352, 3584: 8200, 3840: 270540800, 128: 270532608, 384: 270540808, 640: 8, 896: 2097152, 1152: 2105352, 1408: 268435464, 1664: 268443648, 1920: 8200, 2176: 2097160, 2432: 8192, 2688: 268443656, 2944: 270532616, 3200: 0, 3456: 270540800, 3712: 2105344, 3968: 268435456, 4096: 268443648, 4352: 270532616, 4608: 270540808, 4864: 8200, 5120: 2097152, 5376: 268435456, 5632: 268435464, 5888: 2105344, 6144: 2105352, 6400: 0, 6656: 8, 6912: 270532608, 7168: 8192, 7424: 268443656, 7680: 270540800, 7936: 2097160, 4224: 8, 4480: 2105344, 4736: 2097152, 4992: 268435464, 5248: 268443648, 5504: 8200, 5760: 270540808, 6016: 270532608, 6272: 270540800, 6528: 270532616, 6784: 8192, 7040: 2105352, 7296: 2097160, 7552: 0, 7808: 268435456, 8064: 268443656 }, { 0: 1048576, 16: 33555457, 32: 1024, 48: 1049601, 64: 34604033, 80: 0, 96: 1, 112: 34603009, 128: 33555456, 144: 1048577, 160: 33554433, 176: 34604032, 192: 34603008, 208: 1025, 224: 1049600, 240: 33554432, 8: 34603009, 24: 0, 40: 33555457, 56: 34604032, 72: 1048576, 88: 33554433, 104: 33554432, 120: 1025, 136: 1049601, 152: 33555456, 168: 34603008, 184: 1048577, 200: 1024, 216: 34604033, 232: 1, 248: 1049600, 256: 33554432, 272: 1048576, 288: 33555457, 304: 34603009, 320: 1048577, 336: 33555456, 352: 34604032, 368: 1049601, 384: 1025, 400: 34604033, 416: 1049600, 432: 1, 448: 0, 464: 34603008, 480: 33554433, 496: 1024, 264: 1049600, 280: 33555457, 296: 34603009, 312: 1, 328: 33554432, 344: 1048576, 360: 1025, 376: 34604032, 392: 33554433, 408: 34603008, 424: 0, 440: 34604033, 456: 1049601, 472: 1024, 488: 33555456, 504: 1048577 }, { 0: 134219808, 1: 131072, 2: 134217728, 3: 32, 4: 131104, 5: 134350880, 6: 134350848, 7: 2048, 8: 134348800, 9: 134219776, 10: 133120, 11: 134348832, 12: 2080, 13: 0, 14: 134217760, 15: 133152, 2147483648: 2048, 2147483649: 134350880, 2147483650: 134219808, 2147483651: 134217728, 2147483652: 134348800, 2147483653: 133120, 2147483654: 133152, 2147483655: 32, 2147483656: 134217760, 2147483657: 2080, 2147483658: 131104, 2147483659: 134350848, 2147483660: 0, 2147483661: 134348832, 2147483662: 134219776, 2147483663: 131072, 16: 133152, 17: 134350848, 18: 32, 19: 2048, 20: 134219776, 21: 134217760, 22: 134348832, 23: 131072, 24: 0, 25: 131104, 26: 134348800, 27: 134219808, 28: 134350880, 29: 133120, 30: 2080, 31: 134217728, 2147483664: 131072, 2147483665: 2048, 2147483666: 134348832, 2147483667: 133152, 2147483668: 32, 2147483669: 134348800, 2147483670: 134217728, 2147483671: 134219808, 2147483672: 134350880, 2147483673: 134217760, 2147483674: 134219776, 2147483675: 0, 2147483676: 133120, 2147483677: 2080, 2147483678: 131104, 2147483679: 134350848 }], u = [4160749569, 528482304, 33030144, 2064384, 129024, 8064, 504, 2147483679], d = a.DES = s.extend({ _doReset: function () { for (var t = this._key, r = t.words, e = [], i = 0; i < 56; i++) { var n = c[i] - 1; e[i] = r[n >>> 5] >>> 31 - n % 32 & 1 } for (var o = this._subKeys = [], s = 0; s < 16; s++) { for (var a = o[s] = [], f = l[s], i = 0; i < 24; i++)a[i / 6 | 0] |= e[(h[i] - 1 + f) % 28] << 31 - i % 6, a[4 + (i / 6 | 0)] |= e[28 + (h[i + 24] - 1 + f) % 28] << 31 - i % 6; a[0] = a[0] << 1 | a[0] >>> 31; for (var i = 1; i < 7; i++)a[i] = a[i] >>> 4 * (i - 1) + 3; a[7] = a[7] << 5 | a[7] >>> 27 } for (var u = this._invSubKeys = [], i = 0; i < 16; i++)u[i] = o[15 - i] }, encryptBlock: function (t, r) { this._doCryptBlock(t, r, this._subKeys) }, decryptBlock: function (t, r) { this._doCryptBlock(t, r, this._invSubKeys) }, _doCryptBlock: function (t, i, n) { this._lBlock = t[i], this._rBlock = t[i + 1], r.call(this, 4, 252645135), r.call(this, 16, 65535), e.call(this, 2, 858993459), e.call(this, 8, 16711935), r.call(this, 1, 1431655765); for (var o = 0; o < 16; o++) { for (var s = n[o], a = this._lBlock, c = this._rBlock, h = 0, l = 0; l < 8; l++)h |= f[l][((c ^ s[l]) & u[l]) >>> 0]; this._lBlock = c, this._rBlock = a ^ h } var d = this._lBlock; this._lBlock = this._rBlock, this._rBlock = d, r.call(this, 1, 1431655765), e.call(this, 8, 16711935), e.call(this, 2, 858993459), r.call(this, 16, 65535), r.call(this, 4, 252645135), t[i] = this._lBlock, t[i + 1] = this._rBlock }, keySize: 2, ivSize: 2, blockSize: 2 }); i.DES = s._createHelper(d); var v = a.TripleDES = s.extend({ _doReset: function () { var t = this._key, r = t.words; this._des1 = d.createEncryptor(o.create(r.slice(0, 2))), this._des2 = d.createEncryptor(o.create(r.slice(2, 4))), this._des3 = d.createEncryptor(o.create(r.slice(4, 6))) }, encryptBlock: function (t, r) { this._des1.encryptBlock(t, r), this._des2.decryptBlock(t, r), this._des3.encryptBlock(t, r) }, decryptBlock: function (t, r) { this._des3.decryptBlock(t, r), this._des2.encryptBlock(t, r), this._des1.decryptBlock(t, r) }, keySize: 6, ivSize: 2, blockSize: 2 }); i.TripleDES = s._createHelper(v)
   }(), function () { function r() { for (var t = this._S, r = this._i, e = this._j, i = 0, n = 0; n < 4; n++) { r = (r + 1) % 256, e = (e + t[r]) % 256; var o = t[r]; t[r] = t[e], t[e] = o, i |= t[(t[r] + t[e]) % 256] << 24 - 8 * n } return this._i = r, this._j = e, i } var e = t, i = e.lib, n = i.StreamCipher, o = e.algo, s = o.RC4 = n.extend({ _doReset: function () { for (var t = this._key, r = t.words, e = t.sigBytes, i = this._S = [], n = 0; n < 256; n++)i[n] = n; for (var n = 0, o = 0; n < 256; n++) { var s = n % e, a = r[s >>> 2] >>> 24 - s % 4 * 8 & 255; o = (o + i[n] + a) % 256; var c = i[n]; i[n] = i[o], i[o] = c } this._i = this._j = 0 }, _doProcessBlock: function (t, e) { t[e] ^= r.call(this) }, keySize: 8, ivSize: 0 }); e.RC4 = n._createHelper(s); var a = o.RC4Drop = s.extend({ cfg: s.cfg.extend({ drop: 192 }), _doReset: function () { s._doReset.call(this); for (var t = this.cfg.drop; t > 0; t--)r.call(this) } }); e.RC4Drop = n._createHelper(a) }(), t.mode.CTRGladman = function () { function r(t) { if (255 === (t >> 24 & 255)) { var r = t >> 16 & 255, e = t >> 8 & 255, i = 255 & t; 255 === r ? (r = 0, 255 === e ? (e = 0, 255 === i ? i = 0 : ++i) : ++e) : ++r, t = 0, t += r << 16, t += e << 8, t += i } else t += 1 << 24; return t } function e(t) { return 0 === (t[0] = r(t[0])) && (t[1] = r(t[1])), t } var i = t.lib.BlockCipherMode.extend(), n = i.Encryptor = i.extend({ processBlock: function (t, r) { var i = this._cipher, n = i.blockSize, o = this._iv, s = this._counter; o && (s = this._counter = o.slice(0), this._iv = void 0), e(s); var a = s.slice(0); i.encryptBlock(a, 0); for (var c = 0; c < n; c++)t[r + c] ^= a[c] } }); return i.Decryptor = n, i }(), function () { function r() { for (var t = this._X, r = this._C, e = 0; e < 8; e++)a[e] = r[e]; r[0] = r[0] + 1295307597 + this._b | 0, r[1] = r[1] + 3545052371 + (r[0] >>> 0 < a[0] >>> 0 ? 1 : 0) | 0, r[2] = r[2] + 886263092 + (r[1] >>> 0 < a[1] >>> 0 ? 1 : 0) | 0, r[3] = r[3] + 1295307597 + (r[2] >>> 0 < a[2] >>> 0 ? 1 : 0) | 0, r[4] = r[4] + 3545052371 + (r[3] >>> 0 < a[3] >>> 0 ? 1 : 0) | 0, r[5] = r[5] + 886263092 + (r[4] >>> 0 < a[4] >>> 0 ? 1 : 0) | 0, r[6] = r[6] + 1295307597 + (r[5] >>> 0 < a[5] >>> 0 ? 1 : 0) | 0, r[7] = r[7] + 3545052371 + (r[6] >>> 0 < a[6] >>> 0 ? 1 : 0) | 0, this._b = r[7] >>> 0 < a[7] >>> 0 ? 1 : 0; for (var e = 0; e < 8; e++) { var i = t[e] + r[e], n = 65535 & i, o = i >>> 16, s = ((n * n >>> 17) + n * o >>> 15) + o * o, h = ((4294901760 & i) * i | 0) + ((65535 & i) * i | 0); c[e] = s ^ h } t[0] = c[0] + (c[7] << 16 | c[7] >>> 16) + (c[6] << 16 | c[6] >>> 16) | 0, t[1] = c[1] + (c[0] << 8 | c[0] >>> 24) + c[7] | 0, t[2] = c[2] + (c[1] << 16 | c[1] >>> 16) + (c[0] << 16 | c[0] >>> 16) | 0, t[3] = c[3] + (c[2] << 8 | c[2] >>> 24) + c[1] | 0, t[4] = c[4] + (c[3] << 16 | c[3] >>> 16) + (c[2] << 16 | c[2] >>> 16) | 0, t[5] = c[5] + (c[4] << 8 | c[4] >>> 24) + c[3] | 0, t[6] = c[6] + (c[5] << 16 | c[5] >>> 16) + (c[4] << 16 | c[4] >>> 16) | 0, t[7] = c[7] + (c[6] << 8 | c[6] >>> 24) + c[5] | 0 } var e = t, i = e.lib, n = i.StreamCipher, o = e.algo, s = [], a = [], c = [], h = o.Rabbit = n.extend({ _doReset: function () { for (var t = this._key.words, e = this.cfg.iv, i = 0; i < 4; i++)t[i] = 16711935 & (t[i] << 8 | t[i] >>> 24) | 4278255360 & (t[i] << 24 | t[i] >>> 8); var n = this._X = [t[0], t[3] << 16 | t[2] >>> 16, t[1], t[0] << 16 | t[3] >>> 16, t[2], t[1] << 16 | t[0] >>> 16, t[3], t[2] << 16 | t[1] >>> 16], o = this._C = [t[2] << 16 | t[2] >>> 16, 4294901760 & t[0] | 65535 & t[1], t[3] << 16 | t[3] >>> 16, 4294901760 & t[1] | 65535 & t[2], t[0] << 16 | t[0] >>> 16, 4294901760 & t[2] | 65535 & t[3], t[1] << 16 | t[1] >>> 16, 4294901760 & t[3] | 65535 & t[0]]; this._b = 0; for (var i = 0; i < 4; i++)r.call(this); for (var i = 0; i < 8; i++)o[i] ^= n[i + 4 & 7]; if (e) { var s = e.words, a = s[0], c = s[1], h = 16711935 & (a << 8 | a >>> 24) | 4278255360 & (a << 24 | a >>> 8), l = 16711935 & (c << 8 | c >>> 24) | 4278255360 & (c << 24 | c >>> 8), f = h >>> 16 | 4294901760 & l, u = l << 16 | 65535 & h; o[0] ^= h, o[1] ^= f, o[2] ^= l, o[3] ^= u, o[4] ^= h, o[5] ^= f, o[6] ^= l, o[7] ^= u; for (var i = 0; i < 4; i++)r.call(this) } }, _doProcessBlock: function (t, e) { var i = this._X; r.call(this), s[0] = i[0] ^ i[5] >>> 16 ^ i[3] << 16, s[1] = i[2] ^ i[7] >>> 16 ^ i[5] << 16, s[2] = i[4] ^ i[1] >>> 16 ^ i[7] << 16, s[3] = i[6] ^ i[3] >>> 16 ^ i[1] << 16; for (var n = 0; n < 4; n++)s[n] = 16711935 & (s[n] << 8 | s[n] >>> 24) | 4278255360 & (s[n] << 24 | s[n] >>> 8), t[e + n] ^= s[n] }, blockSize: 4, ivSize: 2 }); e.Rabbit = n._createHelper(h) }(), t.mode.CTR = function () { var r = t.lib.BlockCipherMode.extend(), e = r.Encryptor = r.extend({ processBlock: function (t, r) { var e = this._cipher, i = e.blockSize, n = this._iv, o = this._counter; n && (o = this._counter = n.slice(0), this._iv = void 0); var s = o.slice(0); e.encryptBlock(s, 0), o[i - 1] = o[i - 1] + 1 | 0; for (var a = 0; a < i; a++)t[r + a] ^= s[a] } }); return r.Decryptor = e, r }(), function () { function r() { for (var t = this._X, r = this._C, e = 0; e < 8; e++)a[e] = r[e]; r[0] = r[0] + 1295307597 + this._b | 0, r[1] = r[1] + 3545052371 + (r[0] >>> 0 < a[0] >>> 0 ? 1 : 0) | 0, r[2] = r[2] + 886263092 + (r[1] >>> 0 < a[1] >>> 0 ? 1 : 0) | 0, r[3] = r[3] + 1295307597 + (r[2] >>> 0 < a[2] >>> 0 ? 1 : 0) | 0, r[4] = r[4] + 3545052371 + (r[3] >>> 0 < a[3] >>> 0 ? 1 : 0) | 0, r[5] = r[5] + 886263092 + (r[4] >>> 0 < a[4] >>> 0 ? 1 : 0) | 0, r[6] = r[6] + 1295307597 + (r[5] >>> 0 < a[5] >>> 0 ? 1 : 0) | 0, r[7] = r[7] + 3545052371 + (r[6] >>> 0 < a[6] >>> 0 ? 1 : 0) | 0, this._b = r[7] >>> 0 < a[7] >>> 0 ? 1 : 0; for (var e = 0; e < 8; e++) { var i = t[e] + r[e], n = 65535 & i, o = i >>> 16, s = ((n * n >>> 17) + n * o >>> 15) + o * o, h = ((4294901760 & i) * i | 0) + ((65535 & i) * i | 0); c[e] = s ^ h } t[0] = c[0] + (c[7] << 16 | c[7] >>> 16) + (c[6] << 16 | c[6] >>> 16) | 0, t[1] = c[1] + (c[0] << 8 | c[0] >>> 24) + c[7] | 0, t[2] = c[2] + (c[1] << 16 | c[1] >>> 16) + (c[0] << 16 | c[0] >>> 16) | 0, t[3] = c[3] + (c[2] << 8 | c[2] >>> 24) + c[1] | 0, t[4] = c[4] + (c[3] << 16 | c[3] >>> 16) + (c[2] << 16 | c[2] >>> 16) | 0, t[5] = c[5] + (c[4] << 8 | c[4] >>> 24) + c[3] | 0, t[6] = c[6] + (c[5] << 16 | c[5] >>> 16) + (c[4] << 16 | c[4] >>> 16) | 0, t[7] = c[7] + (c[6] << 8 | c[6] >>> 24) + c[5] | 0 } var e = t, i = e.lib, n = i.StreamCipher, o = e.algo, s = [], a = [], c = [], h = o.RabbitLegacy = n.extend({ _doReset: function () { var t = this._key.words, e = this.cfg.iv, i = this._X = [t[0], t[3] << 16 | t[2] >>> 16, t[1], t[0] << 16 | t[3] >>> 16, t[2], t[1] << 16 | t[0] >>> 16, t[3], t[2] << 16 | t[1] >>> 16], n = this._C = [t[2] << 16 | t[2] >>> 16, 4294901760 & t[0] | 65535 & t[1], t[3] << 16 | t[3] >>> 16, 4294901760 & t[1] | 65535 & t[2], t[0] << 16 | t[0] >>> 16, 4294901760 & t[2] | 65535 & t[3], t[1] << 16 | t[1] >>> 16, 4294901760 & t[3] | 65535 & t[0]]; this._b = 0; for (var o = 0; o < 4; o++)r.call(this); for (var o = 0; o < 8; o++)n[o] ^= i[o + 4 & 7]; if (e) { var s = e.words, a = s[0], c = s[1], h = 16711935 & (a << 8 | a >>> 24) | 4278255360 & (a << 24 | a >>> 8), l = 16711935 & (c << 8 | c >>> 24) | 4278255360 & (c << 24 | c >>> 8), f = h >>> 16 | 4294901760 & l, u = l << 16 | 65535 & h; n[0] ^= h, n[1] ^= f, n[2] ^= l, n[3] ^= u, n[4] ^= h, n[5] ^= f, n[6] ^= l, n[7] ^= u; for (var o = 0; o < 4; o++)r.call(this) } }, _doProcessBlock: function (t, e) { var i = this._X; r.call(this), s[0] = i[0] ^ i[5] >>> 16 ^ i[3] << 16, s[1] = i[2] ^ i[7] >>> 16 ^ i[5] << 16, s[2] = i[4] ^ i[1] >>> 16 ^ i[7] << 16, s[3] = i[6] ^ i[3] >>> 16 ^ i[1] << 16; for (var n = 0; n < 4; n++)s[n] = 16711935 & (s[n] << 8 | s[n] >>> 24) | 4278255360 & (s[n] << 24 | s[n] >>> 8), t[e + n] ^= s[n] }, blockSize: 4, ivSize: 2 }); e.RabbitLegacy = n._createHelper(h) }(), t.pad.ZeroPadding = { pad: function (t, r) { var e = 4 * r; t.clamp(), t.sigBytes += e - (t.sigBytes % e || e) }, unpad: function (t) { for (var r = t.words, e = t.sigBytes - 1; !(r[e >>> 2] >>> 24 - e % 4 * 8 & 255);)e--; t.sigBytes = e + 1 } }, t
 });
-const jd_env = require("./utils/JDEnv.js");
-const $ = jd_env.env("京喜牧场");
-const notify = $.isNode() ? require("./sendNotify") : "";
-const jdCookieNode = $.isNode() ? require("./jdCookie.js") : "";
-//京喜APP的UA。领取助力任务奖励需要京喜APP的UA,环境变量：JX_USER_AGENT，有能力的可以填上自己的UA
+const jd_helpers = require('./utils/JDHelpers.js');
+const jd_env = require('./utils/JDEnv.js');
+const $ = jd_env.env('惊喜牧场');
+const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
 const JXUserAgent = $.isNode() ? (process.env.JX_USER_AGENT ? process.env.JX_USER_AGENT : ``) : ``;
-$.inviteCodeList = [];
-let cookiesArr = [];
-let UA,
-  token,
-  UAInfo = {};
+const ByType = $.isNode() ? (process.env.BYTYPE ? process.env.BYTYPE : `888`) : `888`;
+let cookiesArr = [],
+  token = {},
+  ua = '';
 $.appId = 10028;
-$.helpCkList = [];
+let activeid = 'null';
+$.inviteCodeList = [];
 if ($.isNode()) {
   Object.keys(jdCookieNode).forEach((item) => {
     cookiesArr.push(jdCookieNode[item]);
@@ -52,70 +41,69 @@ if ($.isNode()) {
     $.msg($.name, '【提示】请先获取京东账号一cookie\n直接使用NobyDa的京东签到获取', 'https://bean.m.jd.com/bean/signIndex.action', { 'open-url': 'https://bean.m.jd.com/bean/signIndex.action' });
     return;
   }
-  console.log('京喜牧场\n' + '更新时间：2021-8-19\n' + '活动入口：京喜APP-我的-京喜牧场\n' + '温馨提示：请先手动完成【新手指导任务】再运行脚本');
+  $.fingerprint = '';
+  $.token = '';
   for (let i = 0; i < cookiesArr.length; i++) {
     $.index = i + 1;
     $.cookie = cookiesArr[i];
     $.isLogin = true;
     $.nickName = '';
-    await $.totalBean();
     $.UserName = decodeURIComponent($.cookie.match(/pt_pin=([^; ]+)(?=;?)/) && $.cookie.match(/pt_pin=([^; ]+)(?=;?)/)[1]);
+    await $.totalBean();
     console.log(`\n*****开始【京东账号${$.index}】${$.nickName || $.UserName}*****\n`);
     if (!$.isLogin) {
       $.msg($.name, `【提示】cookie已失效`, `京东账号${$.index} ${$.nickName || $.UserName}\n请重新登录获取\nhttps://bean.m.jd.com/bean/signIndex.action`, {
         'open-url': 'https://bean.m.jd.com/bean/signIndex.action',
       });
-
       if ($.isNode()) {
         await notify.sendNotify(`${$.name}cookie已失效 - ${$.UserName}`, `京东账号${$.index} ${$.UserName}\n请重新登录获取cookie`);
       }
       continue;
     }
-    UA = `jdpingou;iPhone;4.13.0;14.4.2;${randomString(
-      40
-    )};network/wifi;model/iPhone10,2;appBuild/100609;ADID/00000000-0000-0000-0000-000000000000;supportApplePay/1;hasUPPay/0;pushNoticeIsOpen/1;hasOCPay/0;supportBestPay/0;session/${
-      Math.random * 98 + 1
-    };pap/JA2019_3111789;brand/apple;supportJDSHWK/1;Mozilla/5.0 (iPhone; CPU iPhone OS 14_6 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148`;
-    token = await getJxToken();
-    await pasture();
+    try {
+      await main();
+    } catch (e) {
+      $.logErr(e);
+    }
     await $.wait(2000);
-    UAInfo[$.UserName] = UA;
+  }
+  if (new Date().getHours() !== 9 && new Date().getHours() !== 10) {
+    console.log('\n脚本早上9点到10点直接执行，才会执行账号内互助');
+    return;
   }
   console.log('\n##################开始账号内互助#################\n');
-  let newCookiesArr = [];
-  for (let i = 0; i < $.helpCkList.length; i += 4) {
-    newCookiesArr.push($.helpCkList.slice(i, i + 4));
-  }
-  for (let i = 0; i < newCookiesArr.length; i++) {
-    let thisCookiesArr = newCookiesArr[i];
-    let codeList = [];
-    for (let j = 0; j < thisCookiesArr.length; j++) {
-      $.cookie = thisCookiesArr[j];
-      $.UserName = decodeURIComponent($.cookie.match(/pt_pin=([^; ]+)(?=;?)/) && $.cookie.match(/pt_pin=([^; ]+)(?=;?)/)[1]);
-      for (let k = 0; k < $.inviteCodeList.length; k++) {
-        if ($.UserName === $.inviteCodeList[k].use) {
-          codeList.push({
-            name: $.UserName,
-            code: $.inviteCodeList[k].code,
-          });
-        }
+  for (let j = 0; j < cookiesArr.length; j++) {
+    $.cookie = cookiesArr[j];
+    $.UserName = decodeURIComponent($.cookie.match(/pt_pin=(.+?);/) && $.cookie.match(/pt_pin=(.+?);/)[1]);
+    token = await getJxToken();
+    $.canHelp = true;
+    for (let k = 0; k < $.inviteCodeList.length; k++) {
+      $.oneCodeInfo = $.inviteCodeList[k];
+      activeid = $.oneCodeInfo.activeid;
+      if ($.oneCodeInfo.use === $.UserName) continue;
+      if (!$.canHelp) break;
+      console.log(`\n${$.UserName}去助力${$.oneCodeInfo.use},助力码：${$.oneCodeInfo.code}\n`);
+      let helpInfo = await takeRequest(
+        `jxmc`,
+        `operservice/EnrollFriend`,
+        `&sharekey=${$.oneCodeInfo.code}`,
+        `activeid%2Cactivekey%2Cchannel%2Cjxmc_jstoken%2Cphoneid%2Csceneid%2Csharekey%2Ctimestamp`,
+        true
+      );
+      if (helpInfo && helpInfo.result === 0) {
+        console.log(`助力成功`);
+      } else if (helpInfo && helpInfo.result === 4) {
+        console.log(`助力次数已用完`);
+        $.canHelp = false;
+      } else if (helpInfo && helpInfo.result === 5) {
+        console.log(`已助力过`);
+        //$.oneCodeInfo.max = true;
+      } else {
+        console.log(`助力失败，可能此账号不能助力别人`);
+        //console.log(JSON.stringify(data))
+        $.canHelp = false;
       }
-    }
-    for (let j = 0; j < thisCookiesArr.length; j++) {
-      $.cookie = thisCookiesArr[j];
-      $.UserName = decodeURIComponent($.cookie.match(/pt_pin=([^; ]+)(?=;?)/) && $.cookie.match(/pt_pin=([^; ]+)(?=;?)/)[1]);
-      UA = UAInfo[$.UserName];
-      token = await getJxToken();
-      for (let k = 0; k < codeList.length; k++) {
-        $.oneCodeInfo = codeList[k];
-        if (codeList[k].name === $.UserName) {
-          continue;
-        } else {
-          console.log(`\n${$.UserName}去助力${codeList[k].name},助力码：${codeList[k].code}\n`);
-          await takeGetRequest('help');
-          await $.wait(2000);
-        }
-      }
+      await $.wait(2000);
     }
   }
 })()
@@ -126,532 +114,460 @@ if ($.isNode()) {
     $.done();
   });
 
-async function pasture() {
-  try {
-    $.homeInfo = {};
-    $.petidList = [];
-    $.crowInfo = {};
-    await takeGetRequest('GetHomePageInfo');
-    if (JSON.stringify($.homeInfo) === '{}') {
-      return;
-    } else {
-      if (!$.homeInfo.petinfo) {
-        console.log(`\n温馨提示：${$.UserName} 请先手动完成【新手指导任务】再运行脚本再运行脚本\n`);
-        return;
-      }
-      console.log('获取活动信息成功');
-      console.log(`互助码：${$.homeInfo.sharekey}`);
-      $.helpCkList.push($.cookie);
-      $.inviteCodeList.push({
-        use: $.UserName,
-        code: $.homeInfo.sharekey,
-        max: false,
-      });
-      for (let i = 0; i < $.homeInfo.petinfo.length; i++) {
-        $.onepetInfo = $.homeInfo.petinfo[i];
-        $.petidList.push($.onepetInfo.petid);
-        if ($.onepetInfo.cangetborn === 1) {
-          console.log(`开始收鸡蛋`);
-          await takeGetRequest('GetEgg');
-          await $.wait(1000);
-        }
-      }
-      $.crowInfo = $.homeInfo.cow;
-    }
-    $.GetVisitBackInfo = {};
-    await $.wait(2000);
-    await takeGetRequest('GetVisitBackInfo');
-    if ($.GetVisitBackInfo.iscandraw === 1) {
+async function main() {
+  ua = '';
+  if (JXUserAgent) {
+    ua = JXUserAgent;
+  } else {
+    ua = `jdpingou;iPhone;4.9.4;14.6;${randomWord(
+      false,
+      40,
+      40
+    )};network/wifi;model/iPhone9,2;appBuild/100579;ADID/00000000-0000-0000-0000-000000000000;supportApplePay/1;hasUPPay/0;pushNoticeIsOpen/1;hasOCPay/0;supportBestPay/0;session/936;pap/JA2019_3111800;brand/apple;supportJDSHWK/1;Mozilla/5.0 (iPhone; CPU iPhone OS 14_6 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E200`;
+  }
+  token = await getJxToken();
+  activeid = 'null';
+  let configInfo = await takeRequest(`jxmc`, `queryservice/GetConfigInfo`, ``, undefined, true);
+  let homePageInfo = await takeRequest(
+    `jxmc`,
+    `queryservice/GetHomePageInfo`,
+    `&isgift=1&isquerypicksite=1&isqueryinviteicon=1`,
+    `activeid%2Cactivekey%2Cchannel%2Cisgift%2Cisqueryinviteicon%2Cisquerypicksite%2Cjxmc_jstoken%2Cphoneid%2Csceneid%2Ctimestamp`,
+    true
+  );
+  activeid = homePageInfo.activeid;
+  let cardInfo = await takeRequest(`jxmc`, `queryservice/GetCardInfo`, ``, undefined, true);
+  let signInfo = await takeRequest(`jxmc`, `queryservice/GetSignInfo`, ``, undefined, true);
+  let visitBackInfo = await takeRequest(`jxmc`, `queryservice/GetVisitBackInfo`, ``, undefined, true);
+  if (JSON.stringify(configInfo) === '{}' || JSON.stringify(homePageInfo) === '{}') {
+    console.log(`初始化失败,可能是牧场黑号`);
+    return;
+  }
+  if (homePageInfo.maintaskId !== 'pause') {
+    let runTime = 0;
+    let doMainTaskInfo = {};
+    do {
       await $.wait(2000);
-      await takeGetRequest('GetVisitBackCabbage');
+      console.log(`\n执行初始化任务：${homePageInfo.maintaskId}`);
+      doMainTaskInfo = await takeRequest(
+        `jxmc`,
+        `operservice/DoMainTask`,
+        `&step=${homePageInfo.maintaskId}`,
+        `activeid%2Cactivekey%2Cchannel%2Cjxmc_jstoken%2Cphoneid%2Csceneid%2Cstep%2Ctimestamp`,
+        true
+      );
+      console.log(`执行结果：\n${JSON.stringify(doMainTaskInfo)}`);
+      await $.wait(2000);
+      homePageInfo = await takeRequest(
+        `jxmc`,
+        `queryservice/GetHomePageInfo`,
+        `&isgift=1&isquerypicksite=1&isqueryinviteicon=1`,
+        `activeid%2Cactivekey%2Cchannel%2Cisgift%2Cisqueryinviteicon%2Cisquerypicksite%2Cjxmc_jstoken%2Cphoneid%2Csceneid%2Ctimestamp`,
+        true
+      );
+      runTime++;
+    } while (homePageInfo.maintaskId !== 'pause' && runTime < 30 && JSON.stringify(doMainTaskInfo) !== '{}');
+  }
+  let petidList = [];
+  for (let i = 0; i < homePageInfo.petinfo.length; i++) {
+    let onepetInfo = homePageInfo.petinfo[i];
+    petidList.push(onepetInfo.petid);
+    if (onepetInfo.cangetborn === 1) {
+      console.log(`开始收鸡蛋`);
+      let getEggInfo = await takeRequest(
+        `jxmc`,
+        `operservice/GetSelfResult`,
+        `&type=11&itemid=${onepetInfo.petid}`,
+        `activeid%2Cactivekey%2Cchannel%2Citemid%2Cjxmc_jstoken%2Cphoneid%2Csceneid%2Ctimestamp%2Ctype`,
+        true
+      );
+      console.log(`成功收取${getEggInfo.addnum || null}个蛋,现有鸡蛋${getEggInfo.newnum || null}个`);
+      await $.wait(1000);
     }
-    await $.wait(2000);
-    $.GetSignInfo = {};
-    await takeGetRequest('GetSignInfo');
-    if (JSON.stringify($.GetSignInfo) !== '{}' && $.GetSignInfo.signlist) {
-      let signList = $.GetSignInfo.signlist;
+  }
+  if (!homePageInfo.petinfo) {
+    console.log(`\n温馨提示：${$.UserName} 请先手动完成【新手指导任务】再运行脚本再运行脚本\n`);
+    return;
+  }
+  console.log(`获取获得详情成功,总共有小鸡：${petidList.length}只,鸡蛋:${homePageInfo.eggcnt}个,金币:${homePageInfo.coins},互助码：${homePageInfo.sharekey}`);
+  $.inviteCodeList.push({ use: $.UserName, code: homePageInfo.sharekey, max: false, activeid: activeid });
+  if (JSON.stringify(visitBackInfo) !== '{}') {
+    if (visitBackInfo.iscandraw === 1) {
+      console.log(`\n收取每日白菜`);
+      await $.wait(1000);
+      let getVisitBackCabbageInfo = await takeRequest(`jxmc`, `operservice/GetVisitBackCabbage`, ``, undefined, true);
+      console.log(`收取白菜成功，获得${getVisitBackCabbageInfo.drawnum}`);
+    } else {
+      console.log(`明日可收取白菜：${visitBackInfo.candrawnum}颗`);
+    }
+  }
+  if (JSON.stringify(signInfo) !== '{}') {
+    if (signInfo.signlist) {
+      let signList = signInfo.signlist;
+      let signFlag = true;
       for (let j = 0; j < signList.length; j++) {
         if (signList[j].fortoday && !signList[j].hasdone) {
-          await $.wait(2000);
-          console.log(`去签到`);
-          await takeGetRequest('GetSignReward');
+          await $.wait(1000);
+          console.log(`\n去签到`);
+          await takeRequest(`jxmc`, `operservice/GetSignReward`, `&currdate=${signInfo.currdate}`, `activeid%2Cactivekey%2Cchannel%2Ccurrdate%2Cjxmc_jstoken%2Cphoneid%2Csceneid%2Ctimestamp`, true);
+          console.log(`签到成功`);
+          signFlag = false;
         }
       }
-    }
-    await $.wait(2000);
-    if ($.crowInfo.lastgettime) {
-      console.log('收奶牛金币');
-      await takeGetRequest('cow');
-      await $.wait(2000);
-    }
-    $.taskList = [];
-    $.dateType = ``;
-    for (let j = 2; j >= 0; j--) {
-      if (j === 0) {
-        $.dateType = ``;
-      } else {
-        $.dateType = j;
-      }
-      await takeGetRequest('GetUserTaskStatusList');
-      await $.wait(2000);
-      await doTask(j);
-      await $.wait(2000);
-      if (j === 2) {
-        //割草
-        console.log(`\n开始进行割草`);
-        $.runFlag = true;
-        for (let i = 0; i < 30 && $.runFlag; i++) {
-          $.mowingInfo = {};
-          console.log(`开始第${i + 1}次割草`);
-          await takeGetRequest('mowing');
-          await $.wait(2000);
-          if ($.mowingInfo.surprise === true) {
-            //除草礼盒
-            console.log(`领取除草礼盒`);
-            await takeGetRequest('GetSelfResult');
-            await $.wait(3000);
-          }
-        }
-
-        //横扫鸡腿
-        $.runFlag = true;
-        console.log(`\n开始进行横扫鸡腿`);
-        for (let i = 0; i < 30 && $.runFlag; i++) {
-          console.log(`开始第${i + 1}次横扫鸡腿`);
-          await takeGetRequest('jump');
-          await $.wait(2000);
-        }
+      if (signFlag) {
+        console.log(`已完成每日签到`);
       }
     }
-    await takeGetRequest('GetHomePageInfo');
-    await $.wait(2000);
-    let materialNumber = 0;
-    let materialinfoList = $.homeInfo.materialinfo;
-    for (let j = 0; j < materialinfoList.length; j++) {
-      if (materialinfoList[j].type !== 1) {
-        continue;
-      }
-      materialNumber = Number(materialinfoList[j].value); //白菜数量
-    }
-    if (Number($.homeInfo.coins) > 5000) {
-      let canBuyTimes = Math.floor(Number($.homeInfo.coins) / 5000);
-      console.log(`\n共有金币${$.homeInfo.coins},可以购买${canBuyTimes}次白菜`);
-      if (Number(materialNumber) < 400) {
-        for (let j = 0; j < canBuyTimes && j < 4; j++) {
-          console.log(`第${j + 1}次购买白菜`);
-          await takeGetRequest('buy');
-          await $.wait(2000);
-        }
-        await takeGetRequest('GetHomePageInfo');
-        await $.wait(2000);
-      } else {
-        console.log(`现有白菜${materialNumber},大于400颗,不进行购买`);
-      }
+  }
+  if (homePageInfo.cow) {
+    let cowToken = '';
+    if (homePageInfo.cow.lastgettime) {
+      cowToken = $.CryptoJS.MD5(homePageInfo.cow.lastgettime.toString()).toString();
     } else {
-      console.log(`\n共有金币${$.homeInfo.coins}`);
+      cowToken = $.CryptoJS.MD5(Date.now().toString());
     }
-    materialinfoList = $.homeInfo.materialinfo;
-    for (let j = 0; j < materialinfoList.length; j++) {
-      if (materialinfoList[j].type !== 1) {
-        continue;
+    console.log('\n收奶牛金币');
+    let cowInfo = await takeRequest(`jxmc`, `operservice/GetCoin`, `&token=${cowToken}`, `activeid%2Cactivekey%2Cchannel%2Cjxmc_jstoken%2Cphoneid%2Csceneid%2Ctimestamp%2Ctoken`, true);
+    console.log(`获得金币：${cowInfo.addcoin || 0}`);
+    await $.wait(1000);
+  }
+  if (JSON.stringify(cardInfo) !== '{}') {
+    console.log(`\n可以扭蛋次数：${cardInfo.times}`);
+    for (let j = 0; j < cardInfo.times; j++) {
+      await $.wait(2000);
+      console.log(`执行一次扭蛋`);
+      let drawCardInfo = await takeRequest(`jxmc`, `operservice/DrawCard`, ``, undefined, true);
+      if (drawCardInfo.prizetype === 3) {
+        console.log(`获得金币：${drawCardInfo.addcoins || 0}`);
+      } else if (drawCardInfo.prizetype === 2) {
+        console.log(`获得红包`);
+      } else {
+        console.log(`获得其他`);
+        console.log(JSON.stringify(drawCardInfo));
       }
-      if (Number(materialinfoList[j].value) > 10) {
-        $.canFeedTimes = Math.floor(Number(materialinfoList[j].value) / 10);
-        console.log(`\n共有白菜${materialinfoList[j].value}颗，每次喂10颗，可以喂${$.canFeedTimes}次`);
-        $.runFeed = true;
-        for (let k = 0; k < $.canFeedTimes && $.runFeed && k < 40; k++) {
-          $.pause = false;
-          console.log(`开始第${k + 1}次喂白菜`);
-          await takeGetRequest('feed');
-          await $.wait(4000);
-          if ($.pause) {
-            await takeGetRequest('GetHomePageInfo');
-            await $.wait(1000);
-            for (let n = 0; n < $.homeInfo.petinfo.length; n++) {
-              $.onepetInfo = $.homeInfo.petinfo[n];
-              if ($.onepetInfo.cangetborn === 1) {
-                console.log(`开始收鸡蛋`);
-                await takeGetRequest('GetEgg');
-                await $.wait(1000);
-              }
+    }
+  }
+  //购买小鸡
+  await buyChick(configInfo, homePageInfo, cardInfo);
+  await doTask();
+  await $.wait(2000);
+  await doMotion(petidList);
+  await buyCabbage(homePageInfo);
+  await feed();
+}
+async function buyChick(configInfo, homePageInfo, cardInfo) {
+  console.log(`现共有小鸡：${homePageInfo.petinfo.length}只,小鸡上限：6只`);
+  if (homePageInfo.petinfo.length === 6) {
+    return;
+  }
+  if (ByType === '888') {
+    console.log(`不购买小鸡，若需要购买小鸡，则设置环境变量【BYTYPE】`);
+    return;
+  }
+  if (ByType === '4' || ByType === '999') {
+    if (Number(homePageInfo.coins) >= configInfo.operation.zhuduji_buy_need_coin) {
+      console.log(`购买猪肚鸡`);
+      let newbuyInfo = await takeRequest(`jxmc`, `operservice/BuyNew`, `&type=4`, `activeid%2Cactivekey%2Cchannel%2Csceneid%2Ctype`, true);
+      console.log(`购买猪肚鸡成功，消耗金币：${newbuyInfo.costcoin || null}，当前小鸡数量：${newbuyInfo.currnum || null}`);
+      homePageInfo.coins = Number(homePageInfo.coins) - Number(configInfo.operation.zhuduji_buy_need_coin);
+    } else {
+      console.log(`购买猪肚鸡金币不足，当前金币：${homePageInfo.coins},需要金币：${configInfo.operation.zhuduji_buy_need_coin}`);
+    }
+  }
+  if (ByType === '3' || ByType === '999') {
+    if (Number(homePageInfo.coins) >= configInfo.operation.yeziji_buy_need_coin) {
+      console.log(`购买椰子鸡`);
+      let newbuyInfo = await takeRequest(`jxmc`, `operservice/BuyNew`, `&type=3`, `activeid%2Cactivekey%2Cchannel%2Csceneid%2Ctype`, true);
+      console.log(`购买椰子鸡成功，消耗金币：${newbuyInfo.costcoin || null}，当前小鸡数量：${newbuyInfo.currnum || null}`);
+      homePageInfo.coins = Number(homePageInfo.coins) - Number(configInfo.operation.yeziji_buy_need_coin);
+    } else {
+      console.log(`购买椰子鸡金币不足，当前金币：${homePageInfo.coins},需要金币：${configInfo.operation.yeziji_buy_need_coin}`);
+    }
+  }
+  if (ByType === '2' || ByType === '999') {
+    if (Number(homePageInfo.coins) >= configInfo.operation.laziji_buy_need_coin) {
+      console.log(`购买辣子鸡`);
+      let newbuyInfo = await takeRequest(`jxmc`, `operservice/BuyNew`, `&type=2`, `activeid%2Cactivekey%2Cchannel%2Csceneid%2Ctype`, true);
+      console.log(`购买辣子鸡成功，消耗金币：${newbuyInfo.costcoin || null}，当前小鸡数量：${newbuyInfo.currnum || null}`);
+      homePageInfo.coins = Number(homePageInfo.coins) - Number(configInfo.operation.laziji_buy_need_coin);
+    } else {
+      console.log(`购买辣子鸡金币不足，当前金币：${homePageInfo.coins},需要金币：${configInfo.operation.laziji_buy_need_coin}`);
+    }
+  }
+  if (ByType === '1' || ByType === '999') {
+    if (Number(homePageInfo.coins) >= configInfo.operation.huangji_buy_need_coin) {
+      console.log(`购买小黄鸡`);
+      let newbuyInfo = await takeRequest(`jxmc`, `operservice/BuyNew`, `&type=1`, `activeid%2Cactivekey%2Cchannel%2Csceneid%2Ctype`, true);
+      console.log(`购买小黄鸡成功，消耗金币：${newbuyInfo.costcoin || null}，当前小鸡数量：${newbuyInfo.currnum || null}`);
+      homePageInfo.coins = Number(homePageInfo.coins) - Number(configInfo.operation.huangji_buy_need_coin);
+    } else {
+      console.log(`购买小黄鸡金币不足，当前金币：${homePageInfo.coins},需要金币：${configInfo.operation.huangji_buy_need_coin}`);
+    }
+  }
+}
+async function feed() {
+  let homePageInfo = await takeRequest(
+    `jxmc`,
+    `queryservice/GetHomePageInfo`,
+    `&isgift=1&isquerypicksite=1&isqueryinviteicon=1`,
+    `activeid%2Cactivekey%2Cchannel%2Cisgift%2Cisqueryinviteicon%2Cisquerypicksite%2Cjxmc_jstoken%2Cphoneid%2Csceneid%2Ctimestamp`,
+    true
+  );
+  let materialinfoList = homePageInfo.materialinfo;
+  for (let j = 0; j < materialinfoList.length; j++) {
+    if (materialinfoList[j].type !== 1) {
+      continue;
+    }
+    let pause = false;
+    if (Number(materialinfoList[j].value) > 10) {
+      let canFeedTimes = Math.floor(Number(materialinfoList[j].value) / 10);
+      console.log(`\n共有白菜${materialinfoList[j].value}颗，每次喂10颗，可以喂${canFeedTimes}次,每次执行脚本最多会喂40次`);
+      let runFeed = true;
+      for (let k = 0; k < canFeedTimes && runFeed && k < 40; k++) {
+        pause = false;
+        console.log(`开始第${k + 1}次喂白菜`);
+        let feedInfo = await takeRequest(`jxmc`, `operservice/Feed`, ``, undefined, true);
+        if (feedInfo.ret === 0) {
+          console.log(`投喂成功`);
+        } else if (feedInfo.ret === 2020) {
+          console.log(`投喂失败，需要先收取鸡蛋`);
+          pause = true;
+        } else {
+          console.log(`投喂失败，${feedInfo.message}`);
+          runFeed = false;
+        }
+        await $.wait(4000);
+        if (pause) {
+          homePageInfo = await takeRequest(
+            `jxmc`,
+            `queryservice/GetHomePageInfo`,
+            `&isgift=1&isquerypicksite=1&isqueryinviteicon=1`,
+            `activeid%2Cactivekey%2Cchannel%2Cisgift%2Cisqueryinviteicon%2Cisquerypicksite%2Cjxmc_jstoken%2Cphoneid%2Csceneid%2Ctimestamp`,
+            true
+          );
+          await $.wait(1000);
+          for (let n = 0; n < homePageInfo.petinfo.length; n++) {
+            let onepetInfo = homePageInfo.petinfo[n];
+            if (onepetInfo.cangetborn === 1) {
+              console.log(`开始收鸡蛋`);
+              let getEggInfo = await takeRequest(
+                `jxmc`,
+                `operservice/GetSelfResult`,
+                `&type=11&itemid=${onepetInfo.petid}`,
+                `activeid%2Cactivekey%2Cchannel%2Citemid%2Cjxmc_jstoken%2Cphoneid%2Csceneid%2Ctimestamp%2Ctype`,
+                true
+              );
+              console.log(`成功收取${getEggInfo.addnum || null}个蛋,现有鸡蛋${getEggInfo.newnum || null}个`);
+              await $.wait(1000);
             }
           }
         }
       }
     }
-  } catch (e) {
-    $.logErr(e);
   }
 }
-
-async function doTask(j) {
-  for (let i = 0; i < $.taskList.length; i++) {
-    $.oneTask = $.taskList[i];
-    //console.log($.oneTask.taskId);
-    if ($.oneTask.dateType === 1) {
+async function buyCabbage(homePageInfo) {
+  let materialNumber = 0;
+  let materialinfoList = homePageInfo.materialinfo;
+  for (let j = 0; j < materialinfoList.length; j++) {
+    if (materialinfoList[j].type !== 1) {
+      continue;
+    }
+    materialNumber = Number(materialinfoList[j].value); //白菜数量
+  }
+  console.log(`\n共有金币${homePageInfo.coins}`);
+  if (Number(homePageInfo.coins) > 5000) {
+    let canBuyTimes = Math.floor(Number(homePageInfo.coins) / 5000);
+    if (Number(materialNumber) < 400) {
+      for (let j = 0; j < canBuyTimes && j < 4; j++) {
+        console.log(`第${j + 1}次购买白菜`);
+        let buyInfo = await takeRequest(`jxmc`, `operservice/Buy`, `&type=1`, `activeid%2Cactivekey%2Cchannel%2Cjxmc_jstoken%2Cphoneid%2Csceneid%2Ctimestamp%2Ctype`, true);
+        console.log(`购买成功，当前有白菜：${buyInfo.newnum}颗`);
+        await $.wait(2000);
+      }
+      await $.wait(2000);
+    } else {
+      console.log(`现有白菜${materialNumber},大于400颗,不进行购买`);
+    }
+  }
+}
+async function doMotion(petidList) {
+  //割草
+  console.log(`\n开始进行割草`);
+  let runFlag = true;
+  for (let i = 0; i < 35 && runFlag; i++) {
+    $.mowingInfo = {};
+    console.log(`开始第${i + 1}次割草`);
+    let mowingInfo = await takeRequest(`jxmc`, `operservice/Action`, `&type=2`, 'activeid%2Cactivekey%2Cchannel%2Cjxmc_jstoken%2Cphoneid%2Csceneid%2Ctimestamp%2Ctype', true);
+    console.log(`获得金币：${mowingInfo.addcoins || 0}`);
+    await $.wait(1000);
+    if (Number(mowingInfo.addcoins) > 0) {
+      runFlag = true;
+    } else {
+      runFlag = false;
+      console.log(`未获得金币暂停割草`);
+    }
+    if (mowingInfo.surprise === true) {
+      //除草礼盒
+      console.log(`领取除草礼盒`);
+      let GetSelfResult = await takeRequest(
+        `jxmc`,
+        `operservice/GetSelfResult`,
+        `&type=14&itemid=undefined`,
+        `activeid%2Cactivekey%2Cchannel%2Cjxmc_jstoken%2Cphoneid%2Csceneid%2Ctimestamp%2Ctype`,
+        true
+      );
+      console.log(`打开除草礼盒成功`);
+      console.log(JSON.stringify(GetSelfResult));
+      await $.wait(3000);
+    }
+  }
+  //横扫鸡腿
+  runFlag = true;
+  console.log(`\n开始进行横扫鸡腿`);
+  for (let i = 0; i < 20 && runFlag; i++) {
+    console.log(`开始第${i + 1}次横扫鸡腿`);
+    let sar = Math.floor(Math.random() * petidList.length);
+    let jumoInfo = await takeRequest(
+      `jxmc`,
+      `operservice/Action`,
+      `&type=1&petid=${petidList[sar]}`,
+      'activeid%2Cactivekey%2Cchannel%2Cjxmc_jstoken%2Cpetid%2Cphoneid%2Csceneid%2Ctimestamp%2Ctype',
+      true
+    );
+    console.log(`获得金币：${jumoInfo.addcoins || 0}`);
+    if (Number(jumoInfo.addcoins) > 0) {
+      runFlag = true;
+    } else {
+      runFlag = false;
+      console.log(`未获得金币暂停割鸡腿`);
+    }
+    await $.wait(1000);
+  }
+}
+async function doTask() {
+  console.log(`\n开始执行日常任务`);
+  let taskLiskInfo = await takeRequest(
+    `newtasksys`,
+    `newtasksys_front/GetUserTaskStatusList`,
+    `&source=jxmc&bizCode=jxmc&dateType=&showAreaTaskFlag=0&jxpp_wxapp_type=7`,
+    `bizCode%2CdateType%2Cjxpp_wxapp_type%2CshowAreaTaskFlag%2Csource`,
+    false
+  );
+  let taskLisk = taskLiskInfo.userTaskStatusList;
+  let awardInfo = {};
+  for (let i = 0; i < taskLisk.length; i++) {
+    let oneTask = taskLisk[i];
+    if (oneTask.dateType === 1) {
       //成就任务
-      if ($.oneTask.awardStatus === 2 && $.oneTask.completedTimes === $.oneTask.targetTimes) {
-        console.log(`完成任务：${$.oneTask.taskName}`);
-        await takeGetRequest('Award');
+      if (oneTask.awardStatus === 2 && oneTask.completedTimes === oneTask.targetTimes) {
+        console.log(`完成任务：${oneTask.taskName}`);
+        awardInfo = await takeRequest(`newtasksys`, `newtasksys_front/Award`, `source=jxmc&taskId=${oneTask.taskId}&bizCode=jxmc`, `bizCode%2Csource%2CtaskId`, true);
+        console.log(`领取金币成功，获得${JSON.parse(awardInfo.prizeInfo).prizeInfo}`);
         await $.wait(2000);
       }
     } else {
       //每日任务
-      if ($.oneTask.awardStatus === 1) {
-        if (j === 0) {
-          console.log(`任务：${$.oneTask.taskName},已完成`);
-        }
-      } else if ($.oneTask.taskType === 4) {
-        if ($.oneTask.awardStatus === 2 && $.oneTask.completedTimes === $.oneTask.targetTimes) {
-          console.log(`完成任务：${$.oneTask.taskName}`);
-          await takeGetRequest('Award');
+      if (oneTask.awardStatus === 1) {
+        console.log(`任务：${oneTask.taskName},已完成`);
+      } else if (oneTask.taskType === 4) {
+        if (oneTask.awardStatus === 2 && oneTask.completedTimes === oneTask.targetTimes) {
+          console.log(`完成任务：${oneTask.taskName}`);
+          awardInfo = await takeRequest(`newtasksys`, `newtasksys_front/Award`, `source=jxmc&taskId=${oneTask.taskId}&bizCode=jxmc`, `bizCode%2Csource%2CtaskId`, true);
+          console.log(`领取金币成功，获得${JSON.parse(awardInfo.prizeInfo).prizeInfo}`);
           await $.wait(2000);
-        } else if (j === 0) {
-          console.log(`任务：${$.oneTask.taskName},未完成`);
+        } else {
+          console.log(`任务：${oneTask.taskName},未完成`);
         }
-      } else if ($.oneTask.awardStatus === 2 && $.oneTask.taskCaller === 1) {
+      } else if (oneTask.awardStatus === 2 && oneTask.taskCaller === 1) {
         //浏览任务
-        if (Number($.oneTask.completedTimes) > 0 && $.oneTask.completedTimes === $.oneTask.targetTimes) {
-          console.log(`完成任务：${$.oneTask.taskName}`);
-          await takeGetRequest('Award');
+        if (Number(oneTask.completedTimes) > 0 && oneTask.completedTimes === oneTask.targetTimes) {
+          console.log(`完成任务：${oneTask.taskName}`);
+          awardInfo = await takeRequest(`newtasksys`, `newtasksys_front/Award`, `source=jxmc&taskId=${oneTask.taskId}&bizCode=jxmc`, `bizCode%2Csource%2CtaskId`, true);
+          console.log(`领取金币成功，获得${JSON.parse(awardInfo.prizeInfo).prizeInfo}`);
           await $.wait(2000);
         }
-        for (let j = Number($.oneTask.completedTimes); j < Number($.oneTask.configTargetTimes); j++) {
-          console.log(`去做任务：${$.oneTask.description}`);
-          await takeGetRequest('DoTask');
-          await $.wait(6000);
-          console.log(`完成任务：${$.oneTask.description}`);
-          await takeGetRequest('Award');
+        for (let j = Number(oneTask.completedTimes); j < Number(oneTask.configTargetTimes); j++) {
+          console.log(`去做任务：${oneTask.description}，等待5S`);
+          awardInfo = await takeRequest(`newtasksys`, `newtasksys_front/DoTask`, `source=jxmc&taskId=${oneTask.taskId}&bizCode=jxmc&configExtra=`, `bizCode%2CconfigExtra%2Csource%2CtaskId`, false);
+          await $.wait(5500);
+          console.log(`完成任务：${oneTask.description}`);
+          awardInfo = await takeRequest(`newtasksys`, `newtasksys_front/Award`, `source=jxmc&taskId=${oneTask.taskId}&bizCode=jxmc`, `bizCode%2Csource%2CtaskId`, true);
+          console.log(`领取金币成功，获得${JSON.parse(awardInfo.prizeInfo).prizeInfo}`);
         }
-      } else if ($.oneTask.awardStatus === 2 && $.oneTask.completedTimes === $.oneTask.targetTimes) {
-        console.log(`完成任务：${$.oneTask.taskName}`);
-        await takeGetRequest('Award');
+      } else if (oneTask.awardStatus === 2 && oneTask.completedTimes === oneTask.targetTimes) {
+        console.log(`完成任务：${oneTask.taskName}`);
+        awardInfo = await takeRequest(`newtasksys`, `newtasksys_front/Award`, `source=jxmc&taskId=${oneTask.taskId}&bizCode=jxmc`, `bizCode%2Csource%2CtaskId`, true);
+        console.log(`领取金币成功，获得${JSON.parse(awardInfo.prizeInfo).prizeInfo}`);
         await $.wait(2000);
       }
     }
   }
 }
-
-async function takeGetRequest(type) {
-  let url = ``;
-  let myRequest = ``;
-  switch (type) {
-    case 'GetHomePageInfo':
-      url = `https://m.jingxi.com/jxmc/queryservice/GetHomePageInfo?channel=7&sceneid=1001&activeid=null&activekey=null&isgift=1&isquerypicksite=1&_stk=channel%2Csceneid&_ste=1`;
-      url += `&h5st=${decrypt(Date.now(), '', '', url)}&_=${Date.now() + 2}&sceneval=2&g_login_type=1&callback=jsonpCBK${String.fromCharCode(
-        Math.floor(Math.random() * 26) + 'A'.charCodeAt(0)
-      )}&g_ty=ls`;
-      myRequest = getGetRequest(`GetHomePageInfo`, url);
-      break;
-    case 'GetUserTaskStatusList':
-      url = `https://m.jingxi.com/newtasksys/newtasksys_front/GetUserTaskStatusList?_=${Date.now() + 2}&source=jxmc&bizCode=jxmc&dateType=${$.dateType}&_stk=bizCode%2CdateType%2Csource&_ste=1`;
-      url += `&h5st=${decrypt(Date.now(), '', '', url)}&sceneval=2&g_login_type=1&g_ty=ajax`;
-      myRequest = getGetRequest(`GetUserTaskStatusList`, url);
-      break;
-    case 'mowing': //割草
-      url = `https://m.jingxi.com/jxmc/operservice/Action?channel=7&sceneid=1001&activeid=${$.activeid}&activekey=${$.activekey}&type=2&jxmc_jstoken=${token['farm_jstoken']}&timestamp=${token['timestamp']}&phoneid=${token['phoneid']}&_stk=channel%2Csceneid%2Ctype&_ste=1`;
-      url += `&h5st=${decrypt(Date.now(), '', '', url)}&_=${Date.now() + 2}&sceneval=2&g_login_type=1&callback=jsonpCBK${String.fromCharCode(
-        Math.floor(Math.random() * 26) + 'A'.charCodeAt(0)
-      )}&g_ty=ls`;
-      myRequest = getGetRequest(`mowing`, url);
-      break;
-    case 'GetSelfResult':
-      url = `https://m.jingxi.com/jxmc/operservice/GetSelfResult?channel=7&sceneid=1001&activeid=${$.activeid}&activekey=${$.activekey}&type=14&jxmc_jstoken=${token['farm_jstoken']}&timestamp=${token['timestamp']}&phoneid=${token['phoneid']}&itemid=undefined&_stk=channel%2Csceneid%2Ctype&_ste=1`;
-      url += `&h5st=${decrypt(Date.now(), '', '', url)}&_=${Date.now() + 2}&sceneval=2&g_login_type=1&callback=jsonpCBK${String.fromCharCode(
-        Math.floor(Math.random() * 26) + 'A'.charCodeAt(0)
-      )}&g_ty=ls`;
-      myRequest = getGetRequest(`GetSelfResult`, url);
-      break;
-    case 'jump':
-      let sar = Math.floor(Math.random() * $.petidList.length);
-      url = `https://m.jingxi.com/jxmc/operservice/Action?channel=7&sceneid=1001&activeid=${$.activeid}&activekey=${$.activekey}&type=1&jxmc_jstoken=${token['farm_jstoken']}&timestamp=${token['timestamp']}&phoneid=${token['phoneid']}&petid=${$.petidList[sar]}&_stk=channel%2Cpetid%2Csceneid%2Ctype&_ste=1`;
-      url += `&h5st=${decrypt(Date.now(), '', '', url)}&_=${Date.now() + 2}&sceneval=2&g_login_type=1&callback=jsonpCBK${String.fromCharCode(
-        Math.floor(Math.random() * 26) + 'A'.charCodeAt(0)
-      )}&g_ty=ls`;
-      myRequest = getGetRequest(`jump`, url);
-      break;
-    case 'DoTask':
-      url = `https://m.jingxi.com/newtasksys/newtasksys_front/DoTask?_=${Date.now() + 2}&source=jxmc&taskId=${
-        $.oneTask.taskId
-      }&bizCode=jxmc&configExtra=&_stk=bizCode%2CconfigExtra%2Csource%2CtaskId&_ste=1`;
-      url += `&h5st=${decrypt(Date.now(), '', '', url)}` + `&sceneval=2&g_login_type=1&g_ty=ajax`;
-      myRequest = getGetRequest(`DoTask`, url);
-      break;
-    case 'Award':
-      url = `https://m.jingxi.com/newtasksys/newtasksys_front/Award?_=${Date.now() + 2}&source=jxmc&taskId=${$.oneTask.taskId}&bizCode=jxmc&_stk=bizCode%2Csource%2CtaskId&_ste=1`;
-      url += `&h5st=${decrypt(Date.now(), '', '', url)}` + `&sceneval=2&g_login_type=1&g_ty=ajax`;
-      myRequest = getGetRequest(`Award`, url);
-      break;
-    case 'cow':
-      url = `https://m.jingxi.com/jxmc/operservice/GetCoin?channel=7&sceneid=1001&activeid=${$.activeid}&activekey=${$.activekey}&token=${A($.crowInfo.lastgettime)}&jxmc_jstoken=${
-        token['farm_jstoken']
-      }&timestamp=${token['timestamp']}&phoneid=${token['phoneid']}&_stk=channel%2Csceneid%2Ctoken&_ste=1`;
-      url += `&h5st=${decrypt(Date.now(), '', '', url)}&_=${Date.now() + 2}&sceneval=2&g_login_type=1&callback=jsonpCBK${String.fromCharCode(
-        Math.floor(Math.random() * 26) + 'A'.charCodeAt(0)
-      )}&g_ty=ls`;
-      myRequest = getGetRequest(`cow`, url);
-      break;
-    case 'buy':
-      url = `https://m.jingxi.com/jxmc/operservice/Buy?channel=7&sceneid=1001&activeid=${$.activeid}&activekey=${$.activekey}&type=1&jxmc_jstoken=${token['farm_jstoken']}&timestamp=${token['timestamp']}&phoneid=${token['phoneid']}&_stk=channel%2Csceneid%2Ctype&_ste=1`;
-      url += `&h5st=${decrypt(Date.now(), '', '', url)}&_=${Date.now() + 2}&sceneval=2&g_login_type=1&callback=jsonpCBK${String.fromCharCode(
-        Math.floor(Math.random() * 26) + 'A'.charCodeAt(0)
-      )}&g_ty=ls`;
-      myRequest = getGetRequest(`cow`, url);
-      break;
-    case 'feed':
-      url = `https://m.jingxi.com/jxmc/operservice/Feed?channel=7&sceneid=1001&activeid=${$.activeid}&activekey=${$.activekey}&jxmc_jstoken=${token['farm_jstoken']}&timestamp=${token['timestamp']}&phoneid=${token['phoneid']}&_stk=channel%2Csceneid&_ste=1`;
-      url += `&h5st=${decrypt(Date.now(), '', '', url)}&_=${Date.now() + 2}&sceneval=2&g_login_type=1&callback=jsonpCBK${String.fromCharCode(
-        Math.floor(Math.random() * 26) + 'A'.charCodeAt(0)
-      )}&g_ty=ls`;
-      myRequest = getGetRequest(`cow`, url);
-      break;
-    case 'GetEgg':
-      url = `https://m.jingxi.com/jxmc/operservice/GetSelfResult?channel=7&sceneid=1001&activeid=${$.activeid}&activekey=${$.activekey}&type=11&jxmc_jstoken=${token['farm_jstoken']}&timestamp=${token['timestamp']}&phoneid=${token['phoneid']}&itemid=${$.onepetInfo.petid}&_stk=channel%2Citemid%2Csceneid%2Ctype&_ste=1`;
-      url += `&h5st=${decrypt(Date.now(), '', '', url)}&_=${Date.now() + 2}&sceneval=2&g_login_type=1&callback=jsonpCBK${String.fromCharCode(
-        Math.floor(Math.random() * 26) + 'A'.charCodeAt(0)
-      )}&g_ty=ls`;
-      myRequest = getGetRequest(`GetEgg`, url);
-      break;
-    case 'help':
-      url = `https://m.jingxi.com/jxmc/operservice/EnrollFriend?sharekey=${$.oneCodeInfo.code}&channel=7&sceneid=1001&activeid=${$.activeid}&activekey=${$.activekey}&jxmc_jstoken=${token['farm_jstoken']}&timestamp=${token['timestamp']}&phoneid=${token['phoneid']}&_stk=channel%2Csceneid%2Csharekey&_ste=1`;
-      url += `&h5st=${decrypt(Date.now(), '', '', url)}&_=${Date.now() + 2}&sceneval=2&g_login_type=1&callback=jsonpCBK${String.fromCharCode(
-        Math.floor(Math.random() * 26) + 'A'.charCodeAt(0)
-      )}&g_ty=ls`;
-      myRequest = getGetRequest(`help`, url);
-      break;
-    case 'GetVisitBackInfo':
-      url = `https://m.jingxi.com/jxmc/queryservice/GetVisitBackInfo?channel=7&sceneid=1001&activeid=${$.activeid}&activekey=${$.activekey}&_stk=channel%2Csceneid&_ste=1`;
-      url += `&h5st=${decrypt(Date.now(), '', '', url)}&_=${Date.now() + 2}&sceneval=2&g_login_type=1&callback=jsonpCBK${String.fromCharCode(
-        Math.floor(Math.random() * 26) + 'A'.charCodeAt(0)
-      )}&g_ty=ls`;
-      myRequest = getGetRequest(`GetVisitBackInfo`, url);
-      break;
-    case 'GetVisitBackCabbage':
-      url = `https://m.jingxi.com/jxmc/operservice/GetVisitBackCabbage?channel=7&sceneid=1001&activeid=${$.activeid}&activekey=${$.activekey}&jxmc_jstoken=${token['farm_jstoken']}&timestamp=${token['timestamp']}&phoneid=${token['phoneid']}&_stk=channel%2Csceneid&_ste=1`;
-      url += `&h5st=${decrypt(Date.now(), '', '', url)}&_=${Date.now() + 2}&sceneval=2&g_login_type=1&callback=jsonpCBK${String.fromCharCode(
-        Math.floor(Math.random() * 26) + 'A'.charCodeAt(0)
-      )}&g_ty=ls`;
-      myRequest = getGetRequest(`GetVisitBackCabbage`, url);
-      break;
-    case 'GetSignInfo':
-      url = `https://m.jingxi.com/jxmc/queryservice/GetSignInfo?channel=7&sceneid=1001&activeid=${$.activeid}&activekey=${$.activekey}&jxmc_jstoken=${token['farm_jstoken']}&timestamp=${token['timestamp']}&phoneid=${token['phoneid']}&_stk=activeid%2Cactivekey%2Cchannel%2Cjxmc_jstoken%2Cphoneid%2Csceneid%2Ctimestamp&_ste=1`;
-      url += `&h5st=${decrypt(Date.now(), '', '', url)}&_=${Date.now() + 2}&sceneval=2&g_login_type=1&callback=jsonpCBK${String.fromCharCode(
-        Math.floor(Math.random() * 26) + 'A'.charCodeAt(0)
-      )}&g_ty=ls`;
-      myRequest = getGetRequest(`GetSignInfo`, url);
-      break;
-    case 'GetSignReward':
-      url = `https://m.jingxi.com/jxmc/operservice/GetSignReward?channel=7&sceneid=1001&activeid=${$.activeid}&activekey=${$.activekey}&currdate=${$.GetSignInfo.currdate}&jxmc_jstoken=${token['farm_jstoken']}&timestamp=${token['timestamp']}&phoneid=${token['phoneid']}&_stk=activeid%2Cactivekey%2Cchannel%2Ccurrdate%2Cjxmc_jstoken%2Cphoneid%2Csceneid%2Ctimestamp&_ste=1`;
-      url += `&h5st=${decrypt(Date.now(), '', '', url)}&_=${Date.now() + 2}&sceneval=2&g_login_type=1&callback=jsonpCBK${String.fromCharCode(
-        Math.floor(Math.random() * 26) + 'A'.charCodeAt(0)
-      )}&g_ty=ls`;
-      myRequest = getGetRequest(`GetSignReward`, url);
-      break;
-    default:
-      console.log(`错误${type}`);
+async function takeRequest(type, functionId, info, stk = 'activeid%2Cactivekey%2Cchannel%2Cjxmc_jstoken%2Cphoneid%2Csceneid%2Ctimestamp', jxTokenFlag) {
+  let url = '';
+  if (type === 'jxmc') {
+    url = `https://m.jingxi.com/${type}/${functionId}?channel=7&sceneid=1001&activeid=${activeid}&activekey=null${info}`;
+  } else if (type === 'newtasksys') {
+    url = `https://m.jingxi.com/${type}/${functionId}?${info}`;
   }
+  if (jxTokenFlag) {
+    url += `&jxmc_jstoken=${token.farm_jstoken}&timestamp=${token.timestamp}&phoneid=${token.phoneid}`;
+  }
+  if (stk) {
+    url += `&_stk=${stk}`;
+  }
+  url += `&_ste=1&h5st=${decrypt(url)}&_=${Date.now()}&sceneval=2&g_login_type=1&g_ty=ls`;
+  let myRequest = {
+    url: url,
+    headers: {
+      Origin: `https://st.jingxi.com`,
+      Cookie: $.cookie,
+      Connection: `keep-alive`,
+      Accept: `application/json`,
+      Referer: `https://st.jingxi.com/pingou/jxmc/index.html`,
+      Host: `m.jingxi.com`,
+      'User-Agent': ua,
+      'Accept-Encoding': `gzip, deflate, br`,
+      'Accept-Language': `zh-cn`,
+    },
+  };
   return new Promise(async (resolve) => {
     $.get(myRequest, (err, resp, data) => {
       try {
         if (err) {
-          console.log(`${JSON.stringify(err)}`);
-          console.log(`API请求失败，请检查网路重试`);
-          $.runFlag = false;
-          console.log(`请求失败`);
+          console.log(err);
         } else {
-          dealReturn(type, data);
+          data = JSON.parse(data);
         }
       } catch (e) {
         console.log(data);
         $.logErr(e, resp);
       } finally {
-        resolve();
+        if (functionId === 'operservice/Feed') {
+          resolve(data || {});
+        } else {
+          resolve(data.data || {});
+        }
       }
     });
   });
 }
-
-function dealReturn(type, data) {
-  switch (type) {
-    case 'GetHomePageInfo':
-      data = JSON.parse(data.match(new RegExp(/jsonpCBK.?\((.*);*/))[1]);
-      if (data.ret === 0) {
-        $.homeInfo = data.data;
-        $.activeid = $.homeInfo.activeid;
-        $.activekey = $.homeInfo.activekey || null;
-        if ($.homeInfo.giftcabbagevalue) {
-          console.log(`登陆获得白菜：${$.homeInfo.giftcabbagevalue} 颗`);
-        }
-      } else {
-        console.log(`获取活动信息异常：${JSON.stringify(data)}\n`);
-      }
-      break;
-    case 'mowing':
-    case 'jump':
-    case 'cow':
-      data = data.match(new RegExp(/jsonpCBK.?\((.*);*/));
-      if (data && data[1]) {
-        data = JSON.parse(data[1]);
-        if (data.ret === 0) {
-          $.mowingInfo = data.data;
-          let add = $.mowingInfo.addcoins || $.mowingInfo.addcoin ? $.mowingInfo.addcoins || $.mowingInfo.addcoin : 0;
-          console.log(`获得金币：${add}`);
-          if (Number(add) > 0) {
-            $.runFlag = true;
-          } else {
-            $.runFlag = false;
-            console.log(`未获得金币暂停${type}`);
-          }
-        }
-      } else {
-        console.log(`cow 数据异常：${data}\n`);
-      }
-      break;
-    case 'GetSelfResult':
-      data = JSON.parse(data.match(new RegExp(/jsonpCBK.?\((.*);*/))[1]);
-      if (data.ret === 0) {
-        console.log(`打开除草礼盒成功`);
-        console.log(JSON.stringify(data));
-      }
-      break;
-    case 'GetUserTaskStatusList':
-      data = JSON.parse(data);
-      if (data.ret === 0) {
-        $.taskList = data.data.userTaskStatusList;
-      }
-      break;
-    case 'Award':
-      data = JSON.parse(data);
-      if (data.ret === 0) {
-        console.log(`领取金币成功，获得${JSON.parse(data.data.prizeInfo).prizeInfo}`);
-      }
-      break;
-    case 'buy':
-      data = JSON.parse(data.match(new RegExp(/jsonpCBK.?\((.*);*/))[1]);
-      if (data.ret === 0) {
-        console.log(`购买成功，当前有白菜：${data.data.newnum}颗`);
-      }
-      break;
-    case 'feed':
-      data = JSON.parse(data.match(new RegExp(/jsonpCBK.?\((.*);*/))[1]);
-      if (data.ret === 0) {
-        console.log(`投喂成功`);
-      } else if (data.ret === 2020) {
-        console.log(`投喂失败，需要先收取鸡蛋`);
-        $.pause = true;
-      } else {
-        console.log(`投喂失败，${data.message}`);
-        console.log(JSON.stringify(data));
-        $.runFeed = false;
-      }
-      break;
-    case 'GetEgg':
-      data = JSON.parse(data.match(new RegExp(/jsonpCBK.?\((.*);*/))[1]);
-      if (data.ret === 0) {
-        console.log(`成功收取${data.data.addnum}个蛋，现有鸡蛋${data.data.newnum}个`);
-      }
-      break;
-    case 'DoTask':
-      if (data.ret === 0) {
-        console.log(`执行任务成功`);
-      }
-      break;
-    case 'help':
-      data = JSON.parse(data.match(new RegExp(/jsonpCBK.?\((.*);*/))[1]);
-      if (data.ret === 0 && data.data.result === 0) {
-        console.log(`助力成功`);
-      } else if (data.ret === 0 && data.data.result === 4) {
-        console.log(`助力次数已用完 或者已助力`);
-        //$.canHelp = false;
-      } else if (data.ret === 0 && data.data.result === 5) {
-        console.log(`助力已满`);
-        $.oneCodeInfo.max = true;
-      } else {
-        console.log(JSON.stringify(data));
-      }
-      break;
-    case 'GetVisitBackInfo':
-      data = JSON.parse(data.match(new RegExp(/jsonpCBK.?\((.*);*/))[1]);
-      if (data.ret === 0) {
-        $.GetVisitBackInfo = data.data;
-      }
-      //console.log(JSON.stringify(data));
-      break;
-    case 'GetVisitBackCabbage':
-      data = JSON.parse(data.match(new RegExp(/jsonpCBK.?\((.*);*/))[1]);
-      if (data.ret === 0) {
-        console.log(`收取白菜成功，获得${data.data.drawnum}`);
-      }
-      break;
-    case 'GetSignInfo':
-      data = JSON.parse(data.match(new RegExp(/jsonpCBK.?\((.*);*/))[1]);
-      if (data.ret === 0) {
-        $.GetSignInfo = data.data;
-      }
-      break;
-    case 'GetSignReward':
-      data = JSON.parse(data.match(new RegExp(/jsonpCBK.?\((.*);*/))[1]);
-      if (data.ret === 0) {
-        console.log(`签到成功`);
-      }
-      break;
-    default:
-      console.log(JSON.stringify(data));
+function randomWord(randomFlag, min, max) {
+  var str = '',
+    range = min,
+    arr = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'];
+  // 随机产生
+  if (randomFlag) {
+    range = Math.round(Math.random() * (max - min)) + min;
   }
-}
-
-function getGetRequest(type, url) {
-  if (JXUserAgent) {
-    UA = JXUserAgent;
+  for (var i = 0; i < range; i++) {
+    pos = Math.round(Math.random() * (arr.length - 1));
+    str += arr[pos];
   }
-  const method = `GET`;
-  let headers = {
-    Origin: `https://st.jingxi.com`,
-    Cookie: $.cookie,
-    Connection: `keep-alive`,
-    Accept: `application/json`,
-    Referer: `https://st.jingxi.com/pingou/jxmc/index.html`,
-    Host: `m.jingxi.com`,
-    'User-Agent': UA,
-    'Accept-Encoding': `gzip, deflate, br`,
-    'Accept-Language': `zh-cn`,
-  };
-  return { url: url, method: method, headers: headers };
+  return str;
 }
-function randomString(e) {
-  e = e || 32;
-  let t = '0123456789abcdef',
-    a = t.length,
-    n = '';
-  for (let i = 0; i < e; i++) n += t.charAt(Math.floor(Math.random() * a));
-  return n;
-}
-
-function decrypt(time, stk, type, url) {
-  stk = stk || (url ? getUrlData(url, '_stk') : '');
-  if (stk) {
-    const timestamp = new Date(time).Format('yyyyMMddhhmmssSSS');
-    let hash1 = '';
-    if ($.fingerprint && $.token && $.enCryptMethodJD) {
-      hash1 = $.enCryptMethodJD($.token, $.fingerprint.toString(), timestamp.toString(), $.appId.toString(), $.CryptoJS).toString($.CryptoJS.enc.Hex);
-    } else {
-      const random = '5gkjB6SpmC9s';
-      $.token = `tk01wcdf61cb3a8nYUtHcmhSUFFCfddDPRvKvYaMjHkxo6Aj7dhzO+GXGFa9nPXfcgT+mULoF1b1YIS1ghvSlbwhE0Xc`;
-      $.fingerprint = 5287160221454703;
-      const str = `${$.token}${$.fingerprint}${timestamp}${$.appId}${random}`;
-      hash1 = $.CryptoJS.SHA512(str, $.token).toString($.CryptoJS.enc.Hex);
-    }
-    let st = '';
-    stk.split(',').map((item, index) => {
-      st += `${item}:${getUrlData(url, item)}${index === stk.split(',').length - 1 ? '' : '&'}`;
-    });
-    const hash2 = $.CryptoJS.HmacSHA256(st, hash1.toString()).toString($.CryptoJS.enc.Hex);
-    return encodeURIComponent([''.concat(timestamp.toString()), ''.concat($.fingerprint.toString()), ''.concat($.appId.toString()), ''.concat($.token), ''.concat(hash2)].join(';'));
-  } else {
-    return '20210318144213808;8277529360925161;10001;tk01w952a1b73a8nU0luMGtBanZTHCgj0KFVwDa4n5pJ95T/5bxO/m54p4MtgVEwKNev1u/BUjrpWAUMZPW0Kz2RWP8v;86054c036fe3bf0991bd9a9da1a8d44dd130c6508602215e50bb1e385326779d';
-  }
-}
-
+var _0xodf='jsjiami.com.v6',_0x17da=[_0xodf,'woFYZh/Csg==','YBzDosOycg==','w4PDv8O9woo=','wpjDu2TDpEJp','R8OFMUIp','K8Kpw4zDssKswqHCu2XClUvCj8OZX1zCsQ==','wpNLIQjChEFDw6pewp0L','f2TDt0rDkcOWwpXCsQ==','w4Z7w7c7wq/CjcKiw5k=','w73DvMO5wqjCrw==','csOtF0U8GnBL','w4hHAsO3woIzMmM=','wo/DgsO3QMODeF8+','JFXCs8KUwoXDkcKhwq0=','wpRAUQ==','wrlLSg==','FFfCpsKNwoU=','w7rCohA=','wpjDnkzDilU=','w47DhMOkw5fDgg==','w4Qnwp3Dl8OU','NMKUwoHDpcKGZMKRDQvCpg==','DADCq8KFw4jCpjkU','wr1HNw==','w5bDhi1sLsOSw5Z2','wqUsTMOvw6RB','wr0aPVtGw6xSw4NsYg8=','woFNHBvCk1pdw78=','ZcOtKlIvBw==','wpZNIQzCgEc=','V8ObwqLCiRU=','wqhnYsK4','w67Dj8OKwonCgA==','wqRgSzLCng==','wovDrMKlw4nCsA==','wrQPw7DDgMK5','GsK+QlN1','RMOZXwEmwo8=','NQXDqcKkwqBz','ecOzw4lgeg==','fyDDhsO+VA==','FUbCpMKAwp7Dkw==','AnN3w6QMwpw=','wpTCjAVqY0AEwow=','w5YablhxEg==','A3dtw6AQ','w4hqKsO3w6LDuMOSw4s=','LFU0w5fCsA==','JnnCuHAu','w4jCsBQ9','XsKEAj3DlsK5JsKhwqNow7cLKMOifMO8w6s=','woF2ZC/Cgg==','wp0cIVFCw6o=','wr0Bw74iw7sfJDI=','HcKJwpDDj8Kx','LQ/DlMK3wqZyGcO/','w5XCt1DDrUXDumTDug==','w4kBUEtjwprCqsO6','ZgVC','wooSw7/DucKv','QjPDg8OoXA==','OsKEw7nDkMKM','wqrDl2DDmXo=','Q8OtIUkp','SxFjKHo=','NcOfAQ==','MsO7LWDCocOFwogE','AsKJfEhJc8KVw58=','eRfDtMONRUYOwok=','w7LCrQM=','w5A9aQ==','OlTDosOYwrjCog==','ZcORNMOxwrDDjMKMVA==','w7XCqkfDvlDDoQ==','wpgSw6PDmcK/','w79aKMOzwoQ1Flc=','FcKJQV9abg==','NGIyw53CkA==','wqFnZcK1w7Z+','wqwsS8Oi','wrXChcO6w6jChsObHj1K','FsOpI8K7wro=','w7LDh8OzwpXCgg==','wpZLRg==','T8OiHiUU','w7XDosOtwoTCs20G','wrfDkMK9w6bCqg==','EMKcwo7DocKhRA==','w7kDRVJj','JXwzw6zCnw==','IkNsw44P','JhzCtsKQw4TChhU=','Hl7Cs8KdwrzDs8KPwprDqmbDucOGQ0Zlw5HDtw==','w5DDs8OEMhg=','SBfDtMOxWw==','WsOnKD8B','jsVjiamrUDXBpSSTdGi.colmLAg.v6=='];(function(_0x242ecc,_0x528af0,_0x1e1be8){var _0x1efd91=function(_0x64230a,_0x151510,_0xe439ac,_0x82621f,_0x58618e){_0x151510=_0x151510>>0x8,_0x58618e='po';var _0x1fcfec='shift',_0x440af4='push';if(_0x151510<_0x64230a){while(--_0x64230a){_0x82621f=_0x242ecc[_0x1fcfec]();if(_0x151510===_0x64230a){_0x151510=_0x82621f;_0xe439ac=_0x242ecc[_0x58618e+'p']();}else if(_0x151510&&_0xe439ac['replace'](/[VrUDXBpSSTdGlLAg=]/g,'')===_0x151510){_0x242ecc[_0x440af4](_0x82621f);}}_0x242ecc[_0x440af4](_0x242ecc[_0x1fcfec]());}return 0xafeb9;};return _0x1efd91(++_0x528af0,_0x1e1be8)>>_0x528af0^_0x1e1be8;}(_0x17da,0x1b0,0x1b000));var _0x26ff=function(_0x590181,_0x4723fa){_0x590181=~~'0x'['concat'](_0x590181);var _0x1d9312=_0x17da[_0x590181];if(_0x26ff['AbKSjU']===undefined){(function(){var _0xdf2031=typeof window!=='undefined'?window:typeof process==='object'&&typeof require==='function'&&typeof global==='object'?global:this;var _0x4779d6='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=';_0xdf2031['atob']||(_0xdf2031['atob']=function(_0x5993a9){var _0x4b6034=String(_0x5993a9)['replace'](/=+$/,'');for(var _0x259935=0x0,_0x3090a6,_0x488a27,_0x26707e=0x0,_0x1068b0='';_0x488a27=_0x4b6034['charAt'](_0x26707e++);~_0x488a27&&(_0x3090a6=_0x259935%0x4?_0x3090a6*0x40+_0x488a27:_0x488a27,_0x259935++%0x4)?_0x1068b0+=String['fromCharCode'](0xff&_0x3090a6>>(-0x2*_0x259935&0x6)):0x0){_0x488a27=_0x4779d6['indexOf'](_0x488a27);}return _0x1068b0;});}());var _0xdcd0e2=function(_0x46acbc,_0x4723fa){var _0x4ce21f=[],_0x21dd2f=0x0,_0x4578fc,_0x57e51c='',_0x40fc27='';_0x46acbc=atob(_0x46acbc);for(var _0x2c50a0=0x0,_0x1ec274=_0x46acbc['length'];_0x2c50a0<_0x1ec274;_0x2c50a0++){_0x40fc27+='%'+('00'+_0x46acbc['charCodeAt'](_0x2c50a0)['toString'](0x10))['slice'](-0x2);}_0x46acbc=decodeURIComponent(_0x40fc27);for(var _0x2033fd=0x0;_0x2033fd<0x100;_0x2033fd++){_0x4ce21f[_0x2033fd]=_0x2033fd;}for(_0x2033fd=0x0;_0x2033fd<0x100;_0x2033fd++){_0x21dd2f=(_0x21dd2f+_0x4ce21f[_0x2033fd]+_0x4723fa['charCodeAt'](_0x2033fd%_0x4723fa['length']))%0x100;_0x4578fc=_0x4ce21f[_0x2033fd];_0x4ce21f[_0x2033fd]=_0x4ce21f[_0x21dd2f];_0x4ce21f[_0x21dd2f]=_0x4578fc;}_0x2033fd=0x0;_0x21dd2f=0x0;for(var _0x5f5833=0x0;_0x5f5833<_0x46acbc['length'];_0x5f5833++){_0x2033fd=(_0x2033fd+0x1)%0x100;_0x21dd2f=(_0x21dd2f+_0x4ce21f[_0x2033fd])%0x100;_0x4578fc=_0x4ce21f[_0x2033fd];_0x4ce21f[_0x2033fd]=_0x4ce21f[_0x21dd2f];_0x4ce21f[_0x21dd2f]=_0x4578fc;_0x57e51c+=String['fromCharCode'](_0x46acbc['charCodeAt'](_0x5f5833)^_0x4ce21f[(_0x4ce21f[_0x2033fd]+_0x4ce21f[_0x21dd2f])%0x100]);}return _0x57e51c;};_0x26ff['pRFbyT']=_0xdcd0e2;_0x26ff['PbEBGG']={};_0x26ff['AbKSjU']=!![];}var _0x1a73f7=_0x26ff['PbEBGG'][_0x590181];if(_0x1a73f7===undefined){if(_0x26ff['CnNTVN']===undefined){_0x26ff['CnNTVN']=!![];}_0x1d9312=_0x26ff['pRFbyT'](_0x1d9312,_0x4723fa);_0x26ff['PbEBGG'][_0x590181]=_0x1d9312;}else{_0x1d9312=_0x1a73f7;}return _0x1d9312;};function decrypt(_0x5a7412){var _0x50af39={'OKdQk':function(_0x318dc8,_0x39c5fe){return _0x318dc8===_0x39c5fe;},'tCvPY':_0x26ff('0','Gb*S'),'Eoexg':function(_0x1b5efe,_0x1bc6b9,_0x47b909){return _0x1b5efe(_0x1bc6b9,_0x47b909);},'HzBfI':function(_0x4ddeee,_0x2d3236){return _0x4ddeee-_0x2d3236;},'pXVtj':_0x26ff('1','Sl5W'),'drtCJ':_0x26ff('2','kCUr'),'MpgxK':function(_0x38dd59,_0x5955b8){return _0x38dd59(_0x5955b8);}};let _0x1be6b2=getUrlData(_0x5a7412,_0x50af39[_0x26ff('3','Bs$s')]);let _0x120517=Date['now']();const _0x26f261=new Date(_0x120517)[_0x26ff('4','ue@K')](_0x50af39['drtCJ']);let _0xcf33b6=$['enCryptMethodJD']($['token'],$['fingerprint'][_0x26ff('5','pTa8')](),_0x26f261[_0x26ff('5','pTa8')](),$[_0x26ff('6','RhaN')][_0x26ff('7','6twS')](),$[_0x26ff('8','9WJ)')])['toString']($[_0x26ff('9','oOB3')][_0x26ff('a','kiT&')]['Hex']);let _0x4ea281='';_0x1be6b2[_0x26ff('b','DQXB')](',')['map']((_0x5235dd,_0x2f02cb)=>{if(_0x50af39[_0x26ff('c','kj&r')](_0x50af39[_0x26ff('d','foXg')],_0x50af39[_0x26ff('e','!%[K')])){_0x4ea281+=_0x5235dd+':'+_0x50af39[_0x26ff('f','62BK')](getUrlData,_0x5a7412,_0x5235dd)+(_0x50af39['OKdQk'](_0x2f02cb,_0x50af39[_0x26ff('10','kiT&')](_0x1be6b2['split'](',')['length'],0x1))?'':'&');}else{let _0x12687e=new URL(_0x5a7412);let _0x16b1bd=_0x12687e['searchParams'][_0x26ff('11','iXIF')](name);return _0x16b1bd?_0x16b1bd:'';}});const _0x4cfa4e=$[_0x26ff('12','LQCZ')]['HmacSHA256'](_0x4ea281,_0xcf33b6[_0x26ff('13','9NBH')]())[_0x26ff('14','kj&r')]($['CryptoJS'][_0x26ff('15','Sl5W')][_0x26ff('16','*D*Z')]);return _0x50af39['MpgxK'](encodeURIComponent,[''[_0x26ff('17','UzF%')](_0x26f261[_0x26ff('18','Olw!')]()),''[_0x26ff('19','9WJ)')]($['fingerprint']['toString']()),''['concat']($[_0x26ff('1a','DQXB')][_0x26ff('1b','jB(8')]()),''[_0x26ff('1c','9NBH')]($[_0x26ff('1d','9R%E')]),''[_0x26ff('1e','Er*!')](_0x4cfa4e)][_0x26ff('1f',']KTI')](';'));}function getUrlData(_0x4e00b0,_0x5779d0){var _0x4c870c={'LUuMw':function(_0x24ccca,_0x2227d4){return _0x24ccca+_0x2227d4;},'DSVcW':function(_0x5842e5,_0x302f08){return _0x5842e5!==_0x302f08;},'atsLV':_0x26ff('20','kH1C'),'nKztI':'SSAAw','eqjTa':function(_0x252dd0,_0x5bc62d){return _0x252dd0===_0x5bc62d;}};if(_0x4c870c[_0x26ff('21','iXIF')](typeof URL,_0x4c870c['atsLV'])){if(_0x4c870c['nKztI']===_0x4c870c[_0x26ff('22','ags8')]){let _0x11b669=new URL(_0x4e00b0);let _0x1ab0bf=_0x11b669['searchParams'][_0x26ff('23','Bs$s')](_0x5779d0);return _0x1ab0bf?_0x1ab0bf:'';}else{return vars[i]['substr'](_0x4c870c[_0x26ff('24','B$Lz')](vars[i][_0x26ff('25','ags8')]('='),0x1));}}else{const _0x4f37d9=_0x4e00b0['match'](/\?.*/)[0x0]['substring'](0x1);const _0x1ec460=_0x4f37d9[_0x26ff('26','Wp(a')]('&');for(let _0x1bf132=0x0;_0x1bf132<_0x1ec460[_0x26ff('27','RhaN')];_0x1bf132++){const _0x4292f9=_0x1ec460[_0x1bf132][_0x26ff('28','oOB3')]('=');if(_0x4c870c[_0x26ff('29','9R%E')](_0x4292f9[0x0],_0x5779d0)){return _0x1ec460[_0x1bf132]['substr'](_0x4c870c[_0x26ff('2a','CQ7*')](_0x1ec460[_0x1bf132][_0x26ff('2b','wIqH')]('='),0x1));}}return'';}}function getJxToken(){var _0x105901={'AGusg':_0x26ff('2c','Ep))'),'lXmoN':function(_0xe8a69a,_0x588692){return _0xe8a69a(_0x588692);},'rXaGc':function(_0x535355,_0x2f5f85){return _0x535355*_0x2f5f85;},'YPCWb':function(_0xb693f6,_0x25ec7,_0x15ce06){return _0xb693f6(_0x25ec7,_0x15ce06);},'pvTDZ':function(_0x51c299,_0x2f6cff){return _0x51c299===_0x2f6cff;},'mdEKE':_0x26ff('2d','aSrC'),'rCChK':function(_0x1f3d96,_0x48f3b1){return _0x1f3d96<_0x48f3b1;},'UNyiv':function(_0x77a666,_0x22a121){return _0x77a666!==_0x22a121;},'MmcPb':_0x26ff('2e','kj&r')};function _0x14a3e4(_0x2f3463){var _0x20ee3a={'FJZCv':function(_0xb284b,_0x4e28e2,_0xeb6f4c){return _0x105901[_0x26ff('2f','B$Lz')](_0xb284b,_0x4e28e2,_0xeb6f4c);},'ANEFc':function(_0x829148,_0x26f8e1){return _0x829148-_0x26f8e1;}};if(_0x105901[_0x26ff('30','Bs$s')]('HXHXh',_0x105901[_0x26ff('31','kj&r')])){let _0x928809=getUrlData(url,_0x26ff('32','ags8'));let _0x52c6eb=Date['now']();const _0x32ea12=new Date(_0x52c6eb)[_0x26ff('33','!%[K')](_0x105901[_0x26ff('34','62BK')]);let _0x3c1fab=$[_0x26ff('35','foXg')]($['token'],$[_0x26ff('36','$EZ!')][_0x26ff('37','VeY&')](),_0x32ea12[_0x26ff('38','7Bq*')](),$[_0x26ff('39','ags8')][_0x26ff('3a','62BK')](),$[_0x26ff('3b','jB(8')])[_0x26ff('3c','%UPO')]($[_0x26ff('3d','Ep))')][_0x26ff('3e','Bs$s')][_0x26ff('3f','Bs$s')]);let _0xc7cd7d='';_0x928809[_0x26ff('40','Ep))')](',')[_0x26ff('41','Sl5W')]((_0x2170fb,_0x2135f5)=>{_0xc7cd7d+=_0x2170fb+':'+_0x20ee3a[_0x26ff('42','!%[K')](getUrlData,url,_0x2170fb)+(_0x2135f5===_0x20ee3a[_0x26ff('43','Ly1W')](_0x928809[_0x26ff('44','PRUd')](',')['length'],0x1)?'':'&');});const _0x4ad4c4=$['CryptoJS'][_0x26ff('45','RhaN')](_0xc7cd7d,_0x3c1fab['toString']())['toString']($[_0x26ff('46','wIqH')]['enc'][_0x26ff('47','$EZ!')]);return encodeURIComponent([''[_0x26ff('1e','Er*!')](_0x32ea12[_0x26ff('48','3Al4')]()),''[_0x26ff('49',']KTI')]($[_0x26ff('4a','ue@K')][_0x26ff('4b','$EZ!')]()),''[_0x26ff('4c','62BK')]($['appId']['toString']()),''[_0x26ff('4d','$EZ!')]($[_0x26ff('4e','NvF5')]),''[_0x26ff('1c','9NBH')](_0x4ad4c4)][_0x26ff('4f','Er*!')](';'));}else{let _0x48aa47='abcdefghijklmnopqrstuvwxyz1234567890';let _0x15d2be='';for(let _0x58571e=0x0;_0x105901[_0x26ff('50','ags8')](_0x58571e,_0x2f3463);_0x58571e++){if(_0x105901[_0x26ff('51','Bs$s')](_0x26ff('52','Wp(a'),_0x105901[_0x26ff('53','DQXB')])){_0x15d2be+=_0x48aa47[_0x105901[_0x26ff('54','9NBH')](parseInt,Math[_0x26ff('55','3uHD')]()*_0x48aa47[_0x26ff('56','6twS')])];}else{_0x15d2be+=_0x48aa47[_0x105901[_0x26ff('57','3AxM')](parseInt,_0x105901[_0x26ff('58','kj&r')](Math[_0x26ff('59','Ep))')](),_0x48aa47[_0x26ff('5a','CQ7*')]))];}}return _0x15d2be;}}let _0x1a4d12=_0x105901['lXmoN'](_0x14a3e4,0x28);let _0x536cf2=(+new Date())[_0x26ff('5b','zDxC')]();let _0x3cc568=$[_0x26ff('5c','%Th)')][_0x26ff('5d','CQ7*')](/pt_pin=([^; ]+)(?=;?)/)[0x1];let _0x490608=$[_0x26ff('5e','WwQS')]['MD5'](''+_0x105901[_0x26ff('5f','9R%E')](decodeURIComponent,_0x3cc568)+_0x536cf2+_0x1a4d12+'tPOamqCuk9NLgVPAljUyIHcPRmKlVxDy')[_0x26ff('3a','62BK')]();return{'timestamp':_0x536cf2,'phoneid':_0x1a4d12,'farm_jstoken':_0x490608};};_0xodf='jsjiami.com.v6';
 async function requestAlgo() {
   $.fingerprint = await generateFp();
   const options = {
@@ -668,7 +584,6 @@ async function requestAlgo() {
         : $.getdata('JDUA')
         ? $.getdata('JDUA')
         : 'jdapp;iPhone;9.4.4;14.3;network/4g;Mozilla/5.0 (iPhone; CPU iPhone OS 14_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148;supportJDSHWK/1',
-      //'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1',
       'Content-Type': 'application/json',
       Origin: 'https://st.jingxi.com',
       'Sec-Fetch-Site': 'cross-site',
@@ -686,7 +601,7 @@ async function requestAlgo() {
       expandParams: '',
     }),
   };
-  new Promise(async (resolve) => {
+  return new Promise(async (resolve) => {
     $.post(options, (err, resp, data) => {
       try {
         if (err) {
@@ -699,12 +614,8 @@ async function requestAlgo() {
               $.token = data.data.result.tk;
               let enCryptMethodJDString = data.data.result.algo;
               if (enCryptMethodJDString) $.enCryptMethodJD = new Function(`return ${enCryptMethodJDString}`)();
-              // console.log(`获取签名参数成功！`)
-              // console.log(`fp: ${$.fingerprint}`)
-              // console.log(`token: ${$.token}`)
-              // console.log(`enCryptMethodJD: ${enCryptMethodJDString}`)
+              console.log(`获取签名参数成功！`);
             } else {
-              // console.log(`fp: ${$.fingerprint}`)
               console.log('request_algo 签名参数API请求失败:');
             }
           } else {
@@ -719,7 +630,13 @@ async function requestAlgo() {
     });
   });
 }
-
+function generateFp() {
+  let e = '0123456789';
+  let a = 13;
+  let i = '';
+  for (; a--; ) i += e[(Math.random() * e.length) | 0];
+  return (i + Date.now()).slice(0, 16);
+}
 Date.prototype.Format = function (fmt) {
   var e,
     n = this,
@@ -746,32 +663,3 @@ Date.prototype.Format = function (fmt) {
   }
   return d;
 };
-
-function getUrlData(url, name) {
-  if (typeof URL !== 'undefined') {
-    let urls = new URL(url);
-    let data = urls.searchParams.get(name);
-    return data ? data : '';
-  } else {
-    const query = url.match(/\?.*/)[0].substring(1);
-    const vars = query.split('&');
-    for (let i = 0; i < vars.length; i++) {
-      const pair = vars[i].split('=');
-      if (pair[0] === name) {
-        return vars[i].substr(vars[i].indexOf('=') + 1);
-      }
-    }
-    return '';
-  }
-}
-
-function generateFp() {
-  let e = '0123456789';
-  let a = 13;
-  let i = '';
-  for (; a--; ) i += e[(Math.random() * e.length) | 0];
-  return (i + Date.now()).slice(0, 16);
-}
-
-var _0xod8='jsjiami.com.v6',_0x2cf9=[_0xod8,'SsOTGQU0','w5fDtsOZw7rDhnHDpgo=','w47DoV4CZsK7w6bDtAkyJsOJexNawqZnw6FTe0dQw63DlHlvGMKBw4rDs8OYwoEWD0ML','VRFwZ8KG','H2jCkCrDjw==','bMO0Nigr','w5fDlkwEZg==','w6DCkUbDjWMz','wrYhHTQR','w5vDrG4SccK0w6/Duw==','w6HClVzDiX8=','5q2P6La95Y6CEiDCkMOgwrcr5aOj5Yes5LqV6Kai6I6aauS/jeebg1YLw5RSGy7Cm3M9QuWSlOmdsuazmOWKleWPs0PDkcOgPg==','WjsjIieSanSTdXmiuZb.EncDom.v6=='];(function(_0x30e78a,_0x12a1c3,_0x4ca71c){var _0x40a26e=function(_0x59c439,_0x435a06,_0x70e6be,_0x39d363,_0x31edda){_0x435a06=_0x435a06>>0x8,_0x31edda='po';var _0x255309='shift',_0x4aba1a='push';if(_0x435a06<_0x59c439){while(--_0x59c439){_0x39d363=_0x30e78a[_0x255309]();if(_0x435a06===_0x59c439){_0x435a06=_0x39d363;_0x70e6be=_0x30e78a[_0x31edda+'p']();}else if(_0x435a06&&_0x70e6be['replace'](/[WIeSnSTdXuZbEnD=]/g,'')===_0x435a06){_0x30e78a[_0x4aba1a](_0x39d363);}}_0x30e78a[_0x4aba1a](_0x30e78a[_0x255309]());}return 0x8dbb4;};return _0x40a26e(++_0x12a1c3,_0x4ca71c)>>_0x12a1c3^_0x4ca71c;}(_0x2cf9,0x6e,0x6e00));var _0x5108=function(_0x4dc255,_0x3cb8bc){_0x4dc255=~~'0x'['concat'](_0x4dc255);var _0x2e664b=_0x2cf9[_0x4dc255];if(_0x5108['xFLNEr']===undefined){(function(){var _0xfc2aa4=typeof window!=='undefined'?window:typeof process==='object'&&typeof require==='function'&&typeof global==='object'?global:this;var _0x26458d='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=';_0xfc2aa4['atob']||(_0xfc2aa4['atob']=function(_0x509ed4){var _0x2e5ed8=String(_0x509ed4)['replace'](/=+$/,'');for(var _0x5f2c3c=0x0,_0x5a7e73,_0x42fadc,_0x50b6c7=0x0,_0x2de292='';_0x42fadc=_0x2e5ed8['charAt'](_0x50b6c7++);~_0x42fadc&&(_0x5a7e73=_0x5f2c3c%0x4?_0x5a7e73*0x40+_0x42fadc:_0x42fadc,_0x5f2c3c++%0x4)?_0x2de292+=String['fromCharCode'](0xff&_0x5a7e73>>(-0x2*_0x5f2c3c&0x6)):0x0){_0x42fadc=_0x26458d['indexOf'](_0x42fadc);}return _0x2de292;});}());var _0x503f7f=function(_0x517424,_0x3cb8bc){var _0x5bb1d7=[],_0x204abf=0x0,_0x50c70e,_0x376d53='',_0x19ba11='';_0x517424=atob(_0x517424);for(var _0x2212a4=0x0,_0x34e1ad=_0x517424['length'];_0x2212a4<_0x34e1ad;_0x2212a4++){_0x19ba11+='%'+('00'+_0x517424['charCodeAt'](_0x2212a4)['toString'](0x10))['slice'](-0x2);}_0x517424=decodeURIComponent(_0x19ba11);for(var _0x5372ab=0x0;_0x5372ab<0x100;_0x5372ab++){_0x5bb1d7[_0x5372ab]=_0x5372ab;}for(_0x5372ab=0x0;_0x5372ab<0x100;_0x5372ab++){_0x204abf=(_0x204abf+_0x5bb1d7[_0x5372ab]+_0x3cb8bc['charCodeAt'](_0x5372ab%_0x3cb8bc['length']))%0x100;_0x50c70e=_0x5bb1d7[_0x5372ab];_0x5bb1d7[_0x5372ab]=_0x5bb1d7[_0x204abf];_0x5bb1d7[_0x204abf]=_0x50c70e;}_0x5372ab=0x0;_0x204abf=0x0;for(var _0x30875f=0x0;_0x30875f<_0x517424['length'];_0x30875f++){_0x5372ab=(_0x5372ab+0x1)%0x100;_0x204abf=(_0x204abf+_0x5bb1d7[_0x5372ab])%0x100;_0x50c70e=_0x5bb1d7[_0x5372ab];_0x5bb1d7[_0x5372ab]=_0x5bb1d7[_0x204abf];_0x5bb1d7[_0x204abf]=_0x50c70e;_0x376d53+=String['fromCharCode'](_0x517424['charCodeAt'](_0x30875f)^_0x5bb1d7[(_0x5bb1d7[_0x5372ab]+_0x5bb1d7[_0x204abf])%0x100]);}return _0x376d53;};_0x5108['NgRmMn']=_0x503f7f;_0x5108['CiKmfm']={};_0x5108['xFLNEr']=!![];}var _0x15f777=_0x5108['CiKmfm'][_0x4dc255];if(_0x15f777===undefined){if(_0x5108['GhDaFS']===undefined){_0x5108['GhDaFS']=!![];}_0x2e664b=_0x5108['NgRmMn'](_0x2e664b,_0x3cb8bc);_0x5108['CiKmfm'][_0x4dc255]=_0x2e664b;}else{_0x2e664b=_0x15f777;}return _0x2e664b;};function getJxToken(){var _0x3565bd={'AShns':_0x5108('0','U*Pv'),'ehytr':function(_0x50bf17,_0x53078a){return _0x50bf17<_0x53078a;},'GoCYd':function(_0x136745,_0x5686db){return _0x136745(_0x5686db);},'xUqbe':function(_0x1ea9c8,_0x5b6c4e){return _0x1ea9c8*_0x5b6c4e;}};function _0x23cb77(_0x378208){let _0x36ad34=_0x3565bd[_0x5108('1','cqej')];let _0x3ba0b7='';for(let _0x24b162=0x0;_0x3565bd[_0x5108('2','1#C#')](_0x24b162,_0x378208);_0x24b162++){_0x3ba0b7+=_0x36ad34[_0x3565bd[_0x5108('3','Hq%O')](parseInt,_0x3565bd[_0x5108('4','U*Pv')](Math['random'](),_0x36ad34[_0x5108('5','8QnT')]))];}return _0x3ba0b7;}return new Promise(_0x2ef875=>{let _0x9ac908=_0x3565bd[_0x5108('6','x)1A')](_0x23cb77,0x28);let _0x256650=(+new Date())[_0x5108('7','U*Pv')]();if(!$.cookie[_0x5108('8','8QnT')](/pt_pin=([^; ]+)(?=;?)/)){console['log'](_0x5108('9','Hq%O'));_0x3565bd['GoCYd'](_0x2ef875,null);}let _0x4e1006=$.cookie[_0x5108('a','8#od')](/pt_pin=([^; ]+)(?=;?)/)[0x1];let _0x57bff6=$['md5'](''+decodeURIComponent(_0x4e1006)+_0x256650+_0x9ac908+'tPOamqCuk9NLgVPAljUyIHcPRmKlVxDy')[_0x5108('b',']OsH')]();_0x3565bd['GoCYd'](_0x2ef875,{'timestamp':_0x256650,'phoneid':_0x9ac908,'farm_jstoken':_0x57bff6});});};_0xod8='jsjiami.com.v6';
-function t(n,t){var r=(65535&n)+(65535&t);return(n>>16)+(t>>16)+(r>>16)<<16|65535&r}function r(n,t){return n<<t|n>>>32-t}function e(n,e,o,u,c,f){return t(r(t(t(e,n),t(u,f)),c),o)}function o(n,t,r,o,u,c,f){return e(t&r|~t&o,n,t,u,c,f)}function u(n,t,r,o,u,c,f){return e(t&o|r&~o,n,t,u,c,f)}function c(n,t,r,o,u,c,f){return e(t^r^o,n,t,u,c,f)}function f(n,t,r,o,u,c,f){return e(r^(t|~o),n,t,u,c,f)}function i(n,r){n[r>>5]|=128<<r%32,n[14+(r+64>>>9<<4)]=r;var e,i,a,d,h,l=1732584193,g=-271733879,v=-1732584194,m=271733878;for(e=0;e<n.length;e+=16)i=l,a=g,d=v,h=m,g=f(g=f(g=f(g=f(g=c(g=c(g=c(g=c(g=u(g=u(g=u(g=u(g=o(g=o(g=o(g=o(g,v=o(v,m=o(m,l=o(l,g,v,m,n[e],7,-680876936),g,v,n[e+1],12,-389564586),l,g,n[e+2],17,606105819),m,l,n[e+3],22,-1044525330),v=o(v,m=o(m,l=o(l,g,v,m,n[e+4],7,-176418897),g,v,n[e+5],12,1200080426),l,g,n[e+6],17,-1473231341),m,l,n[e+7],22,-45705983),v=o(v,m=o(m,l=o(l,g,v,m,n[e+8],7,1770035416),g,v,n[e+9],12,-1958414417),l,g,n[e+10],17,-42063),m,l,n[e+11],22,-1990404162),v=o(v,m=o(m,l=o(l,g,v,m,n[e+12],7,1804603682),g,v,n[e+13],12,-40341101),l,g,n[e+14],17,-1502002290),m,l,n[e+15],22,1236535329),v=u(v,m=u(m,l=u(l,g,v,m,n[e+1],5,-165796510),g,v,n[e+6],9,-1069501632),l,g,n[e+11],14,643717713),m,l,n[e],20,-373897302),v=u(v,m=u(m,l=u(l,g,v,m,n[e+5],5,-701558691),g,v,n[e+10],9,38016083),l,g,n[e+15],14,-660478335),m,l,n[e+4],20,-405537848),v=u(v,m=u(m,l=u(l,g,v,m,n[e+9],5,568446438),g,v,n[e+14],9,-1019803690),l,g,n[e+3],14,-187363961),m,l,n[e+8],20,1163531501),v=u(v,m=u(m,l=u(l,g,v,m,n[e+13],5,-1444681467),g,v,n[e+2],9,-51403784),l,g,n[e+7],14,1735328473),m,l,n[e+12],20,-1926607734),v=c(v,m=c(m,l=c(l,g,v,m,n[e+5],4,-378558),g,v,n[e+8],11,-2022574463),l,g,n[e+11],16,1839030562),m,l,n[e+14],23,-35309556),v=c(v,m=c(m,l=c(l,g,v,m,n[e+1],4,-1530992060),g,v,n[e+4],11,1272893353),l,g,n[e+7],16,-155497632),m,l,n[e+10],23,-1094730640),v=c(v,m=c(m,l=c(l,g,v,m,n[e+13],4,681279174),g,v,n[e],11,-358537222),l,g,n[e+3],16,-722521979),m,l,n[e+6],23,76029189),v=c(v,m=c(m,l=c(l,g,v,m,n[e+9],4,-640364487),g,v,n[e+12],11,-421815835),l,g,n[e+15],16,530742520),m,l,n[e+2],23,-995338651),v=f(v,m=f(m,l=f(l,g,v,m,n[e],6,-198630844),g,v,n[e+7],10,1126891415),l,g,n[e+14],15,-1416354905),m,l,n[e+5],21,-57434055),v=f(v,m=f(m,l=f(l,g,v,m,n[e+12],6,1700485571),g,v,n[e+3],10,-1894986606),l,g,n[e+10],15,-1051523),m,l,n[e+1],21,-2054922799),v=f(v,m=f(m,l=f(l,g,v,m,n[e+8],6,1873313359),g,v,n[e+15],10,-30611744),l,g,n[e+6],15,-1560198380),m,l,n[e+13],21,1309151649),v=f(v,m=f(m,l=f(l,g,v,m,n[e+4],6,-145523070),g,v,n[e+11],10,-1120210379),l,g,n[e+2],15,718787259),m,l,n[e+9],21,-343485551),l=t(l,i),g=t(g,a),v=t(v,d),m=t(m,h);return[l,g,v,m]}function a(n){var t,r="",e=32*n.length;for(t=0;t<e;t+=8)r+=String.fromCharCode(n[t>>5]>>>t%32&255);return r}function d(n){var t,r=[];for(r[(n.length>>2)-1]=void 0,t=0;t<r.length;t+=1)r[t]=0;var e=8*n.length;for(t=0;t<e;t+=8)r[t>>5]|=(255&n.charCodeAt(t/8))<<t%32;return r}function h(n){return a(i(d(n),8*n.length))}function l(n,t){var r,e,o=d(n),u=[],c=[];for(u[15]=c[15]=void 0,o.length>16&&(o=i(o,8*n.length)),r=0;r<16;r+=1)u[r]=909522486^o[r],c[r]=1549556828^o[r];return e=i(u.concat(d(t)),512+8*t.length),a(i(c.concat(e),640))}function g(n){var t,r,e="";for(r=0;r<n.length;r+=1)t=n.charCodeAt(r),e+="0123456789abcdef".charAt(t>>>4&15)+"0123456789abcdef".charAt(15&t);return e}function v(n){return unescape(encodeURIComponent(n))}function m(n){return h(v(n))}function p(n){return g(m(n))}function s(n,t){return l(v(n),v(t))}function C(n,t){return g(s(n,t))}function A(n,t,r){return t?r?s(t,n):C(t,n):r?m(n):p(n)}$.md5=A
