@@ -63,6 +63,8 @@
 31 2,8 * * * node /scripts/jd_mf.js >> /scripts/logs/jd_puzzle.log 2>&1
 # 攒金币 赢大礼
 22 0,8 * * * node /scripts/jd_GoldcoinToGift.js >> /scripts/logs/jd_GoldcoinToGift.log 2>&1
+# 潮玩儿制躁团
+30 11,22 * * * node /scripts/jd_tide_play.js >> /scripts/logs/jd_tide_play.log 2>&1
 ##############长期活动##############
 # 签到
 0 0,17 * * * cd /scripts && node jd_bean_sign.js >> /scripts/logs/jd_bean_sign.log 2>&1
