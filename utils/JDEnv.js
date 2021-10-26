@@ -552,14 +552,19 @@ function env(name, opts) {
     }
     async totalBean() {
       return new Promise(async (resolve) => {
-        const urls = [
-          'https://wq.jd.com/user_new/info/GetJDUserInfoUnion?sceneval=2'
-        ];
+        const urls = ['https://wq.jd.com/user/info/QueryJDUserInfo?sceneval=2'];
         const options = {
           url: urls[jd_helpers.randomNumber(0, urls.length - 1)],
           headers: {
             Cookie: this.cookie,
             Referer: 'https://wqs.jd.com/my/jingdou/my.shtml?sceneval=2',
+            'User-Agent': this.isNode()
+              ? process.env.JD_USER_AGENT
+                ? process.env.JD_USER_AGENT
+                : require('../USER_AGENTS').USER_AGENT
+              : this.getdata('JDUA')
+              ? this.getdata('JDUA')
+              : 'jdapp;iPhone;9.4.4;14.3;network/4g;Mozilla/5.0 (iPhone; CPU iPhone OS 14_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148;supportJDSHWK/1',
           },
         };
 
