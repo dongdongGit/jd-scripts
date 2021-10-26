@@ -6,7 +6,7 @@ cron 30 11,22 * * * jd_zzt.js
 * */
 const jd_helpers = require('./utils/JDHelpers.js');
 const jd_env = require('./utils/JDEnv.js');
-const $ = jd_env.env('潮玩儿制躁团');
+let $ = jd_env.env('潮玩儿制躁团');
 const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
 let cookiesArr = [],
   cookie = '',
