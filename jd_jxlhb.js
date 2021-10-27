@@ -30,8 +30,8 @@ if ($.isNode()) {
 } else {
   cookiesArr = [$.getdata('CookieJD'), $.getdata('CookieJD2'), ...$.toObj($.getdata('CookiesJD') || '[]').map((item) => item.cookie)].filter((item) => !!item);
 }
-$.packetIdArr = [];
-$.activeId = '489177';
+$.packetIdArr = ['PMauxPQL86CJC9_QhP2WMTnclTghIb3YikNAyw3KWrl4bIUq96iwOGj_qJ9u-YqP'];
+$.activeId = '525597';
 const BASE_URL = 'https://wq.jd.com/cubeactive/steprewardv3';
 
 !(async () => {
@@ -41,20 +41,8 @@ const BASE_URL = 'https://wq.jd.com/cubeactive/steprewardv3';
   }
   console.log('京喜领88元红包\n' + '活动入口：京喜app-》我的-》京喜领88元红包\n' + '助力逻辑：先自己京东账号相互助力，如有剩余助力机会，则助力作者\n' + '温馨提示：如提示助力火爆，可尝试寻找京东客服');
   let res = {
-    codes: [
-      'sA0J0amfPeyFqzbgvE-y2gaI74FNyzusXDCrolDtDSl1Ffe2U484vy5GrKcjlRVW',
-      'sA0J0amfPeyFqzbgvE-y2tqRwON31iSASOeFuHYjxoHM5gvo3PFHtKDit6ox2T6N',
-      'sA0J0amfPeyFqzbgvE-y2hiIWClV8YRBnTMgBNSwH39NuyKCdmZ7fteCRWgQCXBF',
-      'sA0J0amfPeyFqzbgvE-y2kuyEmg-wp5x2_BAy4mDJAl1Ffe2U484vy5GrKcjlRVW',
-      'sA0J0amfPeyFqzbgvE-y2olgK5JYS91rt-eb4jCMcYC34nahYK90s2LKux5NytUE',
-      'sA0J0amfPeyFqzbgvE-y2kwK1hQMNklGYZukr1bgRAxo5KmLP7SxTfu6nKX6Y-9A',
-      'sA0J0amfPeyFqzbgvE-y2r0jcuka2nNs28XfLnwrQFKBmmR2p9NU8N9Q_k76AtJd',
-      'sA0J0amfPeyFqzbgvE-y2qn7nwG5hC8Yi1Je215kkT4uN1oWXCwb4S_LZowYKNNP',
-      'sA0J0amfPeyFqzbgvE-y2ggBcwceuB7bZb3cq2tWH4fKfUsyeq5_JbTM6XoxkX90',
-      'sA0J0amfPeyFqzbgvE-y2q5ZlUewN6DWBt1BII3h8QWkRU2jxVAmNkBoZGHiEaQR',
-      'sA0J0amfPeyFqzbgvE-y2pL_SCqdayM24TdBmzUymvk',
-    ],
-    activeId: '489177',
+    codes: [],
+    activeId: '525597',
   };
   if (res && res.activeId) $.activeId = res.activeId;
   $.authorMyShareIds = [...((res && res.codes) || [])];
@@ -117,7 +105,7 @@ const BASE_URL = 'https://wq.jd.com/cubeactive/steprewardv3';
       if (!$.packetIdArr[i]) continue;
       console.log(`\n【${$.UserName}】去拆第${grade}个红包`);
       await openRedPack($.packetIdArr[i]['strUserPin'], grade);
-      await $.wait(2000);
+      await $.wait(5000);
     }
   }
 })()
@@ -272,7 +260,7 @@ function openRedPack(strPin, grade) {
 }
 
 function getAuthorShareCode(url) {
-  return new Promise((resolve) => {
+  return new Promise(async (resolve) => {
     const options = {
       url: `${url}?${new Date()}`,
       timeout: 10000,
@@ -294,16 +282,15 @@ function getAuthorShareCode(url) {
     }
     $.get(options, async (err, resp, data) => {
       try {
-        if (err) {
-        } else {
-          if (data) data = JSON.parse(data);
-        }
+        resolve(JSON.parse(data));
       } catch (e) {
         // $.logErr(e, resp)
       } finally {
         resolve(data);
       }
     });
+    await $.wait(10000);
+    resolve();
   });
 }
 
