@@ -27,7 +27,7 @@ const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
 let cookiesArr = [],
   cookie = '',
   message = '',
-  linkId = 'DA4SkG7NXupA9sksI00L0g',
+  linkId = 'PFbUR7wtwUcQ860Sn8WRfw',
   fflLinkId = 'YhCkrVusBVa_O2K-7xE6hA';
 const JD_API_HOST = 'https://api.m.jd.com/api';
 if ($.isNode()) {
