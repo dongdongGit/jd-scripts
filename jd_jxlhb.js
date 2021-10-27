@@ -30,9 +30,7 @@ if ($.isNode()) {
 } else {
   cookiesArr = [$.getdata('CookieJD'), $.getdata('CookieJD2'), ...$.toObj($.getdata('CookiesJD') || '[]').map((item) => item.cookie)].filter((item) => !!item);
 }
-$.packetIdArr = [
-  'PMauxPQL86CJC9_QhP2WMTnclTghIb3YikNAyw3KWrl4bIUq96iwOGj_qJ9u-YqP'
-];
+$.packetIdArr = ['PMauxPQL86CJC9_QhP2WMTnclTghIb3YikNAyw3KWrl4bIUq96iwOGj_qJ9u-YqP'];
 $.activeId = '525597';
 const BASE_URL = 'https://wq.jd.com/cubeactive/steprewardv3';
 
@@ -262,7 +260,7 @@ function openRedPack(strPin, grade) {
 }
 
 function getAuthorShareCode(url) {
-  return new Promise((resolve) => {
+  return new Promise(async (resolve) => {
     const options = {
       url: `${url}?${new Date()}`,
       timeout: 10000,
@@ -284,16 +282,15 @@ function getAuthorShareCode(url) {
     }
     $.get(options, async (err, resp, data) => {
       try {
-        if (err) {
-        } else {
-          if (data) data = JSON.parse(data);
-        }
+        resolve(JSON.parse(data));
       } catch (e) {
         // $.logErr(e, resp)
       } finally {
         resolve(data);
       }
     });
+    await $.wait(10000);
+    resolve();
   });
 }
 
