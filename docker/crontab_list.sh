@@ -71,6 +71,8 @@
 13 0,9 * * * node /scripts/jd_fission.js >> /scripts/logs/jd_fission.log 2>&1
 # 预售福利机
 5 0,2 * * * node /scripts/jd_pre_sale.js >> /scripts/logs/jd_pre_sale.log 2>&1
+# 美妆馆-选品官
+27 9,10 * * * node /scripts/jd_selection_officer.js >> /scripts/logs/jd_selection_officer.log 2>&1
 ##############长期活动##############
 # 签到
 0 0,17 * * * cd /scripts && node jd_bean_sign.js >> /scripts/logs/jd_bean_sign.log 2>&1
@@ -166,6 +168,8 @@
 #41 0,23 * * * node /scripts/jd_priceProtect.js >> /scripts/logs/jd_priceProtect.log 2>&1
 # 京东极速版签到+赚现金任务
 1 1,6 * * * node /scripts/jd_speed_sign.js >> /scripts/logs/jd_speed_sign.log 2>&1
+# 京东极速版签到免单
+18 8,12,20 * * * node /scripts/jd_speed_signfree.js >> /scripts/logs/jd_speed_signfree.log 2>&1
 # 监控crazyJoy分红
 10 12 * * * node /scripts/jd_crazy_joy_bonus.js >> /scripts/logs/jd_crazy_joy_bonus.log 2>&1
 # 京喜财富岛
