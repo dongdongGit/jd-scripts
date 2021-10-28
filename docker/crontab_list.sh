@@ -73,6 +73,8 @@
 5 0,2 * * * node /scripts/jd_pre_sale.js >> /scripts/logs/jd_pre_sale.log 2>&1
 # 美妆馆-选品官
 27 9,10 * * * node /scripts/jd_selection_officer.js >> /scripts/logs/jd_selection_officer.log 2>&1
+# 京东超级盒子
+10 1,6,8 25-31,1-11 10,11 * node /scripts/jd_superbox.js >> /scripts/logs/jd_superbox.log 2>&1
 ##############长期活动##############
 # 签到
 0 0,17 * * * cd /scripts && node jd_bean_sign.js >> /scripts/logs/jd_bean_sign.log 2>&1
