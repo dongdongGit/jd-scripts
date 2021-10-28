@@ -11,7 +11,7 @@ cron "32 6 * * *" jd_try.js
  */
 const jd_helpers = require('./utils/JDHelpers.js');
 const jd_env = require('./utils/JDEnv.js');
-const $ = jd_env.env('京东试用');
+let $ = jd_env.env('京东试用');
 
 const URL = 'https://api.m.jd.com/client.action';
 let trialActivityIdList = [];
@@ -54,7 +54,9 @@ let args_xh = {
    * */
   titleFilters:
     (process.env.JD_TRY_TITLEFILTERS && process.env.JD_TRY_TITLEFILTERS.split('@')) ||
-    '教程@软件@英语@辅导@培训@燕窝@树苗@看房游@口服液@灸贴@云南旅游@掌之友@金满缘@新兴港隆@拆机@品鉴@咨询@零基础@课@训练营@礼品袋@快狐@疣@包皮@疏通@药@鱼胶@狗狗@幼犬@尿垫@浪潮英信@专家@饲料@代办@美缝剂@体验@遮瑕@洗面奶@洁面乳@抗皱@膏@猫砂@购房@消食@积食@软胶囊@养生茶@驼背@房产@辅食@打印纸@财务管理@进销存@实战@生发液@染发@补血@珍珠粉@玛咖@灰指甲@阿胶@维生素@同仁堂@讲堂@教材@补肾@开发@疹@疮@疥@软膏@真题@模拟题@专车接送@看海@学员@投资@通关@名师@酵素@全国流量@奶粉@香皂@精油@爱犬@教学@猫人@学车@你拍一@宠物@会计@考试@胶原蛋白@鲜花@系统@体检@检查@减肥@玫瑰花@股票@丰胸@大王卡@博仑帅@月租@上网卡@不限流量@日租卡@洗车机@甲醛检测@桨叶@烫发@机油@吸奶器@冰箱底座@胶漆@小靓美@洁面扑@内衣@胸罩@文胸@种子@档案袋@塑料袋@垃圾袋@癣@脚气@阴道@生殖器@肛门@狐臭@老太太@妇女@私处@孕妇@卫生巾@卫生条@培训@洋娃娃@女孩玩具@益智@女性内衣@女性内裤@女内裤@女内衣@女孩@三角裤@女士卫裤@女士内裤@鱼饵@钓鱼@尿杯@安全座椅@娃娃@辅导@网校@电商@车载充电器@美少女@纸尿裤@英语@俄语@四级@六级@四六级@在线网络@在线@阴道炎@宫颈@糜烂@猫粮@狗粮@触媒@幼儿园@手机卡@手机壳@流量卡@电话卡@人参@玉@美瞳'.split('@'),
+    '教程@软件@英语@辅导@培训@燕窝@树苗@看房游@口服液@灸贴@云南旅游@掌之友@金满缘@新兴港隆@拆机@品鉴@咨询@零基础@课@训练营@礼品袋@快狐@疣@包皮@疏通@药@鱼胶@狗狗@幼犬@尿垫@浪潮英信@专家@饲料@代办@美缝剂@体验@遮瑕@洗面奶@洁面乳@抗皱@膏@猫砂@购房@消食@积食@软胶囊@养生茶@驼背@房产@辅食@打印纸@财务管理@进销存@实战@生发液@染发@补血@珍珠粉@玛咖@灰指甲@阿胶@维生素@同仁堂@讲堂@教材@补肾@开发@疹@疮@疥@软膏@真题@模拟题@专车接送@看海@学员@投资@通关@名师@酵素@全国流量@奶粉@香皂@精油@爱犬@教学@猫人@学车@你拍一@宠物@会计@考试@胶原蛋白@鲜花@系统@体检@检查@减肥@玫瑰花@股票@丰胸@大王卡@博仑帅@月租@上网卡@不限流量@日租卡@洗车机@甲醛检测@桨叶@烫发@机油@吸奶器@冰箱底座@胶漆@小靓美@洁面扑@内衣@胸罩@文胸@种子@档案袋@塑料袋@垃圾袋@癣@脚气@阴道@生殖器@肛门@狐臭@老太太@妇女@私处@孕妇@卫生巾@卫生条@培训@洋娃娃@女孩玩具@益智@女性内衣@女性内裤@女内裤@女内衣@女孩@三角裤@女士卫裤@女士内裤@鱼饵@钓鱼@尿杯@安全座椅@娃娃@辅导@网校@电商@车载充电器@美少女@纸尿裤@英语@俄语@四级@六级@四六级@在线网络@在线@阴道炎@宫颈@糜烂@猫粮@狗粮@触媒@幼儿园@手机卡@手机壳@流量卡@电话卡@人参@玉@美瞳'.split(
+      '@'
+    ),
   /*
    * 试用价格(中了要花多少钱)，高于这个价格都不会试用，小于等于才会试用，意思就是
    * A商品原价49元，现在试用价1元，如果下面设置为10，那A商品将会被添加到待提交试用组，因为1 < 10
@@ -317,11 +319,11 @@ function try_feedsList(tabId, page) {
                 break;
               }
               if (item.applyState === 1) {
-                args_xh.printLog ? console.log(`商品已申请试用：${item.skuTitle}`) : '';
+                args_xh.printLog ? console.log(`商品已申请试用：${item.skuTitle}\n`) : '';
                 continue;
               }
               if (item.applyState !== null) {
-                args_xh.printLog ? console.log(`商品状态异常，未找到skuTitle`) : '';
+                args_xh.printLog ? console.log(`商品状态异常，未找到${item.skuTitle}\n`) : '';
                 continue;
               }
               if (args_xh.passZhongCao) {
@@ -329,7 +331,7 @@ function try_feedsList(tabId, page) {
                 if (item.tagList.length !== 0) {
                   for (let itemTag of item.tagList) {
                     if (itemTag.tagType === 3) {
-                      args_xh.printLog ? console.log('商品被过滤，该商品是种草官专属') : '';
+                      args_xh.printLog ? console.log("商品被过滤，该商品是种草官专属\n") : '';
                       $.isPush = false;
                       break;
                     }
@@ -394,7 +396,13 @@ function try_apply(title, activityId) {
     $.get(option, (err, resp, data) => {
       try {
         if (err) {
-          console.log(`🚫 ${arguments.callee.name.toString()} API请求失败，请检查网路\n${JSON.stringify(err)}`);
+          if (JSON.stringify(err) === `\"Response code 403 (Forbidden)\"`) {
+            $.isForbidden = true;
+            console.log("账号被京东服务器风控，不再请求该帐号");
+          } else {
+            console.log(JSON.stringify(err));
+            console.log(`${$.name} API请求失败，请检查网路重试`);
+          }
         } else {
           $.totalTry++;
           data = JSON.parse(data);
@@ -460,37 +468,18 @@ function try_MyTrials(page, selected) {
             //temp adjustment
             if (selected === 2) {
               if (data.success && data.data) {
-                $.successList = data.data.list.filter((item) => {
-                  return item.text.text.includes('请尽快领取');
-                });
-                console.log(`待领取: ${$.successList.length}个`);
+                for (let item of data.data.list) {
+                  item.status === 4 || item.text.text.includes("已放弃") ? ($.giveupNum += 1) : "";
+                  item.status === 2 && item.text.text.includes("试用资格将保留") ? ($.successNum += 1) : "";
+                  item.status === 2 && item.text.text.includes("请收货后尽快提交报告") ? ($.getNum += 1) : "";
+                  item.status === 2 && item.text.text.includes("试用已完成") ? ($.completeNum += 1) : "";
+                }
+                console.log(`待领取 | 已领取 | 已完成 | 已放弃：${$.successNum} | ${$.getNum} | ${$.completeNum} | ${$.giveupNum}`
+                );
               } else {
                 console.log(`获得成功列表失败: ${data.message}`);
               }
             }
-            // if(data.data.list.length > 0){
-            //     for(let item of data.data.list){
-            //         console.log(`申请时间：${new Date(parseInt(item.applyTime)).toLocaleString()}`)
-            //         console.log(`申请商品：${item.trialName}`)
-            //         console.log(`当前状态：${item.text.text}`)
-            //         console.log(`剩余时间：${remaining(item.leftTime)}`)
-            //         console.log()
-            //     }
-            // } else {
-            //     switch(selected){
-            //         case 1:
-            //             console.log('无已申请的商品\n')
-            //             break;
-            //         case 2:
-            //             console.log('无申请成功的商品\n')
-            //             break;
-            //         case 3:
-            //             console.log('无申请失败的商品\n')
-            //             break;
-            //         default:
-            //             console.log('selected错误')
-            //     }
-            // }
           } else {
             console.error(`ERROR:try_MyTrials`);
           }
@@ -521,10 +510,24 @@ function taskurl_xh(appid, functionId, body = JSON.stringify({})) {
 }
 
 async function showMsg() {
-  let message = `京东账号${$.index} ${$.nickName || $.UserName}\n🎉 本次申请成功：${$.totalSuccess}/${$.totalTry}个商品🛒\n🎉 ${$.successList.length}个商品待领取`;
-  if (args_xh.jdNotify || $.successList.length > 0) {
+  let message = ``;
+  message += `👤 京东账号${$.index} ${$.nickName || $.UserName}\n`;
+  if ($.totalSuccess !== 0 && $.totalTry !== 0) {
+    message += `🎉 本次提交申请：${$.totalSuccess}/${$.totalTry}个商品🛒\n`;
+    message += `🎉 ${$.successNum}个商品待领取\n`;
+    message += `🎉 ${$.getNum}个商品已领取\n`;
+    message += `🎉 ${$.completeNum}个商品已完成\n`;
+    message += `🗑 ${$.giveupNum}个商品已放弃\n\n`;
+  } else {
+    message += `⚠️ 本次执行没有申请试用商品\n`;
+    message += `🎉 ${$.successNum}个商品待领取\n`;
+    message += `🎉 ${$.getNum}个商品已领取\n`;
+    message += `🎉 ${$.completeNum}个商品已完成\n`;
+    message += `🗑 ${$.giveupNum}个商品已放弃\n\n`;
+  }
+  if (!args_xh.jdNotify || args_xh.jdNotify === 'false') {
     $.msg($.name, ``, message, { 'open-url': 'https://try.m.jd.com/user' });
-    if ($.isNode()) notifyMsg += `${message}\n\n`;
+    if ($.isNode()) notifyMsg += `${message}`;
   } else {
     console.log(message);
   }
