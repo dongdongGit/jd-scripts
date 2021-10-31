@@ -37,12 +37,13 @@ if ($.isNode()) {
 !(async () => {
   $.CryptoJS = $.isNode() ? require('crypto-js') : CryptoJS;
   await requestAlgo();
+  $.fingerprint = '';
+  $.token = '';
   if (!cookiesArr[0]) {
     $.msg($.name, '【提示】请先获取京东账号一cookie\n直接使用NobyDa的京东签到获取', 'https://bean.m.jd.com/bean/signIndex.action', { 'open-url': 'https://bean.m.jd.com/bean/signIndex.action' });
     return;
   }
-  $.fingerprint = '';
-  $.token = '';
+
   for (let i = 0; i < cookiesArr.length; i++) {
     $.index = i + 1;
     $.cookie = cookiesArr[i];
@@ -493,7 +494,7 @@ async function doTask() {
           await $.wait(5500);
           console.log(`完成任务：${oneTask.description}`);
           awardInfo = await takeRequest(`newtasksys`, `newtasksys_front/Award`, `source=jxmc&taskId=${oneTask.taskId}&bizCode=jxmc`, `bizCode%2Csource%2CtaskId`, true);
-          console.log(`领取金币成功，获得${JSON.parse(awardInfo.prizeInfo).prizeInfo}`);
+          console.log(`领取金币成功，获得${awardInfo.prizeInfo != '' ? JSON.parse(awardInfo.prizeInfo).prizeInfo : '未知'}`);
         }
       } else if (oneTask.awardStatus === 2 && oneTask.completedTimes === oneTask.targetTimes) {
         console.log(`完成任务：${oneTask.taskName}`);
