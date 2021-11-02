@@ -3,7 +3,6 @@
 cron 20 8 * * * jd_ddworld.js
 * */
 
-const jd_helpers = require('./utils/JDHelpers.js');
 const jd_env = require('./utils/JDEnv.js');
 const $ = jd_env.env('东东世界');
 const notify = $.isNode() ? require('./sendNotify') : '';
@@ -129,7 +128,11 @@ async function doTask() {
       continue;
     }
     if ($.oneTask.taskType === 12) {
-      $.info = $.taskDetailList;
+      if (Array.isArray($.taskDetailList)) {
+        $.info = $.taskDetailList[0];
+      } else {
+        $.info = $.taskDetailList;
+      }
       console.log(`任务：${$.oneTask.taskName} 去执行`);
       await takePostRequest('do_task');
       await $.wait(1000);
