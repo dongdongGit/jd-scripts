@@ -525,7 +525,7 @@ async function showMsg() {
     message += `🎉 ${$.completeNum}个商品已完成\n`;
     message += `🗑 ${$.giveupNum}个商品已放弃\n\n`;
   }
-  if (!args_xh.jdNotify || args_xh.jdNotify === 'false' || $.successNum > 0) {
+  if ((!args_xh.jdNotify || args_xh.jdNotify === 'false') && $.successNum > 0) {
     $.msg($.name, ``, message, { 'open-url': 'https://try.m.jd.com/user' });
     if ($.isNode()) notifyMsg += `${message}`;
   } else {
