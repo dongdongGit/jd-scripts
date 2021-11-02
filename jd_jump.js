@@ -18,10 +18,10 @@ cron "1 0,11,21 * * *" script-path=jd_jump.js, tag=跳跳乐瓜分京豆
 跳跳乐瓜分京豆 = type=cron,script-path=jd_jump.js, cronexpr="1 0,11,21 * * *", timeout=3600, enable=true
 */
 
-const jd_env = require('../utils/JDEnv.js');
+const jd_env = require('./utils/JDEnv.js');
 let $ = jd_env.env('跳跳乐瓜分京豆');
-const notify = $.isNode() ? require('../sendNotify') : '';
-const jdCookieNode = $.isNode() ? require('../jdCookie.js') : '';
+const notify = $.isNode() ? require('./sendNotify') : '';
+const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
 // $.helpCodeList = [];
 //IOS等用户直接用NobyDa的jd cookie
 let cookiesArr = [],
@@ -48,6 +48,7 @@ if ($.isNode()) {
       $.index = i + 1;
       $.isLogin = true;
       $.nickName = $.UserName;
+      $.skuIds = [];
       await $.totalBean();
       console.log(`\n*****开始【京东账号${$.index}】${$.nickName || $.UserName}*****\n`);
       if (!$.isLogin) {
@@ -61,6 +62,7 @@ if ($.isNode()) {
         continue;
       }
       await jump();
+      await $.clearShoppingCart();
     }
   }
 })()
@@ -290,15 +292,13 @@ async function doTask() {
       console.log(`${oneTask.content},已完成`);
       continue;
     }
+
     if (oneTask.gridTask === 'add_cart' && oneTask.state === 'unfinish' && addFlag) {
-      if (oneTask.gridTask === 'add_cart') {
-        console.log(`不做：【${oneTask.content}】 任务`);
-        continue;
-      }
       console.log(`开始执行任务：${oneTask.content}`);
       let skuList = [];
       for (let j = 0; j < oneTask.goodsInfo.length; j++) {
         skuList.push(oneTask.goodsInfo[j].sku);
+        $.skuIds.push(oneTask.goodsInfo[j].sku);
       }
       skuList.sort(sortNumber);
       await addCart(skuList);
@@ -425,7 +425,7 @@ function getGetRequest(type, body) {
     'User-Agent': $.isNode()
       ? process.env.JD_USER_AGENT
         ? process.env.JD_USER_AGENT
-        : require('../USER_AGENTS').USER_AGENT
+        : require('./USER_AGENTS').USER_AGENT
       : $.getdata('JDUA')
       ? $.getdata('JDUA')
       : 'jdapp;iPhone;9.4.4;14.3;network/4g;Mozilla/5.0 (iPhone; CPU iPhone OS 14_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148;supportJDSHWK/1',
@@ -448,7 +448,7 @@ function getPostRequest(type, body) {
     'User-Agent': $.isNode()
       ? process.env.JD_USER_AGENT
         ? process.env.JD_USER_AGENT
-        : require('../USER_AGENTS').USER_AGENT
+        : require('./USER_AGENTS').USER_AGENT
       : $.getdata('JDUA')
       ? $.getdata('JDUA')
       : 'jdapp;iPhone;9.4.4;14.3;network/4g;Mozilla/5.0 (iPhone; CPU iPhone OS 14_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148;supportJDSHWK/1',
