@@ -45,8 +45,6 @@
 20 8 * * * node /scripts/jd_ddworld.js >> /scripts/logs/jd_ddworld.log 2>&1
 # 东东玩家
 40 0,19 * * * node /scripts/jd_dd_player.js >> /scripts/logs/jd_dd_player.log 2>&1
-# 城城分现金
-12 0-23/1 * * * node /scripts/jd_city.js >> /scripts/logs/jd_city.log 2>&1
 # 热血心跳,狂解压
 15 6,18 1-16,21-30 9,10 * node /scripts/jd_decompression.js >> /scripts/logs/jd_decompression.log 2>&1
 # 集魔方
