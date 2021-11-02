@@ -5,12 +5,12 @@
 #城城领现金
 0 0-23/5,22 * 10 * gua_city.js, tag=城城领现金, img-url=https://raw.githubusercontent.com/Orz-3/mini/master/Color/jd.png, enabled=true
  */
-const jd_helpers = require('./utils/JDHelpers.js');
-const jd_env = require('./utils/JDEnv.js');
+const jd_helpers = require('../utils/JDHelpers.js');
+const jd_env = require('../utils/JDEnv.js');
 const $ = jd_env.env('城城领现金');
-const notify = $.isNode() ? require('./sendNotify') : '';
+const notify = $.isNode() ? require('../sendNotify') : '';
 //Node.js用户请在jdCookie.js处填写京东ck;
-const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
+const jdCookieNode = $.isNode() ? require('../jdCookie.js') : '';
 //自动抽奖 ，环境变量  JD_CITY_EXCHANGE
 let exchangeFlag = $.getdata('jdJxdExchange') || 'false'; //是否开启自动抽奖，建议活动快结束开启，默认关闭
 exchangeFlag = $.isNode() ? (process.env.jdJxdExchange ? process.env.jdJxdExchange : `${exchangeFlag}`) : $.getdata('jdJxdExchange') ? $.getdata('jdJxdExchange') : `${exchangeFlag}`;
