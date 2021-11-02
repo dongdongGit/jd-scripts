@@ -73,6 +73,8 @@
 27 9,10 * * * node /scripts/jd_selection_officer.js >> /scripts/logs/jd_selection_officer.log 2>&1
 # 京东超级盒子
 10 1,6,8 25-31,1-11 10,11 * node /scripts/jd_superbox.js >> /scripts/logs/jd_superbox.log 2>&1
+# 双11星推官 (11.10 结束)
+2 0,7,15 * * * node /scripts/jd_1111xtg.js >> /scripts/logs/jd_1111xtg.log 2>&1
 ##############长期活动##############
 # 签到
 0 0,17 * * * cd /scripts && node jd_bean_sign.js >> /scripts/logs/jd_bean_sign.log 2>&1
