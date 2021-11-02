@@ -25,11 +25,11 @@ cron "31 8,22 13-31 8 *" script-path=https://raw.githubusercontent.com/smiek2221
 8.13-8.31 小米-星空大冒险 = type=cron,script-path=https://raw.githubusercontent.com/smiek2221/scripts/master/gua_xmGame.js, cronexpr="31 8,22 13-31 8 *", timeout=3600, enable=true
 */
 
-const jd_helpers = require('./utils/JDHelpers');
-const jd_env = require('./utils/JDEnv.js');
+const jd_helpers = require('../utils/JDHelpers');
+const jd_env = require('../utils/JDEnv.js');
 const $ = jd_env.env('小米-星空大冒险');
-const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
-const notify = $.isNode() ? require('./sendNotify') : '';
+const jdCookieNode = $.isNode() ? require('../jdCookie.js') : '';
+const notify = $.isNode() ? require('../sendNotify') : '';
 //IOS等用户直接用NobyDa的jd cookie
 let cookiesArr = [],
   cookie = '';
