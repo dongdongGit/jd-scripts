@@ -227,7 +227,7 @@
 # 京小鸽吾悦寄
 13 3 * * * node /scripts/jd_pigeon.js >> /scripts/logs/jd_pigeon.log 2>&1
 # 关注频道、抽奖
-0 6 * * * node /scripts/jd_focus.js >> /scripts/logs/jd_focus.log 2>&1
+#0 6 * * * node /scripts/jd_focus.js >> /scripts/logs/jd_focus.log 2>&1
 # 取关主播
 3 5 * * * node /scripts/jd_unsubscribe_live.js >> /scripts/logs/jd_unsubscribe_live.log 2>&1
 # 取关主播
