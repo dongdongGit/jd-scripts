@@ -11,10 +11,10 @@ cron "40 0,19" script-path= https://raw.githubusercontent.com/yongyuanlin/jd_scr
 东东玩家 = type=cron,script-path= https://raw.githubusercontent.com/yongyuanlin/jd_scripts/master/jd_ddwj.js, cronexpr="40 0,19", timeout=3600, enable=true
 */
 
-const jd_helpers = require('./utils/JDHelpers.js');
-const jd_env = require('./utils/JDEnv.js');
+const jd_helpers = require('../utils/JDHelpers.js');
+const jd_env = require('../utils/JDEnv.js');
 const $ = jd_env.env('东东玩家');
-const notify = $.isNode() ? require('./sendNotify') : '';
+const notify = $.isNode() ? require('../sendNotify') : '';
 cookiesArr = [];
 CodeArr = [];
 cookie = '';
@@ -30,7 +30,7 @@ var list2tokenArr = [],
   list0tokenArr = [],
   list1tokenArr = [];
 var taskid, token, helpcode, secretp, userUnlockedPlaceNum;
-const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
+const jdCookieNode = $.isNode() ? require('../jdCookie.js') : '';
 cookiesArr = [$.getdata('CookieJD'), $.getdata('CookieJD2'), ...jd_helpers.jsonParse($.getdata('CookiesJD') || '[]').map((item) => item.cookie)].filter((item) => !!item);
 let tz = $.getval('tz') || '1'; //0关闭通知，1默认开启
 const invite = 1; //新用户自动邀请，0关闭，1默认开启
