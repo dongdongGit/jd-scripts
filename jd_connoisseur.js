@@ -31,7 +31,9 @@ let cookiesArr = [],
   cookie = '',
   message;
 let isLoginInfo = {};
-$.shareCodes = [];
+$.shareCodes = [
+  'S5KkcRRcd_AbUJB2nk_YCcA'
+];
 if ($.isNode()) {
   Object.keys(jdCookieNode).forEach((item) => {
     cookiesArr.push(jdCookieNode[item]);
@@ -200,7 +202,7 @@ async function getTaskInfo(type, projectId, assignmentId, helpType = '1', itemId
               !body['helpType']
             ) {
               if (assignmentId !== '2PbAu1BAT79RxrM5V7c2VAPUQDSd') console.log(`去做【${data.data[0].title}】`);
-              if (data.code === '0' && data.data) {
+              if (data.code === '0' && data.data && data.data.length > 0) {
                 if (data.data[0].status !== '2') {
                   await interactive_done(type, data.data[0].projectId, data.data[0].assignmentId, data.data[0].itemId);
                   await $.wait(data.data[0].waitDuration || 2000);

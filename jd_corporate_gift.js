@@ -171,7 +171,7 @@ async function lottery() {
       try {
         const result = JSON.parse(data);
         if (logs) $.log(data);
-        if (result.data.result.userAwardsCacheDto.type == 2) {
+        if (result.data.bizCode == 0 && result.data.result.userAwardsCacheDto.type == 2) {
           console.log('\n获得' + result.data.result.userAwardsCacheDto.jBeanAwardVo.ext + '\n');
           await $.wait(4000);
         } else {
@@ -278,7 +278,7 @@ async function getlist() {
         const result = JSON.parse(data);
         // console.log(result.data.result.taskVos[4].productInfoVos);
         if (logs) $.log(data);
-        if (result.code == 0) {
+        if (result.code == 0 && result.data.bizCode == 0) {
           console.log('查看任务列表\n');
           let list1 = result.data.result.taskVos.find((item) => item.taskId == 1);
           listtokenArr.push(1 + list1.simpleRecordInfoVo.taskToken);
@@ -354,7 +354,7 @@ async function gethelpcode() {
       try {
         const result = JSON.parse(data);
         if (logs) $.log(data);
-        if (result.code == 0) {
+        if (result.code == 0 && result.data.bizCode >= 0) {
           let list6 = result.data.result.taskVos.find((item) => item.taskId == 6);
           list0tokenArr.push(6 + list6.assistTaskDetailVo.taskToken);
           list1tokenArr.push(list6.assistTaskDetailVo.taskToken);
@@ -377,7 +377,7 @@ async function userScore() {
       try {
         const result = JSON.parse(data);
         if (logs) $.log(data);
-        if (result.code == 0) {
+        if (result.code == 0 && result.data.bizCode == 0) {
           let userScore = result.data.result.userInfo.userScore;
           $.log('共有省心值：' + userScore + ';开始抽奖' + Math.floor(userScore / 300) + '次');
           for (let i = 0; i < Math.floor(userScore / 300); i++) {

@@ -37,7 +37,7 @@ let cookiesArr = [],
   cookie = '',
   message = '',
   allMessage = '';
-const inviteCodes = [''];
+const inviteCodes = ['QYeKVgn2Cdm70vX4Hz4g2g=='];
 const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
 $.tuanIds = [];
 $.appId = 10001;

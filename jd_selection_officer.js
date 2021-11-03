@@ -20,7 +20,11 @@ if ($.isNode()) {
 }
 let authorization = {};
 let invitelist = [
-  '616fd3213279960057'
+  {
+    user: 'jd_5949b347c7184',
+    inviter_id: '616fd3213279960057',
+    needTime: 5,
+  },
 ];
 !(async () => {
   if (!cookiesArr[0]) {

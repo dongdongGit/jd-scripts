@@ -41,7 +41,9 @@ if ($.isNode()) {
 }
 const JD_API_HOST = 'https://api.m.jd.com/';
 !(async () => {
-  $.newShareCodes = [];
+  $.newShareCodes = [
+    '4DA54EC8E340C3D0041AE71C234F6E82AD1DAAB9A3E3F6CBAFDE81EEB7393333'
+  ];
   $.authorCode = [];
   if (!cookiesArr[0]) {
     $.msg($.name, '【提示】请先获取京东账号一cookie\n直接使用NobyDa的京东签到获取', 'https://bean.m.jd.com/bean/signIndex.action', { 'open-url': 'https://bean.m.jd.com/bean/signIndex.action' });
@@ -215,22 +217,23 @@ async function beanTaskList(type) {
             switch (type) {
               case 1:
                 console.log(`当前等级:${data.data.curLevel} 下一级可领取:${data.data.nextLevelBeanNum || 0}京豆`);
-                if (!data.data.viewAppHome.takenTask) {
-                  console.log(`去做[${data.data.viewAppHome.mainTitle}]`);
+
+                if (!data?.data?.viewAppHome?.takenTask) {
+                  console.log(`去做[${data?.data?.viewAppHome?.mainTitle}]`);
                   await beanHomeIconDoTask({
                     flag: '0',
                     viewChannel: 'myjd',
                   });
                 }
                 await $.wait(2000);
-                if (!data.data.viewAppHome.doneTask) {
-                  console.log(`去领奖[${data.data.viewAppHome.mainTitle}]`);
+                if (!data?.data?.viewAppHome?.doneTask) {
+                  console.log(`去领奖[${data?.data?.viewAppHome?.mainTitle}]`);
                   await beanHomeIconDoTask({
                     flag: '1',
                     viewChannel: 'AppHome',
                   });
                 } else {
-                  console.log(`[${data.data.viewAppHome.mainTitle}]已做完`);
+                  console.log(`[${data?.data?.viewAppHome?.mainTitle}]已做完`);
                 }
                 break;
               case 2:
@@ -332,11 +335,11 @@ function beanHomeIconDoTask(body) {
         } else {
           if (jd_helpers.safeGet(data)) {
             data = JSON.parse(data);
-            if (body.flag === '0' && data.data.taskResult) {
+            if (body?.flag === '0' && data?.data?.taskResult) {
               console.log(data.data.remindMsg);
             }
-            if (body.flag === '1' && data.data.taskResult) {
-              console.log(data.data.remindMsg);
+            if (body?.flag === '1' && data?.data?.taskResult) {
+              console.log(data?.data?.remindMsg);
             }
           }
         }
