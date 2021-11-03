@@ -76,9 +76,11 @@
 # 双11星推官 (11.10 结束)
 2 0,7,15 * * * node /scripts/jd_1111xtg.js >> /scripts/logs/jd_1111xtg.log 2>&1
 # 双11特物
-10 9,13,16,19 2-8 11 * node /scripts/jd_1111superBrand.js >> /scripts/logs/jd_1111superBrand.log 2>&1
+10 9,13,16,19,20 2-8 11 * node /scripts/jd_1111superBrand.js >> /scripts/logs/jd_1111superBrand.log 2>&1
 # 跳跳乐瓜分京豆 (什么时候结束)
 1 0,9,15,21 * * * node /scripts/jd_jump.js >> /scripts/logs/jd_jump.log 2>&1
+# 牛牛福利
+1 0,9,19,23 * * * node /scripts/jd_jx_cow_welfare.js >> /scripts/logs/jd_jx_cow_welfare.log 2>&1
 ##############长期活动##############
 # 签到
 0 0,17 * * * cd /scripts && node jd_bean_sign.js >> /scripts/logs/jd_bean_sign.log 2>&1
