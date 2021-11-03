@@ -6,12 +6,12 @@
 // quantumultx
 [task_local]
 #京东抽奖机
-11 10 * * * https://raw.githubusercontent.com/yongyuanlin/jd_scripts/master/jd_lotteryMachine.js, tag=京东抽奖机, img-url=https://raw.githubusercontent.com/yangtingxiao/QuantumultX/master/image/jdlottery.png, enabled=true
+45 0,10 * * * https://raw.githubusercontent.com/yongyuanlin/jd_scripts/master/jd_lotteryMachine.js, tag=京东抽奖机, img-url=https://raw.githubusercontent.com/yangtingxiao/QuantumultX/master/image/jdlottery.png, enabled=true
 // Loon
 [Script]
-cron "11 10 * * *" script-path=https://raw.githubusercontent.com/yongyuanlin/jd_scripts/master/jd_lotteryMachine.js,tag=京东抽奖机
+cron "45 0,10 * * *" script-path=https://raw.githubusercontent.com/yongyuanlin/jd_scripts/master/jd_lotteryMachine.js,tag=京东抽奖机
 // Surge
-京东抽奖机 = type=cron,cronexp=11 10 * * *,wake-system=1,timeout=20,script-path=https://raw.githubusercontent.com/yongyuanlin/jd_scripts/master/jd_lotteryMachine.js
+京东抽奖机 = type=cron,cronexp=45 0,10 * * *,wake-system=1,timeout=20,script-path=https://raw.githubusercontent.com/yongyuanlin/jd_scripts/master/jd_lotteryMachine.js
  */
 const jd_helpers = require('./utils/JDHelpers.js');
 const jd_env = require('./utils/JDEnv.js');
@@ -22,16 +22,9 @@ const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
 const STRSPLIT = '|';
 const needSum = false; //是否需要显示汇总
 const printDetail = false; //是否显示出参详情
-const appIdArr = ['1EFRRxA', '1EFRQwA', '1E1NYwqc', '1EFRXxg', '1EFVRxg', '1E1NYw6w', '1E1xRy6c', '1E1xVyqw', '1E1NXxq0', '1ElBTx6o', '1ElJYxqY'];
-const shareCodeArr = [
-  'T018v_VxQxkZ_FXVJBqb1ACjVWmIaW5kRrbA',
-  'T018v_VxQxkZ_FXVJBqb1ACjVXnIaW5kRrbA',
-  'T018v_VxQxkZ_FXVJBqb1ACTJfnqS7zDcjeQOc',
-  'T018v_VxQxkZ_FXVJBqb1ACjVQmoaT5kRrbA',
-  'T018v_VxQxkZ_FXVJBqb1ACTJfn6-7zDQjeQOc',
-  'T018v_VxQxkZ_FXVJBqb1ACT1Wl6S7xR55awQ',
-];
-const homeDataFunPrefixArr = ['interact_template', 'interact_template', 'harmony_template', '', '', '', '', '', '', '', '', '', 'interact_template', 'interact_template'];
+const appIdArr = ['1EFRRxA', '1EFRQwA', '1EFRXxg', '1E1NXxq0', '1ElBTx6o', '1FV1VwKc', '1FFRWxaY', '1FFVQyqw', '1FFRWwqg', '1FV1ZwKY', '1FFRWxaY'];
+const shareCodeArr = [''];
+const homeDataFunPrefixArr = ['interact_template', 'interact_template', 'interact_template', 'interact_template', 'interact_template', 'interact_template'];
 const collectScoreFunPrefixArr = ['', '', '', '', '', '', '', '', '', '', '', '', 'interact_template', 'interact_template'];
 const lotteryResultFunPrefixArr = ['', '', '', '', '', '', '', '', '', '', '', '', '', 'interact_template', 'interact_template'];
 let merge = {};
@@ -55,21 +48,18 @@ if ($.isNode()) {
     if (cookie) {
       $.UserName = decodeURIComponent(cookie.match(/pt_pin=([^; ]+)(?=;?)/) && cookie.match(/pt_pin=([^; ]+)(?=;?)/)[1]);
       $.isLogin = true;
+      initial();
       await $.totalBean();
       console.log(`\n******开始【京东账号${$.index}】${$.nickName || $.UserName}*********\n`);
       if (!$.isLogin) {
         $.msg($.name, `【提示】cookie已失效`, `京东账号${$.index} ${$.nickName || $.UserName}\n请重新登录获取\nhttps://bean.m.jd.com/bean/signIndex.action`, {
           'open-url': 'https://bean.m.jd.com/bean/signIndex.action',
         });
-
         if ($.isNode()) {
           await notify.sendNotify(`${$.name}cookie已失效 - ${$.UserName}`, `京东账号${$.index} ${$.UserName}\n请重新登录获取cookie`);
         }
         continue;
       }
-      $.index = i + 1;
-      initial();
-      await QueryJDUserInfo();
       for (let j in appIdArr) {
         //j = appIdArr.length - 1
         //j = 5
@@ -90,7 +80,6 @@ if ($.isNode()) {
 })()
   .catch((e) => $.logErr(e))
   .finally(() => $.done());
-
 //获取昵称
 function QueryJDUserInfo(timeout = 0) {
   return new Promise((resolve) => {

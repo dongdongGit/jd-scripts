@@ -135,7 +135,7 @@ async function main() {
     if (isFinishList.indexOf(Number(vv.id)) === -1) {
       console.log(`去浏览${vv.name} `);
       await taskPostUrl('shop_view', `shop_id=${vv.id}`);
-      await $.wait(1000);
+      await $.wait(3000);
     }
   }
   for (let key of Object.keys(taskList.meetingplace)) {
@@ -144,7 +144,7 @@ async function main() {
     if (isFinishList.indexOf(Number(vv.id)) === -1) {
       console.log(`去浏览${vv.name} `);
       await taskPostUrl('meetingplace_view', `meetingplace_id=${vv.id}`);
-      await $.wait(1000);
+      await $.wait(3000);
     }
   }
   user = await taskUrl('get_user_info', '');
@@ -282,8 +282,11 @@ function taskPostUrl(url, data) {
             console.log(`${JSON.stringify(err)}`);
             console.log(`${$.name} ${url} API请求失败，请检查网路重试`);
           } else {
-            data = JSON.parse(data);
-            if ((data.coins && url == 'product_view') || url == 'shop_view' || url == 'meetingplace_view') console.log(`操作成功,获得${data.coins}金币，当前金币${data.user_coins}`);
+            if (data != '') {
+              data = JSON.parse(data);
+              if ((data.coins && url == 'product_view') || url == 'shop_view' || url == 'meetingplace_view') console.log(`操作成功,获得${data.coins}金币，当前金币${data.user_coins}`);
+            
+            }
             resolve(data);
           }
         }

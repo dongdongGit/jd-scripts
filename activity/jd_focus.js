@@ -5,11 +5,11 @@
 豆源是网友提供
 */
 
-const jd_helpers = require('./utils/JDHelpers.js');
-const jd_env = require('./utils/JDEnv.js');
+const jd_helpers = require('../utils/JDHelpers.js');
+const jd_env = require('../utils/JDEnv.js');
 const $ = jd_env.env('关注频道、抽奖');
-const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
-const notify = $.isNode() ? require('./sendNotify') : '';
+const jdCookieNode = $.isNode() ? require('../jdCookie.js') : '';
+const notify = $.isNode() ? require('../sendNotify') : '';
 //IOS等用户直接用NobyDa的jd cookie
 let cookiesArr = [],
   cookie = '';
@@ -88,7 +88,6 @@ function babelGetLottery() {
           console.log(`${$.toStr(err)}`);
           console.log(`${$.name} API请求失败，请检查网路重试`);
         } else {
-          // console.log(data)
           let res = $.toObj(data, data);
           if (typeof res == 'object') {
             let value = 0;

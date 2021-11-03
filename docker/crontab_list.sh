@@ -43,8 +43,6 @@
 23 15 13-26 9 * node /scripts/jd_film_museum.js >> /scripts/logs/jd_film_museum.log 2>&1
 # 东东世界
 20 8 * * * node /scripts/jd_ddworld.js >> /scripts/logs/jd_ddworld.log 2>&1
-# 东东玩家
-40 0,19 * * * node /scripts/jd_dd_player.js >> /scripts/logs/jd_dd_player.log 2>&1
 # 热血心跳,狂解压
 15 6,18 1-16,21-30 9,10 * node /scripts/jd_decompression.js >> /scripts/logs/jd_decompression.log 2>&1
 # 集魔方
@@ -72,13 +70,15 @@
 # 美妆馆-选品官
 27 9,10 * * * node /scripts/jd_selection_officer.js >> /scripts/logs/jd_selection_officer.log 2>&1
 # 京东超级盒子
-10 1,6,8 25-31,1-11 10,11 * node /scripts/jd_superbox.js >> /scripts/logs/jd_superbox.log 2>&1
+10 1,6,8 25-31,1-11 10,11 * node /scripts/jd_super_box.js >> /scripts/logs/jd_super_box.log 2>&1
 # 双11星推官 (11.10 结束)
 2 0,7,15 * * * node /scripts/jd_1111xtg.js >> /scripts/logs/jd_1111xtg.log 2>&1
 # 双11特物
-10 9,13,16,19 2-8 11 * node /scripts/jd_1111superBrand.js >> /scripts/logs/jd_1111superBrand.log 2>&1
+10 9,13,16,19,20 2-8 11 * node /scripts/jd_1111superBrand.js >> /scripts/logs/jd_1111superBrand.log 2>&1
 # 跳跳乐瓜分京豆 (什么时候结束)
 1 0,9,15,21 * * * node /scripts/jd_jump.js >> /scripts/logs/jd_jump.log 2>&1
+# 牛牛福利
+1 0,9,19,23 * * * node /scripts/jd_jx_cow_welfare.js >> /scripts/logs/jd_jx_cow_welfare.log 2>&1
 ##############长期活动##############
 # 签到
 0 0,17 * * * cd /scripts && node jd_bean_sign.js >> /scripts/logs/jd_bean_sign.log 2>&1
@@ -184,8 +184,6 @@
 59 11,12,23 * * * node /scripts/jd_cfd_withdraw.js >> /scripts/logs/jd_cfd_withdraw.log 2>&1
 # 删除优惠券(默认注释，如需要自己开启，如有误删，已删除的券可以在回收站中还原，慎用)
 #20 9 * * 6 node /scripts/jd_delCoupon.js >> /scripts/logs/jd_delCoupon.log 2>&1
-# 家庭号(易黑号，默认注释)
-#10 3-9/4 * * * node /scripts/jd_family.js >> /scripts/logs/jd_family.log 2>&1
 # 京东直播（又回来了）
 50 12-14 * * * node /scripts/jd_live.js >> /scripts/logs/jd_live.log 2>&1
 # 京东健康社区
@@ -204,16 +202,12 @@
 0 11 * * * node /scripts/jd_lsj.js >> /scripts/logs/jd_lsj.log 2>&1
 # 来客有礼小程序 送豆得豆
 45 0,8 * * * node /scripts/jd_senbeans.js >> /scripts/logs/jd_senbeans.log 2>&1
-# 东东电竞经理
-0 0-23/2 * * * node /scripts/jd_djjl.js >> /scripts/logs/jd_djjl.log 2>&1
 # 汪汪乐园
 30 2,20 * * * node /scripts/jd_joy_park.js >> /scripts/logs/jd_joy_park.log 2>&1
 # 7月粉丝互动
 34 6,18 * * * node /scripts/jd_fans.js >> /scripts/logs/jd_fans.log 2>&1
 # 特物Z|万物皆可国创
 30 11 * * * node /scripts/jd_superBrand.js >> /scripts/logs/jd_superBrand.log 2>&1
-# 柠檬特务Z行动-星小店
-20 1 * * *  node /scripts/jd_twz_star.js >> /scripts/logs/jd_twz_star.log 2>&1
 # 特务Zx佳沛
 23 0,9 * * * node /scripts/jd_superZ4Brand.js >> /scripts/logs/jd_superZ4Brand.log 2>&1
 # 天天优惠大乐透
@@ -222,19 +216,15 @@
 4 12 * * * node /scripts/jd_yili_cattle.js >> /scripts/logs/jd_yili_cattle.log 2>&1
 # 京东众筹许愿
 8 0,8 * * * node /scripts/jd_crowdfunding_wish.js >> /scripts/logs/jd_crowdfunding_wish.log 2>&1
-# 金机奖投票
-33 4,7 8-20 8 * node /scripts/jd_golden_machine.js >> /scripts/logs/jd_golden_machine.log 2>&1
 # 京享值PK
 15 0,6,13,19,21 * * * node /scripts/jd_ddo_pk.js >> /scripts/logs/jd_ddo_pk.log 2>&1
 # 京小兑
 13 8,16,20 * * * node /scripts/jd_jxd.js >> /scripts/logs/jd_jxd.log 2>&1
 # 京小鸽吾悦寄
 13 3 * * * node /scripts/jd_pigeon.js >> /scripts/logs/jd_pigeon.log 2>&1
-# 柠檬东东泡泡大战
-1 0 * * * node /scripts/jd_bubble_fight.js >> /scripts/logs/jd_bubble_fight.log 2>&1
 # 关注频道、抽奖
-0 6 * * * node /scripts/jd_focus.js >> /scripts/logs/jd_focus.log 2>&1
+#0 6 * * * node /scripts/jd_focus.js >> /scripts/logs/jd_focus.log 2>&1
 # 取关主播
 3 5 * * * node /scripts/jd_unsubscribe_live.js >> /scripts/logs/jd_unsubscribe_live.log 2>&1
-# 取关主播
+# 积分换话费
 3 5 * * * node /scripts/jd_phone_bill.js >> /scripts/logs/jd_phone_bill.log 2>&1

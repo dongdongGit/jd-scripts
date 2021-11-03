@@ -122,7 +122,7 @@ function queryTrumpTask(timeout = 0) {
           //console.log(data)
           data = JSON.parse(data);
           let now = $.time('yyyy-MM-dd');
-          for (let i in data.result.signTask.taskItemInfo.signList) {
+          for (let i in data?.result?.signTask?.taskItemInfo?.signList) {
             //console.log(data.result.signTask.taskItemInfo.signList[i])
             if (data.result.signTask.taskItemInfo.signList[i].match(now)) {
               merge.jdBeans.fail++;
@@ -131,7 +131,7 @@ function queryTrumpTask(timeout = 0) {
               return;
             }
           }
-          for (let i in data.result.taskList) {
+          for (let i in data?.result?.taskList) {
             console.log(data.result.taskList[i].taskName);
             if (data.result.taskList[i].taskItemInfo.status === 0) {
               await doTrumpTask(data.result.taskList[i].taskId, data.result.taskList[i].taskItemInfo.itemId, 1000);
@@ -169,7 +169,6 @@ function doTrumpTask(taskId, itemId, timeout = 0) {
       };
       $.post(url, async (err, resp, data) => {
         try {
-          //
           data = JSON.parse(data);
           console.log(data.msg);
           if (data.code !== '0') {
@@ -178,7 +177,7 @@ function doTrumpTask(taskId, itemId, timeout = 0) {
             return;
           } else {
             merge.jdBeans.success++;
-            merge.jdBeans.prizeCount += parseInt(data.result.lotteryScore);
+            merge.jdBeans.prizeCount += parseInt(data?.result?.lotteryScore);
           }
         } catch (e) {
           $.logErr(e, resp);
