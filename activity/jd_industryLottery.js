@@ -2,12 +2,12 @@
 京东工业品抽奖
 10 7 17,18 8 * https://raw.githubusercontent.com/LingFeng0918/jd_scripts/master/jd_industryLottery.js
  */
-const jd_helpers = require('./utils/JDHelpers.js');
-const jd_env = require('./utils/JDEnv.js');
+const jd_helpers = require('../utils/JDHelpers.js');
+const jd_env = require('../utils/JDEnv.js');
 let $ = jd_env.env('京东工业品抽奖');
-const notify = $.isNode() ? require('./sendNotify') : '';
+const notify = $.isNode() ? require('../sendNotify') : '';
 //Node.js用户请在jdCookie.js处填写京东ck;
-const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
+const jdCookieNode = $.isNode() ? require('../jdCookie.js') : '';
 let configCode = 'e1a458713a854e2abb1db2772e540532';
 //IOS等用户直接用NobyDa的jd cookie
 let cookiesArr = [],
@@ -111,7 +111,7 @@ function getinfo() {
           'User-Agent': $.isNode()
             ? process.env.JD_USER_AGENT
               ? process.env.JD_USER_AGENT
-              : require('./USER_AGENTS').USER_AGENT
+              : require('../USER_AGENTS').USER_AGENT
             : $.getdata('JDUA')
             ? $.getdata('JDUA')
             : 'jdapp;iPhone;9.4.4;14.3;network/4g;Mozilla/5.0 (iPhone; CPU iPhone OS 14_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148;supportJDSHWK/1',
@@ -158,7 +158,7 @@ function join() {
           'User-Agent': $.isNode()
             ? process.env.JD_USER_AGENT
               ? process.env.JD_USER_AGENT
-              : require('./USER_AGENTS').USER_AGENT
+              : require('../USER_AGENTS').USER_AGENT
             : $.getdata('JDUA')
             ? $.getdata('JDUA')
             : 'jdapp;iPhone;9.4.4;14.3;network/4g;Mozilla/5.0 (iPhone; CPU iPhone OS 14_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148;supportJDSHWK/1',
@@ -275,7 +275,7 @@ function taskPostUrl(function_id, body = {}) {
       'User-Agent': $.isNode()
         ? process.env.JD_USER_AGENT
           ? process.env.JD_USER_AGENT
-          : require('./USER_AGENTS').USER_AGENT
+          : require('../USER_AGENTS').USER_AGENT
         : $.getdata('JDUA')
         ? $.getdata('JDUA')
         : 'jdapp;iPhone;9.4.4;14.3;network/4g;Mozilla/5.0 (iPhone; CPU iPhone OS 14_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148;supportJDSHWK/1',

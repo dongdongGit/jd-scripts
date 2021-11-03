@@ -70,7 +70,7 @@
 # 美妆馆-选品官
 27 9,10 * * * node /scripts/jd_selection_officer.js >> /scripts/logs/jd_selection_officer.log 2>&1
 # 京东超级盒子
-10 1,6,8 25-31,1-11 10,11 * node /scripts/jd_superbox.js >> /scripts/logs/jd_superbox.log 2>&1
+10 1,6,8 25-31,1-11 10,11 * node /scripts/jd_super_box.js >> /scripts/logs/jd_super_box.log 2>&1
 # 双11星推官 (11.10 结束)
 2 0,7,15 * * * node /scripts/jd_1111xtg.js >> /scripts/logs/jd_1111xtg.log 2>&1
 # 双11特物
@@ -208,8 +208,6 @@
 34 6,18 * * * node /scripts/jd_fans.js >> /scripts/logs/jd_fans.log 2>&1
 # 特物Z|万物皆可国创
 30 11 * * * node /scripts/jd_superBrand.js >> /scripts/logs/jd_superBrand.log 2>&1
-# 柠檬特务Z行动-星小店
-20 1 * * *  node /scripts/jd_twz_star.js >> /scripts/logs/jd_twz_star.log 2>&1
 # 特务Zx佳沛
 23 0,9 * * * node /scripts/jd_superZ4Brand.js >> /scripts/logs/jd_superZ4Brand.log 2>&1
 # 天天优惠大乐透
@@ -218,8 +216,6 @@
 4 12 * * * node /scripts/jd_yili_cattle.js >> /scripts/logs/jd_yili_cattle.log 2>&1
 # 京东众筹许愿
 8 0,8 * * * node /scripts/jd_crowdfunding_wish.js >> /scripts/logs/jd_crowdfunding_wish.log 2>&1
-# 金机奖投票
-33 4,7 8-20 8 * node /scripts/jd_golden_machine.js >> /scripts/logs/jd_golden_machine.log 2>&1
 # 京享值PK
 15 0,6,13,19,21 * * * node /scripts/jd_ddo_pk.js >> /scripts/logs/jd_ddo_pk.log 2>&1
 # 京小兑
@@ -230,5 +226,5 @@
 #0 6 * * * node /scripts/jd_focus.js >> /scripts/logs/jd_focus.log 2>&1
 # 取关主播
 3 5 * * * node /scripts/jd_unsubscribe_live.js >> /scripts/logs/jd_unsubscribe_live.log 2>&1
-# 取关主播
+# 积分换话费
 3 5 * * * node /scripts/jd_phone_bill.js >> /scripts/logs/jd_phone_bill.log 2>&1
