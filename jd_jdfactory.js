@@ -26,7 +26,7 @@ cron "10 * * * *" script-path=https://gitee.com/lxk0301/jd_scripts/raw/master/jd
  */
 const jd_helpers = require('./utils/JDHelpers.js');
 const jd_env = require('./utils/JDEnv.js');
-const $ = jd_env.env('东东工厂');
+let $ = jd_env.env('东东工厂');
 
 const notify = $.isNode() ? require('./sendNotify') : '';
 //Node.js用户请在jdCookie.js处填写京东ck;
@@ -63,6 +63,7 @@ const inviteCodes = [`P04z54XCjVWnYaS5u2ak7ZCdan1Bdd2GGiWvC6_uERj`, 'P04z54XCjVW
       $.index = i + 1;
       $.isLogin = true;
       $.nickName = '';
+      $.skuIds = [];
       message = '';
       await $.totalBean();
       console.log(`\n******开始【京东账号${$.index}】${$.nickName || $.UserName}*********\n`);
@@ -78,6 +79,7 @@ const inviteCodes = [`P04z54XCjVWnYaS5u2ak7ZCdan1Bdd2GGiWvC6_uERj`, 'P04z54XCjVW
       }
       await shareCodesFormat();
       await jdFactory();
+      await $.clearShoppingCart();
     }
   }
 })()
@@ -424,6 +426,29 @@ async function doTask() {
           console.log(`${item.taskName}已完成`);
         }
       }
+
+      if (item.taskType === 15 && process.env.PURCHASE_SHOPS) {
+        // 浏览并加购
+        if (item.status === 1) {
+          console.log(`准备做此任务：${item.taskName}`);
+          times = item.times;
+
+          for (let task of item.productInfoVos) {
+            if (item.maxTimes <= times) {
+              break;
+            }
+
+            if (task.status === 1) {
+              await addCart(task); // TODO:
+              $.skuIds.push(task.skuId);
+              await jdfactory_collectScore(task.taskToken);
+              times++;
+            }
+          }
+        } else {
+          console.log(`${item.taskName}已完成`);
+        }
+      }
     }
   }
 }
@@ -654,7 +679,6 @@ function jdfactory_getHomeData() {
           console.log(`${$.name} API请求失败，请检查网路重试`);
         } else {
           if (jd_helpers.safeGet(data)) {
-            // console.log(data);
             data = JSON.parse(data);
             if (data.data.bizCode === 0) {
               $.haveProduct = data.data.result.haveProduct;
@@ -685,6 +709,57 @@ function jdfactory_getHomeData() {
               console.log(`异常：${JSON.stringify(data)}`);
             }
           }
+        }
+      } catch (e) {
+        $.logErr(e, resp);
+      } finally {
+        resolve();
+      }
+    });
+  });
+}
+// 加购商品
+function addCart(task) {
+  return new Promise((resolve) => {
+    let url = 'https://wadeal.jd.com/deal/mshopcart/addCmdy?';
+    let params = {
+      templete: 1,
+      commlist: getCommlist(task),
+      source: 'm',
+      actId: '13',
+      sid: getUUID('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'),
+      type: 0,
+      locationid: '1_72_4137_0',
+      reg: 1,
+      scene: 2,
+      sceneval: 2,
+      t: Math.random(),
+      uuid: getUUID('xxxxxxxxxxxxxxxxxxxxxxxxxxxx') + '-' + getUUID('xxxxxxxxxxxxxxxxxxxxxxxxxxxx'),
+      callback: '_mCartCbk_1001',
+    };
+    url = ''
+    keys = Object.keys(params).map(key => {
+      url += key  + '=' + params[key] + '&';
+    });
+    url = url.substring(0, url.length - 1);
+    const options = {
+      url: url,
+      headers: {
+        Cookie: cookie,
+        Accept: `*/*`,
+        Connection: `keep-alive`,
+        'Content-Type': `application/x-www-form-urlencoded`,
+        'Accept-Encoding': `gzip, deflate, br`,
+        Host: `wqdeal.jd.com`,
+      },
+      timeout: 10000,
+    };
+    $.post(options, (err, resp, data) => {
+      try {
+        if (err) {
+          console.log(`${JSON.stringify(err)}`);
+          console.log(`${$.name} API请求失败，请检查网路重试`);
+        } else {
         }
       } catch (e) {
         $.logErr(e, resp);
@@ -780,4 +855,28 @@ function taskPostUrl(function_id, body = {}, function_id2) {
     },
     timeout: 10000,
   };
+}
+function getUUID(format = 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx', UpperCase = 0) {
+  return format.replace(/[xy]/g, function (c) {
+    var r = (Math.random() * 16) | 0,
+      v = c == 'x' ? r : (r & 0x3) | 0x8;
+    if (UpperCase) {
+      uuid = v.toString(36).toUpperCase();
+    } else {
+      uuid = v.toString(36);
+    }
+    return uuid;
+  });
+}
+
+function getCommlist(task) {
+  commItem = {};
+  commItem.itemid = task.skuId || '';
+  commItem.shopid = task.shopId || '';
+  commItem.num = 1;
+  commItem.skuId = task.skuId || '';
+  commItem.itype = 1;
+  commItem.targetid = 0;
+  commItem.packid = 0;
+  return Object.values(commItem).join(',');
 }
