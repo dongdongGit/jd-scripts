@@ -38,7 +38,7 @@ var jrBody = "";
 const config = require('./config.js');
 const Faker = require('./JDSignValidator');
 const zooFaker = require('./JDJRValidator_Pure');
-const { MD5 } = require('crypto-js');
+const { MD5 } = require('crypto-js/md5');
 
 let fp = '',
   eid = '';
