@@ -7,29 +7,27 @@ Last Modified time: 2021-05-19 16:27:18
 ================QuantumultX==================
 [task_local]
 #京东全民开红包
-1 1,2,23 * * * jd_redPacket.js, tag=京东全民开红包, img-url=https://raw.githubusercontent.com/58xinian/icon/master/jd_redPacket.png, enabled=true
+1 1,2,23 * * * https://raw.githubusercontent.com/Aaron-lv/sync/jd_scripts/jd_redPacket.js, tag=京东全民开红包, img-url=https://raw.githubusercontent.com/58xinian/icon/master/jd_redPacket.png, enabled=true
 ===================Loon==============
 [Script]
-cron "1 1,2,23 * * *" script-path=jd_redPacket.js, tag=京东全民开红包
+cron "1 1,2,23 * * *" script-path=https://raw.githubusercontent.com/Aaron-lv/sync/jd_scripts/jd_redPacket.js, tag=京东全民开红包
 ===============Surge===============
 [Script]
-京东全民开红包 = type=cron,cronexp="1 1,2,23 * * *",wake-system=1,timeout=3600,script-path=jd_redPacket.js
+京东全民开红包 = type=cron,cronexp="1 1,2,23 * * *",wake-system=1,timeout=3600,script-path=https://raw.githubusercontent.com/Aaron-lv/sync/jd_scripts/jd_redPacket.js
 ====================================小火箭=============================
-京东全民开红包 = type=cron,script-path=jd_redPacket.js, cronexpr="1 1,2,23 * * *", timeout=3600, enable=true
+京东全民开红包 = type=cron,script-path=https://raw.githubusercontent.com/Aaron-lv/sync/jd_scripts/jd_redPacket.js, cronexpr="1 1,2,23 * * *", timeout=3600, enable=true
  */
 const jd_helpers = require('./utils/JDHelpers.js');
 const jd_env = require('./utils/JDEnv.js');
 const $ = jd_env.env('京东全民开红包');
+const md5 = require('crypto-js/md5');
 const notify = $.isNode() ? require('./sendNotify') : '';
 //Node.js用户请在jdCookie.js处填写京东ck;
 const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
-
 //IOS等用户直接用NobyDa的jd cookie
 let cookiesArr = [],
   cookie = '';
-let isLoginInfo = {};
-$.redPacketId = [];
-
+$.redPacketId = ['373246289'];
 if ($.isNode()) {
   Object.keys(jdCookieNode).forEach((item) => {
     cookiesArr.push(jdCookieNode[item]);
@@ -45,7 +43,13 @@ const JD_API_HOST = 'https://api.m.jd.com/api';
     $.msg($.name, '【提示】请先获取京东账号一cookie\n直接使用NobyDa的京东签到获取', 'https://bean.m.jd.com/bean/signIndex.action', { 'open-url': 'https://bean.m.jd.com/bean/signIndex.action' });
     return;
   }
-  $.authorMyShareIds = [];
+  let res = await getAuthorShareCode('');
+  if (!res) {
+    //$.http.get({url: ''}).then((resp) => {}).catch((e) => $.log('刷新CDN异常', e));
+    await $.wait(1000);
+    res = await getAuthorShareCode('');
+  }
+  $.authorMyShareIds = [...(res || [])];
   for (let i = 0; i < cookiesArr.length; i++) {
     if (cookiesArr[i]) {
       $.cookie = cookie = cookiesArr[i];
@@ -54,7 +58,6 @@ const JD_API_HOST = 'https://api.m.jd.com/api';
       $.isLogin = true;
       $.nickName = '';
       await $.totalBean();
-      isLoginInfo[$.UserName] = $.isLogin;
       console.log(`\n****开始【京东账号${$.index}】${$.nickName || $.UserName}****\n`);
       if (!$.isLogin) {
         $.msg($.name, `【提示】cookie已失效`, `京东账号${$.index} ${$.nickName || $.UserName}\n请重新登录获取\nhttps://bean.m.jd.com/bean/signIndex.action`, {
@@ -71,32 +74,23 @@ const JD_API_HOST = 'https://api.m.jd.com/api';
       await showMsg();
     }
   }
-  for (let v = 0; v < cookiesArr.length; v++) {
-    cookie = cookiesArr[v];
-    $.index = v + 1;
+  for (let i = 0; i < cookiesArr.length; i++) {
+    cookie = cookiesArr[i];
+    $.index = i + 1;
     $.UserName = decodeURIComponent(cookie.match(/pt_pin=([^; ]+)(?=;?)/) && cookie.match(/pt_pin=([^; ]+)(?=;?)/)[1]);
     $.canHelp = true;
     $.redPacketId = [...new Set($.redPacketId)];
-    if (!isLoginInfo[$.UserName]) continue
     if (cookiesArr && cookiesArr.length >= 2) {
       console.log(`\n\n自己账号内部互助`);
-      for (let item of $.redPacketId) {
-        console.log(`账号 ${$.index} ${$.UserName} 开始给 ${item} 进行助力`);
-        await jinli_h5assist(item);
-        if (!$.canHelp) {
-          console.log(`次数已用完或活动火爆，跳出助力`);
-          break;
-        }
-      }
-    }
-    if ($.canHelp) {
-      console.log(`\n\n有剩余助力机会则给作者进行助力`);
-      for (let item of $.authorMyShareIds || []) {
-        console.log(`\n账号 ${$.index} ${$.UserName} 开始给作者 ${item} 进行助力`);
-        await jinli_h5assist(item);
-        if (!$.canHelp) {
-          console.log(`次数已用完，跳出助力`);
-          break;
+      for (let j = 0; j < $.redPacketId.length && $.canHelp; j++) {
+        console.log(`账号 ${$.index} ${$.UserName} 开始给 ${$.redPacketId[j]} 进行助力`);
+        $.max = false;
+        await jinli_h5assist($.redPacketId[j]);
+        await $.wait(2000);
+        if ($.max) {
+          $.redPacketId.splice(j, 1);
+          j--;
+          continue;
         }
       }
     }
@@ -156,7 +150,7 @@ function doLuckDrawEntrance() {
         } else {
           if (data) {
             data = JSON.parse(data);
-            if (data.code === '0' && data['busiCode'] === '0') {
+            if (data.code === '0' && data.busiCode === '0') {
               if (data.result.luckyDrawData.actId) {
                 if (data.result.luckyDrawData.redPacketId) {
                   console.log(`券后9.9抽奖获得【红包】：${data.result.luckyDrawData.quota}元`);
@@ -232,12 +226,12 @@ async function red() {
   $.hasSendNumber = 0;
   $.assistants = 0;
   $.waitOpenTimes = 0;
-  if ($.h5activityIndex && $.h5activityIndex.data && $.h5activityIndex.data['result']) {
-    const rewards = $.h5activityIndex['data']['result']['rewards'] || [];
-    $.hasSendNumber = $.h5activityIndex['data']['result']['hasSendNumber'];
-    if ($.h5activityIndex['data']['result']['redpacketConfigFillRewardInfo']) {
-      for (let key of Object.keys($.h5activityIndex['data']['result']['redpacketConfigFillRewardInfo'])) {
-        let vo = $.h5activityIndex['data']['result']['redpacketConfigFillRewardInfo'][key];
+  if ($.h5activityIndex && $.h5activityIndex.data && $.h5activityIndex.data.result) {
+    const rewards = $.h5activityIndex.data.result.rewards || [];
+    $.hasSendNumber = $.h5activityIndex.data.result.hasSendNumber;
+    if ($.h5activityIndex.data.result.redpacketConfigFillRewardInfo) {
+      for (let key of Object.keys($.h5activityIndex.data.result.redpacketConfigFillRewardInfo)) {
+        let vo = $.h5activityIndex.data.result.redpacketConfigFillRewardInfo[key];
         $.assistants += vo.hasAssistNum;
         if (vo.packetStatus === 1) {
           $.waitOpenTimes += 1;
@@ -245,18 +239,17 @@ async function red() {
       }
     }
   }
-  if ($.h5activityIndex && $.h5activityIndex.data && $.h5activityIndex.data['biz_code'] === 10002) {
+  if ($.h5activityIndex && $.h5activityIndex.data && $.h5activityIndex.data.biz_code === 10002) {
     //可发起拆红包活动
     await h5launch();
-  } else if ($.h5activityIndex && $.h5activityIndex.data && $.h5activityIndex.data['biz_code'] === 20001) {
+  } else if ($.h5activityIndex && $.h5activityIndex.data && $.h5activityIndex.data.biz_code === 20001) {
     //20001:红包活动正在进行，可拆
-    const redPacketId = $.h5activityIndex['data']['result']['redpacketInfo']['id'];
+    const redPacketId = $.h5activityIndex.data.result.redpacketInfo.id;
     if (redPacketId) $.redPacketId.push(redPacketId);
     console.log(
-      `\n\n当前待拆红包ID:${$.h5activityIndex['data']['result']['redpacketInfo']['id']}，进度：再邀${
-        $.h5activityIndex['data']['result']['redpacketConfigFillRewardInfo'][$.hasSendNumber]['requireAssistNum'] -
-        $.h5activityIndex['data']['result']['redpacketConfigFillRewardInfo'][$.hasSendNumber]['hasAssistNum']
-      }个好友，开第${$.hasSendNumber + 1}个红包。当前已拆红包：${$.hasSendNumber}个，剩余${$.h5activityIndex['data']['result']['remainRedpacketNumber']}个红包待开，已有${$.assistants}好友助力\n\n`
+      `\n\n当前待拆红包ID:${$.h5activityIndex.data.result.redpacketInfo.id}，进度：再邀${
+        $.h5activityIndex.data.result.redpacketConfigFillRewardInfo[$.hasSendNumber].requireAssistNum - $.h5activityIndex.data.result.redpacketConfigFillRewardInfo[$.hasSendNumber].hasAssistNum
+      }个好友，开第${$.hasSendNumber + 1}个红包。当前已拆红包：${$.hasSendNumber}个，剩余${$.h5activityIndex.data.result.remainRedpacketNumber}个红包待开，已有${$.assistants}好友助力\n\n`
     );
     console.log(`当前可拆红包个数：${$.waitOpenTimes}`);
     if ($.waitOpenTimes > 0) {
@@ -265,8 +258,8 @@ async function red() {
         await $.wait(500);
       }
     }
-  } else if ($.h5activityIndex && $.h5activityIndex.data && $.h5activityIndex.data['biz_code'] === 20002) {
-    console.log(`\n${$.h5activityIndex.data['biz_msg']}\n`);
+  } else if ($.h5activityIndex && $.h5activityIndex.data && $.h5activityIndex.data.biz_code === 20002) {
+    console.log(`\n${$.h5activityIndex.data.biz_msg}\n`);
   }
 }
 //获取任务列表API
@@ -292,7 +285,7 @@ function taskHomePage() {
 function startTask(taskType) {
   // 从taskHomePage返回的数据里面拿taskType
   let data = { taskType };
-  data['token'] = $.md5($.md5('j' + JSON.stringify(data) + 'D'));
+  data['token'] = md5(md5('j' + JSON.stringify(data) + 'D'));
   return new Promise((resolve) => {
     $.post(taskUrl(arguments.callee.name.toString(), data), (err, resp, data) => {
       try {
@@ -359,7 +352,7 @@ function getTaskDetailForColor(taskType) {
 //做成任务API
 function taskReportForColor(taskType, detailId) {
   const data = { taskType, detailId };
-  data['token'] = $.md5($.md5('j' + JSON.stringify(data) + 'D'));
+  data['token'] = md5(md5('j' + JSON.stringify(data) + 'D'));
   //console.log(`活动id：：：${detailId}\n`)
   return new Promise((resolve) => {
     $.post(taskUrl(arguments.callee.name.toString(), data), (err, resp, data) => {
@@ -389,8 +382,8 @@ function receiveTaskRedpacket(taskType) {
           console.log(`\n${$.name}: API查询请求失败 ‼️‼️`);
           console.log(JSON.stringify(err));
         } else {
-          data = JSON.parse(data);
-          if (data.data.success && data.data.biz_code === 0) {
+          data = JSON.parse(data);;
+          if (data.code == 0 && data?.data?.success && data?.data?.biz_code === 0) {
             console.log(`红包领取成功，获得${data.data.result.discount}元\n`);
             $.discount += Number(data.data.result.discount);
           }
@@ -416,11 +409,12 @@ function jinli_h5assist(redPacketId) {
           console.log(JSON.stringify(err));
         } else {
           data = JSON.parse(data);
-          if (data && data.data && data.data['biz_code'] === 0) {
+          if (data && data.data && data.data.biz_code === 0) {
             // status ,0:助力成功，1:不能重复助力，3:助力次数耗尽，8:不能为自己助力
-            console.log(`助力结果：${data['data']['result']['statusDesc']}`);
-            if (data['data']['result']['status'] === 3) $.canHelp = false;
-            if (data['data']['result']['status'] === 9) $.canHelp = false;
+            console.log(`助力结果：${data.data.result.statusDesc}`);
+            if (data.data.result.status === 2) $.max = true;
+            if (data.data.result.status === 3) $.canHelp = false;
+            if (data.data.result.status === 9) $.canHelp = false;
           } else {
             console.log(`助力异常：${JSON.stringify(data)}`);
           }
@@ -444,8 +438,8 @@ function h5receiveRedpacketAll() {
           console.log(JSON.stringify(err));
         } else {
           data = JSON.parse(data);
-          if (data && data.data && data.data['biz_code'] === 0) {
-            console.log(`拆红包获得：${data['data']['result']['discount']}元`);
+          if (data && data.data && data.data.biz_code === 0) {
+            console.log(`拆红包获得：${data.data.result.discount}元`);
           } else {
             console.log(`领红包失败：${JSON.stringify(data)}`);
           }
@@ -470,12 +464,12 @@ function h5launch() {
           console.log(JSON.stringify(err));
         } else {
           data = JSON.parse(data);
-          if (data && data.data && data.data['biz_code'] === 0) {
-            if (data['data']['result']['redPacketId']) {
-              console.log(`\n\n发起助力红包 成功：红包ID ${data['data']['result']['redPacketId']}`);
-              $.redPacketId.push(data['data']['result']['redPacketId']);
+          if (data && data.data && data.data.biz_code === 0) {
+            if (data.data.result.redPacketId) {
+              console.log(`\n\n发起助力红包 成功：红包ID ${data.data.result.redPacketId}`);
+              $.redPacketId.push(data.data.result.redPacketId);
             } else {
-              console.log(`\n\n发起助力红包 失败：${data['data']['result']['statusDesc']}`);
+              console.log(`\n\n发起助力红包 失败：${data.data.result.statusDesc}`);
             }
           } else {
             console.log(`发起助力红包 失败：${JSON.stringify(data)}`);
@@ -502,10 +496,10 @@ function h5activityIndex() {
           data = JSON.parse(data);
           $.h5activityIndex = data;
           $.discount = 0;
-          if ($.h5activityIndex && $.h5activityIndex.data && $.h5activityIndex.data['result']) {
-            const rewards = $.h5activityIndex['data']['result']['rewards'] || [];
+          if ($.h5activityIndex && $.h5activityIndex.data && $.h5activityIndex.data.result) {
+            const rewards = $.h5activityIndex.data.result.rewards || [];
             for (let item of rewards) {
-              $.discount += item['packetSum'];
+              $.discount += item.packetSum;
             }
             if ($.discount) $.discount = $.discount.toFixed(2);
           }
@@ -658,6 +652,3 @@ function taskUrl(functionId, body = {}) {
     },
   };
 }
-// md5
-// prettier-ignore
-!function(n){function t(n,t){var r=(65535&n)+(65535&t);return(n>>16)+(t>>16)+(r>>16)<<16|65535&r}function r(n,t){return n<<t|n>>>32-t}function e(n,e,o,u,c,f){return t(r(t(t(e,n),t(u,f)),c),o)}function o(n,t,r,o,u,c,f){return e(t&r|~t&o,n,t,u,c,f)}function u(n,t,r,o,u,c,f){return e(t&o|r&~o,n,t,u,c,f)}function c(n,t,r,o,u,c,f){return e(t^r^o,n,t,u,c,f)}function f(n,t,r,o,u,c,f){return e(r^(t|~o),n,t,u,c,f)}function i(n,r){n[r>>5]|=128<<r%32,n[14+(r+64>>>9<<4)]=r;var e,i,a,d,h,l=1732584193,g=-271733879,v=-1732584194,m=271733878;for(e=0;e<n.length;e+=16){i=l,a=g,d=v,h=m,g=f(g=f(g=f(g=f(g=c(g=c(g=c(g=c(g=u(g=u(g=u(g=u(g=o(g=o(g=o(g=o(g,v=o(v,m=o(m,l=o(l,g,v,m,n[e],7,-680876936),g,v,n[e+1],12,-389564586),l,g,n[e+2],17,606105819),m,l,n[e+3],22,-1044525330),v=o(v,m=o(m,l=o(l,g,v,m,n[e+4],7,-176418897),g,v,n[e+5],12,1200080426),l,g,n[e+6],17,-1473231341),m,l,n[e+7],22,-45705983),v=o(v,m=o(m,l=o(l,g,v,m,n[e+8],7,1770035416),g,v,n[e+9],12,-1958414417),l,g,n[e+10],17,-42063),m,l,n[e+11],22,-1990404162),v=o(v,m=o(m,l=o(l,g,v,m,n[e+12],7,1804603682),g,v,n[e+13],12,-40341101),l,g,n[e+14],17,-1502002290),m,l,n[e+15],22,1236535329),v=u(v,m=u(m,l=u(l,g,v,m,n[e+1],5,-165796510),g,v,n[e+6],9,-1069501632),l,g,n[e+11],14,643717713),m,l,n[e],20,-373897302),v=u(v,m=u(m,l=u(l,g,v,m,n[e+5],5,-701558691),g,v,n[e+10],9,38016083),l,g,n[e+15],14,-660478335),m,l,n[e+4],20,-405537848),v=u(v,m=u(m,l=u(l,g,v,m,n[e+9],5,568446438),g,v,n[e+14],9,-1019803690),l,g,n[e+3],14,-187363961),m,l,n[e+8],20,1163531501),v=u(v,m=u(m,l=u(l,g,v,m,n[e+13],5,-1444681467),g,v,n[e+2],9,-51403784),l,g,n[e+7],14,1735328473),m,l,n[e+12],20,-1926607734),v=c(v,m=c(m,l=c(l,g,v,m,n[e+5],4,-378558),g,v,n[e+8],11,-2022574463),l,g,n[e+11],16,1839030562),m,l,n[e+14],23,-35309556),v=c(v,m=c(m,l=c(l,g,v,m,n[e+1],4,-1530992060),g,v,n[e+4],11,1272893353),l,g,n[e+7],16,-155497632),m,l,n[e+10],23,-1094730640),v=c(v,m=c(m,l=c(l,g,v,m,n[e+13],4,681279174),g,v,n[e],11,-358537222),l,g,n[e+3],16,-722521979),m,l,n[e+6],23,76029189),v=c(v,m=c(m,l=c(l,g,v,m,n[e+9],4,-640364487),g,v,n[e+12],11,-421815835),l,g,n[e+15],16,530742520),m,l,n[e+2],23,-995338651),v=f(v,m=f(m,l=f(l,g,v,m,n[e],6,-198630844),g,v,n[e+7],10,1126891415),l,g,n[e+14],15,-1416354905),m,l,n[e+5],21,-57434055),v=f(v,m=f(m,l=f(l,g,v,m,n[e+12],6,1700485571),g,v,n[e+3],10,-1894986606),l,g,n[e+10],15,-1051523),m,l,n[e+1],21,-2054922799),v=f(v,m=f(m,l=f(l,g,v,m,n[e+8],6,1873313359),g,v,n[e+15],10,-30611744),l,g,n[e+6],15,-1560198380),m,l,n[e+13],21,1309151649),v=f(v,m=f(m,l=f(l,g,v,m,n[e+4],6,-145523070),g,v,n[e+11],10,-1120210379),l,g,n[e+2],15,718787259),m,l,n[e+9],21,-343485551),l=t(l,i),g=t(g,a),v=t(v,d),m=t(m,h)}return[l,g,v,m]}function a(n){var t,r="",e=32*n.length;for(t=0;t<e;t+=8){r+=String.fromCharCode(n[t>>5]>>>t%32&255)}return r}function d(n){var t,r=[];for(r[(n.length>>2)-1]=void 0,t=0;t<r.length;t+=1){r[t]=0}var e=8*n.length;for(t=0;t<e;t+=8){r[t>>5]|=(255&n.charCodeAt(t/8))<<t%32}return r}function h(n){return a(i(d(n),8*n.length))}function l(n,t){var r,e,o=d(n),u=[],c=[];for(u[15]=c[15]=void 0,o.length>16&&(o=i(o,8*n.length)),r=0;r<16;r+=1){u[r]=909522486^o[r],c[r]=1549556828^o[r]}return e=i(u.concat(d(t)),512+8*t.length),a(i(c.concat(e),640))}function g(n){var t,r,e="";for(r=0;r<n.length;r+=1){t=n.charCodeAt(r),e+="0123456789abcdef".charAt(t>>>4&15)+"0123456789abcdef".charAt(15&t)}return e}function v(n){return unescape(encodeURIComponent(n))}function m(n){return h(v(n))}function p(n){return g(m(n))}function s(n,t){return l(v(n),v(t))}function C(n,t){return g(s(n,t))}function A(n,t,r){return t?r?s(t,n):C(t,n):r?m(n):p(n)}$.md5=A}(this);
