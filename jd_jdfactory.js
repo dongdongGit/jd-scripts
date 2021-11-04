@@ -79,6 +79,7 @@ const inviteCodes = [`P04z54XCjVWnYaS5u2ak7ZCdan1Bdd2GGiWvC6_uERj`, 'P04z54XCjVW
       }
       await shareCodesFormat();
       await jdFactory();
+      await $.clearShoppingCart();
     }
   }
 })()
