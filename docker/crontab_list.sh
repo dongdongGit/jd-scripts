@@ -39,8 +39,6 @@
 44 6-23 * * *  node /scripts/jd_jx_cashback.js >> /scripts/logs/jd_jx_cashback.log 2>&1
 # 企有此礼
 30 4 * * *  node /scripts/jd_corporate_gift.js >> /scripts/logs/jd_corporate_gift.log 2>&1
-# 动人影像馆
-23 15 13-26 9 * node /scripts/jd_film_museum.js >> /scripts/logs/jd_film_museum.log 2>&1
 # 东东世界
 20 8 * * * node /scripts/jd_ddworld.js >> /scripts/logs/jd_ddworld.log 2>&1
 # 热血心跳,狂解压
@@ -81,6 +79,10 @@
 1 0,9,19,23 * * * node /scripts/jd_jx_cow_welfare.js >> /scripts/logs/jd_jx_cow_welfare.log 2>&1
 # 手机竞猜
 10 7,10,20, * * * node /scripts/jd_mobile_guess.js >> /scripts/logs/jd_mobile_guess.log 2>&1
+# 热血心跳,狂解压
+10 9,17 * * * node /scripts/jd_vivo.js >> /scripts/logs/jd_vivo.log 2>&1
+# 双11环游记大富翁
+0 16 1-11 11 * node /scripts/jd_travel_shop.js >> /scripts/logs/jd_travel_shop.log 2>&1
 ##############长期活动##############
 # 签到
 0 0,17 * * * cd /scripts && node jd_bean_sign.js >> /scripts/logs/jd_bean_sign.log 2>&1
