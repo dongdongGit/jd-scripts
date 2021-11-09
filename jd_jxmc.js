@@ -1,10 +1,22 @@
-/**
- 京喜牧场
- cron 23 0-23/3 * * * https://raw.githubusercontent.com/star261/jd/main/scripts/jd_jxmc.js
- 环境变量：JX_USER_AGENT, 京喜APP的UA。领取助力任务奖励需要京喜APP的UA,有能力的可以填上自己的UA,默认生成随机UA
- 环境变量：BYTYPE,购买小鸡品种，默认不购买,(ps:暂时不知道买哪个好)
- BYTYPE="1",购买小黄鸡，BYTYPE="2",购买辣子鸡，BYTYPE="3",购买椰子鸡,BYTYPE="4",购买猪肚鸡,BYTYPE="999",能买哪只买哪只,BYTYPE="888",不购买小鸡
- 脚本9点-10点才会执行内部助力
+/*
+京喜牧场
+活动入口：京喜APP-我的-京喜牧场
+温馨提示：请先手动完成【新手指导任务】再运行脚本
+环境变量：JX_USER_AGENT, 惊喜APP的UA。领取助力任务奖励需要惊喜APP的UA,有能力的可以填上自己的UA,默认生成随机UA
+环境变量：BYTYPE,购买小鸡品种，默认不购买,(ps:暂时不知道买哪个好)
+BYTYPE="1",购买小黄鸡，BYTYPE="2",购买辣子鸡，BYTYPE="3",购买椰子鸡,BYTYPE="4",购买猪肚鸡,BYTYPE="999",能买哪只买哪只,BYTYPE="888",不购买小鸡
+脚本兼容: QuantumultX, Surge, Loon, JSBox, Node.js
+============Quantumultx===============
+[task_local]
+#京喜牧场
+20 0-23/3 * * * jx_mc.js, tag=京喜牧场, img-url=https://github.com/58xinian/icon/raw/master/jdgc.png, enabled=true
+================Loon==============
+[Script]
+cron "20 0-23/3 * * *" script-path=jx_mc.js,tag=京喜牧场
+===============Surge=================
+京喜牧场 = type=cron,cronexp="20 0-23/3 * * *",wake-system=1,timeout=3600,script-path=jx_mc.js
+============小火箭=========
+京喜牧场 = type=cron,script-path=jx_mc.js, cronexpr="20 0-23/3 * * *", timeout=3600, enable=true
  */
 // prettier-ignore
 !function (t, r) { "object" == typeof exports ? module.exports = exports = r() : "function" == typeof define && define.amd ? define([], r) : t.CryptoJS = r() }(this, function () {
@@ -17,14 +29,17 @@
 const jd_env = require('./utils/JDEnv.js');
 let $ = jd_env.env('惊喜牧场');
 const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
+const notify = $.isNode() ? require('./sendNotify') : '';
 const JXUserAgent = $.isNode() ? (process.env.JX_USER_AGENT ? process.env.JX_USER_AGENT : ``) : ``;
-const ByType = $.isNode() ? (process.env.BYTYPE ? process.env.BYTYPE : `888`) : `888`;
+const ByType = $.isNode() ? (process.env.BYTYPE ? process.env.BYTYPE : `999`) : `999`;
 let cookiesArr = [],
   token = {},
   ua = '';
 $.appId = 10028;
 let activeid = 'null';
-$.inviteCodeList = [];
+$.inviteCodeList = [
+  'g_eiitD1h9-a-PX-GytKiGrfw77E3iG0LpMlIb2JHcbwr10-HQBQrOS_x13yKJkGQQ99IurWzJqCtQyXMlZWqQ'
+];
 if ($.isNode()) {
   Object.keys(jdCookieNode).forEach((item) => {
     cookiesArr.push(jdCookieNode[item]);
@@ -66,7 +81,6 @@ if ($.isNode()) {
     }
     await $.wait(2000);
   }
-
   console.log('\n##################开始账号内互助#################\n');
   for (let j = 0; j < cookiesArr.length; j++) {
     $.cookie = cookiesArr[j];
@@ -312,7 +326,11 @@ async function doUserLoveInfo() {
       await $.wait(5500);
       console.log(`完成任务：${oneTask.description}`);
       awardInfo = await takeRequest(`newtasksys`, `newtasksys_front/Award`, `source=jxmc_zanaixin&taskId=${oneTask.taskId}&bizCode=jxmc_zanaixin`, `bizCode%2Csource%2CtaskId`, true);
-      console.log(`领取爱心成功，获得${JSON.parse(awardInfo.prizeInfo).prizeInfo}`);
+      if (awardInfo && awardInfo.prizeInfo && JSON.parse(awardInfo.prizeInfo)) {
+        console.log(`领取爱心成功，获得${JSON.parse(awardInfo.prizeInfo).prizeInfo || ''}`);
+      } else {
+        console.log(`领取爱心：${JSON.stringify(awardInfo)}`);
+      }
     }
   }
   let userLoveInfo = await takeRequest(`jxmc`, `queryservice/GetUserLoveInfo`, ``, undefined, true);
@@ -332,6 +350,7 @@ async function doUserLoveInfo() {
     }
   }
 }
+
 async function buyChick(configInfo, homePageInfo, cardInfo) {
   console.log(`现共有小鸡：${homePageInfo.petinfo.length}只,小鸡上限：6只`);
   if (homePageInfo.petinfo.length === 6) {
@@ -492,7 +511,7 @@ async function doMotion(petidList) {
     console.log(`开始第${i + 1}次割草`);
     let mowingInfo = await takeRequest(`jxmc`, `operservice/Action`, `&type=2`, 'activeid%2Cactivekey%2Cchannel%2Cjxmc_jstoken%2Cphoneid%2Csceneid%2Ctimestamp%2Ctype', true);
     console.log(`获得金币：${mowingInfo.addcoins || 0}`);
-    await $.wait(1000);
+    await $.wait(2000);
     if (Number(mowingInfo.addcoins) > 0) {
       runFlag = true;
     } else {
@@ -534,7 +553,7 @@ async function doMotion(petidList) {
       runFlag = false;
       console.log(`未获得金币暂停割鸡腿`);
     }
-    await $.wait(1000);
+    await $.wait(2000);
   }
 }
 async function doTask() {
