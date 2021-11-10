@@ -2,12 +2,12 @@
  * 蚊子腿豆子，10月16号应该可以参与瓜分
  * cron  15 6,18 1-16,21-30 9,10 *
  */
-const jd_helpers = require('./utils/JDHelpers.js');
-const jd_env = require('./utils/JDEnv.js');
+const jd_helpers = require('../utils/JDHelpers.js');
+const jd_env = require('../utils/JDEnv.js');
 let $ = jd_env.env('热血心跳,狂解压');
 
-const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
-const notify = $.isNode() ? require('./sendNotify') : '';
+const jdCookieNode = $.isNode() ? require('../jdCookie.js') : '';
+const notify = $.isNode() ? require('../sendNotify') : '';
 let cookiesArr = [];
 $.activityID = 'dz2109100009716201';
 $.shopid = '1000085868';
@@ -515,7 +515,7 @@ function TotalBean() {
         'User-Agent': $.isNode()
           ? process.env.JD_USER_AGENT
             ? process.env.JD_USER_AGENT
-            : require('./USER_AGENTS').USER_AGENT
+            : require('../USER_AGENTS').USER_AGENT
           : $.getdata('JDUA')
           ? $.getdata('JDUA')
           : 'jdapp;iPhone;9.4.4;14.3;network/4g;Mozilla/5.0 (iPhone; CPU iPhone OS 14_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148;supportJDSHWK/1',

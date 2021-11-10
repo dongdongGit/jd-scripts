@@ -30,7 +30,7 @@
 # 明星小店
 12 11 10-17 9 * node /scripts/jd_star_shop.js >> /scripts/logs/jd_star_shop.log 2>&1
 # 浮窗集卡
-30 9,21 1-12 9 *  node /scripts/jd_necklace_card.js >> /scripts/logs/jd_necklace_card.log 2>&1
+30 9,21 1-12 * *  node /scripts/jd_necklace_card.js >> /scripts/logs/jd_necklace_card.log 2>&1
 # 内容鉴赏官
 15 3,6 * * * node /scripts/jd_connoisseur.js >> /scripts/logs/jd_connoisseur.log 2>&1
 # 京喜财富岛合成月饼
@@ -41,8 +41,6 @@
 30 4 * * *  node /scripts/jd_corporate_gift.js >> /scripts/logs/jd_corporate_gift.log 2>&1
 # 东东世界
 20 8 * * * node /scripts/jd_ddworld.js >> /scripts/logs/jd_ddworld.log 2>&1
-# 热血心跳,狂解压
-15 6,18 1-16,21-30 9,10 * node /scripts/jd_decompression.js >> /scripts/logs/jd_decompression.log 2>&1
 # 集魔方
 16 10,19 * * * node /scripts/jd_rubik_cube.js >> /scripts/logs/jd_rubik_cube.log 2>&1
 # 集魔方兑换
