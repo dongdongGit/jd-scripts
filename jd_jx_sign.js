@@ -1,6 +1,6 @@
 /*
 京喜签到
-cron 20 1 * * * jd_jx_sign.js
+20 1,8 * * * jd_jxqd.js
 更新时间：2021-7-31
 活动入口：京喜APP-我的-京喜签到
 已支持IOS双京东账号,Node.js支持N个京东账号
@@ -8,14 +8,14 @@ cron 20 1 * * * jd_jx_sign.js
 ============Quantumultx===============
 [task_local]
 #京喜签到
-20 1 * * * jd_jx_sign.js, tag=京喜签到, img-url=https://raw.githubusercontent.com/58xinian/icon/master/jxcfd.png, enabled=true
+20 1,8 * * * jd_jxqd.js, tag=京喜签到, img-url=https://raw.githubusercontent.com/58xinian/icon/master/jxcfd.png, enabled=true
 ================Loon==============
 [Script]
-cron "20 1 * * *" script-path=jd_jx_sign.js,tag=京喜签到
+cron "20 1,8 * * *" script-path=jd_jxqd.js,tag=京喜签到
 ===============Surge=================
-京喜签到 = type=cron,cronexp="20 1 * * *",wake-system=1,timeout=3600,script-path=jd_jx_sign.js
+京喜签到 = type=cron,cronexp="20 1,8 * * *",wake-system=1,timeout=3600,script-path=https://raw.githubusercontent.com/Aaron-lv/sync/jd_scripts/jx_sign.js
 ============小火箭=========
-京喜签到 = type=cron,script-path=jd_jx_sign.js, cronexpr="20 1 * * *", timeout=3600, enable=true
+京喜签到 = type=cron,script-path=https://raw.githubusercontent.com/Aaron-lv/sync/jd_scripts/jx_sign.js, cronexpr="20 1,8 * * *", timeout=3600, enable=true
  */
 // prettier-ignore
 !function (t, r) { "object" == typeof exports ? module.exports = exports = r() : "function" == typeof define && define.amd ? define([], r) : t.CryptoJS = r() }(this, function () {
@@ -38,8 +38,22 @@ let cookiesArr = [],
   cookie = '',
   message;
 let UA,
-  UAInfo = {};
-$.shareCodes = [];
+  UAInfo = {},
+  isLoginInfo = {};
+$.shareCodes = [
+  {
+    use: '208332482-829664',
+    smp: '50623c2d95da55cd349fff0e18920f23',
+    num: 0,
+    max: 1,
+  },
+  {
+    use: 'jd_5949b347c7184',
+    smp: '0716ad8bc6156eaf27d720fa4e39e7fb',
+    num: 0,
+    max: 1
+  }
+];
 $.blackInfo = {};
 $.appId = 10028;
 if ($.isNode()) {
@@ -48,7 +62,7 @@ if ($.isNode()) {
   });
   if (process.env.JD_DEBUG && process.env.JD_DEBUG === 'false') console.log = () => {};
 } else {
-  cookiesArr = [$.getdata('CookieJD'), $.getdata('CookieJD2'), ...jd_helpers.jsonParse($.getdata('CookiesJD') || '[]').map((item) => item.cookie)].filter((item) => !!item);
+  cookiesArr = [$.getdata('CookieJD'), $.getdata('CookieJD2'), ...jsonParse($.getdata('CookiesJD') || '[]').map((item) => item.cookie)].filter((item) => !!item);
 }
 !(async () => {
   $.CryptoJS = $.isNode() ? require('crypto-js') : CryptoJS;
@@ -63,19 +77,21 @@ if ($.isNode()) {
       $.cookie = cookie = cookiesArr[i];
       $.UserName = decodeURIComponent(cookie.match(/pt_pin=([^; ]+)(?=;?)/) && cookie.match(/pt_pin=([^; ]+)(?=;?)/)[1]);
       $.isLogin = true;
-      await $.totalBean();
-      if (!$.isLogin) {
-        continue;
-      }
-      if (i === 0) console.log(`\n正在收集助力码请等待\n`);
-      UA = `jdpingou;iPhone;4.13.0;14.4.2;${randomString(
-        40
-      )};network/wifi;model/iPhone10,2;appBuild/100609;ADID/00000000-0000-0000-0000-000000000000;supportApplePay/1;hasUPPay/0;pushNoticeIsOpen/1;hasOCPay/0;supportBestPay/0;session/${
+      UA = `jdpingou;iPhone;4.13.0;14.4.2;${randomString(40)};network/wifi;model/iPhone10,2;appBuild/100609;supportApplePay/1;hasUPPay/0;pushNoticeIsOpen/1;hasOCPay/0;supportBestPay/0;session/${
         Math.random * 98 + 1
       };pap/JA2019_3111789;brand/apple;supportJDSHWK/1;Mozilla/5.0 (iPhone; CPU iPhone OS 14_6 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148`;
+      UAInfo[$.UserName] = UA;
+      if (isLoginInfo[$.UserName] === false) {
+      } else {
+        if (!isLoginInfo[$.UserName]) {
+          await $.totalBean();
+          isLoginInfo[$.UserName] = $.isLogin;
+        }
+      }
+      if (i === 0) console.log(`\n正在收集助力码请等待\n`);
+      if (!isLoginInfo[$.UserName]) continue;
       await signhb(1);
       await $.wait(500);
-      UAInfo[$.UserName] = UA;
     }
   }
   for (let i = 0; i < cookiesArr.length; i++) {
@@ -90,9 +106,15 @@ if ($.isNode()) {
       $.bxNum = [];
       $.black = false;
       $.canHelp = true;
-      await $.totalBean();
+      if (isLoginInfo[$.UserName] === false) {
+      } else {
+        if (!isLoginInfo[$.UserName]) {
+          await $.totalBean();
+          isLoginInfo[$.UserName] = $.isLogin;
+        }
+      }
       console.log(`\n******开始【京东账号${$.index}】${$.nickName || $.UserName}*********\n`);
-      if (!$.isLogin) {
+      if (!isLoginInfo[$.UserName]) {
         $.msg($.name, `【提示】cookie已失效`, `京东账号${$.index} ${$.nickName || $.UserName}\n请重新登录获取\nhttps://bean.m.jd.com/bean/signIndex.action`, {
           'open-url': 'https://bean.m.jd.com/bean/signIndex.action',
         });
@@ -157,7 +179,7 @@ if ($.isNode()) {
   }
 })()
   .catch((e) => {
-    $.log('', `${$.name}, 失败! 原因: ${e}!`, '');
+    $.log('', `❌ ${$.name}, 失败! 原因: ${e}!`, '');
   })
   .finally(() => {
     $.done();
@@ -166,7 +188,7 @@ if ($.isNode()) {
 // 查询信息
 function signhb(type = 1) {
   return new Promise((resolve) => {
-    $.get(taskUrl('fanxiantask/signhb/query'), async (err, resp, data) => {
+    $.get(taskUrl('signhb/query'), async (err, resp, data) => {
       try {
         if (err) {
           console.log(JSON.stringify(err));
@@ -235,7 +257,7 @@ function signhb(type = 1) {
 // 签到 助力
 function helpSignhb(smp = '') {
   return new Promise((resolve) => {
-    $.get(taskUrl('fanxiantask/signhb/query', `signhb_source=1000&smp=${smp}&type=1`, 'signhb_source,smp,type'), async (err, resp, data) => {
+    $.get(taskUrl('signhb/query', `type=1&signhb_source=1000&smp=${smp}&ispp=0&tk=`), async (err, resp, data) => {
       try {
         if (err) {
           console.log(JSON.stringify(err));
@@ -267,7 +289,7 @@ function helpSignhb(smp = '') {
 // 任务
 function dotask(task) {
   return new Promise((resolve) => {
-    $.get(taskUrl('fanxiantask/signhb/dotask', `signhb_source=1000&task=${task}`, 'signhb_source,task'), async (err, resp, data) => {
+    $.get(taskUrl('signhb/dotask', `signhb_source=1000&task=${task}&ispp=0&tk=`), async (err, resp, data) => {
       try {
         if (err) {
           console.log(JSON.stringify(err));
@@ -292,7 +314,7 @@ function dotask(task) {
 // 宝箱
 function bxdraw() {
   return new Promise((resolve) => {
-    $.get(taskUrl('fanxiantask/signhb/bxdraw'), async (err, resp, data) => {
+    $.get(taskUrl('signhb/bxdraw'), async (err, resp, data) => {
       try {
         if (err) {
           console.log(JSON.stringify(err));
@@ -317,7 +339,20 @@ function bxdraw() {
 // 双签
 function doubleSign() {
   return new Promise((resolve) => {
-    $.get(taskUrl('double_sign/IssueReward'), async (err, resp, data) => {
+    let options = {
+      url: `${JD_API_HOST}double_sign/IssueReward?sceneval=2&g_login_type=1&_ste=1&g_ty=ajax`,
+      headers: {
+        Host: 'm.jingxi.com',
+        Accept: 'application/json',
+        Origin: 'https://st.jingxi.com',
+        'Accept-Encoding': 'gzip, deflate, br',
+        'User-Agent': UA,
+        'Accept-Language': 'zh-CN,zh-Hans;q=0.9',
+        Referer: 'https://st.jingxi.com/',
+        Cookie: cookie,
+      },
+    };
+    $.get(options, async (err, resp, data) => {
       try {
         if (err) {
           console.log(`${JSON.stringify(err)}`);
@@ -339,34 +374,38 @@ function doubleSign() {
   });
 }
 
-function taskUrl(functionId, body = '', stk) {
+function taskUrl(functionId, body = '') {
   let url = ``;
   if (body) {
-    url = `${JD_API_HOST}${functionId}?${body ? `${body}&` : ''}sceneval=2&g_login_type=1&_=${Date.now()}&_ste=1&callback=jsonpCBKC&g_ty=ls`;
-    url += `&h5st=${decrypt(Date.now(), stk, '', url)}`;
-    if (stk) {
-      url += `&_stk=${encodeURIComponent(stk)}`;
-    }
+    url = `${JD_API_HOST}fanxiantask/${functionId}?${body}`;
+    url += `&_stk=${getStk(url)}`;
+    url += `&_ste=1&h5st=${decrypt(Date.now(), '', '', url)}&_=${Date.now() + 2}&sceneval=2&g_login_type=1&callback=jsonpCBK${String.fromCharCode(
+      Math.floor(Math.random() * 26) + 'A'.charCodeAt(0)
+    )}&g_ty=ls`;
   } else {
-    if (functionId === 'double_sign/IssueReward') {
-      url = `${JD_API_HOST}${functionId}?sceneval=2&g_login_type=1&_ste=1&g_ty=ajax`;
-    } else {
-      url = `${JD_API_HOST}${functionId}?_=${Date.now()}&sceneval=2&g_login_type=1&callback=jsonpCBKC&g_ty=ls`;
-    }
+    url = `${JD_API_HOST}fanxiantask/${functionId}?_=${Date.now() + 2}&sceneval=2&g_login_type=1&callback=jsonpCBK${String.fromCharCode(Math.floor(Math.random() * 26) + 'A'.charCodeAt(0))}&g_ty=ls`;
   }
   return {
-    url: url,
+    url,
     headers: {
-      Cookie: cookie,
       Host: 'm.jingxi.com',
       Accept: '*/*',
-      Connection: 'keep-alive',
-      'User-Agent': UA,
-      'Accept-Language': 'zh-cn',
-      Referer: 'https://wqsd.jd.com/pingou/dream_factory/index.html',
       'Accept-Encoding': 'gzip, deflate, br',
+      'User-Agent': UA,
+      'Accept-Language': 'zh-CN,zh-Hans;q=0.9',
+      Referer: 'https://st.jingxi.com/',
+      Cookie: cookie,
     },
   };
+}
+function getStk(url) {
+  let arr = url.split('&').map((x) => x.replace(/.*\?/, '').replace(/=.*/, ''));
+  return encodeURIComponent(
+    arr
+      .filter((x) => x)
+      .sort()
+      .join(',')
+  );
 }
 function randomString(e) {
   e = e || 32;
@@ -374,7 +413,6 @@ function randomString(e) {
     a = t.length,
     n = '';
   for (let i = 0; i < e; i++) n += t.charAt(Math.floor(Math.random() * a));
-
   return n;
 }
 
