@@ -11,10 +11,10 @@ cron "10 7,10,20 * * *" script-path= jd_sjjc.js,tag= 手机竞猜
 ============小火箭=========
 sjjc = type=cron,script-path= jd_sjjc.js, cronexpr="10 7,10,20 * * *", timeout=3600, enable=true
 */
-const jd_helpers = require('./utils/JDHelpers.js');
-const jd_env = require('./utils/JDEnv.js');
+const jd_helpers = require('../utils/JDHelpers.js');
+const jd_env = require('../utils/JDEnv.js');
 const $ = jd_env.env('手机竞猜');
-const notify = $.isNode() ? require('./sendNotify') : '';
+const notify = $.isNode() ? require('../sendNotify') : '';
 cookiesArr = [];
 CodeArr = [];
 cookie = '';
@@ -25,7 +25,7 @@ var brandlistArr = [],
   shareidArr = [
     'caca8d51-8305-479f-ad7d-bb5065548f2e'
   ];
-const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
+const jdCookieNode = $.isNode() ? require('../jdCookie.js') : '';
 cookiesArr = [$.getdata('CookieJD'), $.getdata('CookieJD2'), ...jd_helpers.jsonParse($.getdata('CookiesJD') || '[]').map((item) => item.cookie)].filter((item) => !!item);
 let tz = $.getval('tz') || '1'; //0关闭通知，1默认开启
 const invite = 1; //新用户自动邀请，0关闭，1默认开启

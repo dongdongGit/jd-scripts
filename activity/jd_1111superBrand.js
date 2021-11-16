@@ -3,11 +3,11 @@
 APP首页下滑,任务，互助
 cron 10 9,13,16,19,20 2-8 11 * https://raw.githubusercontent.com/star261/jd/main/scripts/jd_superBrand.js
 * */
-const jd_env = require('./utils/JDEnv.js');
+const jd_env = require('../utils/JDEnv.js');
 let $ = jd_env.env('双11特物');
 
-const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
-const notify = $.isNode() ? require('./sendNotify') : '';
+const jdCookieNode = $.isNode() ? require('../jdCookie.js') : '';
+const notify = $.isNode() ? require('../sendNotify') : '';
 let cookiesArr = [];
 if ($.isNode()) {
   Object.keys(jdCookieNode).forEach((item) => {
@@ -250,7 +250,7 @@ async function takeRequest(cookie, functionId, bodyInfo) {
     'user-agent': $.isNode()
       ? process.env.JD_USER_AGENT
         ? process.env.JD_USER_AGENT
-        : require('./USER_AGENTS').USER_AGENT
+        : require('../USER_AGENTS').USER_AGENT
       : $.getdata('JDUA')
       ? $.getdata('JDUA')
       : 'jdapp;iPhone;9.4.4;14.3;network/4g;Mozilla/5.0 (iPhone; CPU iPhone OS 14_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148;supportJDSHWK/1',

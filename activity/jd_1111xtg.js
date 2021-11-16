@@ -3,10 +3,10 @@
  * author: @lof
  */
 
-const jd_helpers = require('./utils/JDHelpers.js');
-const jd_env = require('./utils/JDEnv.js');
+const jd_helpers = require('../utils/JDHelpers.js');
+const jd_env = require('../utils/JDEnv.js');
 const $ = jd_env.env('双11星推官');
-const jdCookieNode = $['isNode']() ? require('./jdCookie.js') : '';
+const jdCookieNode = $['isNode']() ? require('../jdCookie.js') : '';
 
 let inviteCodes = ['d091ca0d-ca98-458c-80f6-1618f3c7f1fc'];
 let cookiesArr = [],

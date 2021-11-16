@@ -53,30 +53,14 @@
 11 0,15 * * * node /scripts/jd_puzzle.js >> /scripts/logs/jd_puzzle.log 2>&1
 # 京东小魔方
 31 2,8 * * * node /scripts/jd_mf.js >> /scripts/logs/jd_puzzle.log 2>&1
-# 攒金币 赢大礼
-22 0,8 * * * node /scripts/jd_GoldcoinToGift.js >> /scripts/logs/jd_GoldcoinToGift.log 2>&1
-# 潮玩儿制躁团
-30 11,22 * * * node /scripts/jd_tide_play.js >> /scripts/logs/jd_tide_play.log 2>&1
-# 手机狂欢城
-0 0-18/6,21 * * * node /scripts/jd_carnivalcity.js >> /scripts/logs/jd_carnivalcity.log 2>&1
 # 东东超市抢京豆
 13 0,9 * * * node /scripts/jd_fission.js >> /scripts/logs/jd_fission.log 2>&1
 # 预售福利机
 5 0,2 * * * node /scripts/jd_pre_sale.js >> /scripts/logs/jd_pre_sale.log 2>&1
-# 美妆馆-选品官
-27 9,10 * * * node /scripts/jd_selection_officer.js >> /scripts/logs/jd_selection_officer.log 2>&1
-# 京东超级盒子
-10 1,6,8 25-31,1-11 10,11 * node /scripts/jd_super_box.js >> /scripts/logs/jd_super_box.log 2>&1
-# 双11星推官 (11.10 结束)
-2 0,7,15 * * * node /scripts/jd_1111xtg.js >> /scripts/logs/jd_1111xtg.log 2>&1
-# 双11特物
-10 9,13,16,19,20 2-8 11 * node /scripts/jd_1111superBrand.js >> /scripts/logs/jd_1111superBrand.log 2>&1
 # 跳跳乐瓜分京豆 (什么时候结束)
 1 0,9,15,21 * * * node /scripts/jd_jump.js >> /scripts/logs/jd_jump.log 2>&1
 # 牛牛福利
 1 0,9,19,23 * * * node /scripts/jd_jx_cow_welfare.js >> /scripts/logs/jd_jx_cow_welfare.log 2>&1
-# 手机竞猜
-10 7,10,20, * * * node /scripts/jd_mobile_guess.js >> /scripts/logs/jd_mobile_guess.log 2>&1
 # 热血心跳,狂解压
 10 9,17 * * * node /scripts/jd_vivo.js >> /scripts/logs/jd_vivo.log 2>&1
 # 双11环游记大富翁
@@ -131,7 +115,7 @@
 # 京喜工厂电力开团
 5,10,15,20 0 * * * node /scripts/jd_dreamFactoryTeam.js >> /scripts/logs/jd_dreamFactoryTeam.log 2>&1
 # 东东小窝
-16 6,23 * * * node /scripts/jd_small_home.js >> /scripts/logs/jd_small_home.log 2>&1
+# 16 6,23 * * * node /scripts/jd_small_home.js >> /scripts/logs/jd_small_home.log 2>&1
 # 东东工厂
 26 * * * * node /scripts/jd_jdfactory.js >> /scripts/logs/jd_jdfactory.log 2>&1
 # 赚京豆(微信小程序)
