@@ -57,8 +57,6 @@
 22 0,8 * * * node /scripts/jd_GoldcoinToGift.js >> /scripts/logs/jd_GoldcoinToGift.log 2>&1
 # 潮玩儿制躁团
 30 11,22 * * * node /scripts/jd_tide_play.js >> /scripts/logs/jd_tide_play.log 2>&1
-# 手机狂欢城
-0 0-18/6,21 * * * node /scripts/jd_carnivalcity.js >> /scripts/logs/jd_carnivalcity.log 2>&1
 # 东东超市抢京豆
 13 0,9 * * * node /scripts/jd_fission.js >> /scripts/logs/jd_fission.log 2>&1
 # 预售福利机
@@ -131,7 +129,7 @@
 # 京喜工厂电力开团
 5,10,15,20 0 * * * node /scripts/jd_dreamFactoryTeam.js >> /scripts/logs/jd_dreamFactoryTeam.log 2>&1
 # 东东小窝
-16 6,23 * * * node /scripts/jd_small_home.js >> /scripts/logs/jd_small_home.log 2>&1
+# 16 6,23 * * * node /scripts/jd_small_home.js >> /scripts/logs/jd_small_home.log 2>&1
 # 东东工厂
 26 * * * * node /scripts/jd_jdfactory.js >> /scripts/logs/jd_jdfactory.log 2>&1
 # 赚京豆(微信小程序)
