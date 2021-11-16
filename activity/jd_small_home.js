@@ -5,12 +5,12 @@ Last Modified time: 2021-1-22 14:27:20
 做日常任务任务，每日抽奖（有机会活动京豆，使用的是免费机会，不消耗WO币）
 自动使用WO币购买装饰品可以获得京豆，分别可获得5,20，50,100,200,400,700，1200京豆）
 */
-const jd_helpers = require('./utils/JDHelpers.js');
-const jd_env = require('./utils/JDEnv.js');
+const jd_helpers = require('../utils/JDHelpers.js');
+const jd_env = require('../utils/JDEnv.js');
 let $ = jd_env.env('东东小窝');
-const notify = $.isNode() ? require('./sendNotify') : '';
+const notify = $.isNode() ? require('../sendNotify') : '';
 //Node.js用户请在jdCookie.js处填写京东ck;
-const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
+const jdCookieNode = $.isNode() ? require('../jdCookie.js') : '';
 
 //IOS等用户直接用NobyDa的jd cookie
 let cookiesArr = [],
@@ -737,7 +737,7 @@ function loginHome() {
         'User-Agent': $.isNode()
           ? process.env.JD_USER_AGENT
             ? process.env.JD_USER_AGENT
-            : require('./USER_AGENTS').USER_AGENT
+            : require('../USER_AGENTS').USER_AGENT
           : $.getdata('JDUA')
           ? $.getdata('JDUA')
           : 'jdapp;iPhone;9.2.2;14.2;%E4%BA%AC%E4%B8%9C/9.2.2 CFNetwork/1206 Darwin/20.1.0',
@@ -785,7 +785,7 @@ function login(userName) {
         'User-Agent': $.isNode()
           ? process.env.JD_USER_AGENT
             ? process.env.JD_USER_AGENT
-            : require('./USER_AGENTS').USER_AGENT
+            : require('../USER_AGENTS').USER_AGENT
           : $.getdata('JDUA')
           ? $.getdata('JDUA')
           : 'jdapp;iPhone;9.2.2;14.2;%E4%BA%AC%E4%B8%9C/9.2.2 CFNetwork/1206 Darwin/20.1.0',
@@ -851,7 +851,7 @@ function updateInviteCodeCDN(url) {
           'User-Agent': $.isNode()
             ? process.env.JD_USER_AGENT
               ? process.env.JD_USER_AGENT
-              : require('./USER_AGENTS').USER_AGENT
+              : require('../USER_AGENTS').USER_AGENT
             : $.getdata('JDUA')
             ? $.getdata('JDUA')
             : 'jdapp;iPhone;9.2.2;14.2;%E4%BA%AC%E4%B8%9C/9.2.2 CFNetwork/1206 Darwin/20.1.0',
@@ -891,7 +891,7 @@ function taskUrl(url, body = {}) {
       'User-Agent': $.isNode()
         ? process.env.JD_USER_AGENT
           ? process.env.JD_USER_AGENT
-          : require('./USER_AGENTS').USER_AGENT
+          : require('../USER_AGENTS').USER_AGENT
         : $.getdata('JDUA')
         ? $.getdata('JDUA')
         : 'jdapp;iPhone;9.2.2;14.2;%E4%BA%AC%E4%B8%9C/9.2.2 CFNetwork/1206 Darwin/20.1.0',
@@ -913,7 +913,7 @@ function taskPostUrl(url) {
       'User-Agent': $.isNode()
         ? process.env.JD_USER_AGENT
           ? process.env.JD_USER_AGENT
-          : require('./USER_AGENTS').USER_AGENT
+          : require('../USER_AGENTS').USER_AGENT
         : $.getdata('JDUA')
         ? $.getdata('JDUA')
         : 'jdapp;iPhone;9.2.2;14.2;%E4%BA%AC%E4%B8%9C/9.2.2 CFNetwork/1206 Darwin/20.1.0',

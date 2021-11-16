@@ -53,18 +53,10 @@
 11 0,15 * * * node /scripts/jd_puzzle.js >> /scripts/logs/jd_puzzle.log 2>&1
 # 京东小魔方
 31 2,8 * * * node /scripts/jd_mf.js >> /scripts/logs/jd_puzzle.log 2>&1
-# 攒金币 赢大礼
-22 0,8 * * * node /scripts/jd_GoldcoinToGift.js >> /scripts/logs/jd_GoldcoinToGift.log 2>&1
-# 潮玩儿制躁团
-30 11,22 * * * node /scripts/jd_tide_play.js >> /scripts/logs/jd_tide_play.log 2>&1
 # 东东超市抢京豆
 13 0,9 * * * node /scripts/jd_fission.js >> /scripts/logs/jd_fission.log 2>&1
 # 预售福利机
 5 0,2 * * * node /scripts/jd_pre_sale.js >> /scripts/logs/jd_pre_sale.log 2>&1
-# 美妆馆-选品官
-27 9,10 * * * node /scripts/jd_selection_officer.js >> /scripts/logs/jd_selection_officer.log 2>&1
-# 京东超级盒子
-10 1,6,8 25-31,1-11 10,11 * node /scripts/jd_super_box.js >> /scripts/logs/jd_super_box.log 2>&1
 # 双11星推官 (11.10 结束)
 2 0,7,15 * * * node /scripts/jd_1111xtg.js >> /scripts/logs/jd_1111xtg.log 2>&1
 # 双11特物
