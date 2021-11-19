@@ -29,7 +29,7 @@ const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
 let cookiesArr = [],
   cookie = '',
   message;
-const linkId = '9wdf1YTT2L59Vr-meKskLA';
+const linkIdArr = ['9wdf1YTT2L59Vr-meKskLA', '7ya6o83WSbNhrbYJqsMfFA'];
 const signLinkId = '9WA12jYGulArzWS7vcrwhw';
 if ($.isNode()) {
   Object.keys(jdCookieNode).forEach((item) => {
@@ -66,7 +66,10 @@ if ($.isNode()) {
         }
         continue;
       }
-      await jsRedPacket();
+      for (let j = 0; j < linkIdArr.length; j++) {
+        linkId = linkIdArr[j]
+        await jsRedPacket()
+      }
     }
   }
 })()
@@ -116,7 +119,7 @@ async function sign() {
         'User-Agent':
           'jdltapp;iPhone;3.3.2;14.5.1network/wifi;hasUPPay/0;pushNoticeIsOpen/1;lang/zh_CN;model/iPhone13,2;addressid/137923973;hasOCPay/0;appBuild/1047;supportBestPay/0;pv/467.11;apprpd/MyJD_Main;',
         'Accept-Language': 'zh-Hans-CN;q=1, en-CN;q=0.9, zh-Hant-CN;q=0.8',
-        Referer: 'https://daily-redpacket.jd.com/?activityId=9WA12jYGulArzWS7vcrwhw',
+        Referer: `https://daily-redpacket.jd.com/?activityId=${signLinkId}`,
         'Accept-Encoding': 'gzip, deflate, br',
       },
     };
@@ -256,7 +259,7 @@ function signPrizeDetailList() {
         'User-Agent':
           'jdltapp;iPhone;3.3.2;14.5.1network/wifi;hasUPPay/0;pushNoticeIsOpen/1;lang/zh_CN;model/iPhone13,2;addressid/137923973;hasOCPay/0;appBuild/1047;supportBestPay/0;pv/467.11;apprpd/MyJD_Main;',
         'Accept-Language': 'zh-Hans-CN;q=1, en-CN;q=0.9, zh-Hant-CN;q=0.8',
-        Referer: 'https://daily-redpacket.jd.com/?activityId=9WA12jYGulArzWS7vcrwhw',
+        Referer: `https://daily-redpacket.jd.com/?activityId=${signLinkId}`,
         'Accept-Encoding': 'gzip, deflate, br',
       },
     };
@@ -319,7 +322,7 @@ function apCashWithDraw(id, poolBaseId, prizeGroupId, prizeBaseId) {
         'User-Agent':
           'jdltapp;iPhone;3.3.2;14.5.1network/wifi;hasUPPay/0;pushNoticeIsOpen/1;lang/zh_CN;model/iPhone13,2;addressid/137923973;hasOCPay/0;appBuild/1047;supportBestPay/0;pv/467.11;apprpd/MyJD_Main;',
         'Accept-Language': 'zh-Hans-CN;q=1, en-CN;q=0.9, zh-Hant-CN;q=0.8',
-        Referer: 'https://daily-redpacket.jd.com/?activityId=9WA12jYGulArzWS7vcrwhw',
+        Referer: `https://daily-redpacket.jd.com/?activityId=${signLinkId}`,
         'Accept-Encoding': 'gzip, deflate, br',
       },
     };
@@ -399,7 +402,7 @@ function cashOut(id, poolBaseId, prizeGroupId, prizeBaseId) {
 
 function invite() {
   let t = +new Date();
-  let inviterId = ['5V7vHE23qh2EkdBHXRFDuA=='][Math.floor(Math.random() * 1)];
+  let inviterId = ['', ''][Math.floor(Math.random() * 1)];
   var headers = {
     Host: 'api.m.jd.com',
     accept: 'application/json, text/plain, */*',
