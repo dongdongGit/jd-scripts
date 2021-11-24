@@ -38,7 +38,7 @@ let cookiesArr = [],
 $.appId = 10028;
 let activeid = 'null';
 $.inviteCodeList = [
-  'g_eiitD1h9-a-PX-GytKiGrfw77E3iG0LpMlIb2JHcbwr10-HQBQrOS_x13yKJkGQQ99IurWzJqCtQyXMlZWqQ'
+  'g_eiitD1h9-a-PX-GytKiGrfw77E3iG0LpMlIb2JHcZIKDDwVD9KL-O6jsEdhw1TQQ99IurWzJqCtQyXMlZWqQ'
 ];
 if ($.isNode()) {
   Object.keys(jdCookieNode).forEach((item) => {
@@ -506,19 +506,20 @@ async function doMotion(petidList) {
   //割草
   console.log(`\n开始进行割草`);
   let runFlag = true;
-  for (let i = 0; i < 20 && runFlag; i++) {
-    $.mowingInfo = {};
-    console.log(`开始第${i + 1}次割草`);
+  let coins_zero_time = 0;
+  let mower_time = 1;
+  do {
+    console.log(`开始第${mower_time}次割草`);
     let mowingInfo = await takeRequest(`jxmc`, `operservice/Action`, `&type=2`, 'activeid%2Cactivekey%2Cchannel%2Cjxmc_jstoken%2Cphoneid%2Csceneid%2Ctimestamp%2Ctype', true);
-    console.log(`获得金币：${mowingInfo.addcoins || 0}`);
-    await $.wait(2000);
-    if (Number(mowingInfo.addcoins) > 0) {
-      runFlag = true;
-    } else {
-      runFlag = false;
-      console.log(`未获得金币暂停割草`);
+    add_coins = mowingInfo.addcoins || 0;
+    console.log(`获得金币：${add_coins}`);
+    if (add_coins === 0) {
+      coins_zero_time++;
     }
-    if (mowingInfo.surprise === true) {
+    await $.wait(3000);
+    mower_time++;
+
+    if (mowingInfo?.surprise === true) {
       //除草礼盒
       console.log(`领取除草礼盒`);
       let GetSelfResult = await takeRequest(
@@ -532,12 +533,12 @@ async function doMotion(petidList) {
       console.log(JSON.stringify(GetSelfResult));
       await $.wait(3000);
     }
-  }
-  //横扫鸡腿
-  runFlag = true;
-  console.log(`\n开始进行横扫鸡腿`);
-  for (let i = 0; i < 20 && runFlag; i++) {
-    console.log(`开始第${i + 1}次横扫鸡腿`);
+  } while (coins_zero_time < 10);
+
+  let cut_chicken_leg = 1;
+  coins_zero_time = 0;
+  do {
+    console.log(`开始第${cut_chicken_leg}次横扫鸡腿`);
     let sar = Math.floor(Math.random() * petidList.length);
     let jumoInfo = await takeRequest(
       `jxmc`,
@@ -546,15 +547,14 @@ async function doMotion(petidList) {
       'activeid%2Cactivekey%2Cchannel%2Cjxmc_jstoken%2Cpetid%2Cphoneid%2Csceneid%2Ctimestamp%2Ctype',
       true
     );
-    console.log(`获得金币：${jumoInfo.addcoins || 0}`);
-    if (Number(jumoInfo.addcoins) > 0) {
-      runFlag = true;
-    } else {
-      runFlag = false;
-      console.log(`未获得金币暂停割鸡腿`);
+    add_coins = jumoInfo.addcoins || 0;
+    console.log(`获得金币：${add_coins}`);
+    if (add_coins === 0) {
+      coins_zero_time++;
     }
-    await $.wait(2000);
-  }
+    await $.wait(3000);
+    cut_chicken_leg++;
+  } while (coins_zero_time < 10);
 }
 async function doTask() {
   console.log(`\n开始执行日常任务`);
