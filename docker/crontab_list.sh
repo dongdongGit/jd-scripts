@@ -67,6 +67,10 @@
 0 16 1-11 11 * node /scripts/jd_travel_shop.js >> /scripts/logs/jd_travel_shop.log 2>&1
 # 京东答题
 9 10 * * * node /scripts/jd_answer.js >> /scripts/logs/jd_answer.log 2>&1
+# 京东金榜
+13 13 * * * node /scripts/jd_gold_sign.js >> /scripts/logs/jd_gold_sign.log 2>&1
+# 京东赚京豆一分钱抽奖
+30 7 * * * node /scripts/jd_lottery_drew.js >> /scripts/logs/jd_lottery_drew.log 2>&1
 ##############长期活动##############
 # 签到
 0 0,17 * * * cd /scripts && node jd_bean_sign.js >> /scripts/logs/jd_bean_sign.log 2>&1
