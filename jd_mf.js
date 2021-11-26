@@ -26,7 +26,7 @@ let cookiesArr = [],
   cookie = '',
   message;
 let uuid;
-$.shareCodes = [];
+$.shareCodes = ['S5KkcRRcd_AbUJB2nk_YCcA'];
 if ($.isNode()) {
   Object.keys(jdCookieNode).forEach((item) => {
     cookiesArr.push(jdCookieNode[item]);
@@ -142,53 +142,63 @@ async function queryInteractiveInfo(encryptProjectId, sourceCode) {
         } else {
           if (jd_helpers.safeGet(data)) {
             data = JSON.parse(data);
-            for (let key of Object.keys(data.assignmentList)) {
-              let vo = data.assignmentList[key];
-              if (vo.ext.extraType === 'sign1') {
-                console.log(`去做【${vo.assignmentName}】`);
-                if (vo.ext[vo.ext.extraType].status !== 2) {
-                  let signDay = (vo.ext[vo.ext.extraType].signList && vo.ext[vo.ext.extraType].signList.length) || 0;
-                  $.type = vo.rewards[signDay].rewardType;
-                  await doInteractiveAssignment(vo.ext.extraType, encryptProjectId, sourceCode, vo.encryptAssignmentId, vo.ext[vo.ext.extraType].itemId);
-                } else {
-                  console.log(`今日已签到`);
-                }
-              } else if (vo.ext.extraType === 'assistTaskDetail') {
-                console.log(`【京东账号${$.index}（${$.UserName}）的京东小魔方好友互助码】${vo.ext[vo.ext.extraType].itemId}`);
-                $.encryptProjectId = encryptProjectId;
-                $.encryptAssignmentId = vo.encryptAssignmentId;
-                $.sourceCode = sourceCode;
-                if (vo.completionCnt < vo.assignmentTimesLimit) {
-                  $.shareCodes.push({
-                    code: vo.ext[vo.ext.extraType].itemId,
-                    use: $.UserName,
-                  });
-                } else {
-                  console.log(`助力已满`);
-                }
-              } else if (vo.ext.extraType !== 'brandMemberList') {
-                console.log(`去做【${vo.assignmentName}】`);
-                if (vo.completionCnt < vo.assignmentTimesLimit) {
-                  $.type = vo.rewards[0].rewardType;
-                  for (let key of Object.keys(vo.ext[vo.ext.extraType])) {
-                    let task = vo.ext[vo.ext.extraType][key];
-                    if (task.status !== 2) {
-                      if (vo.ext.extraType !== 'productsInfo' && vo.ext.extraType !== 'addCart') {
-                        await doInteractiveAssignment(vo.ext.extraType, encryptProjectId, sourceCode, vo.encryptAssignmentId, task.itemId, '1');
-                        await $.wait(vo.ext.waitDuration * 1000 || 2000);
-                      }
-                      if (vo.ext.extraType === 'browseShop') {
-                        $.rewardmsg = `完成成功：获得${vo.rewards[0].rewardValue}${vo.rewards[0].rewardName}`;
-                        await qryViewkitCallbackResult(encryptProjectId, vo.encryptAssignmentId, task.itemId);
-                      } else {
-                        $.complete = false;
-                        await doInteractiveAssignment(vo.ext.extraType, encryptProjectId, sourceCode, vo.encryptAssignmentId, task.itemId, '0');
-                        if ($.complete) break;
+            for (let assignment of data.assignmentList) {
+              let vo = assignment;
+              if (Object.keys(vo.ext).length == 0) {
+                await doInteractiveAssignmentV2({
+                  completionFlag: vo.completionFlag,
+                  encryptAssignmentId: vo.encryptAssignmentId,
+                  encryptProjectId: encryptProjectId,
+                  sourceCode: sourceCode,
+                });
+
+              } else {
+                if (vo.ext.extraType === 'sign1') {
+                  console.log(`去做【${vo.assignmentName}】`);
+                  if (vo.ext[vo.ext.extraType].status !== 2) {
+                    let signDay = (vo.ext[vo.ext.extraType].signList && vo.ext[vo.ext.extraType].signList.length) || 0;
+                    $.type = vo.rewards[signDay].rewardType;
+                    await doInteractiveAssignment(vo.ext.extraType, encryptProjectId, sourceCode, vo.encryptAssignmentId, vo.ext[vo.ext.extraType].itemId);
+                  } else {
+                    console.log(`今日已签到`);
+                  }
+                } else if (vo.ext.extraType === 'assistTaskDetail') {
+                  console.log(`【京东账号${$.index}（${$.UserName}）的京东小魔方好友互助码】${vo.ext[vo.ext.extraType].itemId}`);
+                  $.encryptProjectId = encryptProjectId;
+                  $.encryptAssignmentId = vo.encryptAssignmentId;
+                  $.sourceCode = sourceCode;
+                  if (vo.completionCnt < vo.assignmentTimesLimit) {
+                    $.shareCodes.push({
+                      code: vo.ext[vo.ext.extraType].itemId,
+                      use: $.UserName,
+                    });
+                  } else {
+                    console.log(`助力已满`);
+                  }
+                } else if (vo.ext.extraType !== 'brandMemberList') {
+                  console.log(`去做【${vo.assignmentName}】`);
+                  if (vo.completionCnt < vo.assignmentTimesLimit) {
+                    $.type = vo.rewards[0].rewardType;
+                    for (let key of Object.keys(vo.ext[vo.ext.extraType])) {
+                      let task = vo.ext[vo.ext.extraType][key];
+                      if (task.status !== 2) {
+                        if (vo.ext.extraType !== 'productsInfo' && vo.ext.extraType !== 'addCart') {
+                          await doInteractiveAssignment(vo.ext.extraType, encryptProjectId, sourceCode, vo.encryptAssignmentId, task.itemId, '1');
+                          await $.wait(vo.ext.waitDuration * 1000 || 2000);
+                        }
+                        if (vo.ext.extraType === 'browseShop') {
+                          $.rewardmsg = `完成成功：获得${vo.rewards[0].rewardValue}${vo.rewards[0].rewardName}`;
+                          await qryViewkitCallbackResult(encryptProjectId, vo.encryptAssignmentId, task.itemId);
+                        } else {
+                          $.complete = false;
+                          await doInteractiveAssignment(vo.ext.extraType, encryptProjectId, sourceCode, vo.encryptAssignmentId, task.itemId, '0');
+                          if ($.complete) break;
+                        }
                       }
                     }
+                  } else {
+                    console.log(`任务已完成`);
                   }
-                } else {
-                  console.log(`任务已完成`);
                 }
               }
             }
@@ -284,6 +294,36 @@ function doInteractiveAssignment(extraType, encryptProjectId, sourceCode, encryp
                   );
                 }
               }
+            }
+          }
+        } catch (e) {
+          $.logErr(e, resp);
+        } finally {
+          resolve(data);
+        }
+      }
+    );
+  });
+}
+function doInteractiveAssignmentV2(params) {
+  return new Promise((resolve) => {
+    params = Object.assign({
+      completionFlag: true,
+      encryptAssignmentId: '',
+      encryptProjectId: '',
+      sourceCode: ''
+    }, params)
+    $.post(
+      taskUrl('doInteractiveAssignment', params),
+      (err, resp, data) => {
+        try {
+          if (err) {
+            console.log(`${JSON.stringify(err)}`);
+            console.log(`${$.name} doInteractiveAssignment API请求失败，请检查网路重试`);
+          } else {
+            if (jd_helpers.safeGet(data)) {
+              data = JSON.parse(data);
+              console.log(data);
             }
           }
         } catch (e) {
@@ -415,6 +455,8 @@ function executeNewInteractionTask(taskType, advertId, sku = '') {
     });
   });
 }
+
+
 function getNewFinalLotteryInfo() {
   return new Promise((resolve) => {
     $.post(taskPostUrl('getNewFinalLotteryInfo', { sign: 3, interactionId: $.interactionId }), (err, resp, data) => {
