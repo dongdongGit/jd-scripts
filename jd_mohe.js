@@ -1,21 +1,17 @@
 /*
 5G超级盲盒，可抽奖获得京豆，建议在凌晨0点时运行脚本，白天抽奖基本没有京豆，4小时运行一次收集热力值
 活动地址: https://blindbox5g.jd.com
-活动时间：2021-06-2到2021-07-31
-更新时间：2021-06-3 12:00
+活动时间：2021年11月1日00:00:00-2022年1月28日23:59:59
 脚本兼容: QuantumultX, Surge,Loon, JSBox, Node.js
 =================================Quantumultx=========================
 [task_local]
 #5G超级盲盒
 0 0,1-23/3 * * * jd_mohe.js, tag=5G超级盲盒, img-url=https://raw.githubusercontent.com/Orz-3/mini/master/Color/jd.png, enabled=true
-
 =================================Loon===================================
 [Script]
 cron "0 0,1-23/3 * * *" script-path=jd_mohe.js,tag=5G超级盲盒
-
 ===================================Surge================================
 5G超级盲盒 = type=cron,cronexp="0 0,1-23/3 * * *",wake-system=1,timeout=3600,script-path=jd_mohe.js
-
 ====================================小火箭=============================
 5G超级盲盒 = type=cron,script-path=jd_mohe.js, cronexpr="0 0,1-23/3 * * *", timeout=3600, enable=true
  */
@@ -42,17 +38,14 @@ if ($.isNode()) {
 
 const JD_API_HOST = 'https://api.m.jd.com/api';
 //邀请码一天一变化，已确定
-$.shareId = [];
+$.shareId = ['55aee5d0-1fc2-4a73-8176-16acb79f848b'];
 !(async () => {
   if (!cookiesArr[0]) {
     $.msg($.name, '【提示】请先获取京东账号一cookie\n直接使用NobyDa的京东签到获取', 'https://bean.m.jd.com/bean/signIndex.action', { 'open-url': 'https://bean.m.jd.com/bean/signIndex.action' });
     return;
   }
   console.log(
-    '5G超级盲盒，可抽奖获得京豆，建议在凌晨0点时运行脚本，白天抽奖基本没有京豆，3小时运行一次收集热力值\n' +
-      '活动地址: https://blindbox5g.jd.com\n' +
-      '活动时间：2021-8-2到2021-10-29\n' +
-      '更新时间：2021-8-8 19:00'
+    '5G超级盲盒，可抽奖获得京豆，建议在凌晨0点时运行脚本，白天抽奖基本没有京豆，3小时运行一次收集热力值\n' + '活动地址: https://blindbox5g.jd.com\n' + '活动时间：2021年11月1日到2022年1月28日\n'
   );
   for (let i = 0; i < cookiesArr.length; i++) {
     if (cookiesArr[i]) {
@@ -77,6 +70,7 @@ $.shareId = [];
       await shareUrl();
       await getCoin(); //领取每三小时自动生产的热力值
       await Promise.all([task0()]);
+      $.taskList_limit = 0;
       await taskList();
       await getAward(); //抽奖
     }
@@ -86,6 +80,7 @@ $.shareId = [];
     $.msg($.name, '', allMessage, { 'open-url': 'https://blindbox5g.jd.com' });
   }
   $.shareId = [...($.shareId || [])];
+  await $.wait(500);
   for (let v = 0; v < cookiesArr.length; v++) {
     cookie = cookiesArr[v];
     $.index = v + 1;
@@ -97,7 +92,11 @@ $.shareId = [];
       if (res && res['code'] === 2005) {
         console.log(`次数已用完，跳出助力`);
         break;
+      } else if (res && res['code'] === 1002) {
+        console.log(`账号火爆，跳出助力`);
+        break;
       }
+      await $.wait(2000);
     }
   }
 })()
@@ -222,6 +221,7 @@ function getCoin() {
 
 async function taskList() {
   return new Promise(async (resolve) => {
+    $.taskList_limit++;
     const body = { apiMapping: '/active/taskList' };
     $.post(taskurl(body), async (err, resp, data) => {
       try {
@@ -258,8 +258,12 @@ async function taskList() {
             console.log('\n\n----taskList的任务全部做完了---\n\n');
             console.log(`分享好友助力 ${task5.finishNum}/${task5.totalNum}\n\n`);
           } else {
-            console.log(`请继续等待,正在做任务,不要退出哦`);
-            await taskList();
+            if ($.taskList_limit >= 15) {
+              console.log('触发死循环保护,结束');
+            } else {
+              console.log(`请继续等待,正在做任务,不要退出哦`);
+              await taskList();
+            }
           }
         }
       } catch (e) {

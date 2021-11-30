@@ -1,4 +1,5 @@
 /*
+Last Modified time: 2020-11-20 14:11:01
 活动入口：京东金融-天天提鹅
 定时收鹅蛋,兑换金币
 已支持IOS双京东账号,Node.js支持N个京东账号
@@ -6,14 +7,14 @@
 ============Quantumultx===============
 [task_local]
 #天天提鹅
-10 * * * * https://raw.githubusercontent.com/Aaron-lv/sync/jd_scripts/jd_daily_egg.js, tag=天天提鹅, img-url=https://raw.githubusercontent.com/58xinian/icon/master/jdte.png, enabled=true
+10 * * * * jd_daily_egg.js, tag=天天提鹅, img-url=https://raw.githubusercontent.com/58xinian/icon/master/jdte.png, enabled=true
 ================Loon==============
 [Script]
-cron "10 * * * *" script-path=https://raw.githubusercontent.com/Aaron-lv/sync/jd_scripts/jd_daily_egg.js,tag=天天提鹅
+cron "10 * * * *" script-path=jd_daily_egg.js,tag=天天提鹅
 ===============Surge=================
-天天提鹅 = type=cron,cronexp="10 * * * *",wake-system=1,timeout=3600,script-path=https://raw.githubusercontent.com/Aaron-lv/sync/jd_scripts/jd_daily_egg.js
+天天提鹅 = type=cron,cronexp="10 * * * *",wake-system=1,timeout=3600,script-path=jd_daily_egg.js
 ============小火箭=========
-天天提鹅 = type=cron,script-path=https://raw.githubusercontent.com/Aaron-lv/sync/jd_scripts/jd_daily_egg.js, cronexpr="10 * * * *", timeout=3600, enable=true
+天天提鹅 = type=cron,script-path=jd_daily_egg.js, cronexpr="10 * * * *", timeout=3600, enable=true
  */
 
 const jd_helpers = require('./utils/JDHelpers.js');
@@ -80,8 +81,74 @@ if ($.isNode()) {
 async function jdDailyEgg() {
   await toDailyHome();
   if ($.stopNext) return;
+  if ($.isFirstLogin) {
+    await toDailySignIn();
+  }
   await toWithdraw();
+  await doTask();
   await toGoldExchange();
+}
+
+async function doTask(funcMissionId = null) {
+  let errMissionID = [3410];
+  errMissionID = [...errMissionID, ...errMissionID.map((x) => x.toString())];
+  const taskWaitTime = 15;
+  let res;
+  let taskList = (await doApi('queryGooseTaskList', false))?.data ?? [];
+  taskList = taskList.filter((x) => [-1, 0, 1].includes(x.status) && !errMissionID.includes(x.missionId));
+  if (funcMissionId) taskList = taskList.filter((x) => x.missionId === funcMissionId);
+  for (let task of taskList) {
+    let { doLink, missionId, awards, name, position, status } = task;
+    switch (status) {
+      case -1:
+        res = await doApi('receiveGooseTask', false, { missionId });
+        console.log(`领任务'${name}'结果：${res.code === '0000' ? '成功！' : `失败！原因：${res.msg}`}`);
+        await $.wait(3000);
+        if (res.code === '0000') {
+          await doTask(missionId);
+          return;
+        }
+        break;
+      // 正在做
+      case 0:
+        var tempBody = {};
+        Object.assign(tempBody, { missionId: doLink.getValByKey('missionId'), readTime: +(doLink.getValByKey('readTime') || '-1') });
+        if (tempBody.missionId && typeof tempBody.readTime !== -1) {
+          res = await doApi('queryMissionReceiveAfterStatus', false, { missionId: tempBody.missionId });
+          await $.wait(tempBody.readTime * 1e3);
+          res = await doApi('finishReadMission', false, tempBody);
+          if (res.code === '0000') {
+            await doTask(missionId);
+          } else {
+            console.log(`做任务'${name}'结果：失败！原因：${res.msg}`);
+          }
+          return;
+        } else if (doLink.getValByKey('juid')) {
+          res = await doApi('getJumpInfo', false, { juid: doLink.getValByKey('juid') });
+          if (res.code === '0000') {
+            await doTask(missionId);
+          } else {
+            console.log(`做任务'${name}'结果：失败！原因：${res.msg}`);
+          }
+          return;
+        }
+        break;
+      // 领奖状态
+      case 1:
+        awards = awards[0] ?? awards;
+        let { awardRealNum, awardName } = awards;
+        let msg = [];
+        msg.push(funcMissionId ? `做任务'${name}'结果：成功！` : `任务'${name}'已可领奖。`);
+        msg.push('领奖励结果：');
+        res = await doApi('receiveGooseTaskReward', false, { missionId });
+        msg.push(res.code === '0000' ? `成功！获得${awardRealNum}${awardName.replace(/^个?/, '个')}` : `失败！原因：${res.msg}`);
+        console.log(msg.join(''));
+        break;
+      // 已完成
+      case 2:
+      default:
+    }
+  }
 }
 
 function toGoldExchange() {
@@ -149,8 +216,9 @@ function toWithdraw() {
   });
 }
 function toDailyHome() {
+  $.isFirstLogin = false;
   return new Promise(async (resolve) => {
-    const body = getBody(false);
+    const body = getBody(true);
     $.get(taskUrl('toDailyHome', body), (err, resp, data) => {
       try {
         if (err) {
@@ -162,7 +230,22 @@ function toDailyHome() {
             data = JSON.parse(data);
             if (data.resultData.code !== '0000') {
               $.stopNext = true;
-              console.log($.name + '：' + data.resultData.msg);
+              console.log($.name + `（${arguments.callee.name}）` + '：' + data.resultData.msg);
+              return;
+            }
+            let shareUuid = data?.resultData?.data?.shareUuid;
+            if (!$.shareUuid && typeof shareUuid === 'string') Object.assign($, { shareUuid });
+            let isFirstLogin = data?.resultData?.data?.isFristLogin;
+            if (typeof isFirstLogin === 'string') {
+              $.isFirstLogin = (() => {
+                try {
+                  return JSON.parse(isFirstLogin);
+                } catch (e) {
+                  return false;
+                }
+              })();
+            } else if (typeof isFirstLogin === 'boolean') {
+              Object.assign($, { isFirstLogin });
             }
           } else {
             console.log(`京东服务器返回空数据`);
@@ -176,18 +259,120 @@ function toDailyHome() {
     });
   });
 }
+function ots(t) {
+  if (typeof t === 'object') {
+    return JSON.stringify(t);
+  }
+  return t;
+}
+async function doApi(functionId = '', withSign = false, preBody = {}, preUrl = '') {
+  let body = { ...preBody, ...getBody(withSign) };
+  switch (functionId) {
+    case 'receiveGooseTask':
+      body = {
+        missionId: preBody.missionId.toString(),
+        shareUuid: $.inviteId ?? '',
+        riskDeviceInfo: $.riskDeviceInfo,
+        channelLv: 'yxjh',
+        environment: 'jrApp',
+      };
+      break;
+    case 'receiveGooseTaskReward':
+      body = {
+        missionId: preBody.missionId.toString(),
+        riskDeviceInfo: $.riskDeviceInfo,
+        channelLv: 'yxjh',
+        environment: 'jrApp',
+      };
+      break;
+    case 'queryMission':
+    case 'queryPlayActiveHelper':
+    case 'queryMissionReceiveAfterStatus':
+    case 'finishReadMission':
+    case 'getJumpInfo':
+      preUrl = `https://ms.jr.jd.com/gw/generic/mission/h5/m/${functionId}?reqData=`;
+      preUrl += JSON.stringify(preBody).replace(/"/g, (x) => encodeURIComponent(x));
+      break;
+    default:
+      break;
+  }
+  const option = taskUrl(functionId, body);
+  if (preUrl) {
+    Object.assign(option, { url: preUrl });
+  }
+  return new Promise((resolve) => {
+    $.get(option, (err, resp, data) => {
+      const res = {};
+      try {
+        if (err) {
+          console.log(`${JSON.stringify(err)}`);
+          console.log(`${$.name} API请求失败，请检查网路重试`);
+        } else {
+          if (data) {
+            // console.log(data)
+            data = JSON.parse(data);
+            if (data.resultCode !== 0) {
+              console.log($.name + `（${functionId}）` + '：' + data.resultMsg);
+            } else {
+              Object.assign(res, data?.resultData ?? {});
+            }
+          } else {
+          }
+        }
+      } catch (e) {
+        $.logErr(e, resp);
+      } finally {
+        resolve(res);
+      }
+    });
+  });
+}
+function toDailySignIn() {
+  const body = getBody();
+  return new Promise((resolve) => {
+    $.get(taskUrl('toDailySignIn', body), (err, resp, data) => {
+      try {
+        if (err) {
+          console.log(`${JSON.stringify(err)}`);
+          console.log(`${$.name} API请求失败，请检查网路重试`);
+        } else {
+          if (data) {
+            // console.log(data)
+            data = JSON.parse(data);
+            if (data.resultData.code !== '0000') {
+              $.stopNext = true;
+              console.log($.name + `（${arguments.callee.name}）` + '：' + data.resultData.msg);
+              return;
+            }
+            console.log('每日首次登陆签到礼包：' + ots(data.resultData.data.signAward));
+          } else {
+            console.log(`京东服务器返回空数据`);
+          }
+        }
+      } catch (e) {
+        $.logErr(e, resp);
+      } finally {
+        $.isFirstLogin = false;
+        resolve();
+      }
+    });
+  });
+}
 function getBody(withSign = true) {
-  const riskDeviceInfo = JSON.stringify({
+  const riskDeviceInfo = ($.riskDeviceInfo = JSON.stringify({
     eid: $.eid,
     fp: $.fp,
     token: $.token,
-  });
+  }));
   const signData = {
     channelLv: 'yxjh',
     environment: 'jrApp',
     riskDeviceInfo,
     shareUuid: 'uuid',
   };
+  if ($.isFirstLogin) {
+    delete signData.riskDeviceInfo;
+  }
   if (!withSign) {
     return {
       ...signData,
@@ -207,7 +392,7 @@ function getBody(withSign = true) {
 
 function taskUrl(function_id, body) {
   return {
-    url: `${JD_API_HOST}/${function_id}?reqData=${JSON.stringify(body)}`,
+    url: `${JD_API_HOST}/${function_id}?reqData=${JSON.stringify(body).replace(/"/g, (x) => encodeURIComponent(x))}`,
     headers: {
       Accept: `application/json`,
       Origin: `https://active.jd.com`,
@@ -297,4 +482,11 @@ function downloadUrl(url) {
     });
   });
 }
-
+String.prototype.getValByKey = function (str) {
+  const reg = new RegExp(`(^|\\?|&)${str}\=(.*?)(&|$)`);
+  let res = '';
+  if (reg.test(this)) {
+    res = this.match(reg)[2];
+  }
+  return res;
+};
