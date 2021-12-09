@@ -73,6 +73,8 @@
 30 7 * * * node /scripts/jd_lottery_drew.js >> /scripts/logs/jd_lottery_drew.log 2>&1
 # 京东生鲜抽奖
 45 0 * * * node /scripts/jd_fresh.js >> /scripts/logs/jd_fresh.log 2>&1
+# 金榜年终奖
+10 0,2 6-12 12 * node /scripts/jd_split.js >> /scripts/logs/jd_split.log 2>&1
 ##############长期活动##############
 # 签到
 0 0,17 * * * cd /scripts && node jd_bean_sign.js >> /scripts/logs/jd_bean_sign.log 2>&1
@@ -185,21 +187,15 @@
 # 京东健康社区收集健康能量
 5-45/20 * * * * node /scripts/jd_health_collect.js >> /scripts/logs/jd_health_collect.log 2>&1
 # 京东健康社区兑换
-0 0 * * * node /scripts/jd_health_exchage.js >> /scripts/logs/jd_health_exchage.log 2>&1
-# 幸运大转盘
-10 10,23 * * * node /scripts/jd_market_lottery.js >> /scripts/logs/jd_market_lottery.log 2>&1
+0 0 * * * node /scripts/jd_health_exchage.js >> /scripts/logs/jd_health_exchage.log 2>&1z
 # 领金贴
 5 0 * * * node /scripts/jd_jin_tie.js >> /scripts/logs/jd_jin_tie.log 2>&1
 # 京东试用（默认注释，请配合取关脚本使用
 10 5 * * *  node /scripts/jd_try.js >> /scripts/logs/jd_try.log 2>&1
-# 京东零食街
-0 11 * * * node /scripts/jd_lsj.js >> /scripts/logs/jd_lsj.log 2>&1
 # 来客有礼小程序 送豆得豆
 45 0,8 * * * node /scripts/jd_senbeans.js >> /scripts/logs/jd_senbeans.log 2>&1
 # 汪汪乐园
 30 2,20 * * * node /scripts/jd_joy_park.js >> /scripts/logs/jd_joy_park.log 2>&1
-# 7月粉丝互动
-34 6,18 * * * node /scripts/jd_fans.js >> /scripts/logs/jd_fans.log 2>&1
 # 特物Z|万物皆可国创
 30 11 * * * node /scripts/jd_superBrand.js >> /scripts/logs/jd_superBrand.log 2>&1
 # 特务Zx佳沛
@@ -210,6 +206,8 @@
 4 12 * * * node /scripts/jd_yili_cattle.js >> /scripts/logs/jd_yili_cattle.log 2>&1
 # 京东众筹许愿
 8 0,8 * * * node /scripts/jd_crowdfunding_wish.js >> /scripts/logs/jd_crowdfunding_wish.log 2>&1
+# 京东品牌类活动
+20 0,2 * * * node /scripts/jd_wish.js >> /scripts/logs/jd_wish.log 2>&1
 # 京享值PK
 15 0,6,13,19,21 * * * node /scripts/jd_ddo_pk.js >> /scripts/logs/jd_ddo_pk.log 2>&1
 # 京小兑

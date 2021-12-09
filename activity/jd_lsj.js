@@ -11,12 +11,12 @@ export lsjdh="jdAward4" ##兑换牛奶
 [task_local]
 0 11 * * *
 */
-const jd_helpers = require('./utils/JDHelpers.js');
-const jd_env = require('./utils/JDEnv.js');
+const jd_helpers = require('../utils/JDHelpers.js');
+const jd_env = require('../utils/JDEnv.js');
 let $ = jd_env.env('柠檬京东零食街');
-const notify = $.isNode() ? require('./sendNotify') : '';
+const notify = $.isNode() ? require('../sendNotify') : '';
 //Node.js用户请在jdCookie.js处填写京东ck;
-const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
+const jdCookieNode = $.isNode() ? require('../jdCookie.js') : '';
 let useInfo = {};
 
 //IOS等用户直接用NobyDa的jd cookie

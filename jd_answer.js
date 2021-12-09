@@ -47,7 +47,7 @@ const JD_API_HOST = 'https://hserver.moxigame.cn';
       $.isLogin = true;
       $.beans = 0;
       $.nickName = '';
-      $.skuids = [];
+      $.skuIds = [];
       message = '';
       await $.totalBean();
       console.log(`\n******开始【京东账号${$.index}】${$.nickName || $.UserName}*********\n`);
@@ -108,7 +108,7 @@ async function operation() {
         $.skuList = $.allTaskList[i].adInfo.sValue;
         let sleep = Number($.allTaskList[i].res.sTime);
         console.log(`去做${$.taskName}\t等待${sleep}秒`);
-        $.skuids.push($.allTaskList[i].adInfo.sValue);
+        $.skuIds.push($.allTaskList[i].adInfo.sValue);
         await doTaskList(
           `{"api": "addProductToCart","skuList": "${$.skuList}","id": "${$.id}","activeid": "A_8943039_R_6_D_20211015","activeId": "A_8943039_R_6_D_20211015","authcode": "${$.authcode}","token": "${$.taskToken}"}`
         );
