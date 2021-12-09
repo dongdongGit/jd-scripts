@@ -5,10 +5,10 @@
  若发现脚本里没有的粉丝互动活动。欢迎反馈给我
  cron 34 6,18 * * * jd_fan.js
  * */
-const jd_env = require('./utils/JDEnv.js');
+const jd_env = require('../utils/JDEnv.js');
 let $ = jd_env.env('粉丝互动');
-const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
-const notify = $.isNode() ? require('./sendNotify') : '';
+const jdCookieNode = $.isNode() ? require('../jdCookie.js') : '';
+const notify = $.isNode() ? require('../sendNotify') : '';
 let cookiesArr = [];
 const activityList = [
   {"actid": "e49fe34c09e3447083992f4867588dd9", "endTime": 1633190398000},
