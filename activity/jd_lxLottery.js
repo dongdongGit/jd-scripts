@@ -11,12 +11,12 @@ by:小手冰凉 tg:@chianPLA
 #京东我的理想家
 10 7 * * * jd jd_lxLottery.js, tag=京东我的理想家, img-url=https://raw.githubusercontent.com/58xinian/icon/master/jd_lxLottery.png, enabled=true
  */
-const jd_helpers = require('./utils/JDHelpers.js');
-const jd_env = require('./utils/JDEnv.js');
+const jd_helpers = require('../utils/JDHelpers.js');
+const jd_env = require('../utils/JDEnv.js');
 const $ = jd_env.env('京东我的理想家');
-const notify = $.isNode() ? require('./sendNotify') : '';
+const notify = $.isNode() ? require('../sendNotify') : '';
 //Node.js用户请在jdCookie.js处填写京东ck;
-const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
+const jdCookieNode = $.isNode() ? require('../jdCookie.js') : '';
 let jdNotify = true; //是否关闭通知，false打开通知推送，true关闭通知推送
 let configCode = '0628b69aed4d40c893096a6ca7119524';
 //IOS等用户直接用NobyDa的jd cookie
@@ -138,7 +138,7 @@ function getinfo() {
           'User-Agent': $.isNode()
             ? process.env.JD_USER_AGENT
               ? process.env.JD_USER_AGENT
-              : require('./USER_AGENTS').USER_AGENT
+              : require('../USER_AGENTS').USER_AGENT
             : $.getdata('JDUA')
             ? $.getdata('JDUA')
             : 'jdapp;iPhone;9.4.4;14.3;network/4g;Mozilla/5.0 (iPhone; CPU iPhone OS 14_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148;supportJDSHWK/1',
@@ -186,7 +186,7 @@ function join() {
           'User-Agent': $.isNode()
             ? process.env.JD_USER_AGENT
               ? process.env.JD_USER_AGENT
-              : require('./USER_AGENTS').USER_AGENT
+              : require('../USER_AGENTS').USER_AGENT
             : $.getdata('JDUA')
             ? $.getdata('JDUA')
             : 'jdapp;iPhone;9.4.4;14.3;network/4g;Mozilla/5.0 (iPhone; CPU iPhone OS 14_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148;supportJDSHWK/1',
@@ -287,7 +287,7 @@ function taskPostUrl(function_id, body = {}) {
       'User-Agent': $.isNode()
         ? process.env.JD_USER_AGENT
           ? process.env.JD_USER_AGENT
-          : require('./USER_AGENTS').USER_AGENT
+          : require('../USER_AGENTS').USER_AGENT
         : $.getdata('JDUA')
         ? $.getdata('JDUA')
         : 'jdapp;iPhone;9.4.4;14.3;network/4g;Mozilla/5.0 (iPhone; CPU iPhone OS 14_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148;supportJDSHWK/1',
@@ -307,7 +307,7 @@ function TotalBean() {
         'User-Agent': $.isNode()
           ? process.env.JD_USER_AGENT
             ? process.env.JD_USER_AGENT
-            : require('./USER_AGENTS').USER_AGENT
+            : require('../USER_AGENTS').USER_AGENT
           : $.getdata('JDUA')
           ? $.getdata('JDUA')
           : 'jdapp;iPhone;9.4.4;14.3;network/4g;Mozilla/5.0 (iPhone; CPU iPhone OS 14_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148;supportJDSHWK/1',
