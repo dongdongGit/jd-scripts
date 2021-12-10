@@ -2,12 +2,10 @@ const axios = require("axios")
 const fs = require('fs');
 
 !(async () => {
-  let res = await api('https://prodev.m.jd.com/mall/active/2tZssTgnQsiUqhmg5ooLSHY9XSeN/index.html')
-  let file = 'https://storage.360buyimg.com/' + res.match(/htmlSourceUrl":"([^"]*)/)[1]
+  let res = await api('https://prodev.m.jd.com/mall/active/2tZssTgnQsiUqhmg5ooLSHY9XSeN/index.html');
+  let file = 'https://storage.360buyimg.com/' + res.match(/storage\.360buyimg\.com\/(babelview\/\d+\/index\.[a-zA-Z\d]+\.js\?t=\d+)/)[1]
   res = await api(file)
-  file = 'https:' + res.match(/src="([^"]*)/)[1]
-  res = await api(file)
-  invokeKey = res.match(/h=n\(\d+\),v="([^"]*)/)[1]
+  invokeKey = res.match(/invokeKey: ?'([a-zA-Z\d]+)'/m)[1]
   console.log('invokeKey:', invokeKey);
   configPath = './config.js';
 
