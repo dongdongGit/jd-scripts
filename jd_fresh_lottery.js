@@ -3,11 +3,11 @@
 活动入口：京东生鲜每日抽奖
 脚本更新时间：2021-12-6 14:20
 脚本兼容: Node.js
-新手写脚本，难免有bug，能用且用。
 ============Quantumultx===============
 [task_local]
 #京东生鲜每日抽奖
-15 0 * * * jd_sxLottery.js, tag=京东生鲜每日抽奖, img-url=https://raw.githubusercontent.com/58xinian/icon/master/jd_sxLottery.png, enabled=true
+10 7 17-18 8 * jd jd_sxLottery.js, tag=京东生鲜每日抽奖, img-url=https://raw.githubusercontent.com/58xinian/icon/master/jd_sxLottery.png, enabled=true
+
  */
 const jd_helpers = require('./utils/JDHelpers.js');
 const jd_env = require('./utils/JDEnv.js');
@@ -16,7 +16,7 @@ const notify = $.isNode() ? require('./sendNotify') : '';
 //Node.js用户请在jdCookie.js处填写京东ck;
 const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
 let jdNotify = true; //是否关闭通知，false打开通知推送，true关闭通知推送
-let configCode = '8041d3890db747c89ebf9442c78ec165';
+let configCode = '3d09bd04439041018973e039b4a5f205';
 //IOS等用户直接用NobyDa的jd cookie
 let cookiesArr = [],
   cookie = '',
@@ -74,6 +74,7 @@ function showMsg() {
 }
 
 async function jdmodule() {
+  await getCode(); //获取任务
   let runTime = 0;
   do {
     await getinfo(); //获取任务
@@ -98,21 +99,11 @@ async function run() {
         console.log(`任务${vo.taskName}，已完成`);
         continue;
       }
+      console.log(`开始做${vo.taskName}:${vo.taskItem.itemName}`);
+      await doTask(vo.taskType, vo.taskItem.itemId);
       console.log(vo);
-      console.log(`开始做${vo.taskName}:${vo.taskItem?.itemName}`);
-      if (vo.taskItem !== null) {
-        console.log(vo);
-        await doTask(vo.taskType, vo.taskItem.itemId);
-        await $.wait(1000 * vo.viewTime);
-        await getReward(vo.taskType, vo.taskItem.itemId);
-      } else {
-        for (let taskItem of vo.taskItemList) {
-          await doTask(vo.taskType, taskItem.itemId);
-          await $.wait(1000 * vo.viewTime);
-          await getReward(vo.taskType, taskItem.itemId);
-        }
-      }
-
+      await $.wait(1000 * vo.viewTime);
+      await getReward(vo.taskType, vo.taskItem.itemId);
       $.hasFinish = false;
     }
   } catch (e) {
@@ -120,6 +111,41 @@ async function run() {
   }
 }
 
+// 获取任务
+function getCode() {
+  return new Promise((resolve) => {
+    $.get(
+      {
+        url: `https://prodev.m.jd.com/mall/active/2Rkjx8aT5eKaQnUzn8dwcR6jNanj/index.html`,
+        headers: {
+          Connection: 'keep-alive',
+          'Accept-Encoding': 'gzip, deflate, br',
+          'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+          'User-Agent': 'JD4iPhone/167874 (iPhone; iOS 14.2; Scale/3.00)',
+          Cookie: $.cookie,
+          Host: 'prodev.m.jd.com',
+          Referer: '',
+          'Accept-Language': 'zh-Hans-CN;q=1, en-CN;q=0.9',
+          Accept: '*/*',
+        },
+      },
+      async (err, resp, data) => {
+        try {
+          if (err) {
+            console.log(`${JSON.stringify(err)}`);
+            console.log(`${$.name} getinfo请求失败，请检查网路重试`);
+          } else {
+            configCode = resp.body.match(/"activityCode":"(.*?)"/)[1];
+          }
+        } catch (e) {
+          $.logErr(e, resp);
+        } finally {
+          resolve();
+        }
+      }
+    );
+  });
+}
 // 获取任务
 function getinfo() {
   return new Promise((resolve) => {
@@ -200,7 +226,6 @@ function join() {
           } else {
             data = JSON.parse(data);
             if (data.success == true) {
-              // console.log(data);
               console.log(`抽奖结果:${data.data.rewardName}`);
             } else {
               console.log(data.errorMessage);
