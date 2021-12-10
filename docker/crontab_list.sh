@@ -72,7 +72,7 @@
 # 京东赚京豆一分钱抽奖
 30 7 * * * node /scripts/jd_lottery_drew.js >> /scripts/logs/jd_lottery_drew.log 2>&1
 # 京东生鲜抽奖
-45 0 * * * node /scripts/jd_fresh.js >> /scripts/logs/jd_fresh.log 2>&1
+45 0 * * * node /scripts/jd_fresh_lottery.js >> /scripts/logs/jd_fresh_lottery.log 2>&1
 # 金榜年终奖
 10 0,2 6-12 12 * node /scripts/jd_split.js >> /scripts/logs/jd_split.log 2>&1
 ##############长期活动##############
