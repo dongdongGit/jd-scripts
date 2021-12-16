@@ -73,8 +73,10 @@
 30 7 * * * node /scripts/jd_lottery_drew.js >> /scripts/logs/jd_lottery_drew.log 2>&1
 # 京东生鲜抽奖
 45 0 * * * node /scripts/jd_fresh_lottery.js >> /scripts/logs/jd_fresh_lottery.log 2>&1
-# 金榜年终奖
-10 0,2 6-12 12 * node /scripts/jd_split.js >> /scripts/logs/jd_split.log 2>&1
+# 京喜签到-喜豆
+30 2,9 * * * node /scripts/jx_sign_xd.js >> /scripts/logs/jx_sign_xd.log 2>&1
+# 逛京东会场
+0 0,20 * * * node /scripts/jd_mall_active.js >> /scripts/logs/jd_mall_active.log 2>&1
 ##############长期活动##############
 # 签到
 0 0,17 * * * cd /scripts && node jd_bean_sign.js >> /scripts/logs/jd_bean_sign.log 2>&1
@@ -185,7 +187,7 @@
 # 京东健康社区
 20 0,6,22 * * * node /scripts/jd_health.js >> /scripts/logs/jd_health.log 2>&1
 # 京东健康社区收集健康能量
-5-45/20 * * * * node /scripts/jd_health_collect.js >> /scripts/logs/jd_health_collect.log 2>&1
+5-45/20 0-5 * * * node /scripts/jd_health_collect.js >> /scripts/logs/jd_health_collect.log 2>&1
 # 京东健康社区兑换
 0 0 * * * node /scripts/jd_health_exchage.js >> /scripts/logs/jd_health_exchage.log 2>&1z
 # 领金贴

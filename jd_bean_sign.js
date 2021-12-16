@@ -1,12 +1,13 @@
 /*
 京东多合一签到,自用,可N个京东账号
 活动入口：各处的签到汇总
+cron 8 0,8 * * * https://raw.githubusercontent.com/yongyuanlin/jd_scripts/master/jd_bean_sign.js
 Node.JS专用
-IOS软件用户请使用 https://raw.githubusercontent.com/NobyDa/Script/master/JD-DailyBonus/JD_DailyBonus.js
+IOS软件用户请使用 https://raw.githubusercontent.com/yongyuanlin/jd_scripts/master/utils/JD_DailyBonus.js
 更新时间：2021-6-18
 推送通知默认简洁模式(多账号只发送一次)。如需详细通知，设置环境变量 JD_BEAN_SIGN_NOTIFY_SIMPLE 为false即可(N账号推送N次通知)。
-Modified From github https://github.com/ruicky/jd_sign_bot
  */
+
 const jd_env = require('./utils/JDEnv.js');
 const $ = jd_env.env('京东多合一签到');
 const notify = $.isNode() ? require('./sendNotify') : '';
@@ -22,13 +23,22 @@ let NodeSet = 'CookieSet.json';
 let cookiesArr = [],
   cookie = '',
   allMessage = '',
-  jrbody = '';
-let jrbodies = getJDJrbody();
+  jrBodyArr = [],
+  jrBody = '';
 
 if ($.isNode()) {
   Object.keys(jdCookieNode).forEach((item) => {
     cookiesArr.push(jdCookieNode[item]);
   });
+  if (process.env.JD_BEAN_SIGN_BODY) {
+    if (process.env.JD_BEAN_SIGN_BODY.indexOf('&') > -1) {
+      jrBodyArr = process.env.JD_BEAN_SIGN_BODY.split('&');
+    } else if (process.env.JD_BEAN_SIGN_BODY.indexOf('\n') > -1) {
+      jrBodyArr = process.env.JD_BEAN_SIGN_BODY.split('\n');
+    } else {
+      jrBodyArr = [process.env.JD_BEAN_SIGN_BODY];
+    }
+  }
   if (process.env.JD_DEBUG && process.env.JD_DEBUG === 'false') console.log = () => {};
 }
 !(async () => {
@@ -48,9 +58,6 @@ if ($.isNode()) {
   const content = await fs.readFileSync(JD_DailyBonusPath, 'utf8');
   for (let i = 0; i < cookiesArr.length; i++) {
     $.cookie = cookie = cookiesArr[i];
-    if (Array.isArray(jrbodies) && jrbodies.length > 0 && i < jrbodies.length) {
-      jrbody = jrbodies[i];
-    }
     if (cookie) {
       $.UserName = decodeURIComponent(cookie.match(/pt_pin=([^; ]+)(?=;?)/) && cookie.match(/pt_pin=([^; ]+)(?=;?)/)[1]);
       $.index = i + 1;
@@ -66,6 +73,17 @@ if ($.isNode()) {
           await notify.sendNotify(`${$.name}cookie已失效 - ${$.UserName}`, `京东账号${$.index} ${$.UserName}\n请重新登录获取cookie`);
         }
         continue;
+      }
+      jrBody = '';
+      if (jrBodyArr && jrBodyArr.length) {
+        for (let key in Object.keys(jrBodyArr)) {
+          let vo = JSON.parse(jrBodyArr[key]);
+          if (decodeURIComponent(vo.pin) == $.UserName) {
+            jrBody = vo.body || '';
+          }
+        }
+      } else {
+        jrBody = '';
       }
       await changeFile(content);
       await execSign();
@@ -125,6 +143,7 @@ async function execSign() {
     }
     //运行完成后，删除下载的文件
     await deleteFile(resultPath); //删除result.txt
+    await deleteFile('./utils/CookieSet.json');
     console.log(`\n\n*****************${new Date(new Date().getTime()).toLocaleString('zh', { hour12: false })} 京东账号${$.index} ${$.nickName || $.UserName} ${$.name}完成*******************\n\n`);
   } catch (e) {
     console.log('京东签到脚本执行异常:' + e);
@@ -161,8 +180,7 @@ async function downFile() {
 
 async function changeFile(content) {
   console.log(`开始替换变量`);
-  let newContent = content.replace(/var Key = '.*'/, `var Key = '${cookie}'`);
-  newContent = newContent.replace(/var jrBody = ".*"/, `var jrBody = "${jrbody}"`);
+  let newContent = content.replace(/var OtherKey = `.*`/, `var OtherKey = \`[{"cookie":"${cookie}","jrBody":"${jrBody}"}]\``);
   newContent = newContent.replace(/const NodeSet = 'CookieSet.json'/, `const NodeSet = '${NodeSet}'`);
   if (process.env.JD_BEAN_STOP && process.env.JD_BEAN_STOP !== '0') {
     newContent = newContent.replace(/var stop = '0'/, `var stop = '${process.env.JD_BEAN_STOP}'`);
@@ -256,14 +274,4 @@ function timeFormat(time) {
     date = new Date();
   }
   return date.getFullYear() + '-' + (date.getMonth() + 1 >= 10 ? date.getMonth() + 1 : '0' + (date.getMonth() + 1)) + '-' + (date.getDate() >= 10 ? date.getDate() : '0' + date.getDate());
-}
-
-function getJDJrbody() {
-  let jrbody = [];
-
-  if (process.env.JD_JRBODY) {
-    return process.env.JD_JRBODY.split(';').filter((item) => item != '');
-  }
-
-  return jrbody;
 }
