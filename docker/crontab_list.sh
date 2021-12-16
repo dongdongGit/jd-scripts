@@ -73,6 +73,10 @@
 30 7 * * * node /scripts/jd_lottery_drew.js >> /scripts/logs/jd_lottery_drew.log 2>&1
 # 京东生鲜抽奖
 45 0 * * * node /scripts/jd_fresh_lottery.js >> /scripts/logs/jd_fresh_lottery.log 2>&1
+# 京喜签到-喜豆
+30 2,9 * * * node /scripts/jx_sign_xd.js >> /scripts/logs/jx_sign_xd.log 2>&1
+# 逛京东会场
+0 0,20 * * * node /scripts/jd_mall_active.js >> /scripts/logs/jd_mall_active.log 2>&1
 ##############长期活动##############
 # 签到
 0 0,17 * * * cd /scripts && node jd_bean_sign.js >> /scripts/logs/jd_bean_sign.log 2>&1
