@@ -77,6 +77,8 @@
 30 2,9 * * * node /scripts/jx_sign_xd.js >> /scripts/logs/jx_sign_xd.log 2>&1
 # 逛京东会场
 0 0,20 * * * node /scripts/jd_mall_active.js >> /scripts/logs/jd_mall_active.log 2>&1
+# 战队投票
+10 11,22 * * *  * node /scripts/jd_team.js >> /scripts/logs/jd_team.log 2>&1
 ##############长期活动##############
 # 签到
 0 0,17 * * * cd /scripts && node jd_bean_sign.js >> /scripts/logs/jd_bean_sign.log 2>&1
