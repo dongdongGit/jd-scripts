@@ -36,6 +36,7 @@ $.post = validator.injectToRequest2($.post.bind($));
 const notify = $.isNode() ? require('./sendNotify') : '';
 //Node.js用户请在jdCookie.js处填写京东ck;
 const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
+const API_URL = 'https://api.m.jd.com/api';
 let allMessage = '';
 //IOS等用户直接用NobyDa的jd cookie
 let cookiesArr = [],
@@ -101,7 +102,7 @@ let joyRunNotify = true; //宠汪汪赛跑获胜后是否推送通知，true推�
   });
 async function jdJoy() {
   try {
-    await getPetTaskConfig();
+    await getPetTaskConfigNew();
     if ($.getPetTaskConfigRes.success) {
       if ($.isNode()) {
         if (process.env.JOY_FEED_COUNT) {
@@ -719,6 +720,25 @@ function getPetTaskConfig() {
           console.log(JSON.stringify(err));
           console.log(`${$.name} getPetTaskConfig API请求失败，请检查网路重试`);
         } else {
+          console.log(data);
+          $.getPetTaskConfigRes = JSON.parse(data);
+        }
+      } catch (e) {
+        $.logErr(e, resp);
+      } finally {
+        resolve();
+      }
+    });
+  });
+}
+function getPetTaskConfigNew() {
+  return new Promise((resolve) => {
+    $.post(getUrlParams('petGetPetTaskConfig'), (err, resp, data) => {
+      try {
+        if (err) {
+          console.log(JSON.stringify(err));
+          console.log(`${$.name} getPetTaskConfig API请求失败，请检查网路重试`);
+        } else {
           $.getPetTaskConfigRes = JSON.parse(data);
         }
       } catch (e) {
@@ -908,6 +928,53 @@ function showMsg() {
   } else {
     $.log(`\n${message}\n`);
   }
+}
+function getUrlParams(query, body = {"reqSource":"h5"}){
+  lkt = new Date().getTime();
+  lks = MD5('' + config.invokeKey + lkt).toString();
+  let params = {
+    url: API_URL,
+    queryParams: {
+      appid: 'jdchoujiang_h5',
+      body: body
+    },
+    body: JSON.stringify(body),
+    headers: {
+      Origin: 'https://h5.m.jd.com',
+      Cookie: cookie,
+      ContentType: 'application/json',
+      lkt: lkt,
+      lks: lks
+    }
+  };
+
+  if (typeof query == 'string') {
+    params.queryParams.functionId = query;
+  } else if (query instanceof Object) {
+    Object.assign(params.queryParams, query)
+  }
+
+  url = params.url;
+  queryStr = encodeQueryData(params.queryParams);
+
+  return {
+    url: url + (url.includes('?') ? '&' : '?') + queryStr,
+    body: params.body,
+    headers: params.headers
+  }
+}
+
+function encodeQueryData(queyrParams) {
+  const ret = [];
+  for (k of Object.keys(queyrParams)) {
+    v = queyrParams[k];
+    if (typeof v == 'object') {
+      v = JSON.stringify(v);
+    }
+    ret.push(encodeURIComponent(k) + '=' + encodeURIComponent(v));
+  }
+
+  return ret.join('&');
 }
 function taskUrl(url) {
   let lkt = new Date().getTime();
