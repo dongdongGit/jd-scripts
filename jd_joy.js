@@ -116,7 +116,8 @@ async function jdJoy() {
       await feedPets(FEED_NUM); //喂食
       await Promise.all([petTask(), appPetTask()]);
       await deskGoodsTask(); //限时货柜
-      await enterRoom();
+      // await enterRoom();
+      await petEnterRoom();
       await joinTwoPeopleRun(); //参加双人赛跑
     } else {
       message += `${$.getPetTaskConfigRes.errorMessage}`;
@@ -618,6 +619,28 @@ function enterRoom() {
   return new Promise((resolve) => {
     const url = `https://draw.jdfcloud.com/common/pet/enterRoom/h5?invitePin=&openId=&invokeKey=${config.invokeKey}`;
     $.post(taskPostUrl(url, {}), (err, resp, data) => {
+      try {
+        if (err) {
+          console.log(JSON.stringify(err));
+          console.log(`${$.name} enterRoom API请求失败，请检查网路重试`);
+        } else {
+          $.roomData = JSON.parse(data);
+          console.log(`现有狗粮: ${$.roomData.data.petFood}\n`);
+          subTitle = `【用户名】${$.roomData.data.pin}`;
+          message = `现有积分: ${$.roomData.data.petCoin}\n现有狗粮: ${$.roomData.data.petFood}\n喂养次数: ${$.roomData.data.feedCount}\n宠物等级: ${$.roomData.data.petLevel}\n`;
+        }
+      } catch (e) {
+        $.logErr(e, resp);
+      } finally {
+        resolve();
+      }
+    });
+  });
+}
+
+function petEnterRoom() {
+  return new Promise((resolve) => {
+    $.post(getUrlParams('petEnterRoom'), (err, resp, data) => {
       try {
         if (err) {
           console.log(JSON.stringify(err));
