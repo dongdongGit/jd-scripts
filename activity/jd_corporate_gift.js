@@ -13,10 +13,10 @@ cron "30 0 * * *" script-path= jd_qycl,tag= 企有此礼
 企有此礼 = type=cron,script-path= jd_qycl, cronexpr="30 0 * * *", timeout=3600, enable=true
 */
 
-const jd_helpers = require('./utils/JDHelpers.js');
-const jd_env = require('./utils/JDEnv.js');
+const jd_helpers = require('../utils/JDHelpers.js');
+const jd_env = require('../utils/JDEnv.js');
 let $ = jd_env.env('企有此礼');
-const notify = $.isNode() ? require('./sendNotify') : '';
+const notify = $.isNode() ? require('../sendNotify') : '';
 cookiesArr = [];
 CodeArr = [];
 cookie = '';
@@ -32,7 +32,7 @@ var list2tokenArr = [],
   list0tokenArr = [],
   list1tokenArr = [];
 var taskid, token, helpcode;
-const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
+const jdCookieNode = $.isNode() ? require('../jdCookie.js') : '';
 cookiesArr = [$.getdata('CookieJD'), $.getdata('CookieJD2'), ...jd_helpers.jsonParse($.getdata('CookiesJD') || '[]').map((item) => item.cookie)].filter((item) => !!item);
 let tz = $.getval('tz') || '1'; //0关闭通知，1默认开启
 const invite = 1; //新用户自动邀请，0关闭，1默认开启
