@@ -28,3 +28,4 @@ jobs:
           script: | 
             cd jd_scripts
             docker-compose restart
+            docker-compose up -d
