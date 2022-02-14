@@ -1,14 +1,14 @@
 /*
 京东金榜
 活动入口：https://h5.m.jd.com/babelDiy/Zeus/2H5Ng86mUJLXToEo57qWkJkjFPxw/index.html
-by:小手冰凉 tg:@chianPLA
-脚本更新时间：2021-11-18 14:20
+脚本更新时间：2022-1-5
 脚本兼容: QuantumultX, Surge, Loon, JSBox, Node.js
 新手写脚本，难免有bug，能用且用。
 ===================quantumultx================
 [task_local]
 #京东金榜
-13 13 * * * jd_gold_sign.js, tag=京东金榜, img-url=https://raw.githubusercontent.com/Orz-3/mini/master/Color/jd.png, enabled=true
+13 7 * * * jd_gold_sign.js, tag=京东金榜, img-url=https://raw.githubusercontent.com/Orz-3/mini/master/Color/jd.png, enabled=true
+
  */
 const jd_helpers = require('./utils/JDHelpers.js');
 const jd_env = require('./utils/JDEnv.js');
@@ -59,6 +59,7 @@ const JD_API_HOST = 'https://api.m.jd.com/client.action';
         }
         continue;
       }
+      await goldCreatorDoTask({ type: 1 });
       await goldCenterHead();
     }
   }
@@ -80,14 +81,12 @@ function goldCenterHead() {
           console.log(`${JSON.stringify(err)}`);
           console.log(`goldCenterDoTask API请求失败，请检查网路重试`);
         } else {
-          if (safeGet(data)) {
+          if (jd_helpers.safeGet(data)) {
             data = JSON.parse(data);
             if (data.code === '0') {
-              // console.log(data);
               if (data.result.medalNum === 5) {
+                await $.wait(1500);
                 await goldCreatorDoTask({ type: 2 });
-              } else {
-                await goldCreatorDoTask({ type: 1 });
               }
             } else {
               console.log(`失败：${JSON.stringify(data)}\n`);
@@ -106,14 +105,13 @@ function goldCenterHead() {
 function goldCreatorDoTask(body) {
   return new Promise((resolve) => {
     const options = taskUrl('goldCenterDoTask', body);
-    // console.log(options);
     $.get(options, async (err, resp, data) => {
       try {
         if (err) {
           console.log(`${JSON.stringify(err)}`);
           console.log(`goldCenterDoTask API请求失败，请检查网路重试`);
         } else {
-          if (safeGet(data)) {
+          if (jd_helpers.safeGet(data)) {
             data = JSON.parse(data);
             if (data.code === '0') {
               if (data.result.taskCode === '0') {
@@ -157,65 +155,6 @@ function taskUrl(function_id, body = {}) {
         : 'jdapp;iPhone;9.4.4;14.3;network/4g;Mozilla/5.0 (iPhone; CPU iPhone OS 14_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148;supportJDSHWK/1',
     },
   };
-}
-
-function TotalBean() {
-  return new Promise(async (resolve) => {
-    const options = {
-      url: 'https://me-api.jd.com/user_new/info/GetJDUserInfoUnion',
-      headers: {
-        Host: 'me-api.jd.com',
-        Accept: '*/*',
-        Connection: 'keep-alive',
-        Cookie: cookie,
-        'User-Agent': $.isNode()
-          ? process.env.JD_USER_AGENT
-            ? process.env.JD_USER_AGENT
-            : require('./USER_AGENTS').USER_AGENT
-          : $.getdata('JDUA')
-          ? $.getdata('JDUA')
-          : 'jdapp;iPhone;9.4.4;14.3;network/4g;Mozilla/5.0 (iPhone; CPU iPhone OS 14_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148;supportJDSHWK/1',
-        'Accept-Language': 'zh-cn',
-        Referer: 'https://home.m.jd.com/myJd/newhome.action?sceneval=2&ufc=&',
-        'Accept-Encoding': 'gzip, deflate, br',
-      },
-    };
-    $.get(options, (err, resp, data) => {
-      try {
-        if (err) {
-          $.logErr(err);
-        } else {
-          if (data) {
-            data = JSON.parse(data);
-            if (data['retcode'] === '1001') {
-              $.isLogin = false; //cookie过期
-              return;
-            }
-            if (data['retcode'] === '0' && data.data && data.data.hasOwnProperty('userInfo')) {
-              $.nickName = data.data.userInfo.baseInfo.nickname;
-            }
-          } else {
-            $.log('京东服务器返回空数据');
-          }
-        }
-      } catch (e) {
-        $.logErr(e);
-      } finally {
-        resolve();
-      }
-    });
-  });
-}
-function safeGet(data) {
-  try {
-    if (typeof JSON.parse(data) == 'object') {
-      return true;
-    }
-  } catch (e) {
-    console.log(e);
-    console.log(`京东服务器访问数据为空，请检查自身设备网络情况`);
-    return false;
-  }
 }
 function getUUID(format = 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx', UpperCase = 0) {
   return format.replace(/[xy]/g, function (c) {
