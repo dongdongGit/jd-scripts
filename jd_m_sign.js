@@ -5,7 +5,7 @@
 ===========================
 [task_local]
 #京东通天塔--签到
-3 0 * * * jd_m_sign.js, tag=京东通天塔--签到, img-url=https://raw.githubusercontent.com/Orz-3/mini/master/Color/jd.png, enabled=true
+3 9,23 * * * jd_m_sign.js, tag=京东通天塔--签到, img-url=https://raw.githubusercontent.com/Orz-3/mini/master/Color/jd.png, enabled=true
  */
 const jd_helpers = require('./utils/JDHelpers.js');
 const jd_env = require('./utils/JDEnv.js');
@@ -67,14 +67,16 @@ async function jdsign() {
   try {
     console.log(`签到开始........`);
     await getInfo('https://pro.m.jd.com/mall/active/3S28janPLYmtFxypu37AYAGgivfp/index.html'); //拍拍二手签到
-    await $.wait(1000);
-    await getInfo('https://pro.m.jd.com/mall/active/4QjXVcRyTcRaLPaU6z2e3Sw1QzWE/index.html'); //全城购签到
-    await $.wait(1000);
-    await getInfo('https://prodev.m.jd.com/mall/active/3MFSkPGCDZrP2WPKBRZdiKm9AZ7D/index.html'); //同城签到
-    await $.wait(1000);
+    await $.wait(2000);
     await getInfo('https://pro.m.jd.com/mall/active/kPM3Xedz1PBiGQjY4ZYGmeVvrts/index.html'); //陪伴
-    await $.wait(1000);
+    await $.wait(2000);
     await getInfo('https://pro.m.jd.com/mall/active/3SC6rw5iBg66qrXPGmZMqFDwcyXi/index.html'); //京东图书
+    //     await getInfo("https://pro.m.jd.com/mall/active/ZrH7gGAcEkY2gH8wXqyAPoQgk6t/index.html");//箱包签到
+    //     await $.wait(1000)
+    //     await getInfo("https://pro.m.jd.com/mall/active/4RXyb1W4Y986LJW8ToqMK14BdTD/index.html");//鞋靴馆签到
+
+    //     await $.wait(1000)
+    //     await getInfo("https://pro.m.jd.com/mall/active/3joSPpr7RgdHMbcuqoRQ8HbcPo9U/index.html");//生活特权签到
   } catch (e) {
     $.logErr(e);
   }
@@ -123,7 +125,7 @@ async function doInteractiveAssignment(encryptProjectId, AssignmentId) {
             console.log(`${JSON.stringify(err)}`);
             console.log(`doInteractiveAssignment API请求失败，请检查网路重试`);
           } else {
-            if (safeGet(data)) {
+            if (jd_helpers.safeGet(data)) {
               data = JSON.parse(data);
               if (data.subCode == '0' && data.rewardsInfo) {
                 // console.log(data.rewardsInfo);
@@ -170,73 +172,4 @@ function taskUrl(functionId, body = {}) {
       Cookie: cookie,
     },
   };
-}
-
-function TotalBean() {
-  return new Promise(async (resolve) => {
-    const options = {
-      url: 'https://wq.jd.com/user_new/info/GetJDUserInfoUnion?sceneval=2',
-      headers: {
-        Host: 'wq.jd.com',
-        Accept: '*/*',
-        Connection: 'keep-alive',
-        Cookie: cookie,
-        'User-Agent': $.isNode()
-          ? process.env.JD_USER_AGENT
-            ? process.env.JD_USER_AGENT
-            : require('./USER_AGENTS').USER_AGENT
-          : $.getdata('JDUA')
-          ? $.getdata('JDUA')
-          : 'jdapp;iPhone;9.4.4;14.3;network/4g;Mozilla/5.0 (iPhone; CPU iPhone OS 14_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148;supportJDSHWK/1',
-        'Accept-Language': 'zh-cn',
-        Referer: 'https://home.m.jd.com/myJd/newhome.action?sceneval=2&ufc=&',
-        'Accept-Encoding': 'gzip, deflate, br',
-      },
-    };
-    $.get(options, (err, resp, data) => {
-      try {
-        if (err) {
-          $.logErr(err);
-        } else {
-          if (data) {
-            data = JSON.parse(data);
-            if (data['retcode'] === 1001) {
-              $.isLogin = false; //cookie过期
-              return;
-            }
-            if (data['retcode'] === 0 && data.data && data.data.hasOwnProperty('userInfo')) {
-              $.nickName = data.data.userInfo.baseInfo.nickname;
-            }
-          } else {
-            console.log('京东服务器返回空数据');
-          }
-        }
-      } catch (e) {
-        $.logErr(e);
-      } finally {
-        resolve();
-      }
-    });
-  });
-}
-function showMsg() {
-  return new Promise((resolve) => {
-    if (!jdNotify) {
-      $.msg($.name, '', `${message}`);
-    } else {
-      $.log(`京东账号${$.index}${$.nickName}\n${message}`);
-    }
-    resolve();
-  });
-}
-function safeGet(data) {
-  try {
-    if (typeof JSON.parse(data) == 'object') {
-      return true;
-    }
-  } catch (e) {
-    console.log(e);
-    console.log(`京东服务器访问数据为空，请检查自身设备网络情况`);
-    return false;
-  }
 }
