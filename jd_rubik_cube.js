@@ -1,16 +1,35 @@
-/**
-集魔方
-cron 11 10 * * * jd_rubik_cube.js
-*/
+/*
+京东小魔方
+Last Modified time: 2022-1-21 
+活动入口：京东 首页新品 魔方
+更新地址：jd_xmf.js
+已支持IOS双京东账号, Node.js支持N个京东账号
+脚本兼容: QuantumultX, Surge, Loon, 小火箭，JSBox, Node.js
+============Quantumultx===============
+[task_local]
+#京东小魔方
+30 6,20 * * * jd_mofang.js, tag=京东小魔方, img-url=, enabled=true
+
+================Loon==============
+[Script]
+cron "30 6,20 * * *" script-path=jd_mofang.js, tag=京东小魔方
+
+===============Surge=================
+京东小魔方 = type=cron,cronexp="30 6,20 * * *",wake-system=1,timeout=3600,script-path=jd_mofang.js
+
+============小火箭=========
+京东小魔方 = type=cron,script-path=jd_mofang.js, cronexpr="30 6,20 * * *", timeout=3600, enable=true
+ */
 const jd_helpers = require('./utils/JDHelpers.js');
 const jd_env = require('./utils/JDEnv.js');
-const $ = jd_env.env('集魔方');
+const $ = jd_env.env('京东小魔方');
 const notify = $.isNode() ? require('./sendNotify') : '';
 //Node.js用户请在jdCookie.js处填写京东ck;
 const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
 //IOS等用户直接用NobyDa的jd cookie
 let cookiesArr = [],
   cookie = '';
+var timestamp = Math.round(new Date().getTime()).toString();
 $.shareCodes = [];
 if ($.isNode()) {
   Object.keys(jdCookieNode).forEach((item) => {
@@ -108,9 +127,19 @@ async function main() {
   }
 }
 function doInteractiveAssignment(projectId, encryptAssignmentId, itemId, actionType) {
-  let body = { encryptProjectId: projectId, encryptAssignmentId: encryptAssignmentId, sourceCode: 'acexinpin0823', itemId: itemId, actionType: actionType, completionFlag: '', ext: {} };
+  let body = {
+    encryptProjectId: projectId,
+    encryptAssignmentId: encryptAssignmentId,
+    sourceCode: 'acexinpin0823',
+    itemId: itemId,
+    actionType: actionType,
+    completionFlag: '',
+    ext: {},
+    extParam: { businessData: { random: 25500725 }, signStr: timestamp + '~1hj9fq9', sceneid: 'XMFhPageh5' },
+  };
   return new Promise((resolve) => {
     $.post(taskPostUrl('doInteractiveAssignment', body), async (err, resp, data) => {
+      //$.log(data)
       try {
         if (err) {
           console.log(`${err}`);
