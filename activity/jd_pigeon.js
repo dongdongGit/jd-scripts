@@ -3,11 +3,11 @@
 活动路径：边玩边赚-》京小鸽吾悦寄
 很小的几率能抽到实物。
 */
-const jd_helpers = require('./utils/JDHelpers.js');
-const jd_env = require('./utils/JDEnv.js');
+const jd_helpers = require('../utils/JDHelpers.js');
+const jd_env = require('../utils/JDEnv.js');
 const $ = jd_env.env('京小鸽吾悦寄');
-const notify = $.isNode() ? require('./sendNotify') : '';
-const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
+const notify = $.isNode() ? require('../sendNotify') : '';
+const jdCookieNode = $.isNode() ? require('../jdCookie.js') : '';
 $.helpCodeList = {};
 $.sendCardList = [];
 $.message = '';
@@ -537,7 +537,7 @@ function getPostRequest(type, body) {
     'User-Agent': $.isNode()
       ? process.env.JD_USER_AGENT
         ? process.env.JD_USER_AGENT
-        : require('./USER_AGENTS').USER_AGENT
+        : require('../USER_AGENTS').USER_AGENT
       : $.getdata('JDUA')
       ? $.getdata('JDUA')
       : 'jdapp;iPhone;9.2.2;14.2;%E4%BA%AC%E4%B8%9C/9.2.2 CFNetwork/1206 Darwin/20.1.0',

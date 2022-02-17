@@ -4,11 +4,11 @@ cron 10 9,17 * * * jd_vivo.js
 PS:无开卡，有加购，蚊子推豆子，活动结束可以瓜分
 * */
 
-const jd_helpers = require('./utils/JDHelpers.js');
-const jd_env = require('./utils/JDEnv.js');
+const jd_helpers = require('../utils/JDHelpers.js');
+const jd_env = require('../utils/JDEnv.js');
 let $ = jd_env.env('热血心跳,狂解压');
-const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
-const notify = $.isNode() ? require('./sendNotify') : '';
+const jdCookieNode = $.isNode() ? require('../jdCookie.js') : '';
+const notify = $.isNode() ? require('../sendNotify') : '';
 let cookiesArr = [];
 Object.keys(jdCookieNode).forEach((item) => {
   cookiesArr.push(jdCookieNode[item]);
