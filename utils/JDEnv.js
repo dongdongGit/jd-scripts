@@ -553,13 +553,13 @@ function env(name, opts) {
     async totalBean() {
       return new Promise(async (resolve) => {
         const urls = [
-          'https://wq.jd.com/user_new/info/GetJDUserInfoUnion?sceneval=2'
+          'https://me-api.jd.com/user_new/info/GetJDUserInfoUnion'
         ];
         const options = {
           url: urls[jd_helpers.randomNumber(0, urls.length - 1)],
           headers: {
             Cookie: this.cookie,
-            Referer: 'https://wqs.jd.com/my/jingdou/my.shtml?sceneval=2',
+            Referer: 'https://home.m.jd.com/myJd/newhome.action?sceneval=2&ufc=&',
           },
         };
         
