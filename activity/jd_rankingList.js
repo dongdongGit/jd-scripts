@@ -14,10 +14,10 @@ cron "11 9 * * *" script-path=https://raw.githubusercontent.com/yangtingxiao/Qua
 // Surge
 京东排行榜 = type=cron,cronexp=11 9 * * *,wake-system=1,timeout=20,script-path=https://raw.githubusercontent.com/yangtingxiao/QuantumultX/master/scripts/jd/jd_rankingList.js
  */
-const jd_env = require('./utils/JDEnv.js');
+const jd_env = require('../utils/JDEnv.js');
 const $ = jd_env.env('京东排行榜');
 //Node.js用户请在jdCookie.js处填写京东ck;
-const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
+const jdCookieNode = $.isNode() ? require('../jdCookie.js') : '';
 const needSum = false; //是否需要显示汇总
 const STRSPLIT = '|';
 let merge = {};

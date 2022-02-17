@@ -4,10 +4,10 @@ cron 0 16 1-11 11 * jd_travel_shop.js
 脚本跑起来时间比较久，没有卡开，忘记有没有加购了 0 0
 * */
 
-const jd_helpers = require('./utils/JDHelpers.js');
-const jd_env = require('./utils/JDEnv.js');
+const jd_helpers = require('../utils/JDHelpers.js');
+const jd_env = require('../utils/JDEnv.js');
 let $ = jd_env.env('双11环游记大富翁');
-const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
+const jdCookieNode = $.isNode() ? require('../jdCookie.js') : '';
 let cookiesArr = [];
 if ($.isNode()) {
   Object.keys(jdCookieNode).forEach((item) => {
@@ -207,7 +207,7 @@ async function takeRequest(functionId, body, cookie) {
     'user-agent': $.isNode()
       ? process.env.JD_USER_AGENT
         ? process.env.JD_USER_AGENT
-        : require('./USER_AGENTS').USER_AGENT
+        : require('../USER_AGENTS').USER_AGENT
       : $.getdata('JDUA')
       ? $.getdata('JDUA')
       : 'jdapp;iPhone;9.4.4;14.3;network/4g;Mozilla/5.0 (iPhone; CPU iPhone OS 14_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148;supportJDSHWK/1',
