@@ -24,7 +24,7 @@ let cookiesArr = [],
 /**
  * 兑换京豆的数量
  */
-let beansCount = process.env.JD_BEAUTY_BEANS_COUNT || 10;
+let beansCount = process.env.JD_BEAUTY_BEANS_COUNT || 5;
 /**
  * 如果兑换类型为2、3需要填上兑换的物品名称
  */
