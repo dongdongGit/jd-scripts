@@ -195,8 +195,6 @@
 23 0,9 * * * node /scripts/jd_superZ4Brand.js >> /scripts/logs/jd_superZ4Brand.log 2>&1
 # 天天优惠大乐透
 20 12,14 * * * node /scripts/jd_DrawEntrance.js >> /scripts/logs/jd_DrawEntrance.log 2>&1
-# 柠檬伊利养牛记
-4 12 * * * node /scripts/jd_yili_cattle.js >> /scripts/logs/jd_yili_cattle.log 2>&1
 # 京东众筹许愿
 8 0,8 * * * node /scripts/jd_crowdfunding_wish.js >> /scripts/logs/jd_crowdfunding_wish.log 2>&1
 # 京东品牌类活动
