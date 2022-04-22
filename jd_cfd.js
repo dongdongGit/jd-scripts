@@ -1153,7 +1153,6 @@ function getUserInfo(showInvite = true) {
             console.log(`${JSON.stringify(err)}`);
             console.log(`${$.name} QueryUserInfo API请求失败，请检查网路重试`);
           } else {
-            console.log('~~~~~~~~~data~~~~~~~~~', data);
             data = JSON.parse(data.replace(/\n/g, '').match(new RegExp(/jsonpCBK.?\((.*);*\)/))[1]);
             $.showPp = data?.AreaAddr?.dwIsSHowPp ?? 0;
             const { buildInfo = {}, ddwRichBalance, ddwCoinBalance, sErrMsg, strMyShareId, dwLandLvl, LeadInfo = {}, StoryInfo = {}, Business = {}, XbStatus = {} } = data;
