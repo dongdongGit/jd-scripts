@@ -8,17 +8,17 @@
 ============Quantumultx===============
 [task_local]
 #签到领现金
-2 0-23/4 * * * jd_cash.js, tag=签到领现金, img-url=https://raw.githubusercontent.com/Orz-3/mini/master/Color/jd.png, enabled=true
+2 5,20 * * * jd_cash.js, tag=签到领现金, img-url=https://raw.githubusercontent.com/Orz-3/mini/master/Color/jd.png, enabled=true
 
 ================Loon==============
 [Script]
-cron "2 0-23/4 * * *" script-path=jd_cash.js,tag=签到领现金
+cron "2 5,20 * * *" script-path=jd_cash.js,tag=签到领现金
 
 ===============Surge=================
-签到领现金 = type=cron,cronexp="2 0-23/4 * * *",wake-system=1,timeout=3600,script-path=jd_cash.js
+签到领现金 = type=cron,cronexp="2 5,20 * * *",wake-system=1,timeout=3600,script-path=jd_cash.js
 
 ============小火箭=========
-签到领现金 = type=cron,script-path=jd_cash.js, cronexpr="2 0-23/4 * * *", timeout=3600, enable=true
+签到领现金 = type=cron,script-path=jd_cash.js, cronexpr="2 5,20 * * *", timeout=3600, enable=true
  */
 const jd_helpers = require('./utils/JDHelpers.js');
 const jd_env = require('./utils/JDEnv.js');
@@ -31,8 +31,8 @@ let jdNotify = true; //是否关闭通知，false打开通知推送，true关闭
 let cookiesArr = [],
   cookie = '',
   message;
-let helpAuthor = false;
-const randomCount = $.isNode() ? 0 : 5;
+let helpAuthor = true;
+const randomCount = $.isNode() ? 5 : 5;
 let cash_exchange = false; //是否消耗2元红包兑换200京豆，默认否
 const inviteCodes = ['eU9YaeW2b64l9WmGzHIb0g'];
 if ($.isNode()) {
@@ -45,14 +45,40 @@ if ($.isNode()) {
 }
 const JD_API_HOST = 'https://api.m.jd.com/client.action';
 let allMessage = '';
+let jdPandaToken = process.env.JD_PANDA_TOEKN,
+  PandaTokenArr = [],
+  lnrequesttimes = 12000;
+jdPandaToken = $.isNode() ? (process.env.PandaToken ? process.env.PandaToken : `${jdPandaToken}`) : $.getdata('PandaToken') ? $.getdata('PandaToken') : `${jdPandaToken}`;
+
 !(async () => {
+  if (!jdPandaToken) {
+    console.log('请填写Panda获取的Token,变量是PandaToken');
+    return;
+  }
+
+  PandaTokenArr = jdPandaToken.split('@');
+  for (let j = 0; j < 10; j++) {
+    jdPandaToken = PandaTokenArr[random(0, PandaTokenArr.length)];
+    await getSign('', '');
+    console.log(j);
+    console.log(jdPandaToken);
+    console.log(lnrequesttimes);
+    if (lnrequesttimes < 1000) {
+      //await notify.wxpusherNotifyByOne(strTitle, `${ReturnMessage}`, "",TempCKUid[j].Uid)
+      break;
+    }
+  }
+  if (lnrequesttimes > 1000) {
+    console.log('连接Panda服务失败，当前Token使用次数为' + lnrequesttimes);
+    return;
+  }
+
   if (!cookiesArr[0]) {
     $.msg($.name, '【提示】请先获取京东账号一cookie\n直接使用NobyDa的京东签到获取', 'https://bean.m.jd.com/bean/signIndex.action', { 'open-url': 'https://bean.m.jd.com/bean/signIndex.action' });
     return;
   }
   await requireConfig();
-  await getAuthorShareCode();
-  // await getAuthorShareCode2();
+  $.authorCode = '';
   for (let i = 0; i < cookiesArr.length; i++) {
     if (cookiesArr[i]) {
       $.cookie = cookie = cookiesArr[i];
@@ -123,6 +149,10 @@ async function jdCash() {
   // }
   await appindex(true);
   // await showMsg()
+}
+
+function random(min, max) {
+  return Math.floor(Math.random() * (max - min)) + min;
 }
 
 async function appindex(info = false) {
@@ -373,37 +403,62 @@ function getReward(source = 1) {
     });
   });
 }
-
-function getSign(functionId, body) {
-  return new Promise(async (resolve) => {
-    let data = {
-      functionId,
-      body: JSON.stringify(body),
-      client: 'apple',
-      clientVersion: '10.3.0',
-    };
-    let Host = '';
-    let HostArr = ['jdsign.cf', 'signer.nz.lu'];
-    if (process.env.SIGN_URL) {
-      Host = process.env.SIGN_URL;
-    } else {
-      Host = HostArr[Math.floor(Math.random() * HostArr.length)];
-    }
-    let options = {
-      url: `https://cdn.nz.lu/ddo`,
-      body: JSON.stringify(data),
+function exchange2(node) {
+  let body = '';
+  const data = { node, configVersion: '1.0' };
+  if (data['node'] === '-1') {
+    body = `body=${encodeURIComponent(JSON.stringify(data))}&uuid=8888888&client=apple&clientVersion=9.4.1&st=1619595890027&sign=92a8abba7b6846f274ac9803aa5a283d&sv=102`;
+  } else if (data['node'] === '0') {
+    body = `body=${encodeURIComponent(JSON.stringify(data))}&uuid=8888888&client=apple&clientVersion=9.4.1&st=1619597882090&sign=e00bd6c3af2a53820825b94f7a648551&sv=100`;
+  } else if (data['node'] === '1') {
+    body = `body=${encodeURIComponent(JSON.stringify(data))}&uuid=8888888&client=apple&clientVersion=9.4.1&st=1619595655007&sign=2e72bbd21e5f5775fe920eac129f89a2&sv=111`;
+  } else if (data['node'] === '2') {
+    body = `body=${encodeURIComponent(JSON.stringify(data))}&uuid=8888888&client=apple&clientVersion=9.4.1&st=1619597924095&sign=c04c70370ff68d71890de08a18cac981&sv=112`;
+  } else if (data['node'] === '3') {
+    body = `body=${encodeURIComponent(JSON.stringify(data))}&uuid=8888888&client=apple&clientVersion=9.4.1&st=1619597953001&sign=4c36b3d816d4f0646b5c34e7596502f8&sv=122`;
+  }
+  return new Promise((resolve) => {
+    const options = {
+      url: `${JD_API_HOST}?functionId=cash_exchangeBeans&t=${Date.now()}&${body}`,
+      body: `body=${escape(JSON.stringify(data))}`,
       headers: {
-        Host,
-        'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1 Edg/87.0.4280.88',
+        Cookie: cookie,
+        Host: 'api.m.jd.com',
+        Connection: 'keep-alive',
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'User-Agent': $.isNode()
+          ? process.env.JD_USER_AGENT
+            ? process.env.JD_USER_AGENT
+            : require('./USER_AGENTS').USER_AGENT
+          : $.getdata('JDUA')
+          ? $.getdata('JDUA')
+          : 'jdapp;iPhone;9.2.2;14.2;%E4%BA%AC%E4%B8%9C/9.2.2 CFNetwork/1206 Darwin/20.1.0',
+        'Accept-Language': 'zh-cn',
+        'Accept-Encoding': 'gzip, deflate, br',
       },
-      timeout: 30 * 1000,
     };
-    $.post(options, (err, resp, data) => {
+    $.post(options, async (err, resp, data) => {
       try {
         if (err) {
-          console.log(JSON.stringify(err));
-          console.log(`${$.name} getSign API请求失败，请检查网路重试`);
+          console.log(`${JSON.stringify(err)}`);
+          console.log(`${$.name} API请求失败，请检查网路重试`);
         } else {
+          if (jd_helpers.safeGet(data)) {
+            data = JSON.parse(data);
+            if (data['code'] === 0) {
+              if (data.data.bizCode === 0) {
+                console.log(`花费${data.data.result.needMoney}元红包兑换成功！获得${data.data.result.beanName}\n`);
+                $.exchangeBeanNum += parseInt(data.data.result.needMoney);
+                $.canLoop = false;
+              } else {
+                console.log('花费2元红包兑换200京豆失败：' + data.data.bizMsg);
+                if (data.data.bizCode === 504) $.canLoop = true;
+                if (data.data.bizCode === 120) $.canLoop = false;
+              }
+            } else {
+              console.log(`兑换京豆失败：${JSON.stringify(data)}\n`);
+            }
+          }
         }
       } catch (e) {
         $.logErr(e, resp);
@@ -411,6 +466,91 @@ function getSign(functionId, body) {
         resolve(data);
       }
     });
+  });
+}
+function getSign(functionId, body) {
+  var strsign = '';
+  let data = {
+    fn: functionId,
+    body: body,
+  };
+  return new Promise((resolve) => {
+    let url = {
+      url: 'https://api.jds.codes/jd/sign',
+      body: JSON.stringify(data),
+      followRedirect: false,
+      headers: {
+        Accept: '*/*',
+        'accept-encoding': 'gzip, deflate, br',
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer ' + jdPandaToken,
+      },
+      timeout: 30000,
+    };
+    $.post(url, async (err, resp, data) => {
+      try {
+        data = JSON.parse(data);
+        if (data && data.code == 200) {
+          lnrequesttimes = data.request_times;
+          if (lnrequesttimes > 1000) {
+            console.log('连接Panda服务失败，当前Token使用次数为' + lnrequesttimes);
+            return;
+          }
+          console.log('连接Panda服务成功，当前Token使用次数为' + lnrequesttimes);
+          if (data.data.sign) strsign = data.data.sign || '';
+          if (strsign != '') resolve(strsign);
+          else console.log('签名获取失败,可能Token使用次数上限或被封.');
+        } else {
+          console.log('签名获取失败.');
+        }
+      } catch (e) {
+        //$.logErr(e, resp);
+      } finally {
+        resolve(strsign);
+      }
+    });
+  });
+}
+function randomString(e) {
+  e = e || 32;
+  let t = 'abcdefghijklmnopqrstuvwxyz0123456789',
+    a = t.length,
+    n = '';
+  for (let i = 0; i < e; i++) n += t.charAt(Math.floor(Math.random() * a));
+  return n;
+}
+function showMsg() {
+  return new Promise((resolve) => {
+    if (!jdNotify) {
+      $.msg($.name, '', `${message}`);
+    } else {
+      $.log(`京东账号${$.index}${$.nickName}\n${message}`);
+    }
+    resolve();
+  });
+}
+function readShareCode() {
+  console.log(`开始`);
+  return new Promise(async (resolve) => {
+    $.get({ url: `http://code.chiang.fun/api/v1/jd/jdcash/read/${randomCount}/`, timeout: 30000 }, (err, resp, data) => {
+      try {
+        if (err) {
+          console.log(`${JSON.stringify(err)}`);
+          console.log(`${$.name} API请求失败，请检查网路重试`);
+        } else {
+          if (data) {
+            console.log(`随机取${randomCount}个码放到您固定的互助码后面(不影响已有固定互助)`);
+            data = JSON.parse(data);
+          }
+        }
+      } catch (e) {
+        $.logErr(e, resp);
+      } finally {
+        resolve(data);
+      }
+    });
+    await $.wait(30000);
+    resolve();
   });
 }
 //格式化助力码
@@ -421,16 +561,16 @@ function shareCodesFormat() {
     if ($.shareCodesArr[$.index - 1]) {
       $.newShareCodes = $.shareCodesArr[$.index - 1].split('@');
     } else {
-      //console.log(`由于您第${$.index}个京东账号未提供shareCode,将采纳本脚本自带的助力码\n`)
-      //const tempIndex = $.index > inviteCodes.length ? (inviteCodes.length - 1) : ($.index - 1);
-      //$.newShareCodes = inviteCodes[tempIndex].split('@');
+      console.log(`由于您第${$.index}个京东账号未提供shareCode,将采纳本脚本自带的助力码\n`);
+      const tempIndex = $.index > inviteCodes.length ? inviteCodes.length - 1 : $.index - 1;
+      $.newShareCodes = inviteCodes[tempIndex].split('@');
       //let authorCode = deepCopy($.authorCode)
       //$.newShareCodes = [...(authorCode.map((item, index) => authorCode[index] = item['inviteCode'])), ...$.newShareCodes];
     }
-    const readShareCodeRes = await readShareCode();
-    if (readShareCodeRes && readShareCodeRes.code === 200) {
-      $.newShareCodes = [...new Set([...$.newShareCodes, ...(readShareCodeRes.data || [])])];
-    }
+    // const readShareCodeRes = await readShareCode();
+    // if (readShareCodeRes && readShareCodeRes.code === 200) {
+    //   $.newShareCodes = [...new Set([...$.newShareCodes, ...(readShareCodeRes.data || [])])];
+    // }
     $.newShareCodes.map((item, index) => ($.newShareCodes[index] = { inviteCode: item, shareDate: $.shareDate }));
     console.log(`第${$.index}个京东账号将要助力的好友${JSON.stringify($.newShareCodes)}`);
     resolve();
@@ -525,30 +665,6 @@ function taskUrl(functionId, body = {}) {
   };
 }
 
-function readShareCode() {
-  console.log(`开始`);
-  return new Promise(async (resolve) => {
-    $.get({ url: `/`, timeout: 10000 }, (err, resp, data) => {
-      try {
-        if (err) {
-          // console.log(`${JSON.stringify(err)}`)
-          // console.log(`${$.name} API请求失败，请检查网路重试`)
-        } else {
-          if (data) {
-            //console.log(`随机取${randomCount}个码放到您固定的互助码后面(不影响已有固定互助)`)
-            data = JSON.parse(data);
-          }
-        }
-      } catch (e) {
-        $.logErr(e, resp);
-      } finally {
-        resolve(data);
-      }
-    });
-    await $.wait(10000);
-    resolve();
-  });
-}
 function getAuthorShareCode(url) {
   return new Promise((resolve) => {
     const options = {
