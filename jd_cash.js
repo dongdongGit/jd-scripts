@@ -60,9 +60,9 @@ jdPandaToken = $.isNode() ? (process.env.PandaToken ? process.env.PandaToken : `
   for (let j = 0; j < 10; j++) {
     jdPandaToken = PandaTokenArr[random(0, PandaTokenArr.length)];
     await getSign('', '');
-    console.log(j);
-    console.log(jdPandaToken);
-    console.log(lnrequesttimes);
+    // console.log(j);
+    // console.log(jdPandaToken);
+    // console.log(lnrequesttimes);
     if (lnrequesttimes < 1000) {
       //await notify.wxpusherNotifyByOne(strTitle, `${ReturnMessage}`, "",TempCKUid[j].Uid)
       break;
