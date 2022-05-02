@@ -67,8 +67,6 @@
 10 11,22 * * *  * node /scripts/jd_team.js >> /scripts/logs/jd_team.log 2>&1
 # 京东通天塔签到
 3 0 * * * node /scripts/jd_m_sign.js >> /scripts/logs/jd_m_sign.log 2>&1
-# 年货签到
-6 1,13,23 * * * node /scripts/jd_nh_sign.js >> /scripts/logs/jd_nh_sign.log 2>&1
 ##############长期活动##############
 # 签到
 0 0,17 * * * cd /scripts && node jd_bean_sign.js >> /scripts/logs/jd_bean_sign.log 2>&1
