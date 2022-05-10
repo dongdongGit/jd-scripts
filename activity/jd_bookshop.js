@@ -18,11 +18,11 @@ cron "1 8,12,18 * * *" script-path=https://gitee.com/lxk0301/jd_scripts/raw/mast
 ============小火箭=========
 口袋书店 = type=cron,script-path=https://gitee.com/lxk0301/jd_scripts/raw/master/jd_bookshop.js, cronexpr="1 8,12,18* * *", timeout=3600, enable=true
  */
-const jd_helpers = require('./utils/JDHelpers.js');
-const jd_env = require('./utils/JDEnv.js');
+const jd_helpers = require('../utils/JDHelpers.js');
+const jd_env = require('../utils/JDEnv.js');
 let $ = jd_env.env('口袋书店');
-const notify = $.isNode() ? require('./sendNotify') : '';
-const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
+const notify = $.isNode() ? require('../sendNotify') : '';
+const jdCookieNode = $.isNode() ? require('../jdCookie.js') : '';
 //Node.js用户请在jdCookie.js处填写京东ck;
 //IOS等用户直接用NobyDa的jd cookie
 let cookiesArr = [],

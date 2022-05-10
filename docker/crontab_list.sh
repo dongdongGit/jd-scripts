@@ -63,8 +63,6 @@
 30 2,9 * * * node /scripts/jx_sign.js >> /scripts/logs/jx_sign.log 2>&1
 # 逛京东会场
 0 0,20 * * * node /scripts/jd_mall_active.js >> /scripts/logs/jd_mall_active.log 2>&1
-# 战队投票
-10 11,22 * * *  * node /scripts/jd_team.js >> /scripts/logs/jd_team.log 2>&1
 # 京东通天塔签到
 3 0 * * * node /scripts/jd_m_sign.js >> /scripts/logs/jd_m_sign.log 2>&1
 ##############长期活动##############
@@ -135,8 +133,6 @@
 0 0 * * * node /scripts/jd_car_exchange.js >> /scripts/logs/jd_car_exchange.log 2>&1
 # 导到所有互助码
 49 7 * * * node /scripts/jd_get_share_code.js >> /scripts/logs/jd_get_share_code.log 2>&1
-# 口袋书店
-# 38 8,12,18 * * * node /scripts/jd_bookshop.js >> /scripts/logs/jd_bookshop.log 2>&1
 # 京喜农场
 0 9,12,18 * * * node /scripts/jd_jxnc.js >> /scripts/logs/jd_jxnc.log 2>&1
 # 京喜牧场
@@ -163,8 +159,6 @@
 1 1,6 * * * node /scripts/jd_speed_sign.js >> /scripts/logs/jd_speed_sign.log 2>&1
 # 京东极速版签到免单
 18 8,12,20 * * * node /scripts/jd_speed_signfree.js >> /scripts/logs/jd_speed_signfree.log 2>&1
-# 监控crazyJoy分红
-10 12 * * * node /scripts/jd_crazy_joy_bonus.js >> /scripts/logs/jd_crazy_joy_bonus.log 2>&1
 # 京喜财富岛
 0 * * * * node /scripts/jd_cfd.js >> /scripts/logs/jd_cfd.log 2>&1
 # 京喜财富岛提现
@@ -183,8 +177,6 @@
 5 0 * * * node /scripts/jd_jin_tie.js >> /scripts/logs/jd_jin_tie.log 2>&1
 # 京东试用（默认注释，请配合取关脚本使用
 10 5 * * *  node /scripts/jd_try.js >> /scripts/logs/jd_try.log 2>&1
-# 来客有礼小程序 送豆得豆
-45 0,8 * * * node /scripts/jd_senbeans.js >> /scripts/logs/jd_senbeans.log 2>&1
 # 汪汪乐园
 30 2,20 * * * node /scripts/jd_joy_park.js >> /scripts/logs/jd_joy_park.log 2>&1
 # 特物Z|万物皆可国创
@@ -205,3 +197,5 @@
 3 5 * * * node /scripts/jd_unsubscribe_live.js >> /scripts/logs/jd_unsubscribe_live.log 2>&1
 # 积分换话费
 3 5 * * * node /scripts/jd_phone_bill.js >> /scripts/logs/jd_phone_bill.log 2>&1
+# 小鸽有礼-京小哥助手（微信小程序）
+2 2 * * * node /scripts/jd_mp_deliveryman.js >> /scripts/logs/jd_mp_deliveryman.log 2>&1

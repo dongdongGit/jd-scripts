@@ -23,12 +23,12 @@ crazyJoy任务 = type=cron,script-path=https://raw.githubusercontent.com/LXK9301
 
  */
 
-const jd_helpers = require("./utils/JDHelpers.js");
-const jd_env = require("./utils/JDEnv.js");
+const jd_helpers = require("../utils/JDHelpers.js");
+const jd_env = require("../utils/JDEnv.js");
 const $ = jd_env.env("crazyJoy任务");
 const JD_API_HOST = 'https://api.m.jd.com/';
 
-const notify = $.isNode() ? require('./sendNotify') : '';
+const notify = $.isNode() ? require('../sendNotify') : '';
 let jdNotify = true;//是否关闭通知，false打开通知推送，true关闭通知推送
 let helpSelf = false // 循环助力，默认关闭
 let applyJdBean = 50000; //疯狂的JOY京豆兑换，目前最小值为2000京豆，默认为 0 不开启京豆兑换
@@ -39,7 +39,7 @@ const inviteCodes =
   'uYKyR7MsVNPUX79JF37g4g==@QHOiEV8F8BnAS2IzwHxmnpCYRL5grvaz@_q1x06T2mig0oQCk7_NdL6t9zd5YaBeE@cT-ztJLHHjHtpmgbrPlaYA==@Vs5u22r2uot85Ey0Gs1gFqt9zd5YaBeE@70kDkHt1fvn4WUNi8xMEJat9zd5YaBeE@LkjRMhO0XyjlN43FsF5JuKt9zd5YaBeE',
 ];
 const randomCount = 0 ;
-const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
+const jdCookieNode = $.isNode() ? require('../jdCookie.js') : '';
 if ($.isNode()) {
   Object.keys(jdCookieNode).forEach((item) => {
     cookiesArr.push(jdCookieNode[item])
@@ -650,7 +650,7 @@ function taskUrl(functionId, body = '') {
       'Host': 'api.m.jd.com',
       'Accept': '*/*',
       'Connection': 'keep-alive',
-      "User-Agent": $.isNode() ? (process.env.JD_USER_AGENT ? process.env.JD_USER_AGENT : (require('./USER_AGENTS').USER_AGENT)) : ($.getdata('JDUA') ? $.getdata('JDUA') : "jdapp;iPhone;9.2.2;14.2;%E4%BA%AC%E4%B8%9C/9.2.2 CFNetwork/1206 Darwin/20.1.0"),
+      "User-Agent": $.isNode() ? (process.env.JD_USER_AGENT ? process.env.JD_USER_AGENT : (require('../USER_AGENTS').USER_AGENT)) : ($.getdata('JDUA') ? $.getdata('JDUA') : "jdapp;iPhone;9.2.2;14.2;%E4%BA%AC%E4%B8%9C/9.2.2 CFNetwork/1206 Darwin/20.1.0"),
       'Accept-Language': 'zh-cn',
       'Referer': 'https://crazy-joy.jd.com/',
       'origin': 'https://crazy-joy.jd.com',
