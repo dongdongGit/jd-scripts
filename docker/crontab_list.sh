@@ -11,6 +11,11 @@
 # 女装盲盒 活动时间：2021-05-24到2021-06-22
 35 1,22 * * * node /scripts/jd_nzmh.js >> /scripts/logs/jd_nzmh.log 2>&1
 
+# 热爱奇旅
+33 0,6-23/2 * * * node /scripts/jd_19E.js >> /scripts/logs/jd_19E.log 2>&1
+# 热爱奇旅助力组队升级
+20 0,8 * * * node /scripts/jd_19E.js >> /scripts/logs/jd_19E.log 2>&1
+
 # 京东极速版红包(活动时间：2021-5-5至2021-5-31)
 45 0,23 * * * node /scripts/jd_speed_redpocke.js >> /scripts/logs/jd_speed_redpocke.log 2>&1
 
