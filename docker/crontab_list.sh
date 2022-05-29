@@ -10,7 +10,8 @@
 ##############短期活动##############
 # 女装盲盒 活动时间：2021-05-24到2021-06-22
 35 1,22 * * * node /scripts/jd_nzmh.js >> /scripts/logs/jd_nzmh.log 2>&1
-
+# 美食馆-右侧悬浮
+31 0,13 26-31,1-16 5,6 * node /scripts/jd_tanwei.js >> /scripts/logs/jd_tanwei.log 2>&1
 # 热爱奇旅
 33 0,6-23/2 * * * node /scripts/jd_19E.js >> /scripts/logs/jd_19E.log 2>&1
 # 热爱奇旅助力组队升级
