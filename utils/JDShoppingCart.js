@@ -46,26 +46,26 @@ async function getCarts(jd_env) {
   $.shopsTotalNum = 0;
   return new Promise((resolve) => {
     const option = {
-      url: `https://p.m.jd.com/cart/cart.action`,
+      url: `https://p.m.jd.com/cart/cart.action?fromnav=1&sceneval=2`,
       headers: {
-        Host: "p.m.jd.com",
-        Accept: "*/*",
-        Connection: "keep-alive",
+        Host: 'p.m.jd.com',
+        Accept: '*/*',
+        Connection: 'keep-alive',
         Cookie: cookie,
-        "User-Agent": $.isNode()
+        'User-Agent': $.isNode()
           ? process.env.JD_USER_AGENT
             ? process.env.JD_USER_AGENT
-            : require("../USER_AGENTS").USER_AGENT
-          : $.getdata("JDUA")
-          ? $.getdata("JDUA")
-          : "jdapp;iPhone;9.4.4;14.3;network/4g;Mozilla/5.0 (iPhone; CPU iPhone OS 14_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148;supportJDSHWK/1",
-        "Accept-Language": "zh-cn",
-        "Accept-Encoding": "gzip, deflate, br",
+            : require('../USER_AGENTS').USER_AGENT
+          : $.getdata('JDUA')
+          ? $.getdata('JDUA')
+          : 'jdapp;iPhone;9.4.4;14.3;network/4g;Mozilla/5.0 (iPhone; CPU iPhone OS 14_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148;supportJDSHWK/1',
+        'Accept-Language': 'zh-cn',
+        'Accept-Encoding': 'gzip, deflate, br',
       },
     };
     $.get(option, (err, resp, data) => {
       try {
-        data = JSON.parse(getStr(data, "window.cartData =", "window._PFM_TIMING"));
+        data = JSON.parse(data.match(/window\.cartData = ([^;]*)/)[1]);
         $.cartsTotalNum = 0;
         if (data.errId === "0") {
           $.traceId = data["traceId"];
@@ -111,19 +111,6 @@ async function getCarts(jd_env) {
   });
 }
 
-function getStr(text, start, end) {
-  var str = text;
-  var aPos = str.indexOf(start);
-  if (aPos < 0) {
-    return null;
-  }
-  var bPos = str.indexOf(end, aPos + start.length);
-  if (bPos < 0) {
-    return null;
-  }
-  var retstr = str.substr(aPos + start.length, text.length - (aPos + start.length) - (text.length - bPos));
-  return retstr;
-}
 
 exports.getCarts = getCarts;
 exports.unsubscribeCartsFun = unsubscribeCartsFun;
