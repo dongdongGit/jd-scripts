@@ -144,7 +144,9 @@
 # 京喜牧场
 20 0-23/3 * * * node /scripts/jd_jxmc.js >> /scripts/logs/jd_jxmc.log 2>&1
 # 签到领现金
-10 */4 * * * node /scripts/jd_cash.js >> /scripts/logs/jd_cash.log 2>&1
+10 0 * * * node /scripts/jd_cash_windfgg.js >> /scripts/logs/jd_cash_windfgg.log 2>&1
+# 微信签到领现金
+16 0,5 * * * node /scripts/jd_cash_wx.js >> /scripts/logs/jd_cash_wx.log 2>&1
 # 签到领现金兑换
 0 0 * * *  node /scripts/jd_cash_exchange.js >> /scripts/logs/jd_cash_exchange.log 2>&1
 # 领券中心
