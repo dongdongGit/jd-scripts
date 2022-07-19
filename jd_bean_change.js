@@ -533,29 +533,28 @@ async function getjdfruit() {
   });
 }
 
-function jdfruitRequest(function_id, body = {}, timeout = 1000) {
+async function jdfruitRequest(function_id, body = {}, timeout = 1000) {
   return new Promise((resolve) => {
-    setTimeout(() => {
-      $.get(taskfruitUrl(function_id, body), (err, resp, data) => {
-        try {
-          if (err) {
-            console.log('\n东东农场: API查询请求失败 ');
-            console.log(JSON.stringify(err));
-            console.log(`function_id:${function_id}`);
-            $.logErr(err);
-          } else {
-            if (safeGet(data)) {
-              data = JSON.parse(data);
-              $.JDwaterEveryDayT = data.totalWaterTaskInit.totalWaterTaskTimes;
-            }
+    $.get(taskfruitUrl(function_id, body), (err, resp, data) => {
+      try {
+        if (err) {
+          console.log('\n东东农场: API查询请求失败 ');
+          console.log(JSON.stringify(err));
+          console.log(`function_id:${function_id}`);
+          $.logErr(err);
+        } else {
+          if (safeGet(data)) {
+            data = JSON.parse(data);
+            // console.log(data);
+            $.JDwaterEveryDayT = data.totalWaterTaskInit.totalWaterTaskTimes;
           }
-        } catch (e) {
-          $.logErr(e, resp);
-        } finally {
-          resolve(data);
         }
-      });
-    }, timeout);
+      } catch (e) {
+        $.logErr(e, resp);
+      } finally {
+        resolve(data);
+      }
+    });
   });
 }
 
