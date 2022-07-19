@@ -71,6 +71,8 @@
 0 0,20 * * * node /scripts/jd_mall_active.js >> /scripts/logs/jd_mall_active.log 2>&1
 # 京东通天塔签到
 3 0 * * * node /scripts/jd_m_sign.js >> /scripts/logs/jd_m_sign.log 2>&1
+# 魔方红包雨
+1 10 * * * node /scripts/jd_mf_red_rain.js >> /scripts/logs/jd_mf_red_rain.log 2>&1
 ##############长期活动##############
 # 签到
 0 0,17 * * * cd /scripts && node jd_bean_sign.js >> /scripts/logs/jd_bean_sign.log 2>&1
