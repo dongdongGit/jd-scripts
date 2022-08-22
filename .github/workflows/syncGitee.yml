@@ -27,5 +27,6 @@ jobs:
           port: ${{ secrets.SSH_PORT }}
           script: | 
             cd jd_scripts
+            docker-compose pull
             docker-compose restart
             docker-compose up -d
