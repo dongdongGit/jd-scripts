@@ -4,11 +4,11 @@
 快速助力、加入队伍、升级，跑一次即可
 */
 
-const jd_helpers = require('./utils/JDHelpers.js');
-const jd_env = require('./utils/JDEnv.js');
+const jd_helpers = require('../utils/JDHelpers.js');
+const jd_env = require('../utils/JDEnv.js');
 let $ = jd_env.env('热爱奇旅助力组队升级');
 
-const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
+const jdCookieNode = $.isNode() ? require('../jdCookie.js') : '';
 
 let cookiesArr = [],
   cookie = '';
