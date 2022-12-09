@@ -9,6 +9,7 @@ const $ = jd_env.env('积分换话费');
 const notify = $.isNode() ? require('./sendNotify') : '';
 //Node.js用户请在jdCookie.js处填写京东ck;
 const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
+CryptoJS = $.isNode() ? require('crypto-js') : CryptoJS;
 //IOS等用户直接用NobyDa的jd cookie
 let cookiesArr = [],
   cookie = '';
@@ -71,15 +72,11 @@ async function main() {
     }
   }
 }
-function taskrecord(id) {
-  let body = {
-    id: id,
-    agentNum: 'm',
-    taskType: 1,
-    followChannelStatus: '',
-  };
+async function taskrecord(id) {
+  enc = await sign(id + '1');
+  let body = { id: id, agentNum: 'm', taskType: 1, followChannelStatus: '', ...enc };
   return new Promise((resolve) => {
-    $.post(taskPostUrl('task/record', body), (err, resp, data) => {
+    $.post(taskPostUrl('task/dwRecord', body), (err, resp, data) => {
       try {
         if (err) {
           console.log(`${err}`);
@@ -106,9 +103,12 @@ function taskrecord(id) {
     });
   });
 }
-function taskreceive(id) {
+
+async function taskreceive(id) {
+  enc = await sign(id);
+  let body = { id: id, ...enc };
   return new Promise((resolve) => {
-    $.get(taskPostUrl(`task/receive?id=${id}`), (err, resp, data) => {
+    $.post(taskPostUrl('task/dwReceive', body), (err, resp, data) => {
       try {
         if (err) {
           console.log(`${err}`);
@@ -133,9 +133,11 @@ function taskreceive(id) {
     });
   });
 }
-function usersign() {
+
+async function usersign() {
+  body = await sign();
   return new Promise((resolve) => {
-    $.get(taskPostUrl('sign'), (err, resp, data) => {
+    $.post(taskPostUrl('dwSign', body), (err, resp, data) => {
       try {
         if (err) {
           console.log(`${err}`);
@@ -158,9 +160,11 @@ function usersign() {
     });
   });
 }
-function tasklist() {
+
+async function tasklist() {
+  body = await sign();
   return new Promise((resolve) => {
-    $.get(taskPostUrl('task/list'), (err, resp, data) => {
+    $.post(taskPostUrl('task/dwList', body), (err, resp, data) => {
       try {
         if (err) {
           console.log(`${err}`);
@@ -189,8 +193,7 @@ function taskPostUrl(function_id, body) {
       Origin: 'https://prodev.m.jd.com',
       Connection: 'keep-alive',
       Accept: '*/*',
-      'User-Agent':
-        'jdapp;iPhone;10.1.0;13.5;3d10d69662a4db43d4406415558bb3cc3aff09dc;network/wifi;model/iPhone11,6;addressid/4596882376;appBuild/167774;jdSupportDarkMode/0;Mozilla/5.0 (iPhone; CPU iPhone OS 13_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148;supportJDSHWK/1',
+      'User-Agent': `jdapp;iPhone;10.1.0;13.5;${$.UUID};network/wifi;model/iPhone11,6;addressid/4596882376;appBuild/167774;jdSupportDarkMode/0;Mozilla/5.0 (iPhone; CPU iPhone OS 13_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148;supportJDSHWK/1`,
       'Accept-Language': 'zh-cn',
       Referer: 'https://prodev.m.jd.com/mall/active/eEcYM32eezJB7YX4SBihziJCiGV/index.html',
       'Accept-Encoding': 'gzip, deflate, br',
@@ -198,4 +201,25 @@ function taskPostUrl(function_id, body) {
       Cookie: cookie,
     },
   };
+}
+
+function getUUID(format = 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx', UpperCase = 0) {
+  return format.replace(/[xy]/g, function (c) {
+    var r = (Math.random() * 16) | 0,
+      v = c == 'x' ? r : (r & 0x3) | 0x8;
+    if (UpperCase) {
+      uuid = v.toString(36).toUpperCase();
+    } else {
+      uuid = v.toString(36);
+    }
+    return uuid;
+  });
+}
+
+async function sign(en) {
+  time = new Date().getTime();
+  let encStr = en || '';
+  const encTail = `${time}e9c398ffcb2d4824b4d0a703e38yffdd`;
+  encStr = CryptoJS.MD5(encStr + encTail).toString();
+  return { t: time, encStr: encStr };
 }
