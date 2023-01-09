@@ -136,7 +136,7 @@ function morningGetBean() {
           console.log(`${JSON.stringify(err)}`);
           console.log(`${$.name} morningGetBean API请求失败，请检查网路重试`);
         } else {
-          if (safeGet(data)) {
+          if (jd_helpers.safeGet(data)) {
             data = JSON.parse(data);
             if (data.data.awardResultFlag === '1') {
               console.log(`早起福利领取成功：${data.data.bizMsg}`);
@@ -165,7 +165,7 @@ async function beanTaskList(type) {
           console.log(`${JSON.stringify(err)}`);
           console.log(`${$.name} beanTaskList API请求失败，请检查网路重试`);
         } else {
-          if (jd_helpers.safeGet(data)) {
+          if (jd_helpers.safeGet(dtaa)) {
             data = JSON.parse(data);
             switch (type) {
               case 1:
