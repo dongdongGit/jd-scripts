@@ -1,20 +1,24 @@
 /*
 领京豆额外奖励&抢京豆
+脚本自带助力码，介意者可将 29行 helpAuthor 变量设置为 false
 活动入口：京东APP首页-领京豆
-更新地址：jd_bean_home.js
+更新地址：https://raw.githubusercontent.com/KingRan/JDJB/main/jd_bean_home.js
 已支持IOS双京东账号, Node.js支持N个京东账号
 脚本兼容: QuantumultX, Surge, Loon, 小火箭，JSBox, Node.js
 ============Quantumultx===============
 [task_local]
 #领京豆额外奖励
-23 1,12,22 * * * jd_bean_home.js, tag=领京豆额外奖励, img-url=https://raw.githubusercontent.com/58xinian/icon/master/jd_bean_home.png, enabled=true
+23 1,18 * * * https://raw.githubusercontent.com/KingRan/JDJB/main/jd_bean_home.js, tag=领京豆额外奖励, img-url=https://raw.githubusercontent.com/58xinian/icon/master/jd_bean_home.png, enabled=true
+
 ================Loon==============
 [Script]
-cron "23 1,12,22 * * *" script-path=jd_bean_home.js, tag=领京豆额外奖励
+cron "23 1,18 * * *" script-path=https://raw.githubusercontent.com/KingRan/JDJB/main/jd_bean_home.js, tag=领京豆额外奖励
+
 ===============Surge=================
-领京豆额外奖励 = type=cron,cronexp="23 1,12,22 * * *",wake-system=1,timeout=3600,script-path=jd_bean_home.js
+领京豆额外奖励 = type=cron,cronexp="23 1,18 * * *",wake-system=1,timeout=3600,script-path=https://raw.githubusercontent.com/KingRan/JDJB/main/jd_bean_home.js
+
 ============小火箭=========
-领京豆额外奖励 = type=cron,script-path=jd_bean_home.js, cronexpr="23 1,12,22 * * *", timeout=3600, enable=true
+领京豆额外奖励 = type=cron,script-path=https://raw.githubusercontent.com/KingRan/JDJB/main/jd_bean_home.js, cronexpr="23 1,18 * * *", timeout=3600, enable=true
  */
 const jd_helpers = require('./utils/JDHelpers.js');
 const jd_env = require('./utils/JDEnv.js');
@@ -24,41 +28,38 @@ const notify = $.isNode() ? require('./sendNotify') : '';
 //Node.js用户请在jdCookie.js处填写京东ck;
 const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
 let jdNotify = true; //是否关闭通知，false打开通知推送，true关闭通知推送
-const helpAuthor = true; // 是否帮助作者助力，false打开通知推送，true关闭通知推送
-const qjd = false; // 抢京豆开关，默认开
+const helpAuthor = false; // 是否帮助作者助力，false打开通知推送，true关闭通知推送
 //IOS等用户直接用NobyDa的jd cookie
 let cookiesArr = [],
   cookie = '',
   uuid = '',
   message;
+$.outFlag = false;
 if ($.isNode()) {
   Object.keys(jdCookieNode).forEach((item) => {
     cookiesArr.push(jdCookieNode[item]);
   });
   if (process.env.JD_DEBUG && process.env.JD_DEBUG === 'false') console.log = () => {};
 } else {
-  cookiesArr = [$.getdata('CookieJD'), $.getdata('CookieJD2'), ...jd_helpers.jsonParse($.getdata('CookiesJD') || '[]').map((item) => item.cookie)].filter((item) => !!item);
+  cookiesArr = [$.getdata('CookieJD'), $.getdata('CookieJD2'), ...jsonParse($.getdata('CookiesJD') || '[]').map((item) => item.cookie)].filter((item) => !!item);
 }
 const JD_API_HOST = 'https://api.m.jd.com/';
 !(async () => {
-  $.newShareCodes = [
-    '4DA54EC8E340C3D0041AE71C234F6E82AD1DAAB9A3E3F6CBAFDE81EEB7393333'
-  ];
-  $.authorCode = [];
+  $.newShareCodes = [];
   if (!cookiesArr[0]) {
     $.msg($.name, '【提示】请先获取京东账号一cookie\n直接使用NobyDa的京东签到获取', 'https://bean.m.jd.com/bean/signIndex.action', { 'open-url': 'https://bean.m.jd.com/bean/signIndex.action' });
     return;
   }
   for (let i = 0; i < cookiesArr.length; i++) {
     if (cookiesArr[i]) {
-      $.cookie = cookie = cookiesArr[i];
+      cookie = cookiesArr[i];
       $.UserName = decodeURIComponent(cookie.match(/pt_pin=([^; ]+)(?=;?)/) && cookie.match(/pt_pin=([^; ]+)(?=;?)/)[1]);
       $.index = i + 1;
       $.isLogin = true;
       $.nickName = '';
       message = '';
       uuid = randomString();
-      await $.totalBean();
+      //await TotalBean();
       console.log(`\n******开始【京东账号${$.index}】${$.nickName || $.UserName}*********\n`);
       if (!$.isLogin) {
         $.msg($.name, `【提示】cookie已失效`, `京东账号${$.index} ${$.nickName || $.UserName}\n请重新登录获取\nhttps://bean.m.jd.com/bean/signIndex.action`, {
@@ -71,51 +72,7 @@ const JD_API_HOST = 'https://api.m.jd.com/';
         continue;
       }
       await jdBeanHome();
-    }
-  }
-  if (qjd) {
-    for (let i = 0; i < cookiesArr.length; i++) {
-      $.index = i + 1;
-      if (cookiesArr[i]) {
-        cookie = cookiesArr[i];
-        $.canHelp = true;
-        $.UserName = decodeURIComponent(cookie.match(/pt_pin=([^; ]+)(?=;?)/) && cookie.match(/pt_pin=([^; ]+)(?=;?)/)[1]);
-        if ($.newShareCodes.length > 1) {
-          console.log(`\n【抢京豆】 ${$.UserName} 去助力排名第一的cookie`);
-          // let code = $.newShareCodes[(i + 1) % $.newShareCodes.length]
-          // await help(code[0], code[1])
-          let code = $.newShareCodes[0];
-          if (code[2] && code[2] === $.UserName) {
-            //不助力自己
-          } else {
-            await help(code[0], code[1]);
-          }
-        }
-        if (helpAuthor && $.authorCode && $.canHelp) {
-          console.log(`\n【抢京豆】${$.UserName} 去帮助作者`);
-          for (let code of $.authorCode) {
-            const helpRes = await help(code.shareCode, code.groupCode);
-            if (helpRes && helpRes['code'] === '0') {
-              if (helpRes && helpRes.data && helpRes.data.respCode === 'SG209') {
-                console.log(`${helpRes.data.helpToast}\n`);
-                break;
-              }
-            } else {
-              console.log(`助力异常:${JSON.stringify(helpRes)}\n`);
-            }
-          }
-        }
-        for (let j = 1; j < $.newShareCodes.length && $.canHelp; j++) {
-          let code = $.newShareCodes[j];
-          if (code[2] && code[2] === $.UserName) {
-            //不助力自己
-          } else {
-            console.log(`【抢京豆】${$.UserName} 去助力账号 ${j + 1}`);
-            await help(code[0], code[1]);
-            await $.wait(2000);
-          }
-        }
-      }
+      await $.wait(parseInt(Math.random() * 5000 + 8000, 10));
     }
   }
 })()
@@ -129,32 +86,39 @@ const JD_API_HOST = 'https://api.m.jd.com/';
 async function jdBeanHome() {
   try {
     $.doneState = false;
-    let num = 0;
+    // for (let i = 0; i < 3; ++i) {
+    //   await doTask2()
+    //   await $.wait(1000)
+    //   if ($.doneState) break
+    // }
+    $.outFlag = false;
     do {
       await doTask2();
-      // await $.wait(3000);
-      num++;
-    } while (!$.doneState && num < 5);
+      if ($.outFlag) break;
+      await $.wait(5000);
+    } while (!$.doneState);
     await $.wait(1000);
     await award('feeds');
     await $.wait(1000);
     await getUserInfo();
     await $.wait(1000);
-    await getTaskList();
+    //await getTaskList();
     await receiveJd2();
 
-    await morningGetBean();
-    await $.wait(1000);
+    //await morningGetBean()
+    //await $.wait(1000)
 
     await beanTaskList(1);
-    await $.wait(1000);
+    await $.wait(2000);
     await queryCouponInfo();
     $.doneState = false;
+    let num = 0;
     do {
-      await $.wait(2000);
+      await $.wait(3000);
       await beanTaskList(2);
-    } while (!$.doneState);
-    await $.wait(2000);
+      num++;
+    } while (!$.doneState && num < 5);
+    await $.wait(3000);
     if ($.doneState) await beanTaskList(3);
 
     await showMsg();
@@ -166,40 +130,29 @@ async function jdBeanHome() {
 // 早起福利
 function morningGetBean() {
   return new Promise((resolve) => {
-    $.post(
-      taskBeanUrl('morningGetBean', {
-        fp: '-1',
-        shshshfp: '-1',
-        shshshfpa: '-1',
-        referUrl: '-1',
-        userAgent: '-1',
-        jda: '-1',
-        rnVersion: '3.9',
-      }),
-      (err, resp, data) => {
-        try {
-          if (err) {
-            console.log(`${JSON.stringify(err)}`);
-            console.log(`${$.name} morningGetBean API请求失败，请检查网路重试`);
-          } else {
-            if (jd_helpers.safeGet(data)) {
-              data = JSON.parse(data);
-              if (data.data.awardResultFlag === '1') {
-                console.log(`早起福利领取成功：${data.data.bizMsg}`);
-              } else if (data.data.awardResultFlag === '2') {
-                console.log(`早起福利领取失败：${data.data.bizMsg}`);
-              } else {
-                console.log(`早起福利领取失败：${data.data.bizMsg}`);
-              }
+    $.post(taskBeanUrl('morningGetBean', { fp: '-1', shshshfp: '-1', shshshfpa: '-1', referUrl: '-1', userAgent: '-1', jda: '-1', rnVersion: '3.9' }), (err, resp, data) => {
+      try {
+        if (err) {
+          console.log(`${JSON.stringify(err)}`);
+          console.log(`${$.name} morningGetBean API请求失败，请检查网路重试`);
+        } else {
+          if (safeGet(data)) {
+            data = JSON.parse(data);
+            if (data.data.awardResultFlag === '1') {
+              console.log(`早起福利领取成功：${data.data.bizMsg}`);
+            } else if (data.data.awardResultFlag === '2') {
+              console.log(`早起福利领取失败：${data.data.bizMsg}`);
+            } else {
+              console.log(`早起福利领取失败：${data.data.bizMsg}`);
             }
           }
-        } catch (e) {
-          $.logErr(e, resp);
-        } finally {
-          resolve(data);
         }
+      } catch (e) {
+        $.logErr(e, resp);
+      } finally {
+        resolve(data);
       }
-    );
+    });
   });
 }
 
@@ -217,23 +170,18 @@ async function beanTaskList(type) {
             switch (type) {
               case 1:
                 console.log(`当前等级:${data.data.curLevel} 下一级可领取:${data.data.nextLevelBeanNum || 0}京豆`);
-
-                if (!data?.data?.viewAppHome?.takenTask) {
-                  console.log(`去做[${data?.data?.viewAppHome?.mainTitle}]`);
-                  await beanHomeIconDoTask({
-                    flag: '0',
-                    viewChannel: 'myjd',
-                  });
-                }
-                await $.wait(2000);
-                if (!data?.data?.viewAppHome?.doneTask) {
-                  console.log(`去领奖[${data?.data?.viewAppHome?.mainTitle}]`);
-                  await beanHomeIconDoTask({
-                    flag: '1',
-                    viewChannel: 'AppHome',
-                  });
-                } else {
-                  console.log(`[${data?.data?.viewAppHome?.mainTitle}]已做完`);
+                if (data.data.viewAppHome) {
+                  if (!data.data.viewAppHome.takenTask) {
+                    console.log(`去做[${data.data.viewAppHome.mainTitle}]`);
+                    await beanHomeIconDoTask({ flag: '0', viewChannel: 'myjd' });
+                  }
+                  await $.wait(2000);
+                  if (!data.data.viewAppHome.doneTask) {
+                    console.log(`去领奖[${data.data.viewAppHome.mainTitle}]`);
+                    await beanHomeIconDoTask({ flag: '1', viewChannel: 'AppHome' });
+                  } else {
+                    console.log(`[${data.data.viewAppHome.mainTitle}]已做完`);
+                  }
                 }
                 break;
               case 2:
@@ -246,24 +194,12 @@ async function beanTaskList(type) {
                       let taskList = vo.subTaskVOS[key];
                       if (taskList.status === 1) {
                         $.doneState = false;
-                        console.log(`去做[${vo.taskName}]${taskList.title}`);
+                        console.log(`去做[${vo.taskName}]${taskList.title || ''}`);
                         await $.wait(2000);
-                        await beanDoTask(
-                          {
-                            actionType: 1,
-                            taskToken: `${taskList.taskToken}`,
-                          },
-                          vo.taskType
-                        );
+                        await beanDoTask({ actionType: 1, taskToken: `${taskList.taskToken}` }, vo.taskType);
                         if (vo.taskType === 9 || vo.taskType === 8) {
                           await $.wait(vo.waitDuration * 1000 || 5000);
-                          await beanDoTask(
-                            {
-                              actionType: 0,
-                              taskToken: `${taskList.taskToken}`,
-                            },
-                            vo.taskType
-                          );
+                          await beanDoTask({ actionType: 0, taskToken: `${taskList.taskToken}` }, vo.taskType);
                         }
                       }
                     }
@@ -335,11 +271,11 @@ function beanHomeIconDoTask(body) {
         } else {
           if (jd_helpers.safeGet(data)) {
             data = JSON.parse(data);
-            if (body?.flag === '0' && data?.data?.taskResult) {
+            if (body.flag === '0' && data.data.taskResult) {
               console.log(data.data.remindMsg);
             }
-            if (body?.flag === '1' && data?.data?.taskResult) {
-              console.log(data?.data?.remindMsg);
+            if (body.flag === '1' && data.data.taskResult) {
+              console.log(data.data.remindMsg);
             }
           }
         }
@@ -353,77 +289,55 @@ function beanHomeIconDoTask(body) {
 }
 async function queryCouponInfo() {
   return new Promise(async (resolve) => {
-    $.get(
-      taskBeanUrl('queryCouponInfo', {
-        rnVersion: '4.7',
-        fp: '-1',
-        shshshfp: '-1',
-        shshshfpa: '-1',
-        referUrl: '-1',
-        userAgent: '-1',
-        jda: '-1',
-      }),
-      async (err, resp, data) => {
-        try {
-          if (err) {
-            console.log(`${JSON.stringify(err)}`);
-            console.log(`${$.name} queryCouponInfo API请求失败，请检查网路重试`);
-          } else {
-            if (jd_helpers.safeGet(data)) {
-              data = JSON.parse(data);
-              if (data.data && data.data.couponTaskInfo) {
-                if (!data.data.couponTaskInfo.awardFlag) {
-                  console.log(`去做[${data.data.couponTaskInfo.taskName}]`);
-                  await sceneGetCoupon();
-                } else {
-                  console.log(`[${data.data.couponTaskInfo.taskName}]已做完`);
-                }
+    $.get(taskBeanUrl('queryCouponInfo', { rnVersion: '4.7', fp: '-1', shshshfp: '-1', shshshfpa: '-1', referUrl: '-1', userAgent: '-1', jda: '-1' }), async (err, resp, data) => {
+      try {
+        if (err) {
+          console.log(`${JSON.stringify(err)}`);
+          console.log(`${$.name} queryCouponInfo API请求失败，请检查网路重试`);
+        } else {
+          if (jd_helpers.safeGet(data)) {
+            data = JSON.parse(data);
+            if (data.data && data.data.couponTaskInfo) {
+              if (!data.data.couponTaskInfo.awardFlag) {
+                console.log(`去做[${data.data.couponTaskInfo.taskName}]`);
+                await sceneGetCoupon();
+              } else {
+                console.log(`[${data.data.couponTaskInfo.taskName}]已做完`);
               }
             }
           }
-        } catch (e) {
-          $.logErr(e, resp);
-        } finally {
-          resolve();
         }
+      } catch (e) {
+        $.logErr(e, resp);
+      } finally {
+        resolve();
       }
-    );
+    });
   });
 }
 function sceneGetCoupon() {
   return new Promise((resolve) => {
-    $.get(
-      taskBeanUrl('sceneGetCoupon', {
-        rnVersion: '4.7',
-        fp: '-1',
-        shshshfp: '-1',
-        shshshfpa: '-1',
-        referUrl: '-1',
-        userAgent: '-1',
-        jda: '-1',
-      }),
-      (err, resp, data) => {
-        try {
-          if (err) {
-            console.log(`${JSON.stringify(err)}`);
-            console.log(`${$.name} sceneGetCoupon API请求失败，请检查网路重试`);
-          } else {
-            if (jd_helpers.safeGet(data)) {
-              data = JSON.parse(data);
-              if (data.code === '0' && data.data && data.data.bizMsg) {
-                console.log(data.data.bizMsg);
-              } else {
-                console.log(`完成任务失败：${data}`);
-              }
+    $.get(taskBeanUrl('sceneGetCoupon', { rnVersion: '4.7', fp: '-1', shshshfp: '-1', shshshfpa: '-1', referUrl: '-1', userAgent: '-1', jda: '-1' }), (err, resp, data) => {
+      try {
+        if (err) {
+          console.log(`${JSON.stringify(err)}`);
+          console.log(`${$.name} sceneGetCoupon API请求失败，请检查网路重试`);
+        } else {
+          if (jd_helpers.safeGet(data)) {
+            data = JSON.parse(data);
+            if (data.code === '0' && data.data && data.data.bizMsg) {
+              console.log(data.data.bizMsg);
+            } else {
+              console.log(`完成任务失败：${data}`);
             }
           }
-        } catch (e) {
-          $.logErr(e, resp);
-        } finally {
-          resolve();
         }
+      } catch (e) {
+        $.logErr(e, resp);
+      } finally {
+        resolve();
       }
-    );
+    });
   });
 }
 function randomString() {
@@ -443,17 +357,13 @@ function getRandomInt(min, max) {
 }
 function doTask2() {
   return new Promise((resolve) => {
-    const body = {
-      awardFlag: false,
-      skuId: `${getRandomInt(10000000, 20000000)}`,
-      source: 'feeds',
-      type: '1',
-    };
+    const body = { awardFlag: false, skuId: `${getRandomInt(10000000, 20000000)}`, source: 'feeds', type: '1' };
     $.post(taskUrl('beanHomeTask', body), (err, resp, data) => {
       try {
         if (err) {
+          $.outFlag = true;
           console.log(`${JSON.stringify(err)}`);
-          console.log(`${$.name} API请求失败，请检查网路重试`);
+          console.log(`doTask2 API请求失败，请检查网路重试`);
         } else {
           if (jd_helpers.safeGet(data)) {
             data = JSON.parse(data);
@@ -477,13 +387,49 @@ function doTask2() {
     });
   });
 }
+
+function getAuthorShareCode(url) {
+  return new Promise((resolve) => {
+    const options = {
+      url: `${url}?${new Date()}`,
+      timeout: 10000,
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1 Edg/87.0.4280.88',
+      },
+    };
+    if ($.isNode() && process.env.TG_PROXY_HOST && process.env.TG_PROXY_PORT) {
+      const tunnel = require('tunnel');
+      const agent = {
+        https: tunnel.httpsOverHttp({
+          proxy: {
+            host: process.env.TG_PROXY_HOST,
+            port: process.env.TG_PROXY_PORT * 1,
+          },
+        }),
+      };
+      Object.assign(options, { agent });
+    }
+    $.get(options, async (err, resp, data) => {
+      try {
+        if (err) {
+        } else {
+          if (data) data = JSON.parse(data);
+        }
+      } catch (e) {
+        // $.logErr(e, resp)
+      } finally {
+        resolve(data);
+      }
+    });
+  });
+}
 function getUserInfo() {
   return new Promise((resolve) => {
     $.post(taskUrl('signBeanGroupStageIndex', 'body'), async (err, resp, data) => {
       try {
         if (err) {
           console.log(`${JSON.stringify(err)}`);
-          console.log(`${$.name} API请求失败，请检查网路重试`);
+          console.log(`getUserInfo API请求失败，请检查网路重试`);
         } else {
           if (jd_helpers.safeGet(data)) {
             data = JSON.parse(data);
@@ -521,7 +467,7 @@ function hitGroup() {
       try {
         if (err) {
           console.log(`${JSON.stringify(err)}`);
-          console.log(`${$.name} API请求失败，请检查网路重试`);
+          console.log(`hitGroup API请求失败，请检查网路重试`);
         } else {
           if (jd_helpers.safeGet(data)) {
             data = JSON.parse(data);
@@ -603,7 +549,7 @@ function getTaskList() {
       try {
         if (err) {
           console.log(`${JSON.stringify(err)}`);
-          console.log(`${$.name} API请求失败，请检查网路重试`);
+          console.log(`getTaskList API请求失败，请检查网路重试`);
         } else {
           if (jd_helpers.safeGet(data)) {
             data = JSON.parse(data);
@@ -634,17 +580,12 @@ function getTaskList() {
 
 function receiveTask(itemId = 'zddd', type = '3') {
   return new Promise((resolve) => {
-    const body = {
-      awardFlag: false,
-      itemId: itemId,
-      source: 'home',
-      type: type,
-    };
+    const body = { awardFlag: false, itemId: itemId, source: 'home', type: type };
     $.post(taskUrl('beanHomeTask', body), (err, resp, data) => {
       try {
         if (err) {
           console.log(`${JSON.stringify(err)}`);
-          console.log(`${$.name} API请求失败，请检查网路重试`);
+          console.log(`receiveTask API请求失败，请检查网路重试`);
         } else {
           if (jd_helpers.safeGet(data)) {
             data = JSON.parse(data);
@@ -671,7 +612,8 @@ function award(source = 'home') {
       try {
         if (err) {
           console.log(`${JSON.stringify(err)}`);
-          console.log(`${$.name} API请求失败，请检查网路重试`);
+          console.log(`award API请求失败，请检查网路重试`);
+          $.outFlag = true;
         } else {
           if (jd_helpers.safeGet(data)) {
             data = JSON.parse(data);
@@ -713,7 +655,8 @@ function receiveJd2() {
       try {
         if (err) {
           console.log(`${JSON.stringify(err)}`);
-          console.log(`${$.name} API请求失败，请检查网路重试`);
+          console.log(`receiveJd2 API请求失败，请检查网路重试`);
+          $.outFlag = true;
         } else {
           if (jd_helpers.safeGet(data)) {
             data = JSON.parse(data);
