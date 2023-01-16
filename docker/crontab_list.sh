@@ -76,6 +76,7 @@
 0 0,17 * * * cd /scripts && node jd_bean_sign.js >> /scripts/logs/jd_bean_sign.log 2>&1
 0 1, * * * node /scripts/jd_sign_graphics.js >> /scripts/logs/jd_sign_graphics.log 2>&1
 0 2, * * * node /scripts/jd_sign_flop.js >> /scripts/logs/jd_sign_flop.log 2>&1 
+43 1,16 * * * node /scripts/jd_sign_slider.js >> /scripts/logs/jd_sign_slider.log 2>&1 
 # 店铺签到
 2 1 * * * node /scripts/jd_shop_sign.js >> /scripts/logs/jd_shop_sign.log 2>&1
 # 摇京豆
