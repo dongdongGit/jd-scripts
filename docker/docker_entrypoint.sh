@@ -55,3 +55,5 @@ if [ -n "$run_cmd" ]; then
 else
   echo "默认定时任务执行结束。"
 fi
+
+pip3 install -r /scripts/requirements.txt

@@ -4,7 +4,8 @@ ENV DEFAULT_LIST_FILE=crontab_list.sh \
     CUSTOM_LIST_MERGE_TYPE=append \
     COOKIES_LIST=/scripts/logs/cookies.list \
     REPO_URL=https://github.com/dongdongGit/jd-scripts.git \
-    REPO_BRANCH=main
+    REPO_BRANCH=main \
+    PYTHONUNBUFFERED=1
 
 RUN set -ex \
     && apk update \
@@ -19,7 +20,10 @@ RUN set -ex \
     && npm config set registry https://registry.npm.taobao.org \
     && npm install --prod \
     && cp /scripts/docker/docker_entrypoint.sh /usr/local/bin \
-    && chmod +x /usr/local/bin/docker_entrypoint.sh
+    && chmod +x /usr/local/bin/docker_entrypoint.sh \
+    && apk add --update --no-cache python3 && ln -sf python3 /usr/bin/python \
+    && python3 -m ensurepip \
+    && pip3 install --no-cache --upgrade pip setuptools
 
 WORKDIR /scripts
 
