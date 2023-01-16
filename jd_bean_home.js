@@ -165,7 +165,7 @@ async function beanTaskList(type) {
           console.log(`${JSON.stringify(err)}`);
           console.log(`${$.name} beanTaskList API请求失败，请检查网路重试`);
         } else {
-          if (jd_helpers.safeGet(dtaa)) {
+          if (jd_helpers.safeGet(data)) {
             data = JSON.parse(data);
             switch (type) {
               case 1:
