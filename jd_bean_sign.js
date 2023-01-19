@@ -1,11 +1,12 @@
 /*
 京东多合一签到,自用,可N个京东账号
 活动入口：各处的签到汇总
-cron 8 0,8 * * * https://raw.githubusercontent.com/yongyuanlin/jd_scripts/master/jd_bean_sign.js
 Node.JS专用
-IOS软件用户请使用 https://raw.githubusercontent.com/yongyuanlin/jd_scripts/master/utils/JD_DailyBonus.js
+5 0,17 * * * jd_bean_sign.js
+IOS软件用户请使用 https://raw.githubusercontent.com/NobyDa/Script/master/JD-DailyBonus/JD_DailyBonus.js
 更新时间：2021-6-18
 推送通知默认简洁模式(多账号只发送一次)。如需详细通知，设置环境变量 JD_BEAN_SIGN_NOTIFY_SIMPLE 为false即可(N账号推送N次通知)。
+Modified From github https://github.com/ruicky/jd_sign_bot
  */
 
 const jd_env = require('./utils/JDEnv.js');
@@ -92,7 +93,7 @@ if ($.isNode()) {
   //await deleteFile(JD_DailyBonusPath);//删除下载的JD_DailyBonus.js文件
   if ($.isNode() && allMessage && process.env.JD_BEAN_SIGN_NOTIFY_SIMPLE === 'true') {
     $.msg($.name, '', allMessage);
-    await notify.sendNotify($.name, allMessage);
+    //await notify.sendNotify($.name, allMessage)
   }
 })()
   .catch((e) => $.logErr(e))
@@ -108,7 +109,7 @@ async function execSign() {
     //   console.log('没有提供通知推送，则打印脚本执行日志')
     //   await exec(`${process.execPath} ${JD_DailyBonusPath}`, { stdio: "inherit" });
     // }
-    await exec(`node ${JD_DailyBonusPath} >> ${resultPath}`);
+    await exec(`${process.execPath} ${JD_DailyBonusPath} >> ${resultPath}`);
     const notifyContent = await fs.readFileSync(resultPath, 'utf8');
     console.error(`👇👇👇👇👇👇👇👇👇👇👇签到详情👇👇👇👇👇👇👇👇👇👇👇\n${notifyContent}\n👆👆👆👆👆👆👆👆👆签到详情👆👆👆👆👆👆👆👆👆👆👆`);
     // await exec("node JD_DailyBonus.js", { stdio: "inherit" });

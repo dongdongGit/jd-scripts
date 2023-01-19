@@ -10,7 +10,6 @@ const vm = require('vm');
 const PNG = require('png-js');
 const UA = require('../USER_AGENTS.js').USER_AGENT;
 
-
 Math.avg = function average() {
   var sum = 0;
   var len = this.length;
@@ -38,17 +37,17 @@ class PNGDecoder extends PNG {
           resolve();
         });
       } catch (e) {
-        console.info(e)
+        console.info(e);
       }
     });
   }
 
   getImageData(x, y, w, h) {
-    const {pixels} = this;
+    const { pixels } = this;
     const len = w * h * 4;
     const startIndex = x * 4 + y * (w * 4);
 
-    return {data: pixels.slice(startIndex, startIndex + len)};
+    return { data: pixels.slice(startIndex, startIndex + len) };
   }
 }
 
@@ -79,14 +78,14 @@ class PuzzleRecognizer {
 
       return this.recognize();
     } catch (e) {
-      console.info(e)
+      console.info(e);
     }
   }
 
   recognize() {
-    const {ctx, w: width, bg} = this;
-    const {width: patchWidth, height: patchHeight} = this.patch;
-    const posY = this.y + PUZZLE_PAD + ((patchHeight - PUZZLE_PAD) / 2) - (PUZZLE_GAP / 2);
+    const { ctx, w: width, bg } = this;
+    const { width: patchWidth, height: patchHeight } = this.patch;
+    const posY = this.y + PUZZLE_PAD + (patchHeight - PUZZLE_PAD) / 2 - PUZZLE_GAP / 2;
     // const cData = ctx.getImageData(0, a.y + 10 + 20 - 4, 360, 8).data;
     const cData = bg.getImageData(0, posY, width, PUZZLE_GAP).data;
     const lumas = [];
@@ -139,7 +138,7 @@ class PuzzleRecognizer {
   }
 
   runWithCanvas() {
-    const {createCanvas, Image} = require('canvas');
+    const { createCanvas, Image } = require('canvas');
     const canvas = createCanvas();
     const ctx = canvas.getContext('2d');
     const imgBg = new Image();
@@ -148,15 +147,15 @@ class PuzzleRecognizer {
 
     imgBg.src = prefix + this.rawBg;
     imgPatch.src = prefix + this.rawPatch;
-    const {naturalWidth: w, naturalHeight: h} = imgBg;
+    const { naturalWidth: w, naturalHeight: h } = imgBg;
     canvas.width = w;
     canvas.height = h;
     ctx.clearRect(0, 0, w, h);
     ctx.drawImage(imgBg, 0, 0, w, h);
 
     const width = w;
-    const {naturalWidth, naturalHeight} = imgPatch;
-    const posY = this.y + PUZZLE_PAD + ((naturalHeight - PUZZLE_PAD) / 2) - (PUZZLE_GAP / 2);
+    const { naturalWidth, naturalHeight } = imgPatch;
+    const posY = this.y + PUZZLE_PAD + (naturalHeight - PUZZLE_PAD) / 2 - PUZZLE_GAP / 2;
     // const cData = ctx.getImageData(0, a.y + 10 + 20 - 4, 360, 8).data;
     const cData = ctx.getImageData(0, posY, width, PUZZLE_GAP).data;
     const lumas = [];
@@ -210,9 +209,9 @@ class PuzzleRecognizer {
 }
 
 const DATA = {
-  "appId": "17839d5db83",
-  "product": "embed",
-  "lang": "zh_CN",
+  appId: '17839d5db83',
+  product: 'embed',
+  lang: 'zh_CN',
 };
 const SERVER = '61.49.99.122';
 
@@ -221,10 +220,12 @@ class JDJRValidator {
     this.data = {};
     this.x = 0;
     this.t = Date.now();
+    this.trynum = 0;
   }
 
   async run(scene) {
     try {
+      if (this.trynum > 5) return '';
       const tryRecognize = async () => {
         const x = await this.recognize(scene);
 
@@ -232,7 +233,7 @@ class JDJRValidator {
           return x;
         }
         // retry
-        return await tryRecognize();
+        return 124;
       };
       const puzzleX = await tryRecognize();
       // console.log(puzzleX);
@@ -241,28 +242,31 @@ class JDJRValidator {
 
       // console.log(pos[pos.length-1][2] -Date.now());
       // await sleep(4500);
+      //console.log(pos[pos.length - 1][2] - Date.now());
       await sleep(pos[pos.length - 1][2] - Date.now());
-      const result = await JDJRValidator.jsonp('/slide/s.html', {d, ...this.data}, scene);
+      const result = await JDJRValidator.jsonp('/slide/s.html', { d, ...this.data }, scene);
 
       if (result.message === 'success') {
         // console.log(result);
         console.log('JDJR验证用时: %fs', (Date.now() - this.t) / 1000);
         return result;
       } else {
-        console.count("验证失败");
+        console.count('验证失败');
+        this.trynum++;
         // console.count(JSON.stringify(result));
         await sleep(300);
         return await this.run(scene);
       }
     } catch (e) {
-      console.info(e)
+      console.info(e);
     }
   }
 
   async recognize(scene) {
     try {
-      const data = await JDJRValidator.jsonp('/slide/g.html', {e: ''}, scene);
-      const {bg, patch, y} = data;
+      const data = await JDJRValidator.jsonp('/slide/g.html', { e: '' }, scene);
+      const { bg, patch, y } = data;
+      if (bg.length < 10000) return;
       // const uri = 'data:image/png;base64,';
       // const re = new PuzzleRecognizer(uri+bg, uri+patch, y);
       const re = new PuzzleRecognizer(bg, patch, y);
@@ -280,7 +284,7 @@ class JDJRValidator {
       }
       return puzzleX;
     } catch (e) {
-      console.info(e)
+      console.info(e);
     }
   }
 
@@ -297,47 +301,42 @@ class JDJRValidator {
       }
     }
 
-    console.log('验证成功: %f\%', (count / n) * 100);
+    console.log('验证成功: %f%', (count / n) * 100);
     console.timeEnd('PuzzleRecognizer');
   }
 
   static jsonp(api, data = {}, scene) {
     return new Promise((resolve, reject) => {
       const fnId = `jsonp_${String(Math.random()).replace('.', '')}`;
-      const extraData = {callback: fnId};
-      const query = new URLSearchParams({...DATA, ...{"scene": scene}, ...extraData, ...data}).toString();
+      const extraData = { callback: fnId };
+      const query = new URLSearchParams({ ...DATA, ...{ scene: scene }, ...extraData, ...data }).toString();
       const url = `http://${SERVER}${api}?${query}`;
       const headers = {
-        'Accept': '*/*',
+        Accept: '*/*',
         'Accept-Encoding': 'gzip,deflate,br',
         'Accept-Language': 'zh-CN,en-US',
-        'Connection': 'keep-alive',
-        'Host': SERVER,
+        Connection: 'keep-alive',
+        Host: SERVER,
         'Proxy-Connection': 'keep-alive',
-        'Referer': 'https://h5.m.jd.com/babelDiy/Zeus/2wuqXrZrhygTQzYA7VufBEpj4amH/index.html',
+        Referer: 'https://h5.m.jd.com/babelDiy/Zeus/2wuqXrZrhygTQzYA7VufBEpj4amH/index.html',
         'User-Agent': UA,
       };
-      const req = http.get(url, {headers}, (response) => {
+      const req = http.get(url, { headers }, (response) => {
         let res = response;
         if (res.headers['content-encoding'] === 'gzip') {
           const unzipStream = new stream.PassThrough();
-          stream.pipeline(
-            response,
-            zlib.createGunzip(),
-            unzipStream,
-            reject,
-          );
+          stream.pipeline(response, zlib.createGunzip(), unzipStream, reject);
           res = unzipStream;
         }
         res.setEncoding('utf8');
 
         let rawData = '';
 
-        res.on('data', (chunk) => rawData += chunk);
+        res.on('data', (chunk) => (rawData += chunk));
         res.on('end', () => {
           try {
             const ctx = {
-              [fnId]: (data) => ctx.data = data,
+              [fnId]: (data) => (ctx.data = data),
               data: {},
             };
 
@@ -361,30 +360,30 @@ class JDJRValidator {
 
 function getCoordinate(c) {
   function string10to64(d) {
-    var c = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ-~".split("")
-      , b = c.length
-      , e = +d
-      , a = [];
+    var c = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ-~'.split(''),
+      b = c.length,
+      e = +d,
+      a = [];
     do {
       mod = e % b;
       e = (e - mod) / b;
-      a.unshift(c[mod])
+      a.unshift(c[mod]);
     } while (e);
-    return a.join("")
+    return a.join('');
   }
 
   function prefixInteger(a, b) {
-    return (Array(b).join(0) + a).slice(-b)
+    return (Array(b).join(0) + a).slice(-b);
   }
 
   function pretreatment(d, c, b) {
     var e = string10to64(Math.abs(d));
-    var a = "";
+    var a = '';
     if (!b) {
-      a += (d > 0 ? "1" : "0")
+      a += d > 0 ? '1' : '0';
     }
     a += prefixInteger(e, c);
-    return a
+    return a;
   }
 
   var b = new Array();
@@ -392,17 +391,17 @@ function getCoordinate(c) {
     if (e == 0) {
       b.push(pretreatment(c[e][0] < 262143 ? c[e][0] : 262143, 3, true));
       b.push(pretreatment(c[e][1] < 16777215 ? c[e][1] : 16777215, 4, true));
-      b.push(pretreatment(c[e][2] < 4398046511103 ? c[e][2] : 4398046511103, 7, true))
+      b.push(pretreatment(c[e][2] < 4398046511103 ? c[e][2] : 4398046511103, 7, true));
     } else {
       var a = c[e][0] - c[e - 1][0];
       var f = c[e][1] - c[e - 1][1];
       var d = c[e][2] - c[e - 1][2];
       b.push(pretreatment(a < 4095 ? a : 4095, 2, false));
       b.push(pretreatment(f < 4095 ? f : 4095, 2, false));
-      b.push(pretreatment(d < 16777215 ? d : 16777215, 4, true))
+      b.push(pretreatment(d < 16777215 ? d : 16777215, 4, true));
     }
   }
-  return b.join("")
+  return b.join('');
 }
 
 const HZ = 5;
@@ -450,7 +449,7 @@ class MousePosFaker {
     }
     for (let i = 0; i < this.STEP; i++) {
       x = this.puzzleX / (n * (i + 1));
-      const currX = parseInt((Math.random() * 30 - 15) + x, 10);
+      const currX = parseInt(Math.random() * 30 - 15 + x, 10);
       const currY = parseInt(Math.random() * 7 - 3, 10);
       const currDuration = parseInt((Math.random() * 0.4 + 0.8) * duration, 10);
 
@@ -475,7 +474,7 @@ class MousePosFaker {
     }
   }
 
-  moveToAndCollect({x, y, duration}) {
+  moveToAndCollect({ x, y, duration }) {
     let movedX = 0;
     let movedY = 0;
     let movedT = 0;
@@ -533,7 +532,7 @@ function injectToRequest2(fn, scene = 'cww') {
           cb(err, resp, data);
         }
       } catch (e) {
-        console.info(e)
+        console.info(e);
       }
     });
   };
@@ -542,11 +541,12 @@ function injectToRequest2(fn, scene = 'cww') {
 async function injectToRequest(scene = 'cww') {
   console.log('JDJR验证中......');
   const res = await new JDJRValidator().run(scene);
-  return `&validate=${res.validate}`
+  if (res == '') return;
+  return res.validate;
 }
 
 module.exports = {
   sleep,
   injectToRequest,
-  injectToRequest2
-}
+  injectToRequest2,
+};
