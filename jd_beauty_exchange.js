@@ -14,7 +14,7 @@ const notify = $.isNode() ? require('./sendNotify') : '';
 //Node.js用户请在jdCookie.js处填写京东ck;
 const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
 const WebSocket = require('ws');
-
+const UA = process.env.JD_USER_AGENT ? process.env.JD_USER_AGENT : require('./USER_AGENTS').USER_AGENT;
 $.accountCheck = true;
 $.init = false;
 //IOS等用户直接用NobyDa的jd cookie
@@ -177,7 +177,7 @@ async function mr() {
       client.send(`ping`);
       await $.wait(1000);
     }
-   
+
     // 获取个人信息
     client.send(getMsg('get_user', { source: 1 }));
     await $.wait(1000);
@@ -239,14 +239,14 @@ async function mr() {
             day_exchange_count = benefit.day_exchange_count * 1;
 
             if (benefitType == 1 && benefit?.setting?.beans_count * benefit.day_limit == beansCount) {
-              console.log(`开始兑换${benefit.name}`)
+              console.log(`开始兑换${benefit.name}`);
               for (let i = day_exchange_count; i < benefit.day_limit; i++) {
                 await $.wait(5000);
                 client.send(`{"msg":{"type":"action","args":{"benefit_id":${benefit.id}},"action":"to_exchange"}}`);
               }
               break;
             } else if ([2, 3].includes(benefitType) && benefit.name.includes(benefitName) && day_exchange_count < benefit.day_limit) {
-              console.log(`开始兑换${benefit.name}`)
+              console.log(`开始兑换${benefit.name}`);
               client.send(`{"msg":{"type":"action","args":{"benefit_id":${benefit.id}},"action":"to_exchange"}}`);
               break;
             }
@@ -302,19 +302,25 @@ function getIsvToken() {
   });
 }
 
-function getIsvToken2() {
+async function getIsvToken2() {
+  for (let i = 0; i < 3; i++) {
+    var body = await getSignfromDY('isvObfuscator', { id: '', url: 'https://xinruimz-isv.isvjcloud.com' });
+    if (body) break;
+    await $.wait(5000);
+  }
   let config = {
     url: 'https://api.m.jd.com/client.action?functionId=isvObfuscator',
-    body: 'body=%7B%22url%22%3A%22https%3A%5C/%5C/xinruimz-isv.isvjcloud.com%22%2C%22id%22%3A%22%22%7D&build=167490&client=apple&clientVersion=9.3.2&openudid=53f4d9c70c1c81f1c8769d2fe2fef0190a3f60d2&osVersion=14.2&partner=apple&rfs=0000&scope=01&sign=6eb3237cff376c07a11c1e185761d073&st=1610161927336&sv=102&uuid=hjudwgohxzVu96krv/T6Hg%3D%3D',
+    body: body,
     headers: {
       Host: 'api.m.jd.com',
       accept: '*/*',
-      'user-agent': 'JD4iPhone/167490 (iPhone; iOS 14.2; Scale/3.00)',
-      'accept-language': 'zh-Hans-JP;q=1, en-JP;q=0.9, zh-Hant-TW;q=0.8, ja-JP;q=0.7, en-US;q=0.6',
-      'content-type': 'application/x-www-form-urlencoded',
+      'user-agent': UA,
+      //'accept-language': 'zh-Hans-JP;q=1, en-JP;q=0.9, zh-Hant-TW;q=0.8, ja-JP;q=0.7, en-US;q=0.6',
+      //'content-type': 'application/x-www-form-urlencoded',
       Cookie: cookie,
     },
   };
+
   return new Promise((resolve) => {
     $.post(config, async (err, resp, data) => {
       try {
@@ -325,7 +331,7 @@ function getIsvToken2() {
           if (jd_helpers.safeGet(data)) {
             data = JSON.parse(data);
             $.token2 = data['token'];
-            console.log(`token2:${$.token2}`);
+            //console.log(`token2:${$.token2}`);
           }
         }
       } catch (e) {
@@ -340,9 +346,10 @@ function getIsvToken2() {
 async function getToken() {
   let axios = require('axios');
   await axios.post('https://xinruimz-isv.isvjcloud.com/api/auth', {
-    token: $.token2,
-    source: '01'
-  }).then((resp) => $.token = resp.data.access_token);
+      token: $.token2,
+      source: '01',
+    })
+    .then((resp) => ($.token = resp.data.access_token));
 }
 
 function showMsg() {
@@ -372,4 +379,41 @@ function getMsg(action, args = {}) {
   console.log(JSON.stringify(content));
 
   return JSON.stringify(content);
+}
+
+function getSignfromDY(functionId, body) {
+  var strsign = '';
+  let data = { fn: functionId, body: JSON.stringify(body) };
+  return new Promise((resolve) => {
+    let opt = {
+      url: 'https://api.nolanstore.top/sign',
+      body: JSON.stringify(data),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      timeout: 30000,
+    };
+    $.post(opt, async (err, resp, data) => {
+      try {
+        if (data) {
+          data = JSON.parse(data);
+          if (data && data.body) {
+            console.log('连接Nolan服务成功');
+            strsign = data.body || '';
+            if (strsign != '') {
+              resolve(strsign);
+            } else console.log('签名获取失败,换个时间再试.');
+          } else {
+            console.log(data.msg);
+          }
+        } else {
+          console.log('连接服务失败，重试。。。');
+        }
+      } catch (e) {
+        $.logErr(e, resp);
+      } finally {
+        resolve(strsign);
+      }
+    });
+  });
 }
