@@ -164,7 +164,7 @@
 # 美丽研究院兑换
 0 8,12 * * * node /scripts/jd_beauty_exchange.js >> /scripts/logs/jd_beauty_exchange.log 2>&1
 # 京东保价
-#41 0,23 * * * node /scripts/jd_priceProtect.js >> /scripts/logs/jd_priceProtect.log 2>&1
+41 0,23 * * * node /scripts/jd_price.js >> /scripts/logs/jd_price.log 2>&1
 # 京东极速版签到+赚现金任务
 1 1,6 * * * node /scripts/jd_speed_sign.js >> /scripts/logs/jd_speed_sign.log 2>&1
 # 京东极速版签到免单
