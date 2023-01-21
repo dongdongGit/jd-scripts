@@ -31,11 +31,11 @@ cron "30 9,21 18-25 8 *" script-path=https://raw.githubusercontent.com/smiek2221
 ============小火箭=========
 8.18-8.25 全民818 一“促”即发 = type=cron,script-path=https://raw.githubusercontent.com/smiek2221/scripts/master/gua_opencard12.js, cronexpr="30 9,21 18-25 8 *", timeout=3600, enable=true
 */
-const jd_helpers = require('./utils/JDHelpers.js');
-const jd_env = require('./utils/JDEnv.js');
+const jd_helpers = require('../utils/JDHelpers.js');
+const jd_env = require('../utils/JDEnv.js');
 let $ = jd_env.env('8.18-8.25 全民818 一“促”即发');
-const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
-const notify = $.isNode() ? require('./sendNotify') : '';
+const jdCookieNode = $.isNode() ? require('../jdCookie.js') : '';
+const notify = $.isNode() ? require('../sendNotify') : '';
 //IOS等用户直接用NobyDa的jd cookie
 let cookiesArr = [],
   cookie = '';

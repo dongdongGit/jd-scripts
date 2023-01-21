@@ -1,21 +1,25 @@
 /*
-京喜财富岛
-cron 10 * * * * jd_cfd_mooncake.js
-更新时间：2021-9-11
-活动入口：京喜APP-我的-京喜财富岛
+京喜财富岛提现
+cron 0 0 * * * jd_cfdtx.js
+更新时间：2021-7-13
+活动入口：京喜APP-我的-京喜财富岛提现
+
 已支持IOS双京东账号,Node.js支持N个京东账号
 脚本兼容: QuantumultX, Surge, Loon, JSBox, Node.js
 ============Quantumultx===============
 [task_local]
-#京喜财富岛
-10 * * * * https://raw.githubusercontent.com/yongyuanlin/jd_scripts/master/jx_cfd_mooncake.js, tag=京喜财富岛, img-url=https://raw.githubusercontent.com/58xinian/icon/master/jxcfd.png, enabled=true
+#京喜财富岛提现
+0 0 * * * https://raw.githubusercontent.com/LingFeng0918/jd_scripts/master/jx_cfdtx.js, tag=京喜财富岛提现, img-url=https://raw.githubusercontent.com/58xinian/icon/master/jxcfd.png, enabled=true
+
 ================Loon==============
 [Script]
-cron "10 * * * *" script-path=https://raw.githubusercontent.com/yongyuanlin/jd_scripts/master/jx_cfd_mooncake.js,tag=京喜财富岛
+cron "0 0 * * *" script-path=https://raw.githubusercontent.com/LingFeng0918/jd_scripts/master/jx_cfdtx.js,tag=京喜财富岛提现
+
 ===============Surge=================
-京喜财富岛 = type=cron,cronexp="10 * * * *",wake-system=1,timeout=3600,script-path=https://raw.githubusercontent.com/yongyuanlin/jd_scripts/master/jx_cfd_mooncake.js
+京喜财富岛提现 = type=cron,cronexp="0 0 * * *",wake-system=1,timeout=3600,script-path=https://raw.githubusercontent.com/LingFeng0918/jd_scripts/master/jx_cfdtx.js
+
 ============小火箭=========
-京喜财富岛 = type=cron,script-path=https://raw.githubusercontent.com/yongyuanlin/jd_scripts/master/jx_cfd_mooncake.js, cronexpr="10 * * * *", timeout=3600, enable=true
+京喜财富岛提现 = type=cron,script-path=https://raw.githubusercontent.com/LingFeng0918/jd_scripts/master/jx_cfdtx.js, cronexpr="0 0 * * *", timeout=3600, enable=true
  */
 // prettier-ignore
 !function (t, r) { "object" == typeof exports ? module.exports = exports = r() : "function" == typeof define && define.amd ? define([], r) : t.CryptoJS = r() }(this, function () {
@@ -26,44 +30,54 @@ cron "10 * * * *" script-path=https://raw.githubusercontent.com/yongyuanlin/jd_s
   }(), function () { function r() { for (var t = this._S, r = this._i, e = this._j, i = 0, n = 0; n < 4; n++) { r = (r + 1) % 256, e = (e + t[r]) % 256; var o = t[r]; t[r] = t[e], t[e] = o, i |= t[(t[r] + t[e]) % 256] << 24 - 8 * n } return this._i = r, this._j = e, i } var e = t, i = e.lib, n = i.StreamCipher, o = e.algo, s = o.RC4 = n.extend({ _doReset: function () { for (var t = this._key, r = t.words, e = t.sigBytes, i = this._S = [], n = 0; n < 256; n++)i[n] = n; for (var n = 0, o = 0; n < 256; n++) { var s = n % e, a = r[s >>> 2] >>> 24 - s % 4 * 8 & 255; o = (o + i[n] + a) % 256; var c = i[n]; i[n] = i[o], i[o] = c } this._i = this._j = 0 }, _doProcessBlock: function (t, e) { t[e] ^= r.call(this) }, keySize: 8, ivSize: 0 }); e.RC4 = n._createHelper(s); var a = o.RC4Drop = s.extend({ cfg: s.cfg.extend({ drop: 192 }), _doReset: function () { s._doReset.call(this); for (var t = this.cfg.drop; t > 0; t--)r.call(this) } }); e.RC4Drop = n._createHelper(a) }(), t.mode.CTRGladman = function () { function r(t) { if (255 === (t >> 24 & 255)) { var r = t >> 16 & 255, e = t >> 8 & 255, i = 255 & t; 255 === r ? (r = 0, 255 === e ? (e = 0, 255 === i ? i = 0 : ++i) : ++e) : ++r, t = 0, t += r << 16, t += e << 8, t += i } else t += 1 << 24; return t } function e(t) { return 0 === (t[0] = r(t[0])) && (t[1] = r(t[1])), t } var i = t.lib.BlockCipherMode.extend(), n = i.Encryptor = i.extend({ processBlock: function (t, r) { var i = this._cipher, n = i.blockSize, o = this._iv, s = this._counter; o && (s = this._counter = o.slice(0), this._iv = void 0), e(s); var a = s.slice(0); i.encryptBlock(a, 0); for (var c = 0; c < n; c++)t[r + c] ^= a[c] } }); return i.Decryptor = n, i }(), function () { function r() { for (var t = this._X, r = this._C, e = 0; e < 8; e++)a[e] = r[e]; r[0] = r[0] + 1295307597 + this._b | 0, r[1] = r[1] + 3545052371 + (r[0] >>> 0 < a[0] >>> 0 ? 1 : 0) | 0, r[2] = r[2] + 886263092 + (r[1] >>> 0 < a[1] >>> 0 ? 1 : 0) | 0, r[3] = r[3] + 1295307597 + (r[2] >>> 0 < a[2] >>> 0 ? 1 : 0) | 0, r[4] = r[4] + 3545052371 + (r[3] >>> 0 < a[3] >>> 0 ? 1 : 0) | 0, r[5] = r[5] + 886263092 + (r[4] >>> 0 < a[4] >>> 0 ? 1 : 0) | 0, r[6] = r[6] + 1295307597 + (r[5] >>> 0 < a[5] >>> 0 ? 1 : 0) | 0, r[7] = r[7] + 3545052371 + (r[6] >>> 0 < a[6] >>> 0 ? 1 : 0) | 0, this._b = r[7] >>> 0 < a[7] >>> 0 ? 1 : 0; for (var e = 0; e < 8; e++) { var i = t[e] + r[e], n = 65535 & i, o = i >>> 16, s = ((n * n >>> 17) + n * o >>> 15) + o * o, h = ((4294901760 & i) * i | 0) + ((65535 & i) * i | 0); c[e] = s ^ h } t[0] = c[0] + (c[7] << 16 | c[7] >>> 16) + (c[6] << 16 | c[6] >>> 16) | 0, t[1] = c[1] + (c[0] << 8 | c[0] >>> 24) + c[7] | 0, t[2] = c[2] + (c[1] << 16 | c[1] >>> 16) + (c[0] << 16 | c[0] >>> 16) | 0, t[3] = c[3] + (c[2] << 8 | c[2] >>> 24) + c[1] | 0, t[4] = c[4] + (c[3] << 16 | c[3] >>> 16) + (c[2] << 16 | c[2] >>> 16) | 0, t[5] = c[5] + (c[4] << 8 | c[4] >>> 24) + c[3] | 0, t[6] = c[6] + (c[5] << 16 | c[5] >>> 16) + (c[4] << 16 | c[4] >>> 16) | 0, t[7] = c[7] + (c[6] << 8 | c[6] >>> 24) + c[5] | 0 } var e = t, i = e.lib, n = i.StreamCipher, o = e.algo, s = [], a = [], c = [], h = o.Rabbit = n.extend({ _doReset: function () { for (var t = this._key.words, e = this.cfg.iv, i = 0; i < 4; i++)t[i] = 16711935 & (t[i] << 8 | t[i] >>> 24) | 4278255360 & (t[i] << 24 | t[i] >>> 8); var n = this._X = [t[0], t[3] << 16 | t[2] >>> 16, t[1], t[0] << 16 | t[3] >>> 16, t[2], t[1] << 16 | t[0] >>> 16, t[3], t[2] << 16 | t[1] >>> 16], o = this._C = [t[2] << 16 | t[2] >>> 16, 4294901760 & t[0] | 65535 & t[1], t[3] << 16 | t[3] >>> 16, 4294901760 & t[1] | 65535 & t[2], t[0] << 16 | t[0] >>> 16, 4294901760 & t[2] | 65535 & t[3], t[1] << 16 | t[1] >>> 16, 4294901760 & t[3] | 65535 & t[0]]; this._b = 0; for (var i = 0; i < 4; i++)r.call(this); for (var i = 0; i < 8; i++)o[i] ^= n[i + 4 & 7]; if (e) { var s = e.words, a = s[0], c = s[1], h = 16711935 & (a << 8 | a >>> 24) | 4278255360 & (a << 24 | a >>> 8), l = 16711935 & (c << 8 | c >>> 24) | 4278255360 & (c << 24 | c >>> 8), f = h >>> 16 | 4294901760 & l, u = l << 16 | 65535 & h; o[0] ^= h, o[1] ^= f, o[2] ^= l, o[3] ^= u, o[4] ^= h, o[5] ^= f, o[6] ^= l, o[7] ^= u; for (var i = 0; i < 4; i++)r.call(this) } }, _doProcessBlock: function (t, e) { var i = this._X; r.call(this), s[0] = i[0] ^ i[5] >>> 16 ^ i[3] << 16, s[1] = i[2] ^ i[7] >>> 16 ^ i[5] << 16, s[2] = i[4] ^ i[1] >>> 16 ^ i[7] << 16, s[3] = i[6] ^ i[3] >>> 16 ^ i[1] << 16; for (var n = 0; n < 4; n++)s[n] = 16711935 & (s[n] << 8 | s[n] >>> 24) | 4278255360 & (s[n] << 24 | s[n] >>> 8), t[e + n] ^= s[n] }, blockSize: 4, ivSize: 2 }); e.Rabbit = n._createHelper(h) }(), t.mode.CTR = function () { var r = t.lib.BlockCipherMode.extend(), e = r.Encryptor = r.extend({ processBlock: function (t, r) { var e = this._cipher, i = e.blockSize, n = this._iv, o = this._counter; n && (o = this._counter = n.slice(0), this._iv = void 0); var s = o.slice(0); e.encryptBlock(s, 0), o[i - 1] = o[i - 1] + 1 | 0; for (var a = 0; a < i; a++)t[r + a] ^= s[a] } }); return r.Decryptor = e, r }(), function () { function r() { for (var t = this._X, r = this._C, e = 0; e < 8; e++)a[e] = r[e]; r[0] = r[0] + 1295307597 + this._b | 0, r[1] = r[1] + 3545052371 + (r[0] >>> 0 < a[0] >>> 0 ? 1 : 0) | 0, r[2] = r[2] + 886263092 + (r[1] >>> 0 < a[1] >>> 0 ? 1 : 0) | 0, r[3] = r[3] + 1295307597 + (r[2] >>> 0 < a[2] >>> 0 ? 1 : 0) | 0, r[4] = r[4] + 3545052371 + (r[3] >>> 0 < a[3] >>> 0 ? 1 : 0) | 0, r[5] = r[5] + 886263092 + (r[4] >>> 0 < a[4] >>> 0 ? 1 : 0) | 0, r[6] = r[6] + 1295307597 + (r[5] >>> 0 < a[5] >>> 0 ? 1 : 0) | 0, r[7] = r[7] + 3545052371 + (r[6] >>> 0 < a[6] >>> 0 ? 1 : 0) | 0, this._b = r[7] >>> 0 < a[7] >>> 0 ? 1 : 0; for (var e = 0; e < 8; e++) { var i = t[e] + r[e], n = 65535 & i, o = i >>> 16, s = ((n * n >>> 17) + n * o >>> 15) + o * o, h = ((4294901760 & i) * i | 0) + ((65535 & i) * i | 0); c[e] = s ^ h } t[0] = c[0] + (c[7] << 16 | c[7] >>> 16) + (c[6] << 16 | c[6] >>> 16) | 0, t[1] = c[1] + (c[0] << 8 | c[0] >>> 24) + c[7] | 0, t[2] = c[2] + (c[1] << 16 | c[1] >>> 16) + (c[0] << 16 | c[0] >>> 16) | 0, t[3] = c[3] + (c[2] << 8 | c[2] >>> 24) + c[1] | 0, t[4] = c[4] + (c[3] << 16 | c[3] >>> 16) + (c[2] << 16 | c[2] >>> 16) | 0, t[5] = c[5] + (c[4] << 8 | c[4] >>> 24) + c[3] | 0, t[6] = c[6] + (c[5] << 16 | c[5] >>> 16) + (c[4] << 16 | c[4] >>> 16) | 0, t[7] = c[7] + (c[6] << 8 | c[6] >>> 24) + c[5] | 0 } var e = t, i = e.lib, n = i.StreamCipher, o = e.algo, s = [], a = [], c = [], h = o.RabbitLegacy = n.extend({ _doReset: function () { var t = this._key.words, e = this.cfg.iv, i = this._X = [t[0], t[3] << 16 | t[2] >>> 16, t[1], t[0] << 16 | t[3] >>> 16, t[2], t[1] << 16 | t[0] >>> 16, t[3], t[2] << 16 | t[1] >>> 16], n = this._C = [t[2] << 16 | t[2] >>> 16, 4294901760 & t[0] | 65535 & t[1], t[3] << 16 | t[3] >>> 16, 4294901760 & t[1] | 65535 & t[2], t[0] << 16 | t[0] >>> 16, 4294901760 & t[2] | 65535 & t[3], t[1] << 16 | t[1] >>> 16, 4294901760 & t[3] | 65535 & t[0]]; this._b = 0; for (var o = 0; o < 4; o++)r.call(this); for (var o = 0; o < 8; o++)n[o] ^= i[o + 4 & 7]; if (e) { var s = e.words, a = s[0], c = s[1], h = 16711935 & (a << 8 | a >>> 24) | 4278255360 & (a << 24 | a >>> 8), l = 16711935 & (c << 8 | c >>> 24) | 4278255360 & (c << 24 | c >>> 8), f = h >>> 16 | 4294901760 & l, u = l << 16 | 65535 & h; n[0] ^= h, n[1] ^= f, n[2] ^= l, n[3] ^= u, n[4] ^= h, n[5] ^= f, n[6] ^= l, n[7] ^= u; for (var o = 0; o < 4; o++)r.call(this) } }, _doProcessBlock: function (t, e) { var i = this._X; r.call(this), s[0] = i[0] ^ i[5] >>> 16 ^ i[3] << 16, s[1] = i[2] ^ i[7] >>> 16 ^ i[5] << 16, s[2] = i[4] ^ i[1] >>> 16 ^ i[7] << 16, s[3] = i[6] ^ i[3] >>> 16 ^ i[1] << 16; for (var n = 0; n < 4; n++)s[n] = 16711935 & (s[n] << 8 | s[n] >>> 24) | 4278255360 & (s[n] << 24 | s[n] >>> 8), t[e + n] ^= s[n] }, blockSize: 4, ivSize: 2 }); e.RabbitLegacy = n._createHelper(h) }(), t.pad.ZeroPadding = { pad: function (t, r) { var e = 4 * r; t.clamp(), t.sigBytes += e - (t.sigBytes % e || e) }, unpad: function (t) { for (var r = t.words, e = t.sigBytes - 1; !(r[e >>> 2] >>> 24 - e % 4 * 8 & 255);)e--; t.sigBytes = e + 1 } }, t
 });
 
-const jd_helpers = require('./utils/JDHelpers.js');
-const jd_env = require('./utils/JDEnv.js');
-const $ = jd_env.env('京喜财富岛合成月饼');
-
-const JD_API_HOST = "https://m.jingxi.com/";
-const notify = $.isNode() ? require('./sendNotify') : '';
-const jdCookieNode = $.isNode() ? require("./jdCookie.js") : "";
-$.showLog = $.getdata("cfd_showLog") ? $.getdata("cfd_showLog") === "true" : false;
-$.notifyTime = $.getdata("cfd_notifyTime");
+const jd_helpers = require('../utils/JDHelpers.js');
+const jd_env = require('../utils/JDEnv.js');
+const $ = jd_env.env('京喜财富岛提现');
+const JD_API_HOST = 'https://m.jingxi.com/';
+const notify = $.isNode() ? require('../sendNotify') : '';
+const jdCookieNode = $.isNode() ? require('../jdCookie.js') : '';
+$.showLog = $.getdata('cfd_showLog') ? $.getdata('cfd_showLog') === 'true' : false;
+$.notifyTime = $.getdata('cfd_notifyTime');
 $.result = [];
 $.shareCodes = [];
-let cookiesArr = [], cookie = '', token = '';
-let UA, UAInfo = {}, num
-let nowTimes;
+let cookiesArr = [],
+  cookie = '',
+  token,
+  nowTimes;
+let allMessage = '',
+  message = '';
 
-const randomCount = $.isNode() ? 3 : 3;
 if ($.isNode()) {
   Object.keys(jdCookieNode).forEach((item) => {
-    cookiesArr.push(jdCookieNode[item])
-  })
+    cookiesArr.push(jdCookieNode[item]);
+  });
   if (process.env.JD_DEBUG && process.env.JD_DEBUG === 'false') console.log = () => {};
   if (JSON.stringify(process.env).indexOf('GITHUB') > -1) process.exit(0);
 } else {
-  cookiesArr = [$.getdata('CookieJD'), $.getdata('CookieJD2'), ...jd_helpers.jsonParse($.getdata('CookiesJD') || "[]").map(item => item.cookie)].filter(item => !!item);
+  cookiesArr = [$.getdata('CookieJD'), $.getdata('CookieJD2'), ...jd_helpers.jsonParse($.getdata('CookiesJD') || '[]').map((item) => item.cookie)].filter((item) => !!item);
 }
 $.appId = 10028;
+Date.prototype.Format = function (fmt) {
+  //author: meizz
+  var o = {
+    'M+': this.getMonth() + 1, //月份
+    'd+': this.getDate(), //日
+    'h+': this.getHours(), //小时
+    'm+': this.getMinutes(), //分
+    's+': this.getSeconds(), //秒
+    S: this.getMilliseconds(), //毫秒
+  };
+  if (/(y+)/.test(fmt)) fmt = fmt.replace(RegExp.$1, (this.getFullYear() + '').substr(4 - RegExp.$1.length));
+  for (var k in o) if (new RegExp('(' + k + ')').test(fmt)) fmt = fmt.replace(RegExp.$1, RegExp.$1.length == 1 ? o[k] : ('00' + o[k]).substr(('' + o[k]).length));
+  return fmt;
+};
 !(async () => {
-  await requireConfig();
   if (!cookiesArr[0]) {
-    $.msg($.name, '【提示】请先获取京东账号一cookie\n直接使用NobyDa的京东签到获取', 'https://bean.m.jd.com/bean/signIndex.action', {"open-url": "https://bean.m.jd.com/bean/signIndex.action"});
+    $.msg($.name, '【提示】请先获取京东账号一cookie\n直接使用NobyDa的京东签到获取', 'https://bean.m.jd.com/bean/signIndex.action', { 'open-url': 'https://bean.m.jd.com/bean/signIndex.action' });
     return;
   }
   $.CryptoJS = $.isNode() ? require('crypto-js') : CryptoJS;
   await requestAlgo();
-  await $.wait(1000)
-  let res = await getAuthorShareCode('')
-
-  $.strMyShareIds = [...(res && res.shareId || [])]
   for (let i = 0; i < cookiesArr.length; i++) {
     if (cookiesArr[i]) {
       $.cookie = cookie = cookiesArr[i];
@@ -71,190 +85,175 @@ $.appId = 10028;
       $.index = i + 1;
       $.nickName = '';
       $.isLogin = true;
+      message = '';
       await $.totalBean();
       console.log(`\n******开始【京东账号${$.index}】${$.nickName || $.UserName}*********\n`);
       if (!$.isLogin) {
-        $.msg($.name, `【提示】cookie已失效`, `京东账号${$.index} ${$.nickName || $.UserName}\n请重新登录获取\nhttps://bean.m.jd.com/bean/signIndex.action`, {"open-url": "https://bean.m.jd.com/bean/signIndex.action"});
+        $.msg($.name, `【提示】cookie已失效`, `京东账号${$.index} ${$.nickName || $.UserName}\n请重新登录获取\nhttps://bean.m.jd.com/bean/signIndex.action`, {
+          'open-url': 'https://bean.m.jd.com/bean/signIndex.action',
+        });
 
         if ($.isNode()) {
           await notify.sendNotify(`${$.name}cookie已失效 - ${$.UserName}`, `京东账号${$.index} ${$.UserName}\n请重新登录获取cookie`);
         }
-        continue
+        continue;
       }
-      $.allTask = []
-      $.info = {}
-      UA = `jdpingou;iPhone;4.13.0;14.4.2;${randomString(40)};network/wifi;model/iPhone10,2;appBuild/100609;ADID/00000000-0000-0000-0000-000000000000;supportApplePay/1;hasUPPay/0;pushNoticeIsOpen/1;hasOCPay/0;supportBestPay/0;session/${Math.random * 98 + 1};pap/JA2019_3111789;brand/apple;supportJDSHWK/1;Mozilla/5.0 (iPhone; CPU iPhone OS 14_6 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148`
-      token = await getJxToken()
-      await shareCodesFormat()
+      $.num = i;
+      $.info = {};
+      $.money = 0;
+      token = await getJxToken();
       await cfd();
-      await $.wait(2000);
-      UAInfo[$.UserName] = UA
     }
   }
-  for (let i = 0; i < cookiesArr.length; i++) {
-    cookie = cookiesArr[i];
-    $.UserName = decodeURIComponent(cookie.match(/pt_pin=([^; ]+)(?=;?)/) && cookie.match(/pt_pin=([^; ]+)(?=;?)/)[1])
-    $.canHelp = true
-    UA = UAInfo[$.UserName]
-    num = 0
-    if ($.shareCodes && $.shareCodes.length) {
-      console.log(`\n自己账号内部循环互助\n`);
-      for (let j = 0; j < $.shareCodes.length && $.canHelp; j++) {
-        console.log(`账号${$.UserName} 去助力 ${$.shareCodes[j]}`)
-        $.delcode = false
-        await helpByStage($.shareCodes[j])
-        await $.wait(2000)
-        if ($.delcode) {
-          $.shareCodes.splice(j, 1)
-          j--
-          continue
-        }
-      }
-    }
-    if ($.strMyShareIds && $.strMyShareIds.length && $.canHelp) {
-      console.log(`\n助力作者\n`);
-      for (let j = 0; j < $.strMyShareIds.length && $.canHelp; j++) {
-        console.log(`账号${$.UserName} 去助力 ${$.strMyShareIds[j]}`)
-        $.delcode = false
-        await helpByStage($.strMyShareIds[j])
-        await $.wait(2000)
-        if ($.delcode) {
-          $.strMyShareIds.splice(j, 1)
-          j--
-          continue
-        }
-      }
-    }
+  if (allMessage) {
+    if ($.isNode()) await notify.sendNotify(`${$.name}`, `${allMessage}`);
   }
-  await showMsg();
 })()
-    .catch((e) => $.logErr(e))
-    .finally(() => $.done());
+  .catch((e) => $.logErr(e))
+  .finally(() => $.done());
 
 async function cfd() {
   try {
-    nowTimes = new Date(new Date().getTime() + new Date().getTimezoneOffset() * 60 * 1000 + 8 * 60 * 60 * 1000)
-    let beginInfo = await getUserInfo();
-    if (beginInfo.LeadInfo.dwLeadType === 2) {
-      console.log(`还未开通活动，尝试初始化`)
-      await noviceTask()
-      await $.wait(2000)
-      beginInfo = await getUserInfo(false);
-      if (beginInfo.LeadInfo.dwLeadType !== 2) {
-        console.log(`初始化成功\n`)
-      } else {
-        console.log(`初始化失败\n`)
-        return
+    nowTimes = new Date(new Date().getTime() + new Date().getTimezoneOffset() * 60 * 1000 + 8 * 60 * 60 * 1000);
+    if ((nowTimes.getHours() === 11 || nowTimes.getHours() === 23) && nowTimes.getMinutes() === 59) {
+      let nowtime = new Date().Format('s.S');
+      let starttime = $.isNode() ? (process.env.CFD_STARTTIME ? process.env.CFD_STARTTIME * 1 : 60) : $.getdata('CFD_STARTTIME') ? $.getdata('CFD_STARTTIME') * 1 : 60;
+      if (nowtime < 59) {
+        let sleeptime = (starttime - nowtime) * 1000;
+        console.log(`等待时间 ${sleeptime / 1000}\n`);
+        await sleep(sleeptime);
       }
     }
 
-    //抽奖
-    await $.wait(2000)
-    await composePearlState(4)
-
-    //助力奖励
-    await $.wait(2000)
-    await composePearlState(2)
-
-    //合成月饼
-    let count = $.isNode() ? (process.env.JD_CFD_RUNNUM ? process.env.JD_CFD_RUNNUM * 1 : Math.floor((Math.random() * 2)) + 3) : ($.getdata('JD_CFD_RUNNUM') ? $.getdata('JD_CFD_RUNNUM') * 1 : Math.floor((Math.random() * 2)) + 3);
-    console.log(`\n合成月饼`)
-    console.log(`合成月饼运行次数为：${count}\n`)
-    for (let j = 0; j < count; j++) {
-      await $.wait(2000)
-      await composePearlState(3)
+    const beginInfo = await getUserInfo(false);
+    if (beginInfo.dwIsNeedGuideNew == 1) {
+      console.log(`还未开通活动，请先开通\n`);
+      return;
     }
 
+    if ($.num % 2 !== 0) {
+      console.log(`等待`);
+      await $.wait(2000);
+    }
+
+    console.log(`获取提现资格`);
+    await cashOutQuali();
+    console.log(`提现`);
+    console.log(`提现金额：按库存轮询提现，0点场提1元以上，12点场提0.5元以上，12点后不做限制`);
+    await userCashOutState();
+
+    await showMsg();
   } catch (e) {
-    $.logErr(e)
+    $.logErr(e);
   }
 }
 
-// 合成月饼
-async function composePearlState(type) {
+// 提现
+function cashOutQuali() {
+  return new Promise((resolve) => {
+    $.get(taskUrl(`user/CashOutQuali`, `strPgUUNum=${token['farm_jstoken']}&strPgtimestamp=${token['timestamp']}&strPhoneID=${token['phoneid']}`), (err, resp, data) => {
+      try {
+        if (err) {
+          console.log(`${JSON.stringify(err)}`);
+          console.log(`${$.name} CashOutQuali API请求失败，请检查网路重试`);
+        } else {
+          data = JSON.parse(data);
+          if (data.iRet === 0) {
+            console.log(`获取提现资格成功\n`);
+          } else {
+            console.log(`获取提现资格失败：${data.sErrMsg}\n`);
+          }
+        }
+      } catch (e) {
+        $.logErr(e, resp);
+      } finally {
+        resolve();
+      }
+    });
+  });
+}
+async function userCashOutState(type = true) {
   return new Promise(async (resolve) => {
-    $.get(taskUrl(`user/ComposePearlState`, `__t=${Date.now()}&dwGetType=0`), async (err, resp, data) => {
+    $.get(taskUrl(`user/UserCashOutState`), async (err, resp, data) => {
       try {
         if (err) {
-          console.log(`${JSON.stringify(err)}`)
-          console.log(`${$.name} ComposePearlState API请求失败，请检查网路重试`)
+          console.log(`${JSON.stringify(err)}`);
+          console.log(`${$.name} UserCashOutState API请求失败，请检查网路重试`);
         } else {
-          switch (type) {
-            case 1:
-              data = JSON.parse(data);
-              break
-            case 2:
-              data = JSON.parse(data);
-              console.log(`领助力奖励`)
-              if (data.iRet === 0) {
-                let helpNum = []
-                for (let key of Object.keys(data.helpInfo.HelpList)) {
-                  let vo = data.helpInfo.HelpList[key]
-                  if (vo.dwStatus !== 1 && vo.dwIsHasAward === 1 && vo.dwIsHelp === 1) {
-                    helpNum.push(vo.dwId)
-                  }
+          data = JSON.parse(data);
+          if (type) {
+            if (data.dwTodayIsCashOut !== 1) {
+              if (data.ddwUsrTodayGetRich >= data.ddwTodayTargetUnLockRich) {
+                nowTimes = new Date(new Date().getTime() + new Date().getTimezoneOffset() * 60 * 1000 + 8 * 60 * 60 * 1000);
+                if (nowTimes.getHours() >= 0 && nowTimes.getHours() < 12) {
+                  data.UsrCurrCashList = data.UsrCurrCashList.filter((x) => x.ddwMoney / 100 >= 1);
+                } else if (nowTimes.getHours() === 12 && nowTimes.getMinutes() <= 10) {
+                  data.UsrCurrCashList = data.UsrCurrCashList.filter((x) => x.ddwMoney / 100 >= 0.5);
                 }
-                if (helpNum.length !== 0) {
-                  for (let j = 0; j < helpNum.length; j++) {
-                    await pearlHelpDraw(data.ddwSeasonStartTm, helpNum[j])
-                    await $.wait(2000)
-                    data = await composePearlState(1)
-                  }
-                } else {
-                  console.log(`暂无可领助力奖励`)
-                }
-              }
-              break
-            case 3:
-              data = JSON.parse(data);
-              if (data.iRet === 0) {
-                console.log(`当前已合成${data.dwCurProgress}颗月饼，总计获得${data.ddwVirHb / 100}元红包`)
-                if (data.strDT) {
-                  let beacon = data.PearlList[0]
-                  data.PearlList.shift()
-                  let beaconType = beacon.type
-                  let num = Math.ceil(Math.random() * 12 + 8)
-                  console.log(`合成月饼：模拟操作${num}次`)
-                  for (let v = 0; v < num; v++) {
-                    console.log(`模拟操作进度：${v + 1}/${num}`)
-                    await $.wait(2000)
-                    await realTmReport(data.strMyShareId)
-                    if (beacon.rbf) {
-                      let size = 1
-                      for (let key of Object.keys(data.PearlList)) {
-                        let vo = data.PearlList[key]
-                        if (vo.rbf && vo.type === beaconType) {
-                          size = 2
-                          vo.rbf = 0
-                          break
-                        }
-                      }
-                      await composePearlAward(data.strDT, beaconType, size)
+                for (let key of Object.keys(data.UsrCurrCashList).reverse()) {
+                  let vo = data.UsrCurrCashList[key];
+                  if (vo.dwDefault === 1) {
+                    let cashOutRes = await cashOut(vo.ddwMoney, vo.ddwPaperMoney);
+                    if (cashOutRes.iRet === 0) {
+                      $.money = vo.ddwMoney / 100;
+                      console.log(`提现成功获得：${$.money}元`);
+                    } else {
+                      await userCashOutState();
                     }
-                  }
-                  let strLT = data.oPT[data.ddwCurTime % data.oPT.length]
-                  let res = await composePearlAddProcess(data.strDT, strLT)
-                  if (res.iRet === 0) {
-                    console.log(`\n合成月饼成功：获得${res.ddwAwardHb / 100}元红包\n`)
                   } else {
-                    console.log(`\n合成月饼失败：${res.sErrMsg}\n`)
+                    console.log(`${vo.ddwMoney / 100}元库存不足`);
                   }
+                }
+              } else {
+                console.log(`不满足提现条件开始升级建筑`);
+                //升级建筑
+                for (let key of Object.keys($.info.buildInfo.buildList)) {
+                  let vo = $.info.buildInfo.buildList[key];
+                  let body = `strBuildIndex=${vo.strBuildIndex}`;
+                  let getBuildInfoRes = await getBuildInfo(body, vo);
+                  let buildNmae;
+                  switch (vo.strBuildIndex) {
+                    case 'food':
+                      buildNmae = '京喜美食城';
+                      break;
+                    case 'sea':
+                      buildNmae = '京喜旅馆';
+                      break;
+                    case 'shop':
+                      buildNmae = '京喜商店';
+                      break;
+                    case 'fun':
+                      buildNmae = '京喜游乐场';
+                    default:
+                      break;
+                  }
+                  console.log(`升级建筑`);
+                  console.log(`【${buildNmae}】当前等级：${vo.dwLvl} 升级获得财富：${getBuildInfoRes.ddwLvlRich}`);
+                  console.log(`【${buildNmae}】升级需要${getBuildInfoRes.ddwNextLvlCostCoin}金币，当前拥有${$.info.ddwCoinBalance}`);
+                  if (getBuildInfoRes.dwCanLvlUp > 0 && $.info.ddwCoinBalance >= getBuildInfoRes.ddwNextLvlCostCoin) {
+                    console.log(`【${buildNmae}】满足升级条件，开始升级`);
+                    const body = `ddwCostCoin=${getBuildInfoRes.ddwNextLvlCostCoin}&strBuildIndex=${getBuildInfoRes.strBuildIndex}`;
+                    let buildLvlUpRes = await buildLvlUp(body);
+                    if (buildLvlUpRes.iRet === 0) {
+                      console.log(`【${buildNmae}】升级成功\n`);
+                      break;
+                    } else {
+                      console.log(`【${buildNmae}】升级失败：${buildLvlUpRes.sErrMsg}\n`);
+                    }
+                  } else {
+                    console.log(`【${buildNmae}】不满足升级条件，跳过升级\n`);
+                  }
+                }
+                let userCashOutStateRes = await userCashOutState(false);
+                if (userCashOutStateRes.ddwUsrTodayGetRich >= userCashOutStateRes.ddwTodayTargetUnLockRich) {
+                  await userCashOutState();
                 } else {
-                  console.log(`今日已完成\n`)
+                  console.log(`今日还未赚够${userCashOutStateRes.ddwTodayTargetUnLockRich}财富，无法提现`);
                 }
               }
-              break
-            case 4:
-              data = JSON.parse(data);
-              if (data.iRet === 0) {
-                if (data.dayDrawInfo.dwIsDraw === 0) {
-                  await $.wait(2000)
-                  let strToken = await getPearlDailyReward().strToken
-                  await pearlDailyDraw(data.ddwSeasonStartTm, strToken)
-                }
-              }
-            default:
-              break;
+            } else {
+              console.log(`提现失败：今天已经提现过了~`);
+            }
           }
         }
       } catch (e) {
@@ -262,247 +261,108 @@ async function composePearlState(type) {
       } finally {
         resolve(data);
       }
-    })
-  })
+    });
+  });
 }
-function realTmReport(strMyShareId) {
+function cashOut(ddwMoney, ddwPaperMoney) {
   return new Promise((resolve) => {
-    $.get(taskUrl(`user/RealTmReport`, `__t=${Date.now()}&dwIdentityType=0&strBussKey=composegame&strMyShareId=${strMyShareId}&ddwCount=10`), (err, resp, data) => {
-      try {
-        if (err) {
-          console.log(`${JSON.stringify(err)}`)
-          console.log(`${$.name} RealTmReport API请求失败，请检查网路重试`)
-        } else {
-          data = JSON.parse(data);
-        }
-      } catch (e) {
-        $.logErr(e, resp);
-      } finally {
-        resolve();
-      }
-    })
-  })
-}
-function composePearlAddProcess(strDT, strLT) {
-  return new Promise((resolve) => {
-    $.get(taskUrl(`user/ComposePearlAddProcess`, `strBT=${strDT}&strLT=${strLT}`), (err, resp, data) => {
-      try {
-        if (err) {
-          console.log(`${JSON.stringify(err)}`)
-          console.log(`${$.name} ComposePearlAddProcess API请求失败，请检查网路重试`)
-        } else {
-          data = JSON.parse(data);
-        }
-      } catch (e) {
-        $.logErr(e, resp);
-      } finally {
-        resolve(data);
-      }
-    })
-  })
-}
-function getPearlDailyReward() {
-  return new Promise((resolve) => {
-    $.get(taskUrl(`user/GetPearlDailyReward`, `__t=${Date.now()}`), (err, resp, data) => {
-      try {
-        if (err) {
-          console.log(`${JSON.stringify(err)}`)
-          console.log(`${$.name} GetPearlDailyReward API请求失败，请检查网路重试`)
-        } else {
-          data = JSON.parse(data);
-        }
-      } catch (e) {
-        $.logErr(e, resp);
-      } finally {
-        resolve(data);
-      }
-    })
-  })
-}
-function pearlDailyDraw(ddwSeasonStartTm, strToken) {
-  return new Promise((resolve) => {
-    $.get(taskUrl(`user/PearlDailyDraw`, `ddwSeaonStart=${ddwSeasonStartTm}&strToken=${strToken}`), (err, resp, data) => {
-      try {
-        if (err) {
-          console.log(`${JSON.stringify(err)}`)
-          console.log(`${$.name} PearlDailyDraw API请求失败，请检查网路重试`)
-        } else {
-          data = JSON.parse(data);
-          if (data.iRet === 0) {
-            console.log(`抽奖成功：获得${data.strPrizeName || JSON.stringify(data)}`)
+    $.get(
+      taskUrl(`user/CashOut`, `ddwMoney=${ddwMoney}&ddwPaperMoney=${ddwPaperMoney}&strPgUUNum=${token['farm_jstoken']}&strPgtimestamp=${token['timestamp']}&strPhoneID=${token['phoneid']}`),
+      (err, resp, data) => {
+        try {
+          if (err) {
+            console.log(`${JSON.stringify(err)}`);
+            console.log(`${$.name} CashOut API请求失败，请检查网路重试`);
           } else {
-            console.log(`抽奖失败：${data.sErrMsg}`)
+            data = JSON.parse(data);
           }
+        } catch (e) {
+          $.logErr(e, resp);
+        } finally {
+          resolve(data);
         }
-      } catch (e) {
-        $.logErr(e, resp);
-      } finally {
-        resolve(data);
       }
-    })
-  })
-}
-function composePearlAward(strDT, type, size) {
-  return new Promise((resolve) => {
-    $.get(taskUrl(`user/ComposePearlAward`, `__t=${Date.now()}&type=${type}&size=${size}&strBT=${strDT}`), (err, resp, data) => {
-      try {
-        if (err) {
-          console.log(`${JSON.stringify(err)}`)
-          console.log(`${$.name} ComposePearlAward API请求失败，请检查网路重试`)
-        } else {
-          data = JSON.parse(data);
-          if (data.iRet === 0) {
-            console.log(`模拟操作中奖：获得${data.ddwAwardHb / 100}元红包，总计获得${data.ddwVirHb / 100}元红包`)
-          } else {
-            console.log(`模拟操作未中奖：${data.sErrMsg}`)
-          }
-        }
-      } catch (e) {
-        $.logErr(e, resp);
-      } finally {
-        resolve(data);
-      }
-    })
-  })
+    );
+  });
 }
 
-// 助力奖励
-function pearlHelpDraw(ddwSeasonStartTm, dwUserId) {
+// 升级建筑
+function getBuildInfo(body) {
   return new Promise((resolve) => {
-    $.get(taskUrl(`user/PearlHelpDraw`, `__t=${Date.now()}&ddwSeaonStart=${ddwSeasonStartTm}&dwUserId=${dwUserId}`), (err, resp, data) => {
+    $.get(taskUrl(`user/GetBuildInfo`, body), (err, resp, data) => {
       try {
         if (err) {
-          console.log(`${JSON.stringify(err)}`)
-          console.log(`${$.name} PearlHelpDraw API请求失败，请检查网路重试`)
+          console.log(`${JSON.stringify(err)}`);
+          console.log(`${$.name} GetBuildInfo API请求失败，请检查网路重试`);
         } else {
           data = JSON.parse(data);
-          if (data.iRet === 0) {
-            console.log(`领取助力奖励成功：获得${data.StagePrizeInfo.ddwAwardHb / 100}元红包，总计获得${data.StagePrizeInfo.ddwVirHb / 100}元红包`)
-          } else {
-            console.log(`领取助力奖励失败：${data.sErrMsg}`)
-          }
-        }
-      } catch (e) {
-        $.logErr(e, resp);
-      } finally {
-        resolve();
-      }
-    })
-  })
-}
-
-// 助力
-function helpByStage(shareCodes) {
-  return new Promise((resolve) => {
-    $.get(taskUrl(`user/PearlHelpByStage`, `__t=${Date.now()}&strShareId=${shareCodes}`), (err, resp, data) => {
-      try {
-        if (err) {
-          console.log(`${JSON.stringify(err)}`)
-          console.log(`${$.name} helpbystage API请求失败，请检查网路重试`)
-        } else {
-          data = JSON.parse(data);
-          if (data.iRet === 0 || data.sErrMsg === 'success') {
-            console.log(`助力成功：获得${data.GuestPrizeInfo.strPrizeName}`)
-          } else if (data.iRet === 2232 || data.sErrMsg === '今日助力次数达到上限，明天再来帮忙吧~') {
-            console.log(`助力失败：${data.sErrMsg}`)
-            $.canHelp = false
-          } else if (data.iRet === 9999 || data.sErrMsg === '您还没有登录，请先登录哦~') {
-            console.log(`助力失败：${data.sErrMsg}`)
-            $.canHelp = false
-          } else if (data.iRet === 2229 || data.sErrMsg === '助力失败啦~') {
-            console.log(`助力失败：您的账号或被助力的账号可能已黑，请联系客服`)
-            num++
-            if (num === 5) $.canHelp = false
-          } else if (data.iRet === 2190 || data.sErrMsg === '达到助力上限') {
-            console.log(`助力失败：${data.sErrMsg}`)
-            $.delcode = true
-          } else {
-            console.log(`助力失败：${data.sErrMsg}`)
-          }
         }
       } catch (e) {
         $.logErr(e, resp);
       } finally {
         resolve(data);
       }
-    })
-  })
+    });
+  });
 }
-
-function getAuthorShareCode(url) {
-  return new Promise(async resolve => {
-    const options = {
-      url: `${url}?${new Date()}`, "timeout": 10000, headers: {
-        "User-Agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1 Edg/87.0.4280.88"
-      }
-    };
-    if ($.isNode() && process.env.TG_PROXY_HOST && process.env.TG_PROXY_PORT) {
-      const tunnel = require("tunnel");
-      const agent = {
-        https: tunnel.httpsOverHttp({
-          proxy: {
-            host: process.env.TG_PROXY_HOST,
-            port: process.env.TG_PROXY_PORT * 1
-          }
-        })
-      }
-      Object.assign(options, { agent })
-    }
-    $.get(options, async (err, resp, data) => {
+function buildLvlUp(body) {
+  return new Promise((resolve) => {
+    $.get(taskUrl(`user/BuildLvlUp`, body), (err, resp, data) => {
       try {
-        resolve(JSON.parse(data))
+        if (err) {
+          console.log(`${JSON.stringify(err)}`);
+          console.log(`${$.name} BuildLvlUp API请求失败，请检查网路重试`);
+        } else {
+          data = JSON.parse(data);
+        }
       } catch (e) {
-        // $.logErr(e, resp)
+        $.logErr(e, resp);
       } finally {
-        resolve();
+        resolve(data);
       }
-    })
-    await $.wait(10000)
-    resolve();
-  })
+    });
+  });
 }
 
 // 获取用户信息
 function getUserInfo(showInvite = true) {
   return new Promise(async (resolve) => {
-    $.get(taskUrl(`user/QueryUserInfo`, `ddwTaskId=&strShareId=&strMarkList=${escape('guider_step,collect_coin_auth,guider_medal,guider_over_flag,build_food_full,build_sea_full,build_shop_full,build_fun_full,medal_guider_show,guide_guider_show,guide_receive_vistor,daily_task,guider_daily_task')}&strPgUUNum=${token['farm_jstoken']}&strPgtimestamp=${token['timestamp']}&strPhoneID=${token['phoneid']}`), (err, resp, data) => {
+    $.get(taskUrl(`user/QueryUserInfo`, `strPgUUNum=${token['farm_jstoken']}&strPgtimestamp=${token['timestamp']}&strPhoneID=${token['phoneid']}`), (err, resp, data) => {
       try {
         if (err) {
-          console.log(`${JSON.stringify(err)}`)
-          console.log(`${$.name} QueryUserInfo API请求失败，请检查网路重试`)
+          console.log(`${JSON.stringify(err)}`);
+          console.log(`${$.name} QueryUserInfo API请求失败，请检查网路重试`);
         } else {
           data = JSON.parse(data);
-          const {
-            ddwRichBalance,
-            ddwCoinBalance,
-            sErrMsg,
-            strMyShareId,
-            dwLandLvl,
-            LeadInfo = {},
-            Business = {},
-          } = data;
+          const { buildInfo = {}, ddwRichBalance, ddwCoinBalance, sErrMsg, strMyShareId, dwLandLvl, dwIsNeedGuideNew, Fund = {}, StoryInfo = {} } = data;
           if (showInvite) {
-            console.log(`\n获取用户信息：${sErrMsg}\n${$.showLog ? data : ""}`);
-            console.log(`\n当前等级:${dwLandLvl},金币:${ddwCoinBalance},财富值:${ddwRichBalance},连续营业天数:${Business.dwBussDayNum},离线收益:${Business.ddwCoin}\n`)
+            console.log(`\n获取用户信息：${sErrMsg}\n${$.showLog ? data : ''}`);
+            console.log(`\n当前等级:${dwLandLvl},金币:${ddwCoinBalance},财富值:${ddwRichBalance}\n`);
           }
           if (showInvite && strMyShareId) {
             console.log(`财富岛好友互助码每次运行都变化,旧的可继续使用`);
             console.log(`\n【京东账号${$.index}（${$.UserName}）的${$.name}好友互助码】${strMyShareId}\n\n`);
-            $.shareCodes.push(strMyShareId)
+            $.shareCodes.push(strMyShareId);
           }
           $.info = {
             ...$.info,
+            buildInfo,
             ddwRichBalance,
             ddwCoinBalance,
             strMyShareId,
             dwLandLvl,
-            LeadInfo,
+            dwIsNeedGuideNew,
+            Fund,
+            StoryInfo,
           };
           resolve({
+            buildInfo,
             ddwRichBalance,
             ddwCoinBalance,
             strMyShareId,
-            LeadInfo,
+            dwIsNeedGuideNew,
+            Fund,
+            StoryInfo,
           });
         }
       } catch (e) {
@@ -510,263 +370,108 @@ function getUserInfo(showInvite = true) {
       } finally {
         resolve();
       }
-    })
-  })
+    });
+  });
 }
 
-// 新手任务
-async function noviceTask(){
-  let body = ``
-  await init(`user/guideuser`, body)
-  body = `strMark=guider_step&strValue=welcom&dwType=2`
-  await init(`user/SetMark`, body)
-  body = `strMark=guider_over_flag&strValue=999&dwType=2`
-  await init(`user/SetMark`, body)
-  body = `strMark=guider_step&strValue=999&dwType=2`
-  await init(`user/SetMark`, body)
-  body = `strMark=guider_step&strValue=999&dwType=2`
-  await init(`user/SetMark`, body)
-  body = `strMark=guider_over_flag&strValue=999&dwType=2`
-  await init(`user/SetMark`, body)
-  body = `strMark=guider_step&strValue=gift_redpack&dwType=2`
-  await init(`user/SetMark`, body)
-  body = `strMark=guider_step&strValue=none&dwType=2`
-  await init(`user/SetMark`, body)
-}
-async function init(function_path, body) {
-  return new Promise(async (resolve) => {
-    $.get(taskUrl(function_path, body), async (err, resp, data) => {
-      try {
-        if (err) {
-          console.log(`${JSON.stringify(err)}`)
-          console.log(`${$.name} init API请求失败，请检查网路重试`)
-        } else {
-          if (function_path == "user/SetMark") opId = 23
-          if (function_path == "user/guideuser") opId = 27
-          data = JSON.parse(data);
-          contents = `1771|${opId}|${data.iRet}|0|${data.sErrMsg || 0}`
-          await biz(contents)
-        }
-      } catch (e) {
-        $.logErr(e, resp);
-      } finally {
-        resolve();
-      }
-    })
-  })
-}
-function biz(contents){
-  return new Promise(async (resolve) => {
-    let option = {
-      url:`https://m.jingxi.com/webmonitor/collect/biz.json?contents=${contents}&t=${Math.random()}&sceneval=2`,
-      headers: {
-        Cookie: cookie,
-        Accept: "*/*",
-        Connection: "keep-alive",
-        Referer: "https://st.jingxi.com/fortune_island/index.html?ptag=138631.26.55",
-        "Accept-Encoding": "gzip, deflate, br",
-        Host: 'm.jingxi.com',
-        "User-Agent": UA,
-        "Accept-Language": "zh-CN,zh;q=0.9,en;q=0.8",
-      }
-    }
-    $.get(option, async (err, resp, _data) => {
-      try {
-        // console.log(_data)
-      }
-      catch (e) {
-        $.logErr(e, resp);
-      }
-      finally {
-        resolve();
-      }
-    })
-  })
+function sleep(timeout) {
+  return new Promise((resolve) => setTimeout(resolve, timeout));
 }
 
-function taskUrl(function_path, body = '', dwEnv = 7) {
-  let url = `${JD_API_HOST}jxbfd/${function_path}?strZone=jxbfd&bizCode=jxbfd&source=jxbfd&dwEnv=${dwEnv}&_cfd_t=${Date.now()}&ptag=138631.26.55&${body}&_stk=_cfd_t%2CbizCode%2CddwTaskId%2CdwEnv%2Cptag%2Csource%2CstrShareId%2CstrZone&_ste=1`;
+function taskUrl(function_path, body = '') {
+  let url = `${JD_API_HOST}jxbfd/${function_path}?strZone=jxbfd&bizCode=jxbfd&source=jxbfd&dwEnv=7&_cfd_t=${Date.now()}&ptag=138631.26.55&${body}&_stk=_cfd_t%2CbizCode%2CddwTaskId%2CdwEnv%2Cptag%2Csource%2CstrShareId%2CstrZone&_ste=1`;
   url += `&h5st=${decrypt(Date.now(), '', '', url)}&_=${Date.now() + 2}&sceneval=2&g_login_type=1&g_ty=ls`;
   return {
     url,
     headers: {
       Cookie: cookie,
-      Accept: "*/*",
-      Connection: "keep-alive",
-      Referer:"https://st.jingxi.com/fortune_island/index.html?ptag=138631.26.55",
-      "Accept-Encoding": "gzip, deflate, br",
-      Host: "m.jingxi.com",
-      "User-Agent": UA,
-      "Accept-Language": "zh-cn",
+      Accept: '*/*',
+      Connection: 'keep-alive',
+      Referer: 'https://st.jingxi.com/fortune_island/index.html?ptag=138631.26.55',
+      'Accept-Encoding': 'gzip, deflate, br',
+      Host: 'm.jingxi.com',
+      'User-Agent': `jdpingou;iPhone;3.15.2;14.2.1;ea00763447803eb0f32045dcba629c248ea53bb3;network/wifi;model/iPhone13,2;appBuild/100365;ADID/00000000-0000-0000-0000-000000000000;supportApplePay/1;hasUPPay/0;pushNoticeIsOpen/0;hasOCPay/0;supportBestPay/0;session/${
+        Math.random * 98 + 1
+      };pap/JA2015_311210;brand/apple;supportJDSHWK/1;Mozilla/5.0 (iPhone; CPU iPhone OS 14_2_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148`,
+      'Accept-Language': 'zh-cn',
     },
-    timeout: 10000
+    timeout: 10000,
   };
 }
 
-function randomString(e) {
-  e = e || 32;
-  let t = "0123456789abcdef", a = t.length, n = "";
-  for (let i = 0; i < e; i++)
-    n += t.charAt(Math.floor(Math.random() * a));
-  return n
-}
-
 function showMsg() {
-  return new Promise(async (resolve) => {
-    if ($.result.length) {
-      if ($.notifyTime) {
-        const notifyTimes = $.notifyTime.split(",").map((x) => x.split(":"));
-        const now = $.time("HH:mm").split(":");
-        console.log(`\n${JSON.stringify(notifyTimes)}`);
-        console.log(`\n${JSON.stringify(now)}`);
-        if ( notifyTimes.some((x) => x[0] === now[0] && (!x[1] || x[1] === now[1])) ) {
-          $.msg($.name, "", `${$.result.join("\n")}`);
-        }
-      } else {
-        $.msg($.name, "", `${$.result.join("\n")}`);
-      }
-
-      if ($.isNode() && process.env.CFD_NOTIFY_CONTROL)
-        await notify.sendNotify(`${$.name} - 账号${$.index} - ${$.nickName}`, `${$.result.join("\n")}`);
+  return new Promise((resolve) => {
+    message += `提现成功：获得${$.money}元`;
+    if ($.money > 0) {
+      allMessage += `【京东账号${$.index}】${$.nickName || $.UserName}\n${message}${$.index !== cookiesArr.length ? '\n\n' : '\n\n'}`;
     }
+    $.msg($.name, '', `【京东账号${$.index}】${$.nickName}\n${message}`);
     resolve();
   });
 }
-
-function readShareCode() {
-  console.log(`开始`)
-  return new Promise(async resolve => {
-    $.get({
-      url: `http://share.turinglabs.net/api/v3/jxbfd/query/${randomCount}/`,
-      'timeout': 10000
-    }, (err, resp, data) => {
-      try {
-        if (err) {
-          console.log(`${JSON.stringify(err)}`)
-          console.log(`${$.name} API请求失败，请检查网路重试`)
-        } else {
-          if (data) {
-            console.log(`随机取${randomCount}个码放到您固定的互助码后面(不影响已有固定互助)`)
-            data = JSON.parse(data);
-          }
-        }
-      } catch (e) {
-        $.logErr(e, resp)
-      } finally {
-        resolve(data);
-      }
-    })
-    await $.wait(10000);
-    resolve()
-  })
-}
-//格式化助力码
-function shareCodesFormat() {
-  return new Promise(async resolve => {
-    // console.log(`第${$.index}个京东账号的助力码:::${$.shareCodesArr[$.index - 1]}`)
-    $.newShareCodes = [];
-    if ($.shareCodesArr[$.index - 1]) {
-      $.newShareCodes = $.shareCodesArr[$.index - 1].split('@');
-    } else {
-      console.log(`由于您第${$.index}个京东账号未提供shareCode,将采纳本脚本自带的助力码\n`)
-      // const tempIndex = $.index > inviteCodes.length ? (inviteCodes.length - 1) : ($.index - 1);
-      $.newShareCodes = [...$.strMyShareIds];
-    }
-    // const readShareCodeRes = await readShareCode();
-    // if (readShareCodeRes && readShareCodeRes.code === 200) {
-    //   $.newShareCodes = [...new Set([...$.newShareCodes, ...(readShareCodeRes.data || [])])];
-    // }
-    console.log(`第${$.index}个京东账号将要助力的好友${JSON.stringify($.newShareCodes)}`)
-    resolve();
-  })
-}
-function requireConfig() {
-  return new Promise(resolve => {
-    console.log(`开始获取${$.name}配置文件\n`);
-    let shareCodes = [];
-    if ($.isNode() && process.env.JDCFD_SHARECODES) {
-      if (process.env.JDCFD_SHARECODES.indexOf('\n') > -1) {
-        shareCodes = process.env.JDCFD_SHARECODES.split('\n');
-      } else {
-        shareCodes = process.env.JDCFD_SHARECODES.split('&');
-      }
-    }
-    $.shareCodesArr = [];
-    if ($.isNode()) {
-      Object.keys(shareCodes).forEach((item) => {
-        if (shareCodes[item]) {
-          $.shareCodesArr.push(shareCodes[item])
-        }
-      })
-    } else {
-      if ($.getdata('jd_jxCFD')) $.shareCodesArr = $.getdata('jd_jxCFD').split('\n').filter(item => !!item);
-      console.log(`\nBoxJs设置的京喜财富岛邀请码:${$.getdata('jd_jxCFD')}\n`);
-    }
-    console.log(`您提供了${$.shareCodesArr.length}个账号的${$.name}助力码\n`);
-    resolve()
-  })
-}
-
 /*
 修改时间戳转换函数，京喜工厂原版修改
  */
 Date.prototype.Format = function (fmt) {
   var e,
-      n = this, d = fmt, l = {
-        "M+": n.getMonth() + 1,
-        "d+": n.getDate(),
-        "D+": n.getDate(),
-        "h+": n.getHours(),
-        "H+": n.getHours(),
-        "m+": n.getMinutes(),
-        "s+": n.getSeconds(),
-        "w+": n.getDay(),
-        "q+": Math.floor((n.getMonth() + 3) / 3),
-        "S+": n.getMilliseconds()
-      };
-  /(y+)/i.test(d) && (d = d.replace(RegExp.$1, "".concat(n.getFullYear()).substr(4 - RegExp.$1.length)));
+    n = this,
+    d = fmt,
+    l = {
+      'M+': n.getMonth() + 1,
+      'd+': n.getDate(),
+      'D+': n.getDate(),
+      'h+': n.getHours(),
+      'H+': n.getHours(),
+      'm+': n.getMinutes(),
+      's+': n.getSeconds(),
+      'w+': n.getDay(),
+      'q+': Math.floor((n.getMonth() + 3) / 3),
+      'S+': n.getMilliseconds(),
+    };
+  /(y+)/i.test(d) && (d = d.replace(RegExp.$1, ''.concat(n.getFullYear()).substr(4 - RegExp.$1.length)));
   for (var k in l) {
-    if (new RegExp("(".concat(k, ")")).test(d)) {
-      var t, a = "S+" === k ? "000" : "00";
-      d = d.replace(RegExp.$1, 1 == RegExp.$1.length ? l[k] : ("".concat(a) + l[k]).substr("".concat(l[k]).length))
+    if (new RegExp('('.concat(k, ')')).test(d)) {
+      var t,
+        a = 'S+' === k ? '000' : '00';
+      d = d.replace(RegExp.$1, 1 == RegExp.$1.length ? l[k] : (''.concat(a) + l[k]).substr(''.concat(l[k]).length));
     }
   }
   return d;
-}
+};
 
 async function requestAlgo() {
   $.fingerprint = await generateFp();
   const options = {
-    "url": `https://cactus.jd.com/request_algo?g_ty=ajax`,
-    "headers": {
-      'Authority': 'cactus.jd.com',
-      'Pragma': 'no-cache',
+    url: `https://cactus.jd.com/request_algo?g_ty=ajax`,
+    headers: {
+      Authority: 'cactus.jd.com',
+      Pragma: 'no-cache',
       'Cache-Control': 'no-cache',
-      'Accept': 'application/json',
+      Accept: 'application/json',
       'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1',
       'Content-Type': 'application/json',
-      'Origin': 'https://st.jingxi.com',
+      Origin: 'https://st.jingxi.com',
       'Sec-Fetch-Site': 'cross-site',
       'Sec-Fetch-Mode': 'cors',
       'Sec-Fetch-Dest': 'empty',
-      'Referer': 'https://st.jingxi.com/',
-      'Accept-Language': 'zh-CN,zh;q=0.9,zh-TW;q=0.8,en;q=0.7'
+      Referer: 'https://st.jingxi.com/',
+      'Accept-Language': 'zh-CN,zh;q=0.9,zh-TW;q=0.8,en;q=0.7',
     },
-    'body': JSON.stringify({
-      "version": "1.0",
-      "fp": $.fingerprint,
-      "appId": $.appId.toString(),
-      "timestamp": Date.now(),
-      "platform": "web",
-      "expandParams": ""
-    })
-  }
-  new Promise(async resolve => {
+    body: JSON.stringify({
+      version: '1.0',
+      fp: $.fingerprint,
+      appId: $.appId.toString(),
+      timestamp: Date.now(),
+      platform: 'web',
+      expandParams: '',
+    }),
+  };
+  new Promise(async (resolve) => {
     $.post(options, (err, resp, data) => {
       try {
         if (err) {
-          console.log(`${JSON.stringify(err)}`)
-          console.log(`request_algo 签名参数API请求失败，请检查网路重试`)
+          console.log(`${JSON.stringify(err)}`);
+          console.log(`request_algo 签名参数API请求失败，请检查网路重试`);
         } else {
           if (data) {
             // console.log(data);
@@ -775,30 +480,30 @@ async function requestAlgo() {
               $.token = data.data.result.tk;
               let enCryptMethodJDString = data.data.result.algo;
               if (enCryptMethodJDString) $.enCryptMethodJD = new Function(`return ${enCryptMethodJDString}`)();
-              console.log(`获取签名参数成功！`)
-              console.log(`fp: ${$.fingerprint}`)
-              console.log(`token: ${$.token}`)
-              console.log(`enCryptMethodJD: ${enCryptMethodJDString}`)
+              console.log(`获取签名参数成功！`);
+              console.log(`fp: ${$.fingerprint}`);
+              console.log(`token: ${$.token}`);
+              console.log(`enCryptMethodJD: ${enCryptMethodJDString}`);
             } else {
-              console.log(`fp: ${$.fingerprint}`)
-              console.log('request_algo 签名参数API请求失败:')
+              console.log(`fp: ${$.fingerprint}`);
+              console.log('request_algo 签名参数API请求失败:');
             }
           } else {
-            console.log(`京东服务器返回空数据`)
+            console.log(`京东服务器返回空数据`);
           }
         }
       } catch (e) {
-        $.logErr(e, resp)
+        $.logErr(e, resp);
       } finally {
         resolve();
       }
-    })
-  })
+    });
+  });
 }
 function decrypt(time, stk, type, url) {
-  stk = stk || (url ? getUrlData(url, '_stk') : '')
+  stk = stk || (url ? getUrlData(url, '_stk') : '');
   if (stk) {
-    const timestamp = new Date(time).Format("yyyyMMddhhmmssSSS");
+    const timestamp = new Date(time).Format('yyyyMMddhhmmssSSS');
     let hash1 = '';
     if ($.fingerprint && $.token && $.enCryptMethodJD) {
       hash1 = $.enCryptMethodJD($.token, $.fingerprint.toString(), timestamp.toString(), $.appId.toString(), $.CryptoJS).toString($.CryptoJS.enc.Hex);
@@ -811,14 +516,14 @@ function decrypt(time, stk, type, url) {
     }
     let st = '';
     stk.split(',').map((item, index) => {
-      st += `${item}:${getUrlData(url, item)}${index === stk.split(',').length -1 ? '' : '&'}`;
-    })
+      st += `${item}:${getUrlData(url, item)}${index === stk.split(',').length - 1 ? '' : '&'}`;
+    });
     const hash2 = $.CryptoJS.HmacSHA256(st, hash1.toString()).toString($.CryptoJS.enc.Hex);
     // console.log(`\nst:${st}`)
     // console.log(`h5st:${["".concat(timestamp.toString()), "".concat(fingerprint.toString()), "".concat($.appId.toString()), "".concat(token), "".concat(hash2)].join(";")}\n`)
-    return encodeURIComponent(["".concat(timestamp.toString()), "".concat($.fingerprint.toString()), "".concat($.appId.toString()), "".concat($.token), "".concat(hash2)].join(";"))
+    return encodeURIComponent([''.concat(timestamp.toString()), ''.concat($.fingerprint.toString()), ''.concat($.appId.toString()), ''.concat($.token), ''.concat(hash2)].join(';'));
   } else {
-    return '20210318144213808;8277529360925161;10001;tk01w952a1b73a8nU0luMGtBanZTHCgj0KFVwDa4n5pJ95T/5bxO/m54p4MtgVEwKNev1u/BUjrpWAUMZPW0Kz2RWP8v;86054c036fe3bf0991bd9a9da1a8d44dd130c6508602215e50bb1e385326779d'
+    return '20210318144213808;8277529360925161;10001;tk01w952a1b73a8nU0luMGtBanZTHCgj0KFVwDa4n5pJ95T/5bxO/m54p4MtgVEwKNev1u/BUjrpWAUMZPW0Kz2RWP8v;86054c036fe3bf0991bd9a9da1a8d44dd130c6508602215e50bb1e385326779d';
   }
 }
 
@@ -829,21 +534,21 @@ function decrypt(time, stk, type, url) {
  * @returns {string}
  */
 function getUrlData(url, name) {
-  if (typeof URL !== "undefined") {
+  if (typeof URL !== 'undefined') {
     let urls = new URL(url);
     let data = urls.searchParams.get(name);
     return data ? data : '';
   } else {
-    const query = url.match(/\?.*/)[0].substring(1)
-    const vars = query.split('&')
+    const query = url.match(/\?.*/)[0].substring(1);
+    const vars = query.split('&');
     for (let i = 0; i < vars.length; i++) {
-      const pair = vars[i].split('=')
+      const pair = vars[i].split('=');
       if (pair[0] === name) {
         // return pair[1];
         return vars[i].substr(vars[i].indexOf('=') + 1);
       }
     }
-    return ''
+    return '';
   }
 }
 /**
@@ -851,12 +556,11 @@ function getUrlData(url, name) {
  * @returns {string}
  */
 function generateFp() {
-  let e = "0123456789";
+  let e = '0123456789';
   let a = 13;
   let i = '';
-  for (; a--; )
-    i += e[Math.random() * e.length | 0];
-  return (i + Date.now()).slice(0,16)
+  for (; a--; ) i += e[(Math.random() * e.length) | 0];
+  return (i + Date.now()).slice(0, 16);
 }
 var _0xod8 = 'jsjiami.com.v6',
   _0x2cf9 = [
