@@ -23,12 +23,12 @@ cron "8 0-23/3 * * *" script-path=https://gitee.com/lxk0301/jd_scripts/raw/maste
 ==============小火箭=============
 天天加速 = type=cron,script-path=https://gitee.com/lxk0301/jd_scripts/raw/master/jd_speed.js, cronexpr="11 0-23/3 * * *", timeout=3600, enable=true
 */
-const jd_helpers = require('./utils/JDHelpers.js');
-const jd_env = require('./utils/JDEnv.js');
+const jd_helpers = require('../utils/JDHelpers.js');
+const jd_env = require('../utils/JDEnv.js');
 const $ = jd_env.env('天天加速');
-const notify = $.isNode() ? require('./sendNotify') : '';
+const notify = $.isNode() ? require('../sendNotify') : '';
 //Node.js用户请在jdCookie.js处填写京东ck;
-const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
+const jdCookieNode = $.isNode() ? require('../jdCookie.js') : '';
 
 //IOS等用户直接用NobyDa的jd cookie
 let cookiesArr = [],
@@ -113,7 +113,7 @@ function jDSpeedUp(sourceId) {
         'User-Agent': $.isNode()
           ? process.env.JD_USER_AGENT
             ? process.env.JD_USER_AGENT
-            : require('./USER_AGENTS').USER_AGENT
+            : require('../USER_AGENTS').USER_AGENT
           : $.getdata('JDUA')
           ? $.getdata('JDUA')
           : 'jdapp;iPhone;9.4.4;14.3;network/4g;Mozilla/5.0 (iPhone; CPU iPhone OS 14_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148;supportJDSHWK/1',
@@ -520,7 +520,7 @@ function getMemBerList() {
         'User-Agent': $.isNode()
           ? process.env.JD_USER_AGENT
             ? process.env.JD_USER_AGENT
-            : require('./USER_AGENTS').USER_AGENT
+            : require('../USER_AGENTS').USER_AGENT
           : $.getdata('JDUA')
           ? $.getdata('JDUA')
           : 'jdapp;iPhone;9.4.4;14.3;network/4g;Mozilla/5.0 (iPhone; CPU iPhone OS 14_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148;supportJDSHWK/1',
@@ -579,7 +579,7 @@ function getMemBerGetTask(sourceId) {
         'User-Agent': $.isNode()
           ? process.env.JD_USER_AGENT
             ? process.env.JD_USER_AGENT
-            : require('./USER_AGENTS').USER_AGENT
+            : require('../USER_AGENTS').USER_AGENT
           : $.getdata('JDUA')
           ? $.getdata('JDUA')
           : 'jdapp;iPhone;9.4.4;14.3;network/4g;Mozilla/5.0 (iPhone; CPU iPhone OS 14_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148;supportJDSHWK/1',
@@ -617,7 +617,7 @@ function getReward(uuid) {
         'User-Agent': $.isNode()
           ? process.env.JD_USER_AGENT
             ? process.env.JD_USER_AGENT
-            : require('./USER_AGENTS').USER_AGENT
+            : require('../USER_AGENTS').USER_AGENT
           : $.getdata('JDUA')
           ? $.getdata('JDUA')
           : 'jdapp;iPhone;9.4.4;14.3;network/4g;Mozilla/5.0 (iPhone; CPU iPhone OS 14_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148;supportJDSHWK/1',

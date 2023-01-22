@@ -41,8 +41,6 @@
 # 10 * * * * node /scripts/jd_cfd_mooncake.js >> /scripts/logs/jd_cfd_mooncake.log 2>&1
 # 京喜购物返红包助力
 # 44 6-23 * * *  node /scripts/jd_jx_cashback.js >> /scripts/logs/jd_jx_cashback.log 2>&1
-# 东东世界
-20 8 * * * node /scripts/jd_ddworld.js >> /scripts/logs/jd_ddworld.log 2>&1
 # 集魔方
 16 10,19 * * * node /scripts/jd_rubik_cube.js >> /scripts/logs/jd_rubik_cube.log 2>&1
 # 集魔方兑换
@@ -54,7 +52,7 @@
 # 京东小魔方
 31 2,8 * * * node /scripts/jd_mf.js >> /scripts/logs/jd_puzzle.log 2>&1
 # 东东超市抢京豆
-13 0,9 * * * node /scripts/jd_fission.js >> /scripts/logs/jd_fission.log 2>&1
+# 13 0,9 * * * node /scripts/jd_fission.js >> /scripts/logs/jd_fission.log 2>&1
 # 跳跳乐瓜分京豆 (什么时候结束)
 1 0,9,15,21 * * * node /scripts/jd_jump.js >> /scripts/logs/jd_jump.log 2>&1
 # 京东金榜
@@ -101,10 +99,6 @@
 12 0-23/4 * * * node /scripts/jd_redPacket.js >> /scripts/logs/jd_redPacket.log 2>&1
 # 进店领豆
 6 0 * * * node /scripts/jd_shop.js >> /scripts/logs/jd_shop.log 2>&1
-# 东东超市
-31 0,1-23/2 * * * node /scripts/jd_superMarket.js >> /scripts/logs/jd_superMarket.log 2>&1
-# 东东超市兑换奖品
-# 59 23 * * * node /scripts/jd_blueCoin.js >> /scripts/logs/jd_blueCoin.log 2>&1
 # 取关京东店铺商品
 45-50/1 23 * * * node /scripts/jd_unsubscribe.js >> /scripts/logs/jd_unsubscribe.log 2>&1
 # 京豆变动通知
@@ -211,3 +205,5 @@
 3 5 * * * node /scripts/jd_phone_bill.js >> /scripts/logs/jd_phone_bill.log 2>&1
 # 小鸽有礼-京小哥助手（微信小程序）
 2 2 * * * node /scripts/jd_mp_deliveryman.js >> /scripts/logs/jd_mp_deliveryman.log 2>&1
+# 超级品牌殿堂
+18 10,18 * * * node /scripts/jd_ppdt.js >> /scripts/logs/jd_ppdt.log 2>&1

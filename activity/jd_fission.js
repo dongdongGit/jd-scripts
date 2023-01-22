@@ -1,10 +1,10 @@
 /*
 cron 13 0,9 * * * jd_fission.js
 */
-const jd_env = require('./utils/JDEnv.js');
+const jd_env = require('../utils/JDEnv.js');
 const $ = jd_env.env('东东超市抢京豆');
-const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
-const notify = $.isNode() ? require('./sendNotify') : '';
+const jdCookieNode = $.isNode() ? require('../jdCookie.js') : '';
+const notify = $.isNode() ? require('../sendNotify') : '';
 let cookiesArr = [],
   cookie = '';
 let ownCode = null;
