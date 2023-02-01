@@ -195,3 +195,5 @@
 2 2 * * * node /scripts/jd_mp_deliveryman.js >> /scripts/logs/jd_mp_deliveryman.log 2>&1
 # 超级品牌殿堂
 18 10,18 * * * node /scripts/jd_ppdt.js >> /scripts/logs/jd_ppdt.log 2>&1
+# 半点红包雨
+30 21,22 * * * node /scripts/jd_redrain_half.js >> /scripts/logs/jd_redrain_half.log 2>&1
