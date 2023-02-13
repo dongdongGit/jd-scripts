@@ -45,3 +45,23 @@ else
       echo "已配置不启用jd_cfd_loop任务，仅杀掉"
    fi
 fi
+
+echo "处理jd_big_winner_cash任务。。。"
+if [ ! $JD_BIG_WINNER_CASH_ENABLE ]; then
+   echo "默认启用jd_big_winner_cash杀掉jd_big_winner_cash任务，并重启"
+   eval $(ps -ef | grep "jd_big_winner_cash" | grep -v "grep" | awk '{print "kill "$1}')
+   echo '' >/scripts/logs/jd_big_winner_cash.log
+   python3 /scripts/jd_big_winner_cash.py | ts >>/scripts/logs/jd_big_winner_cash.log 2>&1 &
+   echo "默认jd_big_winner_cash重启完成"
+else
+   if [ $JD_BIG_WINNER_CASH_ENABLE = "Y" ]; then
+      echo "配置启用jd_big_winner_cash，杀掉jd_big_winner_cash任务，并重启"
+      eval $(ps -ef | grep "jd_big_winner_cash" | grep -v "grep" | awk '{print "kill "$1}')
+      echo '' >/scripts/logs/jd_big_winner_cash.log
+      python3 /scripts/jd_big_winner_cash.py | ts >>/scripts/logs/jd_big_winner_cash.log 2>&1 &
+      echo "配置jd_big_winner_cash重启完成"
+   else
+      eval $(ps -ef | grep "jd_big_winner_cash" | grep -v "grep" | awk '{print "kill "$1}')
+      echo "已配置不启用jd_big_winner_cash任务，仅杀掉"
+   fi
+fi
