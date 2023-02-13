@@ -50,7 +50,7 @@
 # 芥么赚豪礼
 37 0,11 * * * node /scripts/jd_jmzhl.js >> /scripts/logs/jd_jmzhl.log 2>&1
 # 京东小魔方
-31 2,8 * * * node /scripts/jd_mf.js >> /scripts/logs/jd_puzzle.log 2>&1
+31 2,8 * * * node /scripts/jd_mf.js >> /scripts/logs/jd_mf.log 2>&1
 # 东东超市抢京豆
 # 13 0,9 * * * node /scripts/jd_fission.js >> /scripts/logs/jd_fission.log 2>&1
 # 跳跳乐瓜分京豆 (什么时候结束)
