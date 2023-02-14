@@ -142,9 +142,9 @@
 # 京东秒秒币
 10 6,21 * * * node /scripts/jd_ms.js >> /scripts/logs/jd_ms.log 2>&1
 # 美丽研究院
-1 7-23/2 * * * node /scripts/jd_beauty.js >> /scripts/logs/jd_beauty.log 2>&1
+# 1 7-23/2 * * * node /scripts/jd_beauty.js >> /scripts/logs/jd_beauty.log 2>&1
 # 美丽研究院兑换
-0 8,12 * * * node /scripts/jd_beauty_exchange.js >> /scripts/logs/jd_beauty_exchange.log 2>&1
+# 0 8,12 * * * node /scripts/jd_beauty_exchange.js >> /scripts/logs/jd_beauty_exchange.log 2>&1
 # 京东保价
 41 0,23 * * * node /scripts/jd_price.js >> /scripts/logs/jd_price.log 2>&1
 # 京东极速版签到+赚现金任务
